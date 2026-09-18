@@ -222,16 +222,19 @@ button {
 /* =====================================================
    PRZYCISK MENU (HAMBURGER) - WIDOCZNY TYLKO NA TELEFONIE
    Zastępuje pełną listę linków main-nav, gdy nie mieści się
-   ona w całości w pasku nagłówka. Ikona zmienia się w zależności
-   od tła nagłówka - dokładnie ten sam mechanizm co logo (białe
-   logo/ikona na czarnym tle, czarne logo/ikona po przewinięciu
-   strony na białe tło), patrz skrypt na dole każdej podstrony.
+   ona w całości w pasku nagłówka. Ikona jest rysowana w czystym
+   CSS (trzy paski), a nie obrazkiem - dzięki temu zawsze się
+   wyświetla, niezależnie od plików graficznych. Kolor pasków
+   zmienia się w zależności od tła nagłówka - dokładnie ten sam
+   mechanizm co logo (białe na czarnym tle, czarne po przewinięciu
+   strony na białe tło) - poprzez klasę .scrolled dodawaną przez
+   skrypt na dole każdej podstrony, całkowicie w CSS, bez potrzeby
+   podmieniania src obrazka w JS.
 ===================================================== */
 
 .nav-toggle {
+    position: relative;
     display: none;
-    align-items: center;
-    justify-content: center;
     width: 40px;
     height: 40px;
     flex-shrink: 0;
@@ -241,10 +244,47 @@ button {
     cursor: pointer;
 }
 
-.nav-toggle img {
+.nav-toggle-bar {
+    position: absolute;
+    left: 8px;
     width: 24px;
-    height: 24px;
-    display: block;
+    height: 2px;
+    border-radius: 2px;
+    background-color: #ffffff;
+    transition:
+        transform 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+        opacity 0.25s ease,
+        background-color 0.3s ease;
+}
+
+.nav-toggle-bar:nth-child(1) {
+    top: 14px;
+}
+
+.nav-toggle-bar:nth-child(2) {
+    top: 20px;
+}
+
+.nav-toggle-bar:nth-child(3) {
+    top: 26px;
+}
+
+/* Białe/czarne paski zgodnie z aktualnym tłem nagłówka (bez JS) */
+.site-header.scrolled .nav-toggle-bar {
+    background-color: #111111;
+}
+
+/* Animacja "przekształcenia" hamburgera w X po otwarciu menu */
+.nav-toggle[aria-expanded="true"] .nav-toggle-bar:nth-child(1) {
+    transform: translateY(6px) rotate(45deg);
+}
+
+.nav-toggle[aria-expanded="true"] .nav-toggle-bar:nth-child(2) {
+    opacity: 0;
+}
+
+.nav-toggle[aria-expanded="true"] .nav-toggle-bar:nth-child(3) {
+    transform: translateY(-6px) rotate(-45deg);
 }
 
 /* =====================================================
@@ -1352,7 +1392,11 @@ main.contact-section {
         overflow: hidden;
         opacity: 0;
         visibility: hidden;
-        transition: max-height 0.3s ease, opacity 0.3s ease;
+        /* Wolniejsze, płynne rozwijanie się menu (zamiast poprzedniego,
+           krótkiego 0.3s) - dłuższy czas trwania oraz łagodna krzywa
+           "ease-out" dają wyraźny, spokojny efekt "rozsuwania się". */
+        transition: max-height 0.6s cubic-bezier(0.22, 1, 0.36, 1),
+                    opacity 0.5s ease;
     }
 
     .main-nav.is-open {

@@ -36,7 +36,9 @@
             </nav>
 
             <button type="button" class="nav-toggle" id="navToggle" aria-label="Otwórz menu" aria-expanded="false">
-                <img src="img/bars-solid-full-white.png" alt="" id="navToggleIcon">
+                <span class="nav-toggle-bar"></span>
+                <span class="nav-toggle-bar"></span>
+                <span class="nav-toggle-bar"></span>
             </button>
         </div>
     </header>
@@ -573,18 +575,15 @@
         const header = document.querySelector('.site-header');
         const logo = document.querySelector('.logo-image');
         const navToggle = document.querySelector('.nav-toggle');
-        const navToggleIcon = document.getElementById('navToggleIcon');
         const mainNav = document.querySelector('.main-nav');
 
         window.addEventListener('scroll', function () {
             if (window.scrollY > 50) {
                 header.classList.add('scrolled');
                 logo.src = 'img/logo-black.png';
-                if (navToggleIcon) navToggleIcon.src = 'img/bars-solid-full-black.png';
             } else {
                 header.classList.remove('scrolled');
                 logo.src = 'img/logo-white.png';
-                if (navToggleIcon) navToggleIcon.src = 'img/bars-solid-full-white.png';
             }
         });
 
