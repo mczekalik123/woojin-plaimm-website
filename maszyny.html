@@ -35,6 +35,10 @@
     <a href="https://woojinplaimm.com/?lang_code=en" target="_blank" class="nav-global">WOOJIN GLOBAL</a>
 </nav>
             </nav>
+
+            <button type="button" class="nav-toggle" id="navToggle" aria-label="Otwórz menu" aria-expanded="false">
+                <img src="img/bars-solid-full-white.png" alt="" id="navToggleIcon">
+            </button>
         </div>
     </header>
 
@@ -676,16 +680,35 @@
     <script>
         const header = document.querySelector('.site-header');
         const logo = document.querySelector('.logo-image');
+        const navToggle = document.querySelector('.nav-toggle');
+        const navToggleIcon = document.getElementById('navToggleIcon');
+        const mainNav = document.querySelector('.main-nav');
 
         window.addEventListener('scroll', function () {
             if (window.scrollY > 50) {
                 header.classList.add('scrolled');
                 logo.src = 'img/logo-black.png';
+                if (navToggleIcon) navToggleIcon.src = 'img/bars-solid-full-black.png';
             } else {
                 header.classList.remove('scrolled');
                 logo.src = 'img/logo-white.png';
+                if (navToggleIcon) navToggleIcon.src = 'img/bars-solid-full-white.png';
             }
         });
+
+        if (navToggle && mainNav) {
+            navToggle.addEventListener('click', function () {
+                const isOpen = mainNav.classList.toggle('is-open');
+                navToggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+            });
+
+            mainNav.querySelectorAll('a').forEach(function (link) {
+                link.addEventListener('click', function () {
+                    mainNav.classList.remove('is-open');
+                    navToggle.setAttribute('aria-expanded', 'false');
+                });
+            });
+        }
     </script>
 
 </body>

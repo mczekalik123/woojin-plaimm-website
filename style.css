@@ -220,6 +220,34 @@ button {
 }
 
 /* =====================================================
+   PRZYCISK MENU (HAMBURGER) - WIDOCZNY TYLKO NA TELEFONIE
+   Zastępuje pełną listę linków main-nav, gdy nie mieści się
+   ona w całości w pasku nagłówka. Ikona zmienia się w zależności
+   od tła nagłówka - dokładnie ten sam mechanizm co logo (białe
+   logo/ikona na czarnym tle, czarne logo/ikona po przewinięciu
+   strony na białe tło), patrz skrypt na dole każdej podstrony.
+===================================================== */
+
+.nav-toggle {
+    display: none;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    flex-shrink: 0;
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+}
+
+.nav-toggle img {
+    width: 24px;
+    height: 24px;
+    display: block;
+}
+
+/* =====================================================
    HERO SELECTOR (PODSTRONA DOBÓR WTRYSKARKI / KARIERA)
 ===================================================== */
 
@@ -1302,15 +1330,60 @@ main.contact-section {
         width: calc(100% - 40px);
     }
 
+    .nav-toggle {
+        display: flex;
+    }
+
+    /* Na telefonie pełna lista linków znika z paska nagłówka (nie mieściła
+       się w całości) i pojawia się dopiero jako rozwijane menu pod nagłówkiem
+       po kliknięciu ikony hamburgera (.nav-toggle) - patrz skrypt na dole
+       każdej podstrony, który dodaje/usuwa klasę .is-open. */
     .main-nav {
-        gap: 16px;
+        position: fixed;
+        top: 88px;
+        left: 0;
+        right: 0;
+        flex-direction: column;
+        align-items: stretch;
+        gap: 0;
+        margin-left: 0;
+        background: #0c0c0c;
+        max-height: 0;
+        overflow: hidden;
+        opacity: 0;
+        visibility: hidden;
+        transition: max-height 0.3s ease, opacity 0.3s ease;
+    }
+
+    .main-nav.is-open {
+        max-height: 420px;
+        opacity: 1;
+        visibility: visible;
+        padding: 8px 20px 24px;
+        box-shadow: 0 12px 24px rgba(0, 0, 0, 0.25);
     }
 
     .main-nav a {
-        font-size: 14px;
+        font-size: 15px;
+        padding: 14px 0;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
     }
 
-    .hero-selector { 
+    .main-nav a.nav-global {
+        margin-top: 14px;
+        text-align: center;
+        border-bottom: 1.5px solid #00fff2;
+    }
+
+    .site-header.scrolled .main-nav {
+        background: #ffffff;
+    }
+
+    .site-header.scrolled .main-nav a:not(.nav-global) {
+        border-bottom-color: rgba(0, 0, 0, 0.08);
+    }
+
+    .hero-selector {
         padding-top: 88px; 
     }
 
