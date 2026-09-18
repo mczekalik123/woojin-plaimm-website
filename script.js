@@ -153,9 +153,9 @@ document.addEventListener("DOMContentLoaded", function () {
 // =====================================================================
 
 const EMAILJS_CONFIG = {
-    publicKey: 'YOUR_EMAILJS_PUBLIC_KEY',
-    serviceId: 'YOUR_EMAILJS_SERVICE_ID',
-    templateId: 'YOUR_EMAILJS_TEMPLATE_ID',
+    publicKey: 'byBOR_lP37-lDcIkR',
+    serviceId: 'service_z0egkga',
+    templateId: 'template_5b1i1p7',
     recipient: 'mczekalik@wjpim.com'
 };
 
