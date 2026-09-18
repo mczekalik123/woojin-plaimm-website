@@ -1,0 +1,2621 @@
+/* =====================================================
+   RESET & GLOBAL
+===================================================== */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html, body {
+    width: 100%;
+    max-width: 100%;
+    overflow-x: hidden;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    color: #111d35;
+    background: #fff;
+    line-height: 1.5;
+}
+
+a {
+    color: inherit;
+    text-decoration: none;
+}
+
+button {
+    font: inherit;
+}
+
+.container {
+    width: min(1440px, calc(100% - 80px));
+    margin: 0 auto;
+}
+
+/* =====================================================
+   SITE HEADER (FIXED & NAWIGACJA Z LATO)
+===================================================== */
+
+.site-header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1000;
+    width: 100%;
+    height: 88px;
+    background: #000000;
+    border-bottom: 1px solid #222222;
+    transition:
+        background-color 0.3s ease,
+        box-shadow 0.3s ease,
+        border-color 0.3s ease;
+}
+
+.header-inner {
+    width: min(1440px, calc(100% - 80px));
+    height: 100%;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+/* Logo */
+.logo {
+    display: flex;
+    align-items: center;
+}
+
+.logo-image,
+.logo img {
+    display: block;
+    width: 150px;
+    height: auto;
+    transition: opacity 0.3s ease;
+}
+
+/* Navigation - Font Lato */
+.main-nav {
+    display: flex;
+    align-items: center;
+    gap: 28px;
+    margin-left: auto;
+}
+
+/* Podstawowy styl linków (O NAS, MASZYNY, KARIERA, KONTAKT) */
+.main-nav a {
+    position: relative;
+    font-family: 'Lato', sans-serif;
+    font-size: 15px;
+    font-weight: 400;
+    color: #f8f8f8;
+    display: inline-block;
+    padding: 5px 0;
+    text-decoration: none;
+
+    /* Płynna zmiana koloru i skali.
+       Ten sam czas trwania i ta sama krzywa easing co pasek pod spodem
+       (::after), aby obie animacje kończyły się razem, płynnie zwalniając
+       do zera - bez efektu "dogrywania się" jednej animacji już po
+       zakończeniu drugiej, co odbierane było jako podskoczenie napisu. */
+    transition:
+        color 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+        transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+
+    /* Stabilizacja tekstowa powstrzymująca przeskoki pikseli */
+    backface-visibility: hidden;
+    transform-origin: center center;
+    -webkit-font-smoothing: antialiased;
+
+    /* Utrzymanie stałej warstwy kompozytorskiej GPU przez cały czas
+       (a nie tylko w trakcie trwania hover), aby przeglądarka nie
+       przełączała renderowania tekstu między warstwami w trakcie
+       animacji - to właśnie powodowało widoczne "podskoczenie" napisu
+       w momencie kończenia się animacji powiększenia. */
+    will-change: transform;
+}
+
+/* Pasek pod linkiem — wyjściowo ukryty.
+   Rysowanie paska odbywa się przez transform: scaleX() zamiast width,
+   ponieważ animowanie "width" wymusza przeliczanie layoutu (reflow) w
+   każdej klatce, co w połączeniu z jednoczesną animacją transform:scale()
+   na rodzicu potrafiło powodować widoczne "zacinanie się"/podskoczenie
+   napisu w trakcie animacji. transform jest obsługiwany wyłącznie przez
+   kompozytor (GPU), więc obie animacje (powiększenie i pasek) są teraz
+   w pełni płynne i zsynchronizowane. */
+.main-nav a:not(.nav-global)::after {
+    content: '';
+    position: absolute;
+    bottom: -3px;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background-color: #00fff2;
+    transform: scaleX(0);
+    transform-origin: left center;
+
+    /* Czas rysowania podkreślenia - zsynchronizowany z powiększeniem
+       napisu powyżej (ten sam czas i ta sama krzywa easing), aby obie
+       animacje kończyły się dokładnie w tym samym momencie. */
+    transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+    will-change: transform;
+}
+
+/* HOVER: Napis powiększa się i trzyma ten sam rozmiar przez cały czas */
+.main-nav a:not(.nav-global):hover {
+    color: #00fff2;
+    transform: scale(1.08); /* Stała skala po najechaniu */
+}
+
+/* Wyciąganie paska po najechaniu */
+.main-nav a:not(.nav-global):hover::after {
+    transform: scaleX(1);
+}
+
+/* -----------------------------------------------------
+   Header Scrolled State (Po przewinięciu strony w dół)
+----------------------------------------------------- */
+
+.site-header.scrolled {
+    background: #ffffff;
+    border-bottom-color: #e5e5e5;
+    box-shadow: 0 2px 15px rgba(0, 0, 0, 0.08);
+}
+
+.site-header.scrolled .main-nav a:not(.nav-global) {
+    color: #111111;
+}
+
+.site-header.scrolled .main-nav a:not(.nav-global)::after {
+    background-color: #0abeb5;
+}
+
+.site-header.scrolled .main-nav a:not(.nav-global):hover {
+    color: #0abeb5;
+}
+
+/* =====================================================
+   PRZYCISK WOOJIN GLOBAL W NAV
+===================================================== */
+
+.main-nav a.nav-global {
+    color: #00fff2;
+    border: 1.5px solid #00fff2;
+    padding: 6px 16px;
+    border-radius: 4px;
+    font-weight: 600;
+    transition:
+        background-color 0.3s ease,
+        color 0.3s ease,
+        transform 0.3s ease,
+        box-shadow 0.3s ease,
+        border-color 0.3s ease;
+}
+
+/* Efekt po najechaniu kursorem dla przycisku GLOBAL */
+.main-nav a.nav-global:hover {
+    background-color: #00fff2;
+    color: #000000;
+    transform: scale(1.05);
+    box-shadow: 0 0 12px rgba(0, 255, 242, 0.4);
+}
+
+/* GLOBAL po przewinięciu strony */
+.site-header.scrolled .main-nav a.nav-global {
+    color: #0abeb5;
+    border-color: #0abeb5;
+}
+
+.site-header.scrolled .main-nav a.nav-global:hover {
+    background-color: #0abeb5;
+    color: #ffffff;
+    box-shadow: 0 0 12px rgba(10, 190, 181, 0.3);
+}
+
+/* =====================================================
+   HERO SELECTOR (PODSTRONA DOBÓR WTRYSKARKI / KARIERA)
+===================================================== */
+
+.hero-wrapper {
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    position: relative;
+    left: 0;
+    right: 0;
+}
+
+.hero-selector { 
+    position: relative;
+    width: 100%;
+    padding: 120px 0 42px 0; 
+    margin: 0;
+    background: 
+        radial-gradient(ellipse 65% 90% at 100% 30%, rgba(10, 190, 181, 0.75) 0%, rgba(10, 190, 181, 0.35) 45%, transparent 80%),
+        linear-gradient(180deg, #111111 0%, #0c0c0c 100%); 
+}
+
+.hero-selector .container {
+    width: min(1240px, calc(100% - 42px));
+    margin: 0 auto;
+    padding: 0;
+}
+
+.hero-selector .eyebrow { 
+    display: inline-block; 
+    margin-top: 32px;
+    margin-bottom: 15px; 
+    color: #e52c34; 
+    font-size: 11px; 
+    letter-spacing: .16em; 
+    font-weight: 700; 
+    text-transform: uppercase;
+}
+
+.hero-selector h1 { 
+    margin: 0 0 13px; 
+    font-size: clamp(28px, 4vw, 50px); 
+    line-height: .98; 
+    font-weight: 900; 
+    letter-spacing: -.035em; 
+    color: #ffffff;
+    text-align: left;
+}
+
+.hero-selector p { 
+    margin: 0; 
+    max-width: 860px; 
+    color: #c8c8c8; 
+    font-size: 17px; 
+    line-height: 1.55;
+    text-align: left;
+}
+
+.hero-selector .disclaimer { 
+    margin-top: 14px; 
+    max-width: 980px; 
+    color: #7f7f7f; 
+    font-size: 11px; 
+    line-height: 1.55; 
+    font-style: italic; 
+    text-align: left;
+}
+
+/* =====================================================
+   GŁÓWNA SEKCJA WOOJIN
+===================================================== */
+
+.woojin-section {
+    width: 100%;
+    max-width: 1440px;
+    margin: 88px auto 0 auto;
+    padding: 32px 48px 60px;
+}
+
+/* GŁÓWNY NAGŁÓWEK WOOJIN - CIEMNE TŁO */
+/* Przylega bezpośrednio do nav (bez przerwy) i rozciąga się na całą szerokość ekranu,
+   niezależnie od paddingu/max-width rodzica (.woojin-section) - klasyczny "full-bleed breakout". */
+.woojin-header {
+    position: relative;
+    left: 50%;
+    width: 100vw;
+    margin-left: -50vw;
+    margin-top: -32px;
+    text-align: center;
+    margin-bottom: 44px;
+    padding: 90px 40px;
+    background-image: url('img/tło.png');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    border-radius: 0;
+    overflow: hidden;
+    color: #ffffff;
+}
+
+/* Ciemna nakładka filtrująca */
+.woojin-header::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.35);
+    z-index: 1;
+}
+
+.woojin-header h1,
+.woojin-header p {
+    position: relative;
+    z-index: 2;
+}
+
+.woojin-header h1 {
+    font-size: 43px;
+    line-height: 1.15;
+    font-weight: 700;
+    margin-bottom: 27px;
+    letter-spacing: 1.5px;
+    color: #ffffff;
+    text-shadow: 0 4px 18px rgba(0, 0, 0, 0.85), 0 2px 6px rgba(0, 0, 0, 0.7);
+}
+
+.woojin-header p {
+    max-width: 1100px;
+    margin: 0 auto;
+    font-size: 19px;
+    line-height: 1.9;
+    color: #e2e8f0;
+    text-shadow: 0 3px 14px rgba(0, 0, 0, 0.85), 0 1px 5px rgba(0, 0, 0, 0.7);
+}
+
+/* Siatka WOOJIN-GRID */
+.woojin-grid {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    border: 1px solid #d9dce1;
+    background: #fff;
+}
+
+.woojin-intro {
+    grid-column: span 2;
+    grid-row: 1 / 3;
+    padding: 40px;
+    background: linear-gradient(135deg, #51bba9 0%, #48b7a7 50%, #55bfad 100%);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.woojin-intro h2 {
+    font-size: 32px;
+    line-height: 1.35;
+    letter-spacing: -1px;
+    font-weight: 700;
+    margin-bottom: 20px;
+    color: #0d1e2d;
+}
+
+.woojin-intro p {
+    font-size: 15px;
+    line-height: 1.8;
+    color: #13283b;
+}
+
+.woojin-stat {
+    padding: 35px 30px;
+    border-left: 1px solid #d9dce1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.woojin-stat:nth-child(4),
+.woojin-stat:nth-child(5) {
+    border-top: 1px solid #d9dce1;
+}
+
+.woojin-stat-number {
+    display: block;
+    color: #39a797;
+    font-size: 42px;
+    line-height: 1;
+    font-weight: 700;
+    letter-spacing: -1px;
+    margin-bottom: 12px;
+}
+
+.woojin-stat-label {
+    font-size: 15px;
+    line-height: 1.6;
+    color: #1e2d43;
+}
+
+/* =====================================================
+   PULSUJĄCY PLUS PRZY LICZNIKACH
+===================================================== */
+
+.pulse-plus {
+    display: inline-block;
+    margin-left: 2px;
+    animation: pulseGlow 1.8s infinite ease-in-out;
+    transform-origin: center;
+}
+
+@keyframes pulseGlow {
+    0% {
+        transform: scale(1);
+        opacity: 1;
+    }
+    50% {
+        transform: scale(1.25);
+        opacity: 0.7;
+    }
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+/* =====================================================
+   PRODUCTS SECTION
+===================================================== */
+
+.product-section {
+    padding: 80px 0 120px;
+}
+
+.section-heading {
+    max-width: 760px;
+    margin-bottom: 50px;
+}
+
+.section-label {
+    display: block;
+    margin-bottom: 15px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    color: #999;
+}
+
+.section-heading h2 {
+    font-size: clamp(32px, 4vw, 48px);
+    line-height: 1.1;
+    font-weight: 500;
+    letter-spacing: -1.5px;
+}
+
+.section-heading p {
+    max-width: 600px;
+    margin-top: 15px;
+    font-size: 16px;
+    line-height: 1.7;
+    color: #777;
+}
+
+.product-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+}
+
+.product-card {
+    position: relative;
+    display: block;
+    background: #f5f5f5;
+    overflow: hidden;
+    transition:
+        transform 0.35s ease,
+        box-shadow 0.35s ease;
+}
+
+.product-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.08);
+}
+
+.product-image {
+    position: relative;
+    height: 280px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    background: #eeeeee;
+}
+
+.product-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    display: block;
+}
+
+.product-image span {
+    position: relative;
+    z-index: 2;
+    color: #555555;
+    font-size: 36px;
+    font-weight: 700;
+    letter-spacing: -1px;
+}
+
+.product-content {
+    position: relative;
+    min-height: 200px;
+    padding: 28px;
+    background: #fff;
+    border: 1px solid #e5e5e5;
+    border-top: 0;
+}
+
+.product-number {
+    display: block;
+    margin-bottom: 14px;
+    font-size: 11px;
+    font-weight: 600;
+    color: #aaa;
+}
+
+.product-content h3 {
+    max-width: 85%;
+    font-size: 22px;
+    line-height: 1.2;
+    font-weight: 500;
+    letter-spacing: -0.5px;
+}
+
+.product-content p {
+    max-width: 90%;
+    margin-top: 12px;
+    font-size: 14px;
+    line-height: 1.6;
+    color: #888;
+}
+
+.product-arrow {
+    position: absolute;
+    right: 25px;
+    bottom: 25px;
+    font-size: 22px;
+    transition: transform 0.3s ease;
+}
+
+.product-card:hover .product-arrow {
+    transform: translateX(6px);
+}
+
+/* =====================================================
+   CLIENTS CAROUSEL
+===================================================== */
+
+.clients-section {
+    width: 100%;
+    overflow: hidden;
+    background: #ffffff;
+    border-top: 1px solid #eeeeee;
+    border-bottom: 1px solid #eeeeee;
+    padding: 40px 0;
+}
+
+.clients-title {
+    text-align: center;
+    margin-bottom: 25px;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 3px;
+    color: #888;
+}
+
+.clients-track {
+    display: flex;
+    width: max-content;
+    animation: clients-scroll 70s linear infinite;
+    will-change: transform;
+}
+
+/* Drugi rząd firm - ten sam mechanizm przewijania, tylko w przeciwną
+   stronę (animation-direction: reverse odtwarza tę samą klatkę kluczową
+   od tyłu, więc nie potrzeba osobnego @keyframes), z niewielkim odstępem
+   od pierwszego rzędu. */
+.clients-track.clients-track--reverse {
+    margin-top: 28px;
+    animation-direction: reverse;
+}
+
+/* Oba rzędy pomniejszone do ok. 60% oryginalnej wielkości
+   (gap, odstęp i wymiary logo przeskalowane proporcjonalnie). */
+.clients-list {
+    display: flex;
+    align-items: center;
+    gap: 36px;
+    padding-right: 36px;
+    flex-shrink: 0;
+}
+
+.client-logo {
+    flex-shrink: 0;
+    width: 84px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.client-logo img {
+    display: block;
+    max-width: 84px;
+    max-height: 30px;
+    width: auto;
+    height: auto;
+    object-fit: contain;
+    opacity: 0.65;
+    filter: grayscale(100%);
+    transition:
+        opacity 0.3s ease,
+        filter 0.3s ease;
+}
+
+.client-logo:hover img {
+    opacity: 1;
+    filter: grayscale(0%);
+}
+
+@keyframes clients-scroll {
+    from {
+        transform: translateX(0);
+    }
+    to {
+        transform: translateX(-50%);
+    }
+}
+
+/* =====================================================
+   SEKCJA KARIERA - PODSTRONA OGŁOSZENIA
+===================================================== */
+
+.career-section {
+    padding: 60px 0 80px;
+    margin-top: 0 !important;
+}
+
+.selector-layout {
+    margin-top: 0 !important;
+}
+
+.career-hero {
+    text-align: center;
+    margin-bottom: 60px;
+}
+
+.career-hero h1 {
+    font-size: 42px;
+    font-weight: 700;
+    color: #111d35;
+    margin-bottom: 15px;
+}
+
+.career-hero p {
+    font-size: 18px;
+    color: #666;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.job-container {
+    display: grid;
+    grid-template-columns: 1.6fr 1fr;
+    gap: 48px;
+    align-items: start;
+}
+
+/* Lewa strona - Ogłoszenie */
+.job-details {
+    background: #ffffff;
+    border: 1px solid #e5e5e5;
+    border-radius: 8px;
+    padding: 40px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+}
+
+.job-title {
+    font-size: 28px;
+    font-weight: 700;
+    color: #111d35;
+    margin-bottom: 24px;
+    padding-bottom: 16px;
+    border-bottom: 2px solid #00fff2;
+}
+
+.job-quick-info {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+    background: #f8fafc;
+    padding: 20px;
+    border-radius: 6px;
+    margin-bottom: 32px;
+}
+
+.quick-info-item span {
+    display: block;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: #777;
+    font-weight: 600;
+}
+
+.quick-info-item strong {
+    font-size: 15px;
+    color: #111d35;
+}
+
+.job-block {
+    margin-bottom: 30px;
+}
+
+.job-block h3 {
+    font-size: 18px;
+    font-weight: 700;
+    color: #111d35;
+    margin-bottom: 14px;
+}
+
+.job-block ul {
+    list-style: none;
+    padding-left: 0;
+}
+
+.job-block ul li {
+    position: relative;
+    padding-left: 24px;
+    margin-bottom: 10px;
+    font-size: 15px;
+    color: #444;
+    line-height: 1.6;
+}
+
+.job-block ul li::before {
+    content: '•';
+    position: absolute;
+    left: 5px;
+    color: #0abeb5;
+    font-size: 20px;
+    line-height: 1;
+}
+
+.job-block ul.sub-list {
+    padding-left: 20px;
+    margin-top: 6px;
+}
+
+.job-block ul.sub-list li::before {
+    content: '◦';
+    color: #777;
+}
+
+.job-summary-text {
+    background: #e6fcfb;
+    border-left: 4px solid #0abeb5;
+    padding: 20px;
+    border-radius: 0 6px 6px 0;
+    font-size: 15px;
+    line-height: 1.7;
+    color: #0f4c47;
+    margin-top: 30px;
+}
+
+/* Prawa strona - Zdjęcie & Formularz */
+.job-sidebar {
+    position: sticky;
+    top: 110px;
+}
+
+.job-image-card {
+    border-radius: 8px;
+    overflow: hidden;
+    border: 1px solid #e5e5e5;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+    background: #fff;
+}
+
+.job-image-card img {
+    width: 100%;
+    height: 260px;
+    object-fit: cover;
+    display: block;
+}
+
+.apply-box {
+    padding: 30px;
+}
+
+.apply-box h3 {
+    font-size: 20px;
+    font-weight: 700;
+    margin-bottom: 10px;
+    color: #111d35;
+}
+
+.apply-box p {
+    font-size: 14px;
+    color: #666;
+    margin-bottom: 20px;
+}
+
+.apply-btn {
+    display: block;
+    width: 100%;
+    padding: 14px 0;
+    text-align: center;
+    background-color: #00fff2;
+    color: #000000;
+    border: 1.5px solid #00fff2;
+    border-radius: 4px;
+    font-weight: 700;
+    font-size: 16px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.apply-btn:hover {
+    background-color: #0abeb5;
+    border-color: #0abeb5;
+    color: #ffffff;
+    box-shadow: 0 0 15px rgba(10, 190, 181, 0.4);
+}
+
+/* =====================================================
+   SEKCJA KONTAKT - POWIĘKSZONE DANE KONTAKTOWE (+40%)
+===================================================== */
+
+.contact-section {
+    padding: 100px 0 60px;
+    background: #ffffff;
+}
+
+/* Nagłówek sekcji */
+.character-select-hero {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.select-subtitle {
+    display: inline-block;
+    font-family: 'Lato', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    color: #0abeb5;
+    text-transform: uppercase;
+    margin-bottom: 4px;
+}
+
+.select-title {
+    font-family: 'Lato', sans-serif;
+    font-size: 28px;
+    font-weight: 700;
+    color: #111d35;
+    letter-spacing: -0.5px;
+    text-transform: uppercase;
+}
+
+/* =====================================================
+   KONTAKT - LISTA DANYCH (LEWA) + FORMULARZ (PRAWA)
+===================================================== */
+
+.contact-layout {
+    display: grid;
+    grid-template-columns: 0.9fr 1.3fr;
+    gap: 60px;
+    align-items: start;
+    max-width: 1100px;
+    margin: 0 auto 60px auto;
+}
+
+/* Lewa kolumna: proste zestawienie danych, bez zdjęć i bez efektów hover */
+.contact-info-list {
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+}
+
+.contact-info-item {
+    padding-bottom: 28px;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.contact-info-item:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+}
+
+.contact-info-role {
+    font-family: 'Lato', sans-serif;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    color: #0abeb5;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+}
+
+.contact-details {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    align-items: flex-start;
+}
+
+.contact-link {
+    font-family: 'Lato', sans-serif;
+    font-size: 15px;
+    font-weight: 600;
+    color: #64748b;
+    word-break: break-word;
+}
+
+.contact-link.phone {
+    font-size: 20px;
+    color: #111d35;
+    font-weight: 700;
+}
+
+/* Prawa kolumna: formularz kontaktowy */
+.contact-form-wrapper {
+    background: #ffffff;
+    border: 1px solid #e5e5e5;
+    border-radius: 8px;
+    padding: 40px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+}
+
+.contact-form-title {
+    font-size: 24px;
+    font-weight: 700;
+    color: #111d35;
+    margin-bottom: 8px;
+}
+
+.contact-form-subtitle {
+    font-size: 14px;
+    color: #666;
+    margin-bottom: 24px;
+}
+
+/* Wybór adresata (Biuro / Handlowiec / Serwis) - przełączniki w stylu marki */
+.contact-topic-choice {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+.topic-option {
+    display: inline-flex;
+    align-items: center;
+    padding: 10px 22px;
+    border: 2px solid #e1e8ed;
+    border-radius: 30px;
+    font-size: 14px;
+    font-weight: 600;
+    color: #444;
+    cursor: pointer;
+    transition: border-color 0.25s ease, background-color 0.25s ease, color 0.25s ease;
+}
+
+.topic-option input[type="radio"] {
+    display: none;
+}
+
+.topic-option:has(input:checked) {
+    border-color: #0abeb5;
+    background-color: #0abeb5;
+    color: #ffffff;
+}
+
+/* =====================================================
+   SEKCJA LOKALIZACJI / MAPY GOOGLE
+===================================================== */
+
+.location-section {
+    max-width: 900px;
+    margin: 0 auto;
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 24px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+}
+
+.location-info {
+    text-align: center;
+    margin-bottom: 16px;
+}
+
+.location-info h2 {
+    font-family: 'Lato', sans-serif;
+    font-size: 20px;
+    font-weight: 700;
+    color: #111d35;
+    margin-bottom: 6px;
+}
+
+.location-info p {
+    font-size: 14px;
+    color: #475569;
+    margin: 2px 0;
+}
+
+.map-wrapper {
+    width: 100%;
+    border-radius: 6px;
+    overflow: hidden;
+    border: 1px solid #cbd5e1;
+}
+
+/* ================= FULL-WIDTH MAP SECTION ================= */
+
+main.contact-section {
+    padding-bottom: 0 !important;
+    margin-bottom: 0 !important;
+}
+
+.map-wrapper-full {
+    width: 100%;
+    margin: 40px 0 0 0 !important;
+    padding: 0 !important;
+    line-height: 0;
+    font-size: 0;
+}
+
+.map-wrapper-full iframe {
+    width: 100%;
+    height: 450px;
+    display: block;
+    border: none;
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+/* ================= GLOBAL MANAGEMENT SECTION ================= */
+
+.global-management-section {
+    padding: 80px 0;
+    background-color: #f9f9f9;
+    font-family: 'Lato', sans-serif;
+}
+
+.global-management-header {
+    text-align: center;
+    max-width: 900px;
+    margin: 0 auto 50px auto;
+    padding: 0 20px;
+}
+
+.global-management-header h2 {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #111;
+    margin-bottom: 20px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.global-management-header p {
+    font-size: 1.05rem;
+    color: #555;
+    line-height: 1.7;
+}
+
+/* Układ kart obok siebie */
+.global-cards-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 30px;
+    padding: 0 20px;
+}
+
+/* Karta */
+.global-card {
+    position: relative;
+    height: 380px;
+    border-radius: 8px;
+    overflow: hidden;
+    cursor: default;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+/* Obraz tła w karcie */
+.global-card-bg {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s ease;
+}
+
+/* Efekt najechania - powiększenie obrazu */
+.global-card:hover .global-card-bg {
+    transform: scale(1.08);
+}
+
+/* Nakładka zaciemniająca i zawierająca teksty */
+.global-card-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 30px 25px;
+    transition: background 0.4s ease;
+}
+
+/* Efekt najechania - płynne zaciemnienie obrazu */
+.global-card:hover .global-card-overlay {
+    background: rgba(0, 0, 0, 0.55);
+}
+
+/* Teksty wewnątrz karty - wysuwanie się z dołu / z góry na hover */
+.global-brand {
+    color: #0abeb5;
+    font-size: 1.3rem;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    opacity: 0;
+    transform: translateY(-20px);
+    transition:
+        opacity 0.4s ease,
+        transform 0.4s ease;
+}
+
+.global-text {
+    color: #ffffff;
+    font-size: 1.15rem;
+    font-weight: 700;
+    line-height: 1.4;
+    opacity: 0;
+    transform: translateY(20px);
+    transition:
+        opacity 0.4s ease,
+        transform 0.4s ease;
+}
+
+/* Pojawianie się napisów po najechaniu myszką */
+.global-card:hover .global-brand,
+.global-card:hover .global-text {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* =====================================================
+   FOOTER
+===================================================== */
+
+.site-footer {
+    background: #111;
+    color: #fff;
+    margin-top: 0 !important;
+    padding-top: 40px;
+}
+
+.footer-top {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 1fr;
+    gap: 50px;
+    padding-top: 80px;
+    padding-bottom: 80px;
+}
+
+.footer-logo-image {
+    max-height: 60px;
+    width: auto;
+    display: block;
+}
+
+.footer-column {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.footer-column h4 {
+    margin-bottom: 10px;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.footer-column a {
+    font-size: 13px;
+    color: #888;
+    transition: color 0.2s ease;
+}
+
+.footer-column a:hover {
+    color: #fff;
+}
+
+.footer-bottom {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 25px 0;
+    border-top: 1px solid #292929;
+}
+
+.footer-bottom p {
+    font-size: 11px;
+    color: #666;
+}
+
+.footer-links {
+    display: flex;
+    gap: 25px;
+}
+
+.footer-links a {
+    font-size: 11px;
+    color: #666;
+}
+
+/* =====================================================
+   MEDIA QUERIES (RESPONSIVENESS)
+===================================================== */
+
+@media (max-width: 1024px) {
+    .woojin-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .woojin-intro {
+        grid-column: span 2;
+    }
+
+    .woojin-stat:nth-child(3) {
+        border-top: 1px solid #d9dce1;
+    }
+
+    .product-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .footer-top {
+        grid-template-columns: 1fr 1fr;
+        gap: 40px;
+    }
+}
+
+@media (max-width: 992px) {
+    .job-container {
+        grid-template-columns: 1fr;
+    }
+
+    .job-sidebar {
+        position: static;
+    }
+
+    .global-cards-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .contact-layout {
+        grid-template-columns: 1fr;
+        gap: 40px;
+    }
+}
+
+@media (max-width: 768px) {
+    .container,
+    .header-inner {
+        width: calc(100% - 40px);
+    }
+
+    .main-nav {
+        gap: 16px;
+    }
+
+    .main-nav a {
+        font-size: 14px;
+    }
+
+    .hero-selector { 
+        padding-top: 88px; 
+    }
+
+    .woojin-section {
+        padding: 20px 0 40px;
+    }
+
+    .woojin-header {
+        padding: 50px 20px;
+    }
+
+    .woojin-header h1 {
+        font-size: 28px;
+    }
+
+    .woojin-header p {
+        font-size: 15px;
+    }
+
+    .woojin-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .woojin-intro {
+        grid-column: span 1;
+        padding: 30px 20px;
+    }
+
+    .woojin-stat {
+        border-left: 0;
+        border-top: 1px solid #d9dce1;
+        padding: 25px 20px;
+    }
+
+    .product-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .footer-top {
+        grid-template-columns: 1fr;
+    }
+
+    .footer-bottom {
+        flex-direction: column;
+        gap: 15px;
+        text-align: center;
+    }
+}
+
+@media (max-width: 640px) {
+    .global-cards-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .global-card {
+        height: 300px;
+    }
+
+    .location-section {
+        padding: 20px;
+    }
+
+    .contact-form-wrapper {
+        padding: 24px;
+    }
+}
+
+@media (max-width: 480px) {
+    .hero-selector h1 {
+        font-size: 42px;
+    }
+}
+
+/* =====================================================
+   WIDOK 360° (PODSTRONA MASZYNY)
+===================================================== */
+
+.viewer360-section {
+    padding: 60px 0 80px;
+    background: #ffffff;
+}
+
+/* Otacza całą "karuzelę" typów wtryskarek: listę nazw, strzałki i sam
+   widok 360° - wspólny punkt odniesienia dla pozycjonowania strzałek
+   po bokach oraz listy typów w lewym górnym rogu. */
+.viewer360-wrapper {
+    position: relative;
+    max-width: 640px;
+    margin: 0 auto;
+}
+
+/* Lista typów wtryskarek - powiększona i wycentrowana nad widokiem 360°.
+   Aktualnie wybrany typ jest podświetlony na kolor marki. */
+.machine-type-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px 30px;
+    margin: 0 0 18px;
+    justify-content: center;
+    text-align: center;
+}
+
+.machine-type-item {
+    font-family: 'Lato', sans-serif;
+    font-size: 17px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    color: #aab2bd;
+    background: none;
+    border: none;
+    padding: 2px 0;
+    cursor: pointer;
+    transition: color 0.2s ease;
+}
+
+.machine-type-item:hover {
+    color: #0abeb5;
+}
+
+.machine-type-item.active {
+    color: #0abeb5;
+    font-weight: 700;
+}
+
+.machine-type-item.is-unavailable {
+    color: #d8dee3;
+}
+
+.machine-type-item.is-unavailable:hover {
+    color: #b9c0c8;
+}
+
+/* Model i krótki opis aktualnie wybranej wtryskarki - pod listą typów,
+   stylizacja jak nagłówek produktu na woojinplaimm.com (pogrubiona nazwa
+   modelu + szary podtytuł), wycentrowane. */
+.machine-meta {
+    text-align: center;
+    margin: 0 0 22px;
+}
+
+.machine-meta-model {
+    font-family: 'Lato', sans-serif;
+    font-size: 28px;
+    font-weight: 900;
+    color: #111d35;
+    letter-spacing: -0.5px;
+    margin-bottom: 4px;
+}
+
+.machine-meta-desc {
+    font-family: 'Lato', sans-serif;
+    font-size: 15px;
+    font-weight: 400;
+    color: #777;
+}
+
+@media (max-width: 768px) {
+    .machine-meta-model {
+        font-size: 22px;
+    }
+}
+
+/* Karuzela: strzałki nawigacyjne po bokach widoku 360° - bez tła/obwódki,
+   sam ikona strzałki delikatnie unosząca się góra/dół. */
+.viewer360-carousel {
+    position: relative;
+}
+
+.viewer360-arrow {
+    position: absolute;
+    top: 50%;
+    margin-top: -24px;
+    width: 48px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    z-index: 5;
+}
+
+.viewer360-arrow:hover img {
+    opacity: 0.6;
+}
+
+/* Delikatne, ciągłe "unoszenie się" strzałek góra/dół - animowana jest
+   ikona wewnątrz przycisku, żeby nie kolidować z jego pionowym
+   wyśrodkowaniem (margin-top zamiast transform: translateY). */
+.viewer360-arrow img {
+    width: 26px;
+    height: 26px;
+    display: block;
+    opacity: 1;
+    animation: arrow360Float 1.8s ease-in-out infinite;
+    transition: opacity 0.2s ease;
+}
+
+.viewer360-arrow--left {
+    left: -64px;
+}
+
+.viewer360-arrow--right {
+    right: -64px;
+}
+
+@keyframes arrow360Float {
+    0%, 100% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-5px);
+    }
+}
+
+@media (max-width: 768px) {
+    .viewer360-arrow--left {
+        left: -8px;
+    }
+
+    .viewer360-arrow--right {
+        right: -8px;
+    }
+
+    .viewer360-arrow {
+        width: 40px;
+        height: 40px;
+        margin-top: -20px;
+    }
+}
+
+.viewer360-stage {
+    position: relative;
+    max-width: 640px;
+    /* Stałe proporcje kadru (932x351px, jak dla DL-A5) używane przez
+       WSZYSTKIE typy wtryskarek - dzięki temu widok 360° ma zawsze ten
+       sam rozmiar i pozycję na stronie, niezależnie od wybranego typu
+       (brak "skakania" paska/suwaka niżej przy przełączaniu). Obraz
+       wewnątrz jest wycentrowany przez object-fit: contain poniżej. */
+    aspect-ratio: 932 / 351;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: grab;
+    touch-action: pan-y;
+}
+
+.viewer360-stage.is-dragging {
+    cursor: grabbing;
+}
+
+.viewer360-stage img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    pointer-events: none;
+    -webkit-user-drag: none;
+    user-select: none;
+    transform-origin: center center;
+    /* Krótka animacja "pomniejszania się" obrazu do standardowego rozmiaru
+       przy zmianie typu wtryskarki (także przy pierwszym wczytaniu strony
+       dla DL-A5) - patrz setMachineType() w script.js. */
+    transition: transform 0.32s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* Efekt "lupy" na komputerach: po najechaniu na widok 360° pojawia się
+   okrągłe szkło powiększające pokazujące przybliżony fragment aktualnej
+   klatki pod kursorem - ułatwia dostrzeżenie detali maszyny. Widoczna
+   wyłącznie na urządzeniach z myszką (patrz warunek "hover: hover" i
+   "pointer: fine" w script.js oraz media query poniżej) - na telefonach/
+   tabletach widok 360° obsługuje się przez dotyk (przeciąganie palcem). */
+.viewer360-magnifier {
+    display: none;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 170px;
+    height: 170px;
+    border-radius: 50%;
+    border: 3px solid #ffffff;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.35), 0 0 0 1px rgba(10, 190, 181, 0.5);
+    background-repeat: no-repeat;
+    pointer-events: none;
+    z-index: 6;
+}
+
+.viewer360-magnifier.is-active {
+    display: block;
+}
+
+/* Na urządzeniach dotykowych/bez precyzyjnego wskaźnika lupa pozostaje
+   zawsze ukryta, niezależnie od klasy is-active dodanej przez JS. */
+@media (max-width: 768px), (hover: none), (pointer: coarse) {
+    .viewer360-magnifier {
+        display: none !important;
+    }
+}
+
+/* Komunikat wyświetlany zamiast obrazu, gdy dany typ nie ma jeszcze
+   przygotowanego widoku 360° (np. TL-A5, Super-Foam). */
+.viewer360-unavailable {
+    display: none;
+    position: absolute;
+    inset: 0;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 0 30px;
+    font-family: 'Lato', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    color: #94a3b8;
+    background: #fafbfc;
+}
+
+.viewer360-stage.is-unavailable .viewer360-unavailable {
+    display: flex;
+}
+
+.viewer360-stage.is-unavailable img#viewer360Image {
+    visibility: hidden;
+}
+
+/* Pasek przesuwania - zaraz pod widokiem 360°, z niewielką przerwą */
+.viewer360-slider-row {
+    max-width: 640px;
+    margin: 6px auto 0;
+    padding: 0 6px;
+}
+
+.viewer360-slider {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 100%;
+    height: 6px;
+    border-radius: 3px;
+    background: #e1e8ed;
+    outline: none;
+    cursor: pointer;
+    margin: 0;
+}
+
+.viewer360-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: #0abeb5;
+    border: 3px solid #ffffff;
+    box-shadow: 0 2px 6px rgba(10, 190, 181, 0.45);
+    cursor: grab;
+    transition: transform 0.15s ease;
+}
+
+.viewer360-slider::-webkit-slider-thumb:active {
+    cursor: grabbing;
+    transform: scale(1.15);
+}
+
+.viewer360-slider::-moz-range-track {
+    height: 6px;
+    border-radius: 3px;
+    background: #e1e8ed;
+}
+
+.viewer360-slider::-moz-range-thumb {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: #0abeb5;
+    border: 3px solid #ffffff;
+    box-shadow: 0 2px 6px rgba(10, 190, 181, 0.45);
+    cursor: grab;
+}
+
+.viewer360-slider::-moz-range-thumb:active {
+    cursor: grabbing;
+}
+
+/* Mała ikona 360° na środku, pod suwakiem */
+.viewer360-hint {
+    display: flex;
+    justify-content: center;
+    margin-top: 4px;
+}
+
+.viewer360-hint img {
+    width: 42px;
+    height: auto;
+    display: block;
+    opacity: 0.9;
+}
+
+/* =====================================================
+   PODZESPOŁY MASZYNY (maszyny.html) - sekcje "Clamping Unit",
+   "Injection Unit", "Hydraulic Unit", "Controller (IMC 500/501)",
+   "Controller (IMC 400)" pojawiające się jedna po drugiej podczas
+   przewijania strony (efekt "wysuwania się od spodu"), plus opis
+   maszyny zależny od wybranego typu wtryskarki na liście powyżej.
+===================================================== */
+
+.components-section {
+    padding: 40px 0 100px;
+    background: #ffffff;
+}
+
+.components-list {
+    display: flex;
+    flex-direction: column;
+    gap: 90px;
+}
+
+.component-item {
+    display: flex;
+    align-items: center;
+    gap: 60px;
+    opacity: 0;
+    transform: translateY(46px);
+    /* Dłuższy czas trwania + łagodna krzywa "ease-out-expo" (zamiast
+       poprzedniej, szybciej dobiegającej do końca) dają bardziej płynne,
+       "jedwabiste" wjeżdżanie kolejnych sekcji od spodu, bez wrażenia
+       nagłego "doskoku" pod koniec animacji. transition-delay bywa
+       ustawiany z JS (patrz initComponentsReveal w script.js), gdy kilka
+       sekcji wjeżdża w widok jednocześnie (np. przy szybkim przewijaniu),
+       aby pojawiały się kaskadowo, a nie wszystkie naraz. */
+    transition: opacity 1s cubic-bezier(0.16, 1, 0.3, 1),
+                transform 1s cubic-bezier(0.16, 1, 0.3, 1);
+    will-change: opacity, transform;
+}
+
+.component-item.is-visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.component-item:nth-child(even) {
+    flex-direction: row-reverse;
+}
+
+.component-item.is-hidden-type {
+    display: none;
+}
+
+.component-photo {
+    flex: 0 0 46%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.component-photo img {
+    width: 100%;
+    height: auto;
+    display: block;
+}
+
+.component-text {
+    flex: 1;
+}
+
+.component-text h3 {
+    font-size: 28px;
+    font-weight: 900;
+    letter-spacing: -0.5px;
+    color: #111d35;
+    margin-bottom: 14px;
+}
+
+.component-text > p {
+    font-size: 15px;
+    line-height: 1.75;
+    color: #666;
+    max-width: 480px;
+}
+
+/* Listy cech w stylu oryginalnej strony produktowej (np. "01. Nazwa cechy"
+   + wypunktowanie zaczynające się od "·") - używane dla sekcji, dla
+   których podano rzeczywisty opis techniczny (Injection/Hydraulic Unit,
+   sterowniki IMC). */
+.component-feature-list {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+
+.component-feature-title {
+    font-size: 15px;
+    font-weight: 700;
+    color: #111d35;
+    margin-bottom: 6px;
+}
+
+.component-feature-points {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.component-feature-points li {
+    position: relative;
+    padding-left: 14px;
+    font-size: 14px;
+    line-height: 1.65;
+    color: #666;
+}
+
+.component-feature-points li::before {
+    content: '·';
+    position: absolute;
+    left: 0;
+    color: #666;
+}
+
+.machine-description {
+    margin-bottom: 60px;
+    padding-bottom: 40px;
+    border-bottom: 1px solid #e3e6ea;
+}
+
+.machine-description-panel.is-hidden-type {
+    display: none;
+}
+
+.machine-description-panel h3 {
+    font-size: 30px;
+    font-weight: 900;
+    letter-spacing: -0.5px;
+    color: #111d35;
+    margin-bottom: 16px;
+}
+
+.machine-description-panel p {
+    font-size: 15px;
+    line-height: 1.85;
+    color: #666;
+    max-width: 900px;
+}
+
+@media (max-width: 860px) {
+    .component-item,
+    .component-item:nth-child(even) {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 24px;
+    }
+
+    .component-photo {
+        flex: none;
+    }
+
+    .component-text p {
+        max-width: none;
+    }
+}
+
+/* Styling Konfiguratora WOOJIN PLAIMM */
+.configurator-container {
+    background-color: #ffffff;
+    padding: 30px;
+    max-width: 1200px;
+    margin: 0 auto;
+    font-family: Arial, sans-serif;
+    color: #333333;
+}
+
+/* Pasek Postępu z płynącą animacją */
+.progress-bar-container {
+    width: 100%;
+    height: 12px;
+    background-color: #eef2f5;
+    border-radius: 6px;
+    overflow: hidden;
+    margin-bottom: 30px;
+    box-shadow: inset 0 1px 3px rgba(0,0,0,0.1);
+}
+
+.progress-bar {
+    height: 100%;
+    width: 25%;
+    background: linear-gradient(90deg, #0abeb5 0%, #47e2d9 50%, #0abeb5 100%);
+    background-size: 200% 100%;
+    animation: moveGradient 2s linear infinite reverse;
+    transition: width 0.4s ease;
+    border-radius: 6px;
+}
+
+@keyframes moveGradient {
+    0% { background-position: 0% 0%; }
+    100% { background-position: 200% 0%; }
+}
+
+/* Kroki */
+.step-content {
+    display: none;
+}
+.step-content.active {
+    display: block;
+}
+
+/* Karty wyboru maszyny w Kroku 1 */
+.machine-cards-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 20px;
+    margin: 25px 0;
+}
+
+/* Krok 1 - układ dwukolumnowy: lista typów maszyn "pod sobą" po lewej,
+   podgląd widoku 360° wybranego typu po prawej. Kolumny mają tę samą
+   wysokość (domyślne "stretch" siatki), a karty typów po lewej
+   rozciągają się równo (flex: 1 poniżej), dzięki czemu 4 kafelki razem
+   mają taki sam rozmiar (wysokość), co panel widoku 360° po prawej. */
+.step1-layout {
+    display: grid;
+    grid-template-columns: minmax(240px, 320px) 1fr;
+    gap: 30px;
+    margin: 25px 0;
+}
+
+.machine-cards-list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    height: 100%;
+}
+
+.machine-cards-list .machine-card {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+/* Panel podglądu 360° w Kroku 1 - nazwa modelu (duża czcionka) oraz
+   opis maszyny (przeniesiony tutaj z kafelka po lewej) nad widokiem,
+   który jest dopasowany szerokością do dostępnej kolumny (ten sam
+   mechanizm co .viewer360-stage na podstronie "Maszyny"). Bez szarego
+   tła/pola i bez obramowania - sama treść (nazwa, opis, widok 360°,
+   suwak) na białym tle strony. */
+.step1-viewer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 28px 24px;
+}
+
+.step1-viewer-name {
+    font-family: 'Lato', sans-serif;
+    font-size: 32px;
+    font-weight: 900;
+    color: #111d35;
+    letter-spacing: -0.5px;
+    margin-bottom: 8px;
+    text-align: center;
+}
+
+.step1-viewer-desc {
+    font-family: 'Lato', sans-serif;
+    font-size: 14px;
+    color: #666;
+    text-align: center;
+    max-width: 620px;
+    line-height: 1.5;
+    margin-bottom: 20px;
+}
+
+/* Widok 360° powiększony o 40% względem poprzedniej wersji (560px -> 784px). */
+.step1-viewer .viewer360-stage {
+    width: 100%;
+    max-width: 784px;
+    border: none;
+}
+
+.step1-viewer .viewer360-slider-row {
+    width: 100%;
+    max-width: 784px;
+}
+
+@media (max-width: 860px) {
+    .step1-layout {
+        grid-template-columns: 1fr;
+    }
+
+    .machine-cards-list {
+        height: auto;
+    }
+
+    .machine-cards-list .machine-card {
+        flex: none;
+    }
+}
+
+@property --border-angle {
+    syntax: '<angle>';
+    inherits: false;
+    initial-value: 0deg;
+}
+
+.machine-card {
+    position: relative;
+    border: 2px solid #e1e8ed;
+    border-radius: 8px;
+    padding: 20px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: block;
+    background-clip: border-box;
+}
+
+.machine-card:hover {
+    border-color: #0abeb5;
+    box-shadow: 0 4px 12px rgba(10, 190, 181, 0.15);
+}
+
+.machine-card input[type="radio"] {
+    display: none;
+}
+
+/* Zaznaczona karta: "biegnące" wzdłuż ramki światło - ściśle w obrębie obramowania karty (bez wychodzenia poza jej pole) */
+.machine-card.is-selected,
+.machine-card:has(input[type="radio"]:checked) {
+    border-color: transparent;
+    background:
+        linear-gradient(#f0faf9, #f0faf9) padding-box,
+        conic-gradient(from var(--border-angle), #0abeb5 0%, #47e2d9 10%, #0abeb5 20%, #0abeb5 100%) border-box;
+    box-shadow: 0 4px 14px rgba(10, 190, 181, 0.25);
+    animation: runBorderLight 2.4s linear infinite;
+}
+
+@keyframes runBorderLight {
+    to {
+        --border-angle: 360deg;
+    }
+}
+
+.machine-card h3 {
+    margin: 0 0 5px 0;
+    color: #111;
+    font-size: 1.1rem;
+}
+
+.machine-card .sub {
+    color: #0abeb5;
+    font-weight: bold;
+    font-size: 0.9rem;
+    display: block;
+    margin-bottom: 10px;
+}
+
+.machine-card .short-desc {
+    font-size: 0.8rem;
+    color: #666;
+    margin: 0;
+    line-height: 1.3;
+}
+
+/* Formularz Krok 2 */
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 25px;
+    margin-bottom: 25px;
+}
+
+.form-section {
+    background: #f9fbfb;
+    border: 1px solid #e8ecee;
+    padding: 20px;
+    border-radius: 8px;
+}
+
+.form-section h3 {
+    margin-top: 0;
+    border-bottom: 2px solid #0abeb5;
+    padding-bottom: 8px;
+    font-size: 1.1rem;
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+.form-group label {
+    display: block;
+    font-size: 0.9rem;
+    margin-bottom: 5px;
+    font-weight: 600;
+}
+
+.form-group input, .form-group select, .form-group textarea {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+    font-size: 0.95rem;
+}
+
+.form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+    border-color: #0abeb5;
+    outline: none;
+    box-shadow: 0 0 5px rgba(10, 190, 181, 0.3);
+}
+
+/* Przycisk Dobierz */
+.action-calc-bar {
+    text-align: center;
+    margin: 20px 0;
+}
+
+/* Wyniki Obliczeń */
+.results-box {
+    background-color: #f0faf9;
+    border: 1px solid #0abeb5;
+    padding: 20px;
+    border-radius: 8px;
+    margin-bottom: 25px;
+}
+
+.calc-details {
+    font-size: 0.95rem;
+    line-height: 1.6;
+}
+
+.large-select {
+    font-size: 1rem;
+    padding: 12px;
+    border: 2px solid #0abeb5;
+}
+
+/* Krok 3: Kolumny Standardów */
+.options-columns-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    margin-bottom: 25px;
+}
+
+.option-col {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    padding: 15px;
+    border-radius: 6px;
+}
+
+.option-col h4 {
+    margin-top: 0;
+    color: #0abeb5;
+    border-bottom: 1px solid #cbd5e1;
+    padding-bottom: 5px;
+}
+
+.option-col ul {
+    list-style-type: none;
+    padding-left: 0;
+    font-size: 0.85rem;
+    line-height: 1.5;
+}
+
+.option-col ul li {
+    display: flex;
+    align-items: flex-start;
+    gap: 5px;
+    padding: 3px 0;
+    border-bottom: 1px dashed #e2e8f0;
+}
+
+.opt-num {
+    flex: 0 0 auto;
+    white-space: nowrap;
+    font-weight: 600;
+    color: #0a8f88;
+}
+
+.opt-text {
+    flex: 1 1 auto;
+    min-width: 0;
+}
+
+.option-col ul li:last-child {
+    border-bottom: none;
+}
+
+.machine-highlight-box {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px 32px;
+    align-items: center;
+    background: #e6f9f8;
+    border: 1px solid #0abeb5;
+    border-left: 5px solid #0abeb5;
+    border-radius: 6px;
+    padding: 14px 20px;
+    margin-bottom: 20px;
+}
+
+.machine-highlight-item {
+    font-size: 1rem;
+    color: #0b3b39;
+}
+
+.machine-highlight-label {
+    color: #0a8f88;
+    font-weight: 600;
+}
+
+.checkbox-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 10px;
+    margin: 15px 0;
+}
+
+.checkbox-item {
+    font-size: 0.85rem;
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    background: #fff;
+    border: 1px solid #e1e8ed;
+    padding: 8px 12px;
+    border-radius: 4px;
+}
+
+.checkbox-item input[type="checkbox"] {
+    flex: 0 0 auto;
+    margin-top: 2px;
+}
+
+/* Formularz kontaktowy 2 col */
+.form-grid-2col {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 15px;
+}
+
+.summary-box {
+    background: #fafafa;
+    border: 1px solid #ddd;
+    padding: 20px;
+    border-radius: 6px;
+    margin-bottom: 25px;
+}
+
+/* Przyciski nawigacji */
+.btn-group {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 25px;
+}
+
+.btn-primary {
+    background-color: #0abeb5;
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    font-size: 1rem;
+    font-weight: bold;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+/* Przycisk z falą animacji (np. "DOBIERZ WTRYSKARKĘ", "Aplikuj teraz") - fala w stylu paska postępu */
+.btn-wave {
+    position: relative;
+    overflow: hidden;
+    isolation: isolate;
+}
+
+.btn-wave-label {
+    position: relative;
+    z-index: 1;
+}
+
+.btn-wave::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg, rgba(10, 190, 181, 0) 0%, rgba(71, 226, 217, 0.9) 50%, rgba(10, 190, 181, 0) 100%);
+    background-size: 200% 100%;
+    animation: moveGradient 2s linear infinite reverse;
+    opacity: 1;
+    pointer-events: none;
+}
+
+.btn-primary:hover {
+    background-color: #089b94;
+}
+
+/* Przycisk POBIERZ PDF (Krok 4) - ten sam efekt fali co "DOBIERZ
+   WTRYSKARKĘ" (.btn-primary.btn-wave), ale w kolorze napisu
+   "WOOJIN PLAIMM · A5 SERIES" (.hero-selector .eyebrow: #e52c34). */
+.btn-accent-eyebrow {
+    background-color: #e52c34;
+}
+
+.btn-accent-eyebrow:hover {
+    background-color: #c1272d;
+}
+
+/* Fala przesuwająca się po tym przycisku ma mienić się wyłącznie
+   odcieniami #e52c34 (zamiast domyślnego turkusu z .btn-wave::after) */
+.btn-accent-eyebrow.btn-wave::after {
+    background: linear-gradient(90deg, rgba(229, 44, 52, 0) 0%, rgba(255, 140, 146, 0.9) 50%, rgba(229, 44, 52, 0) 100%);
+}
+
+.btn-secondary {
+    background-color: #333;
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    font-size: 1rem;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.btn-next, .btn-prev {
+    background-color: #ffffff;
+    border: 2px solid #0abeb5;
+    color: #0abeb5;
+    padding: 10px 20px;
+    font-weight: bold;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.btn-next:hover, .btn-prev:hover {
+    background-color: #0abeb5;
+    color: #fff;
+}
+
+.divider {
+    border: 0;
+    height: 1px;
+    background: #e1e8ed;
+    margin: 25px 0;
+}
+
+/* Dodatkowe style konfiguratora - Krok 2/3/4 */
+
+.required-star {
+    color: #d9534f;
+}
+
+.opt-label {
+    font-weight: 400;
+    color: #888;
+    font-size: 0.8rem;
+}
+
+.checkbox-inline {
+    display: flex;
+    gap: 24px;
+    align-items: center;
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+
+.checkbox-inline label {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-weight: 600;
+}
+
+.density-row-inner {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.density-row-inner input {
+    flex: 1;
+    background: #f0f4f4;
+}
+
+.btn-small {
+    padding: 9px 14px;
+    font-size: 0.82rem;
+    white-space: nowrap;
+}
+
+.calc-error {
+    color: #d9534f;
+    font-weight: 600;
+    margin: 12px 0;
+    padding: 10px 14px;
+    background: #fdecea;
+    border: 1px solid #f3c1bc;
+    border-radius: 6px;
+}
+
+.calc-warning {
+    color: #8a6d00;
+    background: #fff8e1;
+    border: 1px solid #f0c419;
+    padding: 8px 12px;
+    border-radius: 6px;
+    font-size: 0.85rem;
+    margin-top: 10px;
+}
+
+.confirm-box {
+    background: #fff8e1;
+    border: 1px solid #f0c419;
+    padding: 18px 20px;
+    border-radius: 8px;
+    margin-top: 18px;
+}
+
+.confirm-actions {
+    justify-content: flex-end;
+    gap: 12px;
+}
+
+.send-status {
+    margin-top: 14px;
+    font-weight: 600;
+    min-height: 1.2em;
+}
+
+.send-status.success {
+    color: #0a8f88;
+}
+
+.send-status.error {
+    color: #d9534f;
+}
+
+.summary-box h4 {
+    color: #0abeb5;
+    margin: 16px 0 8px;
+    font-size: 1rem;
+}
+
+.summary-box h4:first-child {
+    margin-top: 0;
+}
+
+.summary-box table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.92rem;
+}
+
+.summary-box table td {
+    padding: 6px 8px;
+    border-bottom: 1px solid #e8ecee;
+}
+
+.summary-box table td:first-child {
+    color: #667;
+    width: 45%;
+}
+
+.summary-box ul {
+    padding-left: 20px;
+    font-size: 0.9rem;
+    line-height: 1.5;
+}
+
+/* =====================================================
+   KATALOGI - LISTA (STRONA GŁÓWNA)
+===================================================== */
+
+.catalog-section {
+    padding: 80px 0 0;
+}
+
+/* Lista rozciągnięta na całą szerokość ekranu (full-bleed breakout),
+   niezależnie od paddingu/max-width rodzica (.container). */
+.catalog-list {
+    position: relative;
+    left: 50%;
+    width: 100vw;
+    margin-left: -50vw;
+    margin-top: 40px;
+    padding-bottom: 40px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.catalog-row {
+    display: flex;
+    align-items: stretch;
+    border: 1px solid #ececec;
+    border-radius: 6px;
+    overflow: hidden;
+    background-color: #ffffff;
+    color: inherit;
+    text-decoration: none;
+    cursor: pointer;
+    transition: background-color 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+}
+
+.catalog-row:hover {
+    background-color: #f4fbfb;
+    border-color: #0abeb5;
+    box-shadow: 0 4px 14px rgba(10, 190, 181, 0.15);
+}
+
+/* Zdjęcie katalogu - dosunięte do lewej krawędzi, dopasowane do pełnej wysokości opcji */
+.catalog-row-image {
+    flex: 0 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #ffffff;
+}
+
+.catalog-row-image img {
+    height: 100%;
+    width: auto;
+    max-width: 240px;
+    object-fit: contain;
+    display: block;
+}
+
+.catalog-row-text {
+    flex: 1 1 auto;
+    min-width: 0;
+    display: flex;
+    align-items: center;
+    gap: 28px;
+    padding: 18px 28px;
+}
+
+.catalog-name {
+    flex: 0 0 150px;
+    font-size: 20px;
+    font-weight: 700;
+    color: #111d35;
+}
+
+.catalog-desc {
+    flex: 1 1 auto;
+    min-width: 0;
+    font-size: 14px;
+    line-height: 1.55;
+    color: #666;
+}
+
+.catalog-download-btn {
+    flex: 0 0 auto;
+    display: inline-block;
+    align-self: center;
+    margin-right: 28px;
+    padding: 11px 28px;
+    background-color: #0abeb5;
+    color: #ffffff;
+    font-weight: 700;
+    font-size: 13px;
+    letter-spacing: 0.5px;
+    text-align: center;
+    white-space: nowrap;
+    border-radius: 30px;
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.catalog-row:hover .catalog-download-btn {
+    background-color: #089b94;
+    box-shadow: 0 4px 14px rgba(10, 190, 181, 0.35);
+}
+
+@media (max-width: 768px) {
+    .catalog-row {
+        flex-wrap: wrap;
+    }
+
+    .catalog-row-image {
+        flex: 0 0 auto;
+        width: 100%;
+        height: 140px;
+    }
+
+    .catalog-row-image img {
+        height: 100%;
+        width: 100%;
+    }
+
+    .catalog-row-text {
+        flex: 1 1 100%;
+        flex-wrap: wrap;
+        gap: 6px;
+        padding: 16px 20px 8px;
+    }
+
+    .catalog-name {
+        flex: 1 1 100%;
+    }
+
+    .catalog-desc {
+        flex: 1 1 100%;
+    }
+
+    .catalog-download-btn {
+        margin: 0 20px 16px;
+        align-self: flex-start;
+    }
+}

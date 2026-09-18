@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>WOOJIN PLAIMM - Przedstawicielstwo w Polsce</title>
+
+    <!-- Google Fonts: Lato -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700;900&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="style.css">
+
+    <!-- Biblioteki konfiguratora: generowanie PDF oraz wysyłka e-mail bez pośrednictwa klienta pocztowego -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+
+    <script src="script.js" defer></script>
+</head>
+
+<body>
+
+    <!-- ================= HEADER ================= -->
+
+    <header class="site-header">
+        <div class="header-inner">
+            <a href="index.html" class="logo">
+                <img src="img/logo-white.png" alt="Woojin Plaimm" class="logo-image">
+            </a>
+
+            <nav class="main-nav">
+                <a href="index.html" class="active">O NAS</a>
+                <a href="maszyny.html">MASZYNY</a>
+                <a href="konfigurator.html">KONFIGURATOR</a>
+                <a href="kariera.html">KARIERA</a>
+                <a href="kontakt.html">KONTAKT</a>
+                <!-- Nowy przycisk WOOJIN GLOBAL -->
+    <a href="https://woojinplaimm.com/?lang_code=en" target="_blank" class="nav-global">WOOJIN GLOBAL</a>
+</nav>
+            </nav>
+        </div>
+    </header>
+
+    <!-- ================= MAIN CONTENT ================= -->
+
+   <main class="machine-selector">
+    <div class="hero-wrapper">
+        <section class="hero-selector">
+            <div class="container">
+                <span class="eyebrow">WOOJIN PLAIMM · A5 SERIES</span>
+                <h1>Dobór wtryskarki</h1>
+                <p>Wprowadź najważniejsze dane technologiczne, aby otrzymać rekomendowane konfiguracje wtryskarek zgodnych z katalogiem.</p>
+                <p class="disclaimer">* Niniejszy konfigurator ma charakter wyłącznie poglądowy, nie stanowi oferty handlowej i nie może stanowić podstawy do jakichkolwiek roszczeń kupującego.</p>
+            </div>
+        </section>
+    </div>
+
+    <div class="configurator-container">
+
+        <div class="progress-bar-container">
+            <div class="progress-bar" id="progressBar"></div>
+        </div>
+
+        <!-- ============ KROK 1: WYBÓR MASZYNY ============ -->
+        <div class="step-content active" id="step1">
+            <h2>Krok 1: Wybór rodzaju wtryskarki</h2>
+            <div class="step1-layout" id="step1Layout">
+
+                <div class="machine-cards-list">
+
+                    <label class="machine-card">
+                        <input type="radio" name="machine_type" value="DL-A5" checked>
+                        <div class="card-body">
+                            <h3>DL-A5 <span style="color:#111; font-weight:400;">(450~4300 ton)</span></h3>
+                            <span class="sub">System Dual Lock</span>
+                        </div>
+                    </label>
+
+                    <label class="machine-card">
+                        <input type="radio" name="machine_type" value="TH-A5">
+                        <div class="card-body">
+                            <h3>TH-A5 <span style="color:#111; font-weight:400;">(130~480 ton)</span></h3>
+                            <span class="sub">Maszyna hydrauliczna</span>
+                        </div>
+                    </label>
+
+                    <label class="machine-card">
+                        <input type="radio" name="machine_type" value="TE-A5">
+                        <div class="card-body">
+                            <h3>TE-A5 <span style="color:#111; font-weight:400;">(50~850 ton)</span></h3>
+                            <span class="sub">Maszyna elektryczna</span>
+                        </div>
+                    </label>
+
+                    <label class="machine-card">
+                        <input type="radio" name="machine_type" value="TL-A5">
+                        <div class="card-body">
+                            <h3>TL-A5 <span style="color:#111; font-weight:400;">(220~400 ton)</span></h3>
+                            <span class="sub">Bezkolumnowy układ zwarcia</span>
+                        </div>
+                    </label>
+
+                </div>
+
+                <!-- Podgląd widoku 360° wybranego typu wtryskarki - nad widokiem
+                     nazwa modelu (duża czcionka) oraz opis przeniesiony z kafelka
+                     po lewej. Ten sam mechanizm obracania (przeciąganie/suwak)
+                     oraz efekt lupy na komputerach, co na podstronie "Maszyny". -->
+                <div class="step1-viewer" id="step1Viewer">
+                    <h3 class="step1-viewer-name" id="step1ViewerName">DL-A5</h3>
+                    <p class="step1-viewer-desc" id="step1ViewerDesc">Premium, energooszczędna wtryskarka dwupłytowa z systemem podwójnego ryglowania (Dual Lock) — do dużych, precyzyjnych wyprasek wymagających wysokiej siły zwarcia.</p>
+
+                    <div class="viewer360-stage" id="cfgViewer360Stage">
+                        <img id="cfgViewer360Image" src="img/360-DL/1.png" alt="Widok 360° wtryskarki WOOJIN PLAIMM" draggable="false">
+                        <div class="viewer360-magnifier" id="cfgViewer360Magnifier"></div>
+                        <div class="viewer360-unavailable" id="cfgViewer360Unavailable">Widok 360° dla tego typu będzie dostępny wkrótce</div>
+                    </div>
+
+                    <div class="viewer360-slider-row">
+                        <input type="range" class="viewer360-slider" id="cfgViewer360Slider" min="1" max="37" step="1" value="1" aria-label="Przesuń, aby obrócić widok 360°">
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="btn-group">
+                <span></span>
+                <button type="button" class="btn-next" onclick="nextStep(2)">Dalej (1/4) →</button>
+            </div>
+        </div>
+
+        <!-- ============ KROK 2: DANE TECHNOLOGICZNE ============ -->
+        <div class="step-content" id="step2">
+            <h2>Krok 2: Najważniejsze dane technologiczne</h2>
+
+            <div class="form-grid">
+
+                <div class="form-section">
+                    <h3>Wymiary formy</h3>
+                    <div class="form-group">
+                        <label>Długość formy [mm]</label>
+                        <input type="number" id="mold_length" min="0" placeholder="np. 400">
+                    </div>
+                    <div class="form-group">
+                        <label>Szerokość formy [mm]</label>
+                        <input type="number" id="mold_width" min="0" placeholder="np. 350">
+                    </div>
+                    <div class="form-group">
+                        <label>Dostępny prześwit między kolumnami [mm] <span class="required-star">*</span></label>
+                        <input type="number" id="tie_bar_clearance" min="0" placeholder="np. 620">
+                    </div>
+                    <div class="form-group">
+                        <label>Wysokość (grubość) formy [mm] <span class="opt-label">(opcjonalnie)</span></label>
+                        <input type="number" id="mold_height" min="0" placeholder="np. 500">
+                    </div>
+                    <div class="form-group">
+                        <label>Liczba gniazd formy (wyprasek na cykl) <span class="required-star">*</span></label>
+                        <input type="number" id="cavities" min="1" step="1" value="1">
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <h3>Wymiary wypraski</h3>
+                    <div class="form-group">
+                        <label>Masa detalu m [g] <span class="required-star">*</span></label>
+                        <input type="number" id="part_weight" min="0" step="0.01" placeholder="np. 25">
+                    </div>
+                    <div class="form-group">
+                        <label>Powierzchnia wypraski F [cm²] <span class="required-star">*</span></label>
+                        <input type="number" id="part_surface" min="0" step="0.1" placeholder="np. 45">
+                    </div>
+                    <div class="form-group">
+                        <label>Grubość ścianki [mm] <span class="opt-label">(opcjonalnie)</span></label>
+                        <input type="number" id="wall_thickness" min="0" step="0.1" placeholder="np. 2.0">
+                    </div>
+                    <div class="form-group checkbox-inline">
+                        <label><input type="checkbox" id="has_fillets"> Zaokrąglenia krawędzi</label>
+                        <label><input type="checkbox" id="has_ribs"> Żebra usztywniające</label>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <h3>Materiał</h3>
+                    <div class="form-group">
+                        <label>Rodzaj tworzywa <span class="required-star">*</span></label>
+                        <select id="material_select" onchange="handleMaterialChange()"></select>
+                    </div>
+                    <div class="form-group density-row">
+                        <label>Gęstość wybranego tworzywa [g/cm³]</label>
+                        <div class="density-row-inner">
+                            <input type="number" step="0.01" id="density_value" readonly>
+                            <button type="button" class="btn-secondary btn-small" id="toggleCustomDensityBtn" onclick="toggleCustomDensity()">Inna gęstość</button>
+                        </div>
+                    </div>
+                    <div class="form-group" id="custom_density_group" style="display:none;">
+                        <label>Własna gęstość [g/cm³]</label>
+                        <input type="number" step="0.01" id="custom_density" placeholder="np. 1.15">
+                    </div>
+                    <div class="form-group">
+                        <label>Współczynnik ciśnienia w gnieździe formy k <span class="opt-label">(×100 kg/cm², typowo 3–8)</span></label>
+                        <input type="number" id="k_factor" value="6" min="1" max="12" step="0.5">
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="action-calc-bar">
+                <button type="button" class="btn-primary btn-wave" id="calcMachineBtn" onclick="calculateAndShowModels()"><span class="btn-wave-label">DOBIERZ WTRYSKARKĘ</span></button>
+            </div>
+
+            <div id="calcError" class="calc-error" style="display:none;"></div>
+
+            <div class="results-box" id="resultsSection" style="display:none;">
+                <div class="calc-details" id="calcDetails"></div>
+                <div class="form-group">
+                    <label>Wybierz konkretny model i wielkość agregatu wtryskowego</label>
+                    <select id="selected_machine_model" class="large-select"></select>
+                </div>
+            </div>
+
+            <div class="btn-group">
+                <button type="button" class="btn-prev" onclick="nextStep(1)">← Wstecz</button>
+                <button type="button" class="btn-next" onclick="nextStep(3)">Dalej (2/4) →</button>
+            </div>
+        </div>
+
+        <!-- ============ KROK 3: WYPOSAŻENIE I OPCJE ============ -->
+        <div class="step-content" id="step3">
+            <h2>Krok 3: Wyposażenie standardowe i opcje dodatkowe</h2>
+
+            <div class="machine-highlight-box" id="step3MachineHighlight"></div>
+
+            <h3>Wyposażenie standardowe</h3>
+            <div class="options-columns-grid">
+                <div class="option-col">
+                    <h4>Injection Unit</h4>
+                    <ul id="std_injection_unit"></ul>
+                </div>
+                <div class="option-col">
+                    <h4>Clamping Unit</h4>
+                    <ul id="std_clamping_unit"></ul>
+                </div>
+                <div class="option-col">
+                    <h4>General</h4>
+                    <ul id="std_general"></ul>
+                </div>
+            </div>
+
+            <hr class="divider">
+
+            <h3>Opcje dodatkowe (do wyboru)</h3>
+            <div class="options-columns-grid">
+                <div class="option-col">
+                    <h4>Injection Unit</h4>
+                    <div class="checkbox-grid" id="opt_injection_unit"></div>
+                </div>
+                <div class="option-col">
+                    <h4>Clamping Unit</h4>
+                    <div class="checkbox-grid" id="opt_clamping_unit"></div>
+                </div>
+                <div class="option-col">
+                    <h4>General</h4>
+                    <div class="checkbox-grid" id="opt_general"></div>
+                </div>
+            </div>
+
+            <div class="btn-group">
+                <button type="button" class="btn-prev" onclick="nextStep(2)">← Wstecz</button>
+                <button type="button" class="btn-next" onclick="nextStep(4)">Dalej (3/4) →</button>
+            </div>
+        </div>
+
+        <!-- ============ KROK 4: PODSUMOWANIE I WYSYŁKA ============ -->
+        <div class="step-content" id="step4">
+            <h2>Krok 4: Podsumowanie konfiguracji</h2>
+
+            <div class="machine-highlight-box" id="step4MachineHighlight"></div>
+
+            <div class="summary-box" id="summaryView"></div>
+
+            <h3>Dane kontaktowe</h3>
+            <div class="form-grid-2col">
+                <div class="form-group">
+                    <label>Imię <span class="required-star">*</span></label>
+                    <input type="text" id="client_firstname">
+                </div>
+                <div class="form-group">
+                    <label>Nazwisko <span class="required-star">*</span></label>
+                    <input type="text" id="client_lastname">
+                </div>
+                <div class="form-group">
+                    <label>Adres e-mail <span class="required-star">*</span></label>
+                    <input type="email" id="client_email">
+                </div>
+                <div class="form-group">
+                    <label>Nr telefonu</label>
+                    <input type="tel" id="client_phone">
+                </div>
+                <div class="form-group">
+                    <label>Nazwa firmy</label>
+                    <input type="text" id="client_company">
+                </div>
+                <div class="form-group">
+                    <label>Adres</label>
+                    <input type="text" id="client_address">
+                </div>
+            </div>
+            <div class="form-group">
+                <label>Dodatkowy komentarz</label>
+                <textarea id="client_comment" rows="4" placeholder="Miejsce na dodatkowe uwagi..."></textarea>
+            </div>
+
+            <div class="action-calc-bar">
+                <button type="button" class="btn-primary btn-wave btn-accent-eyebrow" onclick="generatePDF()"><span class="btn-wave-label">POBIERZ PDF</span></button>
+                <button type="button" class="btn-primary btn-wave" id="sendBtn" onclick="requestSendEmail()"><span class="btn-wave-label">WYŚLIJ KONFIGURACJĘ</span></button>
+            </div>
+
+            <div class="confirm-box" id="confirmSendBox" style="display:none;">
+                <p>Czy na pewno chcesz wysłać tę konfigurację na adres <strong>mczekalik@wjpim.com</strong> oraz kopię na podany adres e-mail? Możesz jeszcze poprawić dane w formularzu powyżej.</p>
+                <div class="btn-group confirm-actions">
+                    <button type="button" class="btn-secondary" onclick="cancelSendEmail()">Popraw dane</button>
+                    <button type="button" class="btn-primary" onclick="confirmSendEmail()">Tak, wyślij</button>
+                </div>
+            </div>
+
+            <div id="sendStatus" class="send-status"></div>
+
+            <div class="btn-group">
+                <button type="button" class="btn-prev" onclick="nextStep(3)">← Wstecz</button>
+                <span></span>
+            </div>
+        </div>
+
+    </div>
+
+</main>
+
+<!-- ================= FOOTER ================= -->
+<footer class="site-footer">
+    <div class="container">
+        <div class="footer-top">
+            <div class="footer-logo">
+                <img src="img/logo-white.png" alt="Woojin Plaimm" class="footer-logo-image">
+            </div>
+
+            <div class="footer-column">
+                <h4>Company</h4>
+                <a href="#">O nas</a>
+                <a href="#">Historia</a>
+            </div>
+
+            <div class="footer-column">
+                <h4>Products</h4>
+                <a href="#">Product Lineup</a>
+                <a href="#">Technology</a>
+            </div>
+
+            <div class="footer-column">
+                <h4>Customer</h4>
+                <a href="#">Kontakt</a>
+                <a href="#">Serwis</a>
+            </div>
+        </div>
+
+        <div class="footer-bottom">
+            <p>© 2026 WOOJIN PLAIMM Co., Ltd.</p>
+            <div class="footer-links">
+                <a href="#">Polityka prywatności</a>
+                <a href="#">Terms</a>
+            </div>
+        </div>
+    </div>
+</footer>
+
+    <!-- ================= SCRIPTS ================= -->
+
+    <script>
+        const header = document.querySelector('.site-header');
+        const logo = document.querySelector('.logo-image');
+
+        window.addEventListener('scroll', function () {
+            if (window.scrollY > 50) {
+                header.classList.add('scrolled');
+                logo.src = 'img/logo-black.png';
+            } else {
+                header.classList.remove('scrolled');
+                logo.src = 'img/logo-white.png';
+            }
+        });
+    </script>
+
+</body>
+</html>

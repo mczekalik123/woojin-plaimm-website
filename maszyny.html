@@ -1,0 +1,692 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>WOOJIN PLAIMM - Przedstawicielstwo w Polsce</title>
+
+    <!-- Google Fonts: Lato -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700;900&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="style.css">
+    <script src="script.js" defer></script>
+</head>
+
+<body>
+
+    <!-- ================= HEADER ================= -->
+
+    <header class="site-header">
+        <div class="header-inner">
+            <a href="index.html" class="logo">
+                <img src="img/logo-white.png" alt="Woojin Plaimm" class="logo-image">
+            </a>
+
+            <nav class="main-nav">
+                <a href="index.html" class="active">O NAS</a>
+                <a href="maszyny.html">MASZYNY</a>
+                <a href="konfigurator.html">KONFIGURATOR</a>
+                <a href="kariera.html">KARIERA</a>
+                <a href="kontakt.html">KONTAKT</a>
+                <!-- Nowy przycisk WOOJIN GLOBAL -->
+    <a href="https://woojinplaimm.com/?lang_code=en" target="_blank" class="nav-global">WOOJIN GLOBAL</a>
+</nav>
+            </nav>
+        </div>
+    </header>
+
+    <!-- ================= MAIN CONTENT ================= -->
+<div class="hero-wrapper">
+    <section class="hero-selector">
+        <div class="container">
+            <span class="eyebrow">WTRYSKARKI· WOOJIN PLAIMM</span>
+            <h1>Poznaj ofertę naszych wtryskarek</h1>
+            <p class="disclaimer" style="visibility: hidden;">* Poznaj ofertę</p>
+            <p class="disclaimer" style="visibility: hidden;">* Poznaj ofertę</p>
+            <p class="disclaimer" style="visibility: hidden;">* Poznaj ofertę</p>
+        </div>
+    </section>
+</div>
+
+<!-- ================= WIDOK 360° ================= -->
+<section class="viewer360-section">
+    <div class="container">
+
+        <div class="viewer360-wrapper" id="viewer360Wrapper">
+
+            <!-- Lista typów wtryskarek - wycentrowana, powiększona -->
+            <div class="machine-type-list" id="machineTypeList">
+                <button type="button" class="machine-type-item" data-index="0">DL-A5</button>
+                <button type="button" class="machine-type-item" data-index="1">TH-A5</button>
+                <button type="button" class="machine-type-item" data-index="2">TE-A5</button>
+                <button type="button" class="machine-type-item" data-index="3">TL-A5</button>
+                <button type="button" class="machine-type-item" data-index="4">VH</button>
+                <button type="button" class="machine-type-item" data-index="5">MULTI</button>
+                <button type="button" class="machine-type-item" data-index="6">Super-Foam</button>
+            </div>
+
+            <!-- Model i krótki opis aktualnie wybranej wtryskarki -->
+            <div class="machine-meta" id="machineMeta">
+                <h2 class="machine-meta-model" id="machineMetaModel">DL-A5</h2>
+                <p class="machine-meta-desc" id="machineMetaDesc">Premium two platen direct locking series</p>
+            </div>
+
+            <div class="viewer360-carousel">
+                <button type="button" class="viewer360-arrow viewer360-arrow--left" id="viewer360Prev" aria-label="Poprzedni typ wtryskarki">
+                    <img src="img/Arrow-Back-Ios--Streamline-Sharp-Material-Symbols.png" alt="">
+                </button>
+
+                <div class="viewer360-stage" id="viewer360Stage">
+                    <img id="viewer360Image" src="img/360-DL/1.png" alt="Widok 360° wtryskarki WOOJIN PLAIMM" draggable="false">
+                    <div class="viewer360-magnifier" id="viewer360Magnifier"></div>
+                    <div class="viewer360-unavailable" id="viewer360Unavailable">Widok 360° dla tego typu będzie dostępny wkrótce</div>
+                </div>
+
+                <button type="button" class="viewer360-arrow viewer360-arrow--right" id="viewer360Next" aria-label="Następny typ wtryskarki">
+                    <img src="img/Arrow-Forward-Ios--Streamline-Sharp-Material-Symbols.png" alt="">
+                </button>
+            </div>
+
+            <div class="viewer360-slider-row">
+                <input type="range" class="viewer360-slider" id="viewer360Slider" min="1" max="37" step="1" value="1" aria-label="Przesuń, aby obrócić widok 360°">
+            </div>
+
+            <div class="viewer360-hint">
+                <img src="img/360.png" alt="Widok 360°">
+            </div>
+
+        </div>
+
+    </div>
+</section>
+
+<!-- ================= PODZESPOŁY MASZYNY ================= -->
+<section class="components-section" id="componentsSection">
+    <div class="container">
+
+        <!-- Opis maszyny - zależny od wybranego typu wtryskarki na liście powyżej.
+             Na razie uzupełniony tylko dla DL-A5, pozostałe typy do dodania później. -->
+        <div class="machine-description" id="machineDescription">
+            <div class="machine-description-panel" data-machine-type="DL-A5">
+                <h3>DL-A5</h3>
+                <p>Wtryskarka DL-A5 to wysokiej klasy, dwupłytowa seria z systemem bezpośredniego ryglowania (Dual Lock), zaprojektowana z myślą o produkcji dużych i precyzyjnych elementów wymagających wysokiej siły zwarcia. Zwarta konstrukcja oraz energooszczędny napęd hydrauliczny pozwalają uzyskać powtarzalność procesu przy jednoczesnym ograniczeniu zużycia energii, a intuicyjny sterownik ułatwia codzienną obsługę maszyny.</p>
+            </div>
+
+            <div class="machine-description-panel" data-machine-type="TH-A5">
+                <h3>TH-A5</h3>
+                <p>Wtryskarka TH-A5 to seria premium z energooszczędnym napędem hydraulicznym, zaprojektowana z myślą o osiągnięciu najwyższej efektywności produkcji. Ergonomiczna konstrukcja uwzględnia szybką i stabilną pracę maszyny oraz wygodę codziennej obsługi przez operatora.</p>
+            </div>
+
+            <div class="machine-description-panel" data-machine-type="TE-A5">
+                <h3>TE-A5</h3>
+                <p>Wtryskarka TE-A5 to nowa, w pełni elektryczna seria z układem kolankowym, zapewniająca najwyższą precyzję i powtarzalność wagi wypraski przy najniższym możliwym zużyciu energii. Elektryczny napęd oraz zoptymalizowana konstrukcja mechanizmu zamykania gwarantują stabilną, czystą i energooszczędną pracę maszyny.</p>
+            </div>
+        </div>
+
+        <div class="section-heading">
+            <span class="section-label">BUDOWA WTRYSKARKI</span>
+            <h2>Poznaj kluczowe podzespoły</h2>
+        </div>
+
+        <div class="components-list" id="componentsList">
+
+            <article class="component-item" data-machine-type="DL-A5">
+                <div class="component-photo">
+                    <img src="img/DLA5/clampingunit.png" alt="Clamping Unit - DL-A5" loading="lazy">
+                </div>
+                <div class="component-text">
+                    <h3>Clamping Unit</h3>
+                    <div class="component-feature-list">
+                        <div class="component-feature">
+                            <p class="component-feature-title">01. Konstrukcja płyt</p>
+                            <ul class="component-feature-points">
+                                <li>Analiza metodą elementów skończonych (FEA) zwiększa dopuszczalną wagę montowanej formy dzięki minimalizacji ugięcia płyty, uzyskanej dzięki zoptymalizowanej konstrukcji (wer. 2).</li>
+                            </ul>
+                        </div>
+                        <div class="component-feature">
+                            <p class="component-feature-title">02. Maksymalne wykorzystanie przestrzeni</p>
+                            <ul class="component-feature-points">
+                                <li>Maksymalne wykorzystanie przestrzeni dzięki łatwemu montażowi dużych form w pomieszczeniach o niskich sufitach i w ograniczonej przestrzeni (wer. 2).</li>
+                            </ul>
+                        </div>
+                        <div class="component-feature">
+                            <p class="component-feature-title">03. Zwiększona trwałość</p>
+                            <ul class="component-feature-points">
+                                <li>Zastosowanie śrub w kształcie litery U oraz kolumn (tie bars) zwiększa trwałość dzięki efektowi rozpraszania naprężeń.</li>
+                            </ul>
+                        </div>
+                        <div class="component-feature">
+                            <p class="component-feature-title">04. Skrócenie czasu cyklu</p>
+                            <ul class="component-feature-points">
+                                <li>Zsynchronizowany system sterowania ryglowaniem półnakrętkowym (half-nut) skraca czas cyklu.</li>
+                            </ul>
+                        </div>
+                        <div class="component-feature">
+                            <p class="component-feature-title">05. Precyzja pozycjonowania</p>
+                            <ul class="component-feature-points">
+                                <li>Szybkoreagujący zawór proporcjonalny zamontowany na module przesuwu zwiększa precyzję pozycjonowania.</li>
+                            </ul>
+                        </div>
+                        <div class="component-feature">
+                            <p class="component-feature-title">06. Niezawodne działanie przełączania</p>
+                            <ul class="component-feature-points">
+                                <li>Elastyczna konfiguracja cylindrów otwierania/zamykania (lewy/prawy) zapewnia stabilną pracę przy otwieraniu i zamykaniu.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </article>
+
+            <article class="component-item" data-machine-type="DL-A5">
+                <div class="component-photo">
+                    <img src="img/DLA5/dla5injectionunit.png" alt="Injection Unit - DL-A5" loading="lazy">
+                </div>
+                <div class="component-text">
+                    <h3>Injection Unit</h3>
+                    <div class="component-feature-list">
+                        <div class="component-feature">
+                            <p class="component-feature-title">01. Regulacja ciśnienia wstecznego wtrysku w pętli zamkniętej</p>
+                            <ul class="component-feature-points">
+                                <li>Ustawione przez użytkownika ciśnienie wsteczne pozostaje stałe dzięki regulacji w pętli zamkniętej.</li>
+                            </ul>
+                        </div>
+                        <div class="component-feature">
+                            <p class="component-feature-title">02. Zwiększona precyzja formowania</p>
+                            <ul class="component-feature-points">
+                                <li>Zapobiega problemom z równowagą płyty spowodowanym powtarzalnym dotykiem dyszy, poprawiając precyzję formowania.</li>
+                            </ul>
+                        </div>
+                        <div class="component-feature">
+                            <p class="component-feature-title">03. Łatwa obsługa ślimaków i cylindrów</p>
+                            <ul class="component-feature-points">
+                                <li>Łatwa wymiana i obsługa ślimaków oraz cylindrów (dla maszyn poniżej 1300 ton).</li>
+                            </ul>
+                        </div>
+                        <div class="component-feature">
+                            <p class="component-feature-title">04. Lepsze wykorzystanie przestrzeni</p>
+                            <ul class="component-feature-points">
+                                <li>Zunifikowane skrzynki napędów serwo maksymalizują wykorzystanie dostępnej przestrzeni.</li>
+                            </ul>
+                        </div>
+                        <div class="component-feature">
+                            <p class="component-feature-title">05. Oszczędność energii</p>
+                            <ul class="component-feature-points">
+                                <li>Oszczędność energii dzięki zachowaniu równoległości i redukcji tarcia poprzez zastosowanie prowadnic LM w łożu wtryskowym i elementach dozujących.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </article>
+
+            <article class="component-item" data-machine-type="DL-A5">
+                <div class="component-photo">
+                    <img src="img/DLA5/dla5hydraulicunit.png" alt="Hydraulic Unit - DL-A5" loading="lazy">
+                </div>
+                <div class="component-text">
+                    <h3>Hydraulic Unit</h3>
+                    <div class="component-feature-list">
+                        <div class="component-feature">
+                            <p class="component-feature-title">01. Specjalna powłoka zbiornika oleju</p>
+                            <ul class="component-feature-points">
+                                <li>Zwiększona czystość wewnętrzna dzięki specjalnej powłoce wewnątrz i na zewnątrz bloku hydraulicznego.</li>
+                                <li>Specjalnie powlekany zbiornik oleju zapobiega korozji spowodowanej wilgocią i parami oleju.</li>
+                            </ul>
+                        </div>
+                        <div class="component-feature">
+                            <p class="component-feature-title">02. Niezależny obieg oleju roboczego</p>
+                            <ul class="component-feature-points">
+                                <li>Utrzymanie stałej czystości i temperatury dzięki niezależnemu obiegowi oleju roboczego (wydłuża żywotność oleju hydraulicznego i poprawia trwałość podzespołów hydraulicznych).</li>
+                            </ul>
+                        </div>
+                        <div class="component-feature">
+                            <p class="component-feature-title">03. Zapobieganie wyciekom przewodów hydraulicznych</p>
+                            <ul class="component-feature-points">
+                                <li>Bezszwowe rury, przewody rozprężne oraz połączenia EO2FORM są odporne na wysokie ciśnienie i wibracje, zapobiegając wyciekom i uszkodzeniom.</li>
+                            </ul>
+                        </div>
+                        <div class="component-feature">
+                            <p class="component-feature-title">04. Zmniejszone zużycie energii i wody chłodzącej</p>
+                            <ul class="component-feature-points">
+                                <li>System pompy serwo redukuje wewnętrzne straty, zmniejszając zużycie energii i wody chłodzącej.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </article>
+
+            <article class="component-item" data-machine-type="DL-A5">
+                <div class="component-photo">
+                    <img src="img/DLA5/dla5imc500.png" alt="Controller IMC 500/501 - DL-A5" loading="lazy">
+                </div>
+                <div class="component-text">
+                    <h3>Controller (IMC 500/501)</h3>
+                    <div class="component-feature-list">
+                        <div class="component-feature">
+                            <p class="component-feature-title">01. Kompatybilność</p>
+                            <ul class="component-feature-points">
+                                <li>Windows7 Embedded</li>
+                                <li>OPC-UA (Euromap77)</li>
+                                <li>Gigabit Ethernet</li>
+                                <li>USB3.0, RS232</li>
+                            </ul>
+                        </div>
+                        <div class="component-feature">
+                            <p class="component-feature-title">02. Specyfikacja</p>
+                            <ul class="component-feature-points">
+                                <li>Wyświetlacz: 18,5" / 24"</li>
+                                <li>Rozdzielczość: 768 x 1366 / 1080 x 1920</li>
+                                <li>Ekran dotykowy: pojemnościowy (projected capacitive)</li>
+                                <li>CPU: Intel Celeron G3900E 1,7GHz</li>
+                                <li>RAM: SO-DIMM DDR3, 8192MB</li>
+                                <li>Pamięć: Cfast 32GB MLC</li>
+                                <li>Stopień ochrony IP: IP65 (przód), IP20 (tył)</li>
+                                <li>Maszyny: TH-A5, TE-A5, DL-A5</li>
+                                <li>Język: międzynarodowy</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </article>
+
+            <article class="component-item" data-machine-type="DL-A5">
+                <div class="component-photo">
+                    <img src="img/DLA5/imc400.png" alt="Controller IMC 400 - DL-A5" loading="lazy">
+                </div>
+                <div class="component-text">
+                    <h3>Controller (IMC 400)</h3>
+                    <div class="component-feature-list">
+                        <div class="component-feature">
+                            <p class="component-feature-title">01. Kompatybilność</p>
+                            <ul class="component-feature-points">
+                                <li>System czasu rzeczywistego VxWorks</li>
+                                <li>OPC-UA (Euromap77)</li>
+                                <li>Ethernet 10/100 Mbps, port CAN Bus, port USB, interfejs szeregowy</li>
+                                <li>System monitorowania energii i CMS</li>
+                            </ul>
+                        </div>
+                        <div class="component-feature">
+                            <p class="component-feature-title">02. Specyfikacja</p>
+                            <ul class="component-feature-points">
+                                <li>Wyświetlacz: 15"</li>
+                                <li>Rozdzielczość: 768 x 1024</li>
+                                <li>Ekran dotykowy: kolorowy TFT</li>
+                                <li>CPU: Intel Atom E3815, 1460MHz</li>
+                                <li>RAM: DDR3, 1GB, SDRAM</li>
+                                <li>Pamięć: CompactFlash 32GB</li>
+                                <li>Stopień ochrony IP: IP65 (przód), IP20 (tył)</li>
+                                <li>Maszyny: VHA, DL-A5, TH-A5, VHS</li>
+                                <li>Język: międzynarodowy</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </article>
+
+            <article class="component-item" data-machine-type="TH-A5">
+                <div class="component-photo">
+                    <img src="img/THA5/thclamping.png" alt="Clamping Unit - TH-A5" loading="lazy">
+                </div>
+                <div class="component-text">
+                    <h3>Clamping Unit</h3>
+                    <div class="component-feature-list">
+                        <div class="component-feature">
+                            <p class="component-feature-title">01. Zwiększona trwałość</p>
+                            <ul class="component-feature-points">
+                                <li>Wzmocniona konstrukcja płyt i kolumn (tie bars) zwiększa trwałość i odporność zespołu zamykającego na długotrwałą eksploatację.</li>
+                            </ul>
+                        </div>
+                        <div class="component-feature">
+                            <p class="component-feature-title">02. Poprawiona precyzja regulacji grubości formy</p>
+                            <ul class="component-feature-points">
+                                <li>Wysokoprecyzyjny system regulacji grubości formy zapewnia dokładne dopasowanie i stabilną pracę przy różnych rozmiarach form.</li>
+                            </ul>
+                        </div>
+                        <div class="component-feature">
+                            <p class="component-feature-title">03. Utrzymanie równoległości płyt</p>
+                            <ul class="component-feature-points">
+                                <li>Zoptymalizowana konstrukcja prowadnic utrzymuje równoległość płyt podczas całego cyklu zamykania.</li>
+                                <li>Stabilna praca ogranicza zużycie form i wydłuża ich żywotność.</li>
+                            </ul>
+                        </div>
+                        <div class="component-feature">
+                            <p class="component-feature-title">04. Przenoszenie wysokiej siły zwarcia</p>
+                            <ul class="component-feature-points">
+                                <li>Zespół zamykający efektywnie przenosi wysoką siłę zwarcia, zapewniając stabilność procesu przy produkcji dużych elementów.</li>
+                            </ul>
+                        </div>
+                        <div class="component-feature">
+                            <p class="component-feature-title">05. Szeroki rozstaw kolumn (tie bars)</p>
+                            <ul class="component-feature-points">
+                                <li>Szeroki rozstaw kolumn ułatwia montaż dużych form i zwiększa elastyczność produkcyjną.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </article>
+
+            <article class="component-item" data-machine-type="TH-A5">
+                <div class="component-photo">
+                    <img src="img/THA5/thinjection.png" alt="Injection Unit - TH-A5" loading="lazy">
+                </div>
+                <div class="component-text">
+                    <h3>Injection Unit</h3>
+                    <div class="component-feature-list">
+                        <div class="component-feature">
+                            <p class="component-feature-title">01. Precyzyjna kontrola temperatury</p>
+                            <ul class="component-feature-points">
+                                <li>Zaawansowany system grzewczy zapewnia precyzyjną i stabilną kontrolę temperatury stopionego tworzywa.</li>
+                            </ul>
+                        </div>
+                        <div class="component-feature">
+                            <p class="component-feature-title">02. Zapewnienie stabilności pracy</p>
+                            <ul class="component-feature-points">
+                                <li>Solidna konstrukcja zespołu wtryskowego zapewnia stabilną pracę nawet przy wysokich prędkościach wtrysku.</li>
+                            </ul>
+                        </div>
+                        <div class="component-feature">
+                            <p class="component-feature-title">03. Regulacja ciśnienia wstecznego wtrysku w pętli zamkniętej</p>
+                            <ul class="component-feature-points">
+                                <li>Ustawione przez użytkownika ciśnienie wsteczne pozostaje stałe dzięki regulacji w pętli zamkniętej, zapewniając powtarzalność procesu.</li>
+                            </ul>
+                        </div>
+                        <div class="component-feature">
+                            <p class="component-feature-title">04. Redukcja hałasu przepływu oleju i zapobieganie wyciekom</p>
+                            <ul class="component-feature-points">
+                                <li>Zoptymalizowany układ hydrauliczny ogranicza hałas generowany przez przepływ oleju.</li>
+                                <li>Uszczelnienia wysokiej jakości skutecznie zapobiegają wyciekom oleju.</li>
+                            </ul>
+                        </div>
+                        <div class="component-feature">
+                            <p class="component-feature-title">05. Zwiększona responsywność i możliwości sterowania</p>
+                            <ul class="component-feature-points">
+                                <li>Szybkoreagujące zawory proporcjonalne zwiększają responsywność oraz precyzję sterowania procesem wtrysku.</li>
+                            </ul>
+                        </div>
+                        <div class="component-feature">
+                            <p class="component-feature-title">06. Zastosowanie prowadnic LM</p>
+                            <ul class="component-feature-points">
+                                <li>Prowadnice liniowe (LM Guide) redukują tarcie i zwiększają płynność ruchu zespołu wtryskowego.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </article>
+
+            <article class="component-item" data-machine-type="TH-A5">
+                <div class="component-photo">
+                    <img src="img/THA5/hydraulic.png" alt="Hydraulic Unit - TH-A5" loading="lazy">
+                </div>
+                <div class="component-text">
+                    <h3>Hydraulic Unit</h3>
+                    <div class="component-feature-list">
+                        <div class="component-feature">
+                            <p class="component-feature-title">01. Redukcja hałasu i lepsze wykorzystanie przestrzeni</p>
+                            <ul class="component-feature-points">
+                                <li>Zwarta konstrukcja bloku hydraulicznego ogranicza poziom hałasu oraz optymalizuje wykorzystanie dostępnej przestrzeni.</li>
+                            </ul>
+                        </div>
+                        <div class="component-feature">
+                            <p class="component-feature-title">02. Niezależny obieg oleju roboczego</p>
+                            <ul class="component-feature-points">
+                                <li>Niezależny obieg oleju roboczego utrzymuje stałą czystość i temperaturę, wydłużając żywotność oleju hydraulicznego.</li>
+                            </ul>
+                        </div>
+                        <div class="component-feature">
+                            <p class="component-feature-title">03. Zwiększona czystość wewnętrzna</p>
+                            <ul class="component-feature-points">
+                                <li>Specjalna powłoka wewnętrzna zbiornika oleju zapobiega zanieczyszczeniom i korozji, zwiększając czystość układu.</li>
+                            </ul>
+                        </div>
+                        <div class="component-feature">
+                            <p class="component-feature-title">04. Zmniejszone zużycie energii i oleju roboczego</p>
+                            <ul class="component-feature-points">
+                                <li>System pompy serwo redukuje straty energii oraz zużycie oleju roboczego podczas pracy maszyny.</li>
+                            </ul>
+                        </div>
+                        <div class="component-feature">
+                            <p class="component-feature-title">05. Zastosowanie modułowego bloku hydraulicznego</p>
+                            <ul class="component-feature-points">
+                                <li>Modułowa konstrukcja bloku hydraulicznego ułatwia serwisowanie oraz zwiększa niezawodność układu.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </article>
+
+            <article class="component-item" data-machine-type="TH-A5">
+                <div class="component-photo">
+                    <img src="img/THA5/thimc500.png" alt="Controller IMC 500/501 - TH-A5" loading="lazy">
+                </div>
+                <div class="component-text">
+                    <h3>Controller (IMC 500/501)</h3>
+                    <div class="component-feature-list">
+                        <div class="component-feature">
+                            <p class="component-feature-title">01. Kompatybilność</p>
+                            <ul class="component-feature-points">
+                                <li>Windows7 Embedded</li>
+                                <li>OPC-UA (Euromap77)</li>
+                                <li>Gigabit Ethernet</li>
+                                <li>USB3.0, RS232</li>
+                            </ul>
+                        </div>
+                        <div class="component-feature">
+                            <p class="component-feature-title">02. Specyfikacja</p>
+                            <ul class="component-feature-points">
+                                <li>Wyświetlacz: 18,5" / 24"</li>
+                                <li>Rozdzielczość: 768 x 1366 / 1080 x 1920</li>
+                                <li>Ekran dotykowy: pojemnościowy (projected capacitive)</li>
+                                <li>CPU: Intel Celeron G3900E 1,7GHz</li>
+                                <li>RAM: SO-DIMM DDR3, 8192MB</li>
+                                <li>Pamięć: Cfast 32GB MLC</li>
+                                <li>Stopień ochrony IP: IP65 (przód), IP20 (tył)</li>
+                                <li>Maszyny: TH-A5, TE-A5, DL-A5</li>
+                                <li>Język: międzynarodowy</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </article>
+
+            <article class="component-item" data-machine-type="TH-A5">
+                <div class="component-photo">
+                    <img src="img/THA5/thimc400.png" alt="Controller IMC 400 - TH-A5" loading="lazy">
+                </div>
+                <div class="component-text">
+                    <h3>Controller (IMC 400)</h3>
+                    <div class="component-feature-list">
+                        <div class="component-feature">
+                            <p class="component-feature-title">01. Kompatybilność</p>
+                            <ul class="component-feature-points">
+                                <li>System czasu rzeczywistego VxWorks</li>
+                                <li>OPC-UA (Euromap77)</li>
+                                <li>Ethernet 10/100 Mbps, port CAN Bus, port USB, interfejs szeregowy</li>
+                                <li>System monitorowania energii i CMS</li>
+                            </ul>
+                        </div>
+                        <div class="component-feature">
+                            <p class="component-feature-title">02. Specyfikacja</p>
+                            <ul class="component-feature-points">
+                                <li>Wyświetlacz: 15"</li>
+                                <li>Rozdzielczość: 768 x 1024</li>
+                                <li>Ekran dotykowy: kolorowy TFT</li>
+                                <li>CPU: Intel Atom E3815, 1460MHz</li>
+                                <li>RAM: DDR3, 1GB, SDRAM</li>
+                                <li>Pamięć: CompactFlash 32GB</li>
+                                <li>Stopień ochrony IP: IP65 (przód), IP20 (tył)</li>
+                                <li>Maszyny: VHA, DL-A5, TH-A5, VHS</li>
+                                <li>Język: międzynarodowy</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </article>
+
+            <article class="component-item" data-machine-type="TE-A5">
+                <div class="component-photo">
+                    <img src="img/TEA5/teclapmping.png" alt="Clamping Unit - TE-A5" loading="lazy">
+                </div>
+                <div class="component-text">
+                    <h3>Clamping Unit</h3>
+                    <div class="component-feature-list">
+                        <div class="component-feature">
+                            <p class="component-feature-title">01. Nowy mechanizm kolankowy</p>
+                            <ul class="component-feature-points">
+                                <li>Zastosowanie nowego mechanizmu kolankowego (toggle) zapewnia szybkie otwieranie i zamykanie, a mocowanie sworznia kolankowego typu zaciskowego zwiększa trwałość.</li>
+                            </ul>
+                        </div>
+                        <div class="component-feature">
+                            <p class="component-feature-title">02. Automatyczna kalibracja siły zwarcia</p>
+                            <ul class="component-feature-points">
+                                <li>Automatyczna korekta siły zwarcia dzięki wykrywaniu zmian objętości w czasie rzeczywistym.</li>
+                            </ul>
+                        </div>
+                        <div class="component-feature">
+                            <p class="component-feature-title">03. Wysoka efektywność energetyczna</p>
+                            <ul class="component-feature-points">
+                                <li>Wysoka efektywność energetyczna dzięki szybkiemu działaniu otwierania i zamykania, przy zachowaniu stałej równoległości płyt i minimalnym tarciu ruchomych elementów.</li>
+                            </ul>
+                        </div>
+                        <div class="component-feature">
+                            <p class="component-feature-title">04. Metoda docisku centralnego</p>
+                            <ul class="component-feature-points">
+                                <li>Metoda docisku centralnego zapewnia doskonałe rozłożenie siły zwarcia w formie oraz jednorodność wysokiego nacisku powierzchniowego.</li>
+                            </ul>
+                        </div>
+                        <div class="component-feature">
+                            <p class="component-feature-title">05. Szeroki rozstaw kolumn (tie bars)</p>
+                            <ul class="component-feature-points">
+                                <li>Wyposażona w szeroki zakres form dzięki zwiększonemu rozstawowi kolumn i większym prześwitom w porównaniu do maszyn tej samej klasy.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </article>
+
+            <article class="component-item" data-machine-type="TE-A5">
+                <div class="component-photo">
+                    <img src="img/TEA5/teinjection.png" alt="Injection Unit - TE-A5" loading="lazy">
+                </div>
+                <div class="component-text">
+                    <h3>Injection Unit</h3>
+                    <div class="component-feature-list">
+                        <div class="component-feature">
+                            <p class="component-feature-title">01. Zwiększona zdolność plastyfikacji</p>
+                            <ul class="component-feature-points">
+                                <li>Usprawniona plastyfikacja zapewnia szybkie i równomierne topienie tworzywa.</li>
+                            </ul>
+                        </div>
+                        <div class="component-feature">
+                            <p class="component-feature-title">02. Zwiększona precyzja formowania</p>
+                            <ul class="component-feature-points">
+                                <li>Zapobiega problemom z równowagą płyty spowodowanym powtarzalnym dotykiem dyszy, poprawiając precyzję formowania.</li>
+                            </ul>
+                        </div>
+                        <div class="component-feature">
+                            <p class="component-feature-title">03. Lepsze wykorzystanie przestrzeni</p>
+                            <ul class="component-feature-points">
+                                <li>Lepsze wykorzystanie przestrzeni dzięki zunifikowanym skrzynkom napędów serwo.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </article>
+
+            <article class="component-item" data-machine-type="TE-A5">
+                <div class="component-photo">
+                    <img src="img/TEA5/teimc500.png" alt="Controller IMC 500/501 - TE-A5" loading="lazy">
+                </div>
+                <div class="component-text">
+                    <h3>Controller (IMC 500/501)</h3>
+                    <div class="component-feature-list">
+                        <div class="component-feature">
+                            <p class="component-feature-title">01. Kompatybilność</p>
+                            <ul class="component-feature-points">
+                                <li>Windows7 Embedded</li>
+                                <li>OPC-UA (Euromap77)</li>
+                                <li>Gigabit Ethernet</li>
+                                <li>USB3.0, RS232</li>
+                            </ul>
+                        </div>
+                        <div class="component-feature">
+                            <p class="component-feature-title">02. Specyfikacja</p>
+                            <ul class="component-feature-points">
+                                <li>Wyświetlacz: 18,5" / 24"</li>
+                                <li>Rozdzielczość: 768 x 1366 / 1080 x 1920</li>
+                                <li>Ekran dotykowy: pojemnościowy (projected capacitive)</li>
+                                <li>CPU: Intel Celeron G3900E 1,7GHz</li>
+                                <li>RAM: SO-DIMM DDR3, 8192MB</li>
+                                <li>Pamięć: Cfast 32GB MLC</li>
+                                <li>Stopień ochrony IP: IP65 (przód), IP20 (tył)</li>
+                                <li>Maszyny: TH-A5, TE-A5, DL-A5</li>
+                                <li>Język: międzynarodowy</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </article>
+
+        </div>
+
+    </div>
+</section>
+
+
+<!-- ================= FOOTER ================= -->
+<footer class="site-footer">
+    <div class="container">
+        <div class="footer-top">
+            <div class="footer-logo">
+                <img src="img/logo-white.png" alt="Woojin Plaimm" class="footer-logo-image">
+            </div>
+
+            <div class="footer-column">
+                <h4>Company</h4>
+                <a href="#">O nas</a>
+                <a href="#">Historia</a>
+            </div>
+
+            <div class="footer-column">
+                <h4>Products</h4>
+                <a href="#">Product Lineup</a>
+                <a href="#">Technology</a>
+            </div>
+
+            <div class="footer-column">
+                <h4>Customer</h4>
+                <a href="#">Kontakt</a>
+                <a href="#">Serwis</a>
+            </div>
+        </div>
+
+        <div class="footer-bottom">
+            <p>© 2026 WOOJIN PLAIMM Co., Ltd.</p>
+            <div class="footer-links">
+                <a href="#">Polityka prywatności</a>
+                <a href="#">Terms</a>
+            </div>
+        </div>
+    </div>
+</footer>
+
+    <!-- ================= SCRIPTS ================= -->
+
+    <script>
+        const header = document.querySelector('.site-header');
+        const logo = document.querySelector('.logo-image');
+
+        window.addEventListener('scroll', function () {
+            if (window.scrollY > 50) {
+                header.classList.add('scrolled');
+                logo.src = 'img/logo-black.png';
+            } else {
+                header.classList.remove('scrolled');
+                logo.src = 'img/logo-white.png';
+            }
+        });
+    </script>
+
+</body>
+</html>

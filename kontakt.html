@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WOOJIN PLAIMM - Przedstawicielstwo w Polsce</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <script src="script.js" defer></script>
+</head>
+<body>
+    <header class="site-header">
+        <div class="header-inner">
+            <a href="index.html" class="logo">
+                <img src="img/logo-white.png" alt="Woojin Plaimm" class="logo-image">
+            </a>
+            <nav class="main-nav">
+                <a href="index.html" class="active">O NAS</a>
+                <a href="maszyny.html">MASZYNY</a>
+                <a href="konfigurator.html">KONFIGURATOR</a>
+                <a href="kariera.html">KARIERA</a>
+                <a href="kontakt.html">KONTAKT</a>
+                <a href="https://woojinplaimm.com/?lang_code=en" target="_blank" class="nav-global">WOOJIN GLOBAL</a>
+            </nav>
+        </div>
+    </header>
+
+<div class="hero-wrapper">
+    <section class="hero-selector">
+        <div class="container">
+            <span class="eyebrow">KONTAKT· WOOJIN PLAIMM</span>
+            <h1>Skontaktuj się z nami</h1>
+            <p class="disclaimer" style="visibility: hidden;">* Poznaj ofertę</p>
+            <p class="disclaimer" style="visibility: hidden;">* Poznaj ofertę</p>
+            <p class="disclaimer" style="visibility: hidden;">* Poznaj ofertę</p>
+        </div>
+    </section>
+</div>
+
+
+
+    <main class="contact-section">
+        <div class="container">
+            
+
+            <div class="contact-layout">
+                <!-- Lewa strona: dane kontaktowe (bez zdjęć i efektów hover) -->
+                <div class="contact-info-list">
+                    <div class="contact-info-item">
+                        <h2 class="contact-info-role">KONTAKT Z BIUREM</h2>
+                        <div class="contact-details">
+                            <a href="tel:+48510440661" class="contact-link phone">+48 510 440 661</a>
+                            <a href="mailto:ploffice@wjpim.com" class="contact-link email">ploffice@wjpim.com</a>
+                        </div>
+                    </div>
+
+                    <div class="contact-info-item">
+                        <h2 class="contact-info-role">PRZEDSTAWICIEL HANDLOWY</h2>
+                        <div class="contact-details">
+                            <a href="tel:+48573288069" class="contact-link phone">+48 573 288 069</a>
+                            <a href="mailto:mczekalik@wjpim.com" class="contact-link email">mczekalik@wjpim.com</a>
+                        </div>
+                    </div>
+
+                    <div class="contact-info-item">
+                        <h2 class="contact-info-role">SERWIS</h2>
+                        <div class="contact-details">
+                            <a href="mailto:woojin.choi@wjpim.com" class="contact-link email">woojin.choi@wjpim.com</a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Prawa strona: formularz kontaktowy z wyborem adresata -->
+                <div class="contact-form-wrapper">
+                    <h2 class="contact-form-title">Napisz do nas</h2>
+                    <p class="contact-form-subtitle">Wybierz temat rozmowy i wyślij wiadomość — odpowiemy najszybciej, jak to możliwe.</p>
+
+                    <form class="contact-form" id="contactForm">
+                        <div class="form-group">
+                            <label>Do kogo piszesz? <span class="required-star">*</span></label>
+                            <div class="contact-topic-choice">
+                                <label class="topic-option">
+                                    <input type="radio" name="contact_topic" value="biuro" checked>
+                                    <span>Biuro</span>
+                                </label>
+                                <label class="topic-option">
+                                    <input type="radio" name="contact_topic" value="handlowiec">
+                                    <span>Przedstawiciel handlowy</span>
+                                </label>
+                                <label class="topic-option">
+                                    <input type="radio" name="contact_topic" value="serwis">
+                                    <span>Serwis</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="form-grid-2col">
+                            <div class="form-group">
+                                <label>Imię i nazwisko <span class="required-star">*</span></label>
+                                <input type="text" id="contact_name" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Adres e-mail <span class="required-star">*</span></label>
+                                <input type="email" id="contact_email" required>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Nr telefonu <span class="opt-label">(opcjonalnie)</span></label>
+                            <input type="tel" id="contact_phone">
+                        </div>
+
+                        <div class="form-group">
+                            <label>Wiadomość <span class="required-star">*</span></label>
+                            <textarea id="contact_message" rows="5" required placeholder="Napisz, w czym możemy pomóc..."></textarea>
+                        </div>
+
+                        <div class="action-calc-bar">
+                            <button type="submit" class="btn-primary btn-wave" id="contactSendBtn"><span class="btn-wave-label">Wyślij wiadomość</span></button>
+                        </div>
+
+                        <div id="contactFormStatus" class="send-status"></div>
+                    </form>
+                </div>
+            </div>
+
+            <div class="location-info">
+                <h2>NASZA LOKALIZACJA</h2>
+                <p><strong>Woojin Plaimm Przedstawicielstwo w Polsce</strong></p>
+                <p>ul. Hutnicza 6, 40-241 Katowice</p>
+            </div>
+        </div>
+
+        <div class="map-wrapper-full">
+            <iframe
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2551.0423086786854!2d19.056086776899723!3d50.25375820202931!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x4716ce48b0a7249b%3A0x6b4fbbf55776c7c0!2sHutnicza%206%2C%2040-241%20Katowice!5e0!3m2!1spl!2spl!4v1700000000000!5m2!1spl!2spl"
+                width="100%"
+                height="450"
+                style="border:0;"
+                allowfullscreen=""
+                loading="lazy"
+                referrerpolicy="no-referrer-when-downgrade">
+            </iframe>
+        </div>
+    </main>
+<!-- ================= FOOTER ================= -->
+<footer class="site-footer">
+    <div class="container">
+        <div class="footer-top">
+            <div class="footer-logo">
+                <img src="img/logo-white.png" alt="Woojin Plaimm" class="footer-logo-image">
+            </div>
+
+            <div class="footer-column">
+                <h4>Company</h4>
+                <a href="#">O nas</a>
+                <a href="#">Historia</a>
+            </div>
+
+            <div class="footer-column">
+                <h4>Products</h4>
+                <a href="#">Product Lineup</a>
+                <a href="#">Technology</a>
+            </div>
+
+            <div class="footer-column">
+                <h4>Customer</h4>
+                <a href="#">Kontakt</a>
+                <a href="#">Serwis</a>
+            </div>
+        </div>
+
+        <div class="footer-bottom">
+            <p>© 2026 WOOJIN PLAIMM Co., Ltd.</p>
+            <div class="footer-links">
+                <a href="#">Polityka prywatności</a>
+                <a href="#">Terms</a>
+            </div>
+        </div>
+    </div>
+</footer>
+
+    <script>
+        const header = document.querySelector('.site-header');
+        const logo = document.querySelector('.logo-image');
+        window.addEventListener('scroll', function () {
+            if (window.scrollY > 50) {
+                header.classList.add('scrolled');
+                logo.src = 'img/logo-black.png';
+            } else {
+                header.classList.remove('scrolled');
+                logo.src = 'img/logo-white.png';
+            }
+        });
+    </script>
+</body>
+</html>
