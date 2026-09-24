@@ -108,6 +108,30 @@
                         </div>
                     </label>
 
+                    <label class="machine-card">
+                        <input type="radio" name="machine_type" value="VHA-RS">
+                        <div class="card-body">
+                            <h3>VHA-RS <span style="color:#111; font-weight:400;">(50~200 ton)</span></h3>
+                            <span class="sub">Wtryskarka pionowa</span>
+                        </div>
+                    </label>
+
+                    <label class="machine-card">
+                        <input type="radio" name="machine_type" value="MULTI">
+                        <div class="card-body">
+                            <h3>MULTI <span style="color:#111; font-weight:400;">(130~220 ton)</span></h3>
+                            <span class="sub">Maszyna dwukolorowa</span>
+                        </div>
+                    </label>
+
+                    <label class="machine-card">
+                        <input type="radio" name="machine_type" value="Super-Foam">
+                        <div class="card-body">
+                            <h3>Super-Foam <span style="color:#111; font-weight:400;">(1800~3300 ton)</span></h3>
+                            <span class="sub">Technologia super spieniania</span>
+                        </div>
+                    </label>
+
                 </div>
 
                 <!-- Podgląd widoku 360° wybranego typu wtryskarki - nad widokiem
@@ -120,8 +144,11 @@
 
                     <div class="viewer360-stage" id="cfgViewer360Stage">
                         <img id="cfgViewer360Image" src="img/360-DL/1.png" alt="Widok 360° wtryskarki WOOJIN PLAIMM" draggable="false">
-                        <div class="viewer360-magnifier" id="cfgViewer360Magnifier"></div>
-                        <div class="viewer360-unavailable" id="cfgViewer360Unavailable">Widok 360° dla tego typu będzie dostępny wkrótce</div>
+                        <div class="cfg-viewer360-hand" id="cfgViewer360Hand" aria-hidden="true">
+                            <span class="cfg-viewer360-hand-open">🖐️</span>
+                            <span class="cfg-viewer360-hand-fist">✊</span>
+                        </div>
+                                    <div class="viewer360-unavailable" id="cfgViewer360Unavailable">Widok 360° dla tego typu będzie dostępny wkrótce</div>
                     </div>
 
                     <div class="viewer360-slider-row">
@@ -133,112 +160,142 @@
 
             <div class="btn-group">
                 <span></span>
-                <button type="button" class="btn-next" onclick="nextStep(2)">Dalej (1/4) →</button>
+                <div class="step1-next-choice">
+                    <button type="button" class="btn-next" onclick="nextStep(2, 'tech')">Kalkulator →</button>
+                    <span class="step1-next-or">lub</span>
+                    <button type="button" class="btn-next" onclick="nextStep(2, 'list')">Wybierz z listy →</button>
+                </div>
             </div>
         </div>
 
-        <!-- ============ KROK 2: DANE TECHNOLOGICZNE ============ -->
+        <!-- ============ KROK 2: SPOSÓB DOBORU WTRYSKARKI ============ -->
         <div class="step-content" id="step2">
-            <h2>Krok 2: Najważniejsze dane technologiczne</h2>
 
-            <div class="form-grid">
+            <!-- ============ ŚCIEŻKA A: DANE TECHNOLOGICZNE ============ -->
+            <div id="step2TechPath" class="step2-subview" style="display:none;">
+                <h2>Krok 2: Najważniejsze dane technologiczne</h2>
 
-                <div class="form-section">
-                    <h3>Wymiary formy</h3>
-                    <div class="form-group">
-                        <label>Długość formy [mm]</label>
-                        <input type="number" id="mold_length" min="0" placeholder="np. 400">
-                    </div>
-                    <div class="form-group">
-                        <label>Szerokość formy [mm]</label>
-                        <input type="number" id="mold_width" min="0" placeholder="np. 350">
-                    </div>
-                    <div class="form-group">
-                        <label>Dostępny prześwit między kolumnami [mm] <span class="required-star">*</span></label>
-                        <input type="number" id="tie_bar_clearance" min="0" placeholder="np. 620">
-                    </div>
-                    <div class="form-group">
-                        <label>Wysokość (grubość) formy [mm] <span class="opt-label">(opcjonalnie)</span></label>
-                        <input type="number" id="mold_height" min="0" placeholder="np. 500">
-                    </div>
-                    <div class="form-group">
-                        <label>Liczba gniazd formy (wyprasek na cykl) <span class="required-star">*</span></label>
-                        <input type="number" id="cavities" min="1" step="1" value="1">
-                    </div>
-                </div>
+                <div class="form-grid">
 
-                <div class="form-section">
-                    <h3>Wymiary wypraski</h3>
-                    <div class="form-group">
-                        <label>Masa detalu m [g] <span class="required-star">*</span></label>
-                        <input type="number" id="part_weight" min="0" step="0.01" placeholder="np. 25">
-                    </div>
-                    <div class="form-group">
-                        <label>Powierzchnia wypraski F [cm²] <span class="required-star">*</span></label>
-                        <input type="number" id="part_surface" min="0" step="0.1" placeholder="np. 45">
-                    </div>
-                    <div class="form-group">
-                        <label>Grubość ścianki [mm] <span class="opt-label">(opcjonalnie)</span></label>
-                        <input type="number" id="wall_thickness" min="0" step="0.1" placeholder="np. 2.0">
-                    </div>
-                    <div class="form-group checkbox-inline">
-                        <label><input type="checkbox" id="has_fillets"> Zaokrąglenia krawędzi</label>
-                        <label><input type="checkbox" id="has_ribs"> Żebra usztywniające</label>
-                    </div>
-                </div>
-
-                <div class="form-section">
-                    <h3>Materiał</h3>
-                    <div class="form-group">
-                        <label>Rodzaj tworzywa <span class="required-star">*</span></label>
-                        <select id="material_select" onchange="handleMaterialChange()"></select>
-                    </div>
-                    <div class="form-group density-row">
-                        <label>Gęstość wybranego tworzywa [g/cm³]</label>
-                        <div class="density-row-inner">
-                            <input type="number" step="0.01" id="density_value" readonly>
-                            <button type="button" class="btn-secondary btn-small" id="toggleCustomDensityBtn" onclick="toggleCustomDensity()">Inna gęstość</button>
+                    <div class="form-section">
+                        <h3>Wymiary formy</h3>
+                        <div class="form-group">
+                            <label>Długość formy [mm]</label>
+                            <input type="number" id="mold_length" min="0" placeholder="np. 400">
+                        </div>
+                        <div class="form-group">
+                            <label>Szerokość formy [mm]</label>
+                            <input type="number" id="mold_width" min="0" placeholder="np. 350">
+                        </div>
+                        <div class="form-group">
+                            <label>Dostępny prześwit między kolumnami [mm] <span class="required-star">*</span></label>
+                            <input type="number" id="tie_bar_clearance" min="0" placeholder="np. 620">
+                        </div>
+                        <div class="form-group">
+                            <label>Wysokość (grubość) formy [mm] <span class="opt-label">(opcjonalnie)</span></label>
+                            <input type="number" id="mold_height" min="0" placeholder="np. 500">
+                        </div>
+                        <div class="form-group">
+                            <label>Liczba gniazd formy (wyprasek na cykl) <span class="required-star">*</span></label>
+                            <input type="number" id="cavities" min="1" step="1" value="1">
                         </div>
                     </div>
-                    <div class="form-group" id="custom_density_group" style="display:none;">
-                        <label>Własna gęstość [g/cm³]</label>
-                        <input type="number" step="0.01" id="custom_density" placeholder="np. 1.15">
+
+                    <div class="form-section">
+                        <h3>Wymiary wypraski</h3>
+                        <div class="form-group">
+                            <label>Masa detalu m [g] <span class="required-star">*</span></label>
+                            <input type="number" id="part_weight" min="0" step="0.01" placeholder="np. 25">
+                        </div>
+                        <div class="form-group">
+                            <label>Powierzchnia wypraski F [cm²] <span class="required-star">*</span></label>
+                            <input type="number" id="part_surface" min="0" step="0.1" placeholder="np. 45">
+                        </div>
+                        <div class="form-group">
+                            <label>Grubość ścianki [mm] <span class="opt-label">(opcjonalnie)</span></label>
+                            <input type="number" id="wall_thickness" min="0" step="0.1" placeholder="np. 2.0">
+                        </div>
+                        <div class="form-group checkbox-inline">
+                            <label><input type="checkbox" id="has_fillets"> Zaokrąglenia krawędzi</label>
+                            <label><input type="checkbox" id="has_ribs"> Żebra usztywniające</label>
+                        </div>
                     </div>
+
+                    <div class="form-section">
+                        <h3>Materiał</h3>
+                        <div class="form-group">
+                            <label>Rodzaj tworzywa <span class="required-star">*</span></label>
+                            <select id="material_select" onchange="handleMaterialChange()"></select>
+                        </div>
+                        <div class="form-group density-row">
+                            <label>Gęstość wybranego tworzywa [g/cm³]</label>
+                            <div class="density-row-inner">
+                                <input type="number" step="0.01" id="density_value" readonly>
+                                <button type="button" class="btn-secondary btn-small" id="toggleCustomDensityBtn" onclick="toggleCustomDensity()">Inna gęstość</button>
+                            </div>
+                        </div>
+                        <div class="form-group" id="custom_density_group" style="display:none;">
+                            <label>Własna gęstość [g/cm³]</label>
+                            <input type="number" step="0.01" id="custom_density" placeholder="np. 1.15">
+                        </div>
+                        <div class="form-group">
+                            <label>Współczynnik ciśnienia w gnieździe formy k <span class="opt-label">(×100 kg/cm², typowo 3–8)</span></label>
+                            <input type="number" id="k_factor" value="6" min="1" max="12" step="0.5">
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="action-calc-bar">
+                    <button type="button" class="btn-primary btn-wave" id="calcMachineBtn" onclick="calculateAndShowModels()"><span class="btn-wave-label">DOBIERZ WTRYSKARKĘ</span></button>
+                </div>
+
+                <div id="calcError" class="calc-error" style="display:none;"></div>
+
+                <div class="results-box" id="resultsSection" style="display:none;">
+                    <div class="calc-details" id="calcDetails"></div>
                     <div class="form-group">
-                        <label>Współczynnik ciśnienia w gnieździe formy k <span class="opt-label">(×100 kg/cm², typowo 3–8)</span></label>
-                        <input type="number" id="k_factor" value="6" min="1" max="12" step="0.5">
+                        <label>Wybierz konkretny model i wielkość agregatu wtryskowego</label>
+                        <select id="selected_machine_model" class="large-select"></select>
                     </div>
                 </div>
 
-            </div>
-
-            <div class="action-calc-bar">
-                <button type="button" class="btn-primary btn-wave" id="calcMachineBtn" onclick="calculateAndShowModels()"><span class="btn-wave-label">DOBIERZ WTRYSKARKĘ</span></button>
-            </div>
-
-            <div id="calcError" class="calc-error" style="display:none;"></div>
-
-            <div class="results-box" id="resultsSection" style="display:none;">
-                <div class="calc-details" id="calcDetails"></div>
-                <div class="form-group">
-                    <label>Wybierz konkretny model i wielkość agregatu wtryskowego</label>
-                    <select id="selected_machine_model" class="large-select"></select>
+                <div class="btn-group">
+                    <button type="button" class="btn-prev" onclick="nextStep(1)">← Wstecz</button>
+                    <button type="button" class="btn-next" onclick="nextStep(3)">Dalej →</button>
                 </div>
             </div>
 
-            <div class="btn-group">
-                <button type="button" class="btn-prev" onclick="nextStep(1)">← Wstecz</button>
-                <button type="button" class="btn-next" onclick="nextStep(3)">Dalej (2/4) →</button>
+            <!-- ============ ŚCIEŻKA B: WYBÓR Z LISTY ============ -->
+            <div id="step2ListPath" class="step2-subview" style="display:none;">
+                <h2>Krok 2: Proszę wybrać z listy</h2>
+
+                <div class="step2-list-layout">
+                    <div class="step2-list-items" id="step2ListItems"></div>
+                    <div class="step2-list-specs" id="step2ListSpecs">
+                        <p class="step2-list-specs-placeholder">Wybierz wtryskarkę z listy po lewej, aby zobaczyć jej najważniejsze dane.</p>
+                    </div>
+                    <div class="step2-units-flyout" id="step2UnitsFlyout"></div>
+                </div>
+
+                <div id="step2ListError" class="calc-error" style="display:none;"></div>
+
+                <div class="btn-group">
+                    <button type="button" class="btn-prev" onclick="nextStep(1)">← Wstecz</button>
+                    <button type="button" class="btn-next" onclick="goToStep3FromList()">Dalej →</button>
+                </div>
             </div>
+
         </div>
 
         <!-- ============ KROK 3: WYPOSAŻENIE I OPCJE ============ -->
         <div class="step-content" id="step3">
             <h2>Krok 3: Wyposażenie standardowe i opcje dodatkowe</h2>
 
-            <div class="machine-highlight-box" id="step3MachineHighlight"></div>
-
-            <h3>Wyposażenie standardowe</h3>
+            <!-- Nazwy wybranych wtryskarek (z ich średnicą ślimaka) wypisywane wprost
+                 w nagłówku, zamiast wyróżnionego paska - patrz populateStep3() w
+                 script.js (kilka maszyn naraz oddzielonych znakiem "//"). -->
+            <h3>Wyposażenie standardowe: <span class="step3-std-machines-list" id="step3StdMachinesList"></span></h3>
             <div class="options-columns-grid">
                 <div class="option-col">
                     <h4>Injection Unit</h4>
@@ -256,25 +313,17 @@
 
             <hr class="divider">
 
-            <h3>Opcje dodatkowe (do wyboru)</h3>
-            <div class="options-columns-grid">
-                <div class="option-col">
-                    <h4>Injection Unit</h4>
-                    <div class="checkbox-grid" id="opt_injection_unit"></div>
-                </div>
-                <div class="option-col">
-                    <h4>Clamping Unit</h4>
-                    <div class="checkbox-grid" id="opt_clamping_unit"></div>
-                </div>
-                <div class="option-col">
-                    <h4>General</h4>
-                    <div class="checkbox-grid" id="opt_general"></div>
-                </div>
-            </div>
+            <h3>Opcje dodatkowe (do wyboru):</h3>
+            <!-- Wypełniane w script.js (renderStep3OptionsContainer) - jeden blok na
+                 każdą wybraną wtryskarkę: pierwsza ma opcje zawsze widoczne, kolejne
+                 (jeśli klient wybrał więcej niż jeden model w Kroku 2) - domyślnie
+                 zwinięte, rozwijane tym samym pulsującym trójkątem co "Pokaż pełną
+                 specyfikację techniczną" w Kroku 2. -->
+            <div id="step3OptionsContainer"></div>
 
             <div class="btn-group">
                 <button type="button" class="btn-prev" onclick="nextStep(2)">← Wstecz</button>
-                <button type="button" class="btn-next" onclick="nextStep(4)">Dalej (3/4) →</button>
+                <button type="button" class="btn-next" onclick="nextStep(4)">Dalej →</button>
             </div>
         </div>
 
@@ -282,8 +331,9 @@
         <div class="step-content" id="step4">
             <h2>Krok 4: Podsumowanie konfiguracji</h2>
 
-            <div class="machine-highlight-box" id="step4MachineHighlight"></div>
-
+            <!-- Wypełniane w script.js (populateStep4Summary) - podsumowanie z
+                 podziałem na każdą wybraną wtryskarkę osobno, z możliwością
+                 edycji jej opcji dodatkowych (przycisk "Edytuj" wraca do Kroku 3). -->
             <div class="summary-box" id="summaryView"></div>
 
             <h3>Dane kontaktowe</h3>
@@ -324,7 +374,7 @@
             </div>
 
             <div class="confirm-box" id="confirmSendBox" style="display:none;">
-                <p>Czy na pewno chcesz wysłać tę konfigurację na adres <strong>mczekalik@wjpim.com</strong> oraz kopię na podany adres e-mail? Możesz jeszcze poprawić dane w formularzu powyżej.</p>
+                <p>Czy na pewno chcesz wysłać tę konfigurację? Możesz jeszcze poprawić dane w formularzu powyżej.</p>
                 <div class="btn-group confirm-actions">
                     <button type="button" class="btn-secondary" onclick="cancelSendEmail()">Popraw dane</button>
                     <button type="button" class="btn-primary" onclick="confirmSendEmail()">Tak, wyślij</button>

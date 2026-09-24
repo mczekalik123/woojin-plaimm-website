@@ -146,10 +146,36 @@ document.addEventListener("DOMContentLoaded", function () {
 // Aby aktywować wysyłkę e-mail bez pośrednictwa klienta pocztowego,
 // należy założyć darmowe konto na https://www.emailjs.com, skonfigurować
 // tam "Service" (np. połączony ze skrzynką mczekalik@wjpim.com) oraz
-// "Email Template" (pola: to_email, from_name, from_email, message...),
-// a następnie podstawić właściwe identyfikatory poniżej, w sekcji
+// "Email Template" (treść wklejona z pliku emailjs_szablon.html), a
+// następnie podstawić właściwe identyfikatory poniżej, w sekcji
 // EMAILJS_CONFIG. Bez tego przycisk "WYŚLIJ KONFIGURACJĘ" pokaże
 // czytelny komunikat o braku konfiguracji zamiast realnej wysyłki.
+//
+// WAŻNE - kopia dla klienta (CC): treść e-maila zawiera zmienną
+// {{client_copy_email}} (adres podany przez klienta w formularzu), ale samo
+// jej użycie w TREŚCI szablonu nic nie wysyła - to tylko wyświetlana
+// informacja. Żeby klient faktycznie dostał kopię, w panelu EmailJS, w
+// ustawieniach danego szablonu (zakładka "Settings", nie "Content"), w polu
+// "Cc" (lub "Bcc") trzeba wpisać dokładnie: {{client_copy_email}} - dopiero
+// to sprawia, że EmailJS realnie wysyła kopię pod ten adres. Pole "To Email"
+// w tych samych ustawieniach powinno mieć wartość {{to_email}}.
+//
+// Zmienne przekazywane teraz do szablonu (patrz confirmSendEmail() poniżej):
+// machines_html - gotowy HTML z osobną "kartą" dla KAŻDEJ wybranej
+// wtryskarki (model, średnica ślimaka, ilość, jej własne opcje dodatkowe) -
+// obsługuje dowolną liczbę maszyn, nie tylko jedną. tech_details_html -
+// gotowy HTML z danymi technologicznymi (wymiary formy, materiał, masy,
+// wymagana siła zwarcia itd.), albo krótką informacją o wyborze z listy,
+// gdy dane technologiczne nie zostały wprowadzone - dokładnie to samo, co
+// widać w Kroku 4 na stronie. Aby zmiany w wyglądzie tych fragmentów były
+// widoczne w e-mailu, edytuje się je w script.js (funkcje
+// buildMachineEmailCardHtml i buildTechDetailsEmailHtml), a NIE w treści
+// szablonu w panelu EmailJS - tam wystarczy, że w odpowiednim miejscu
+// zostają tokeny {{{machines_html}}} i {{{tech_details_html}}} (patrz
+// emailjs_szablon.html). WAŻNE: koniecznie POTRÓJNE nawiasy klamrowe
+// {{{ }}}, nie zwykłe {{ }} - EmailJS domyślnie eskejpuje HTML w zwykłych
+// {{ }} (podobnie jak Handlebars), więc zamiast wyrenderowanych "kart" w
+// mailu pojawiłby się surowy kod HTML jako zwykły tekst.
 // =====================================================================
 
 const EMAILJS_CONFIG = {
@@ -316,12 +342,512 @@ const machineData = {
 };
 
 // =====================================================================
+// SZCZEGOLOWE DANE TECHNOLOGICZNE WTRYSKAREK (Krok 2: "Wybierz z listy")
+// =====================================================================
+// Pelne dane techniczne z katalogow producenta (DL-A5, TH-A5, TE-A5,
+// TL-A5), w podziale na 3 kolumny zgodnie z ukladem katalogow: Injection
+// Unit / Clamping Unit / General. Klucze najwyzszego poziomu = dokladne
+// nazwy modeli z machineData.models[].name, a klucze w "units" = dokladne
+// stringi z machineData.models[].units[] (zeby dobor po liscie mogl
+// bezposrednio odpytac te dane bez dodatkowego parsowania).
+//
+// Pole `null` oznacza, ze dany parametr nie wystepuje w katalogu dla tej
+// serii maszyn (np. TE-A5 - maszyna elektryczna - nie ma zbiornika oleju
+// hydraulicznego; DL-A5 nie ma osobnego wiersza "Max. Daylight"; TL-A5,
+// jako konstrukcja bezkolumnowa, nie ma "tie bar distance" itd.) -
+// renderStep2Specs() pomija wiersze z wartoscia null.
+
+const machineTechSpecs = {
+    "DL450A5": {
+        clamping: { clampingForce: "450(4413)", moldOpeningForce: "34(331)", tieBarDistance: "860x810", platenDimension: "1240x1190", daylight: 1450, maxDaylight: null, minMoldHeight: 350, maxMoldHeight: 800, ejectorForce: "11.1(108.9)", ejectorStroke: 200, dryCycleTime: 3.3, maxMoldWeight: "3.5/3.5/5.0" },
+        units: {
+            "IH2800 O(65mm)": { injection: { injHoldingPressureKgcm2: null, injHoldingPressureMpa: null, injRateOptional: null, injSpeedOptional: null, screwDiameter: 65, injPressureKgcm2: 2191, injPressureMpa: 215, theoInjVolume: 1278, shotWeight: 1177, injRate: 407, screwStroke: 385, injSpeed: 123, plasticizingCapacity: 207, screwRotationSpeed: 180 }, general: { motorCapacity: 65.2, motorCapacityOptional: null, heaterCapacity: 18.4, totalElectricPower: 83.6, totalElectricPowerHigh: null, hydraulicOilTank: 600, coolingWater: 130, machineWeight: "19(13.5+5.5)", machineDimension: "7.6x2.4x2.2" } },
+            "IH2800 A(70mm)": { injection: { injHoldingPressureKgcm2: null, injHoldingPressureMpa: null, injRateOptional: null, injSpeedOptional: null, screwDiameter: 70, injPressureKgcm2: 1889, injPressureMpa: 185, theoInjVolume: 1482, shotWeight: 1365, injRate: 472, screwStroke: 385, injSpeed: 123, plasticizingCapacity: 252, screwRotationSpeed: 180 }, general: { motorCapacity: 65.2, motorCapacityOptional: null, heaterCapacity: 20.6, totalElectricPower: 85.8, totalElectricPowerHigh: null, hydraulicOilTank: 600, coolingWater: 130, machineWeight: "19(13.5+5.5)", machineDimension: "7.6x2.4x2.2" } },
+            "IH2800 B(80mm)": { injection: { injHoldingPressureKgcm2: null, injHoldingPressureMpa: null, injRateOptional: null, injSpeedOptional: null, screwDiameter: 80, injPressureKgcm2: 1446, injPressureMpa: 142, theoInjVolume: 1935, shotWeight: 1783, injRate: 617, screwStroke: 385, injSpeed: 123, plasticizingCapacity: 358, screwRotationSpeed: 180 }, general: { motorCapacity: 65.2, motorCapacityOptional: null, heaterCapacity: 24.1, totalElectricPower: 89.3, totalElectricPowerHigh: null, hydraulicOilTank: 600, coolingWater: 130, machineWeight: "19(13.5+5.5)", machineDimension: "7.6x2.4x2.2" } }
+        }
+    },
+
+    "DL500A5": {
+        clamping: { clampingForce: "500(4903)", moldOpeningForce: "38(368)", tieBarDistance: "920x830", platenDimension: "1280x1260", daylight: 1650, maxDaylight: null, minMoldHeight: 350, maxMoldHeight: 900, ejectorForce: "11.1(108.9)", ejectorStroke: 200, dryCycleTime: 3.3, maxMoldWeight: "5.3/5.3/8.0" },
+        units: {
+            "IH2800 O(65mm)": { injection: { injHoldingPressureKgcm2: null, injHoldingPressureMpa: null, injRateOptional: null, injSpeedOptional: null, screwDiameter: 65, injPressureKgcm2: 2191, injPressureMpa: 215, theoInjVolume: 1278, shotWeight: 1177, injRate: 407, screwStroke: 385, injSpeed: 123, plasticizingCapacity: 207, screwRotationSpeed: 180 }, general: { motorCapacity: 65.2, motorCapacityOptional: null, heaterCapacity: 18.4, totalElectricPower: 83.6, totalElectricPowerHigh: null, hydraulicOilTank: 600, coolingWater: 130, machineWeight: "19(13.5+5.5)", machineDimension: "7.9x2.7x2.2" } },
+            "IH2800 A(70mm)": { injection: { injHoldingPressureKgcm2: null, injHoldingPressureMpa: null, injRateOptional: null, injSpeedOptional: null, screwDiameter: 70, injPressureKgcm2: 1889, injPressureMpa: 185, theoInjVolume: 1482, shotWeight: 1365, injRate: 472, screwStroke: 385, injSpeed: 123, plasticizingCapacity: 252, screwRotationSpeed: 180 }, general: { motorCapacity: 65.2, motorCapacityOptional: null, heaterCapacity: 20.6, totalElectricPower: 85.8, totalElectricPowerHigh: null, hydraulicOilTank: 600, coolingWater: 130, machineWeight: "19(13.5+5.5)", machineDimension: "7.9x2.7x2.2" } },
+            "IH2800 B(80mm)": { injection: { injHoldingPressureKgcm2: null, injHoldingPressureMpa: null, injRateOptional: null, injSpeedOptional: null, screwDiameter: 80, injPressureKgcm2: 1446, injPressureMpa: 142, theoInjVolume: 1935, shotWeight: 1783, injRate: 617, screwStroke: 385, injSpeed: 123, plasticizingCapacity: 358, screwRotationSpeed: 180 }, general: { motorCapacity: 65.2, motorCapacityOptional: null, heaterCapacity: 24.1, totalElectricPower: 89.3, totalElectricPowerHigh: null, hydraulicOilTank: 600, coolingWater: 130, machineWeight: "19(13.5+5.5)", machineDimension: "7.9x2.7x2.2" } }
+        }
+    },
+
+    "DL600A5": {
+        clamping: { clampingForce: "600(5884)", moldOpeningForce: "45(441)", tieBarDistance: "1040x910", platenDimension: "1420x1370", daylight: 1750, maxDaylight: null, minMoldHeight: 400, maxMoldHeight: 950, ejectorForce: "16.6(162.8)", ejectorStroke: 220, dryCycleTime: 3.3, maxMoldWeight: "6.7/6.7/10.0" },
+        units: {
+            "IH4200 O(70mm)": { injection: { injHoldingPressureKgcm2: null, injHoldingPressureMpa: null, injRateOptional: null, injSpeedOptional: null, screwDiameter: 70, injPressureKgcm2: 2465, injPressureMpa: 242, theoInjVolume: 1693, shotWeight: 1560, injRate: 461, screwStroke: 440, injSpeed: 120, plasticizingCapacity: 231, screwRotationSpeed: 165 }, general: { motorCapacity: 87.6, motorCapacityOptional: null, heaterCapacity: 23, totalElectricPower: 110.6, totalElectricPowerHigh: null, hydraulicOilTank: 800, coolingWater: 130, machineWeight: "26(17+9)", machineDimension: "8.1x2.9x2.2" } },
+            "IH4200 A(80mm)": { injection: { injHoldingPressureKgcm2: null, injHoldingPressureMpa: null, injRateOptional: null, injSpeedOptional: null, screwDiameter: 80, injPressureKgcm2: 1887, injPressureMpa: 185, theoInjVolume: 2212, shotWeight: 2038, injRate: 602, screwStroke: 440, injSpeed: 120, plasticizingCapacity: 328, screwRotationSpeed: 165 }, general: { motorCapacity: 87.6, motorCapacityOptional: null, heaterCapacity: 26.7, totalElectricPower: 114.3, totalElectricPowerHigh: null, hydraulicOilTank: 800, coolingWater: 130, machineWeight: "26(17+9)", machineDimension: "8.1x2.9x2.2" } },
+            "IH4200 B(90mm)": { injection: { injHoldingPressureKgcm2: null, injHoldingPressureMpa: null, injRateOptional: null, injSpeedOptional: null, screwDiameter: 90, injPressureKgcm2: 1491, injPressureMpa: 146, theoInjVolume: 2799, shotWeight: 2579, injRate: 762, screwStroke: 440, injSpeed: 120, plasticizingCapacity: 449, screwRotationSpeed: 165 }, general: { motorCapacity: 87.6, motorCapacityOptional: null, heaterCapacity: 30.7, totalElectricPower: 118.3, totalElectricPowerHigh: null, hydraulicOilTank: 800, coolingWater: 130, machineWeight: "26(17+9)", machineDimension: "8.1x2.9x2.2" } }
+        }
+    },
+
+    "DL700A5": {
+        clamping: { clampingForce: "700(6865)", moldOpeningForce: "53(515)", tieBarDistance: "1110x1010", platenDimension: "1520x1490", daylight: 1850, maxDaylight: null, minMoldHeight: 450, maxMoldHeight: 950, ejectorForce: "19.8(194.2)", ejectorStroke: 250, dryCycleTime: 3.3, maxMoldWeight: "7.3/7.3/11.0" },
+        units: {
+            "IH5900 O(80mm)": { injection: { injHoldingPressureKgcm2: null, injHoldingPressureMpa: null, injRateOptional: null, injSpeedOptional: null, screwDiameter: 80, injPressureKgcm2: 2386, injPressureMpa: 234, theoInjVolume: 2488, shotWeight: 2293, injRate: 603, screwStroke: 495, injSpeed: 120, plasticizingCapacity: 298, screwRotationSpeed: 150 }, general: { motorCapacity: 87.6, motorCapacityOptional: null, heaterCapacity: 29.4, totalElectricPower: 117, totalElectricPowerHigh: null, hydraulicOilTank: 800, coolingWater: 130, machineWeight: "32(21.5+10.5)", machineDimension: "8.4x3.1x2.4" } },
+            "IH5900 A(90mm)": { injection: { injHoldingPressureKgcm2: null, injHoldingPressureMpa: null, injRateOptional: null, injSpeedOptional: null, screwDiameter: 90, injPressureKgcm2: 1885, injPressureMpa: 185, theoInjVolume: 3149, shotWeight: 2902, injRate: 763, screwStroke: 495, injSpeed: 120, plasticizingCapacity: 408, screwRotationSpeed: 150 }, general: { motorCapacity: 87.6, motorCapacityOptional: null, heaterCapacity: 33.6, totalElectricPower: 121.2, totalElectricPowerHigh: null, hydraulicOilTank: 800, coolingWater: 130, machineWeight: "32(21.5+10.5)", machineDimension: "8.4x3.1x2.4" } },
+            "IH5900 B(105mm)": { injection: { injHoldingPressureKgcm2: null, injHoldingPressureMpa: null, injRateOptional: null, injSpeedOptional: null, screwDiameter: 105, injPressureKgcm2: 1385, injPressureMpa: 136, theoInjVolume: 4286, shotWeight: 3950, injRate: 1039, screwStroke: 495, injSpeed: 120, plasticizingCapacity: 619, screwRotationSpeed: 150 }, general: { motorCapacity: 87.6, motorCapacityOptional: null, heaterCapacity: 39.3, totalElectricPower: 126.9, totalElectricPowerHigh: null, hydraulicOilTank: 800, coolingWater: 130, machineWeight: "32(21.5+10.5)", machineDimension: "8.4x3.1x2.4" } }
+        }
+    },
+
+    "DL900A5": {
+        clamping: { clampingForce: "900(8826)", moldOpeningForce: "68(662)", tieBarDistance: "1200x1120", platenDimension: "1720x1610", daylight: 2100, maxDaylight: null, minMoldHeight: 500, maxMoldHeight: 1100, ejectorForce: "26.9(263.8)", ejectorStroke: 250, dryCycleTime: 4, maxMoldWeight: "8.6/8.6/13.0" },
+        units: {
+            "IH8800 O(95mm)": { injection: { injHoldingPressureKgcm2: null, injHoldingPressureMpa: null, injRateOptional: null, injSpeedOptional: null, screwDiameter: 95, injPressureKgcm2: 2145, injPressureMpa: 210, theoInjVolume: 4111, shotWeight: 3788, injRate: 852, screwStroke: 580, injSpeed: 120, plasticizingCapacity: 393, screwRotationSpeed: 125 }, general: { motorCapacity: 110, motorCapacityOptional: null, heaterCapacity: 39.7, totalElectricPower: 149.7, totalElectricPowerHigh: null, hydraulicOilTank: 920, coolingWater: 180, machineWeight: "41(29+12)", machineDimension: "9.7x3.4x2.5" } },
+            "IH8800 A(105mm)": { injection: { injHoldingPressureKgcm2: null, injHoldingPressureMpa: null, injRateOptional: null, injSpeedOptional: null, screwDiameter: 105, injPressureKgcm2: 1756, injPressureMpa: 172, theoInjVolume: 5022, shotWeight: 4628, injRate: 1041, screwStroke: 580, injSpeed: 120, plasticizingCapacity: 515, screwRotationSpeed: 125 }, general: { motorCapacity: 110, motorCapacityOptional: null, heaterCapacity: 44.7, totalElectricPower: 154.7, totalElectricPowerHigh: null, hydraulicOilTank: 920, coolingWater: 180, machineWeight: "41(29+12)", machineDimension: "9.7x3.4x2.5" } },
+            "IH8800 B(115mm)": { injection: { injHoldingPressureKgcm2: null, injHoldingPressureMpa: null, injRateOptional: null, injSpeedOptional: null, screwDiameter: 115, injPressureKgcm2: 1464, injPressureMpa: 144, theoInjVolume: 6024, shotWeight: 5551, injRate: 1248, screwStroke: 580, injSpeed: 120, plasticizingCapacity: 660, screwRotationSpeed: 125 }, general: { motorCapacity: 110, motorCapacityOptional: null, heaterCapacity: 49.4, totalElectricPower: 159.4, totalElectricPowerHigh: null, hydraulicOilTank: 920, coolingWater: 180, machineWeight: "41(29+12)", machineDimension: "9.7x3.4x2.5" } }
+        }
+    },
+
+    "DL1100A5": {
+        clamping: { clampingForce: "1100(10787)", moldOpeningForce: "83(809)", tieBarDistance: "1420x1170", platenDimension: "1870x1820", daylight: 2400, maxDaylight: null, minMoldHeight: 600, maxMoldHeight: 1200, ejectorForce: "26.9(263.8)", ejectorStroke: 250, dryCycleTime: 4.4, maxMoldWeight: "14.0/14.0/21.0" },
+        units: {
+            "IH8800 O(95mm)": { injection: { injHoldingPressureKgcm2: null, injHoldingPressureMpa: null, injRateOptional: null, injSpeedOptional: null, screwDiameter: 95, injPressureKgcm2: 2145, injPressureMpa: 210, theoInjVolume: 4111, shotWeight: 3788, injRate: 852, screwStroke: 580, injSpeed: 120, plasticizingCapacity: 393, screwRotationSpeed: 125 }, general: { motorCapacity: 110, motorCapacityOptional: null, heaterCapacity: 39.7, totalElectricPower: 149.7, totalElectricPowerHigh: null, hydraulicOilTank: 920, coolingWater: 180, machineWeight: "50(37.5+12.5)", machineDimension: "9.9x3.6x2.7" } },
+            "IH8800 A(105mm)": { injection: { injHoldingPressureKgcm2: null, injHoldingPressureMpa: null, injRateOptional: null, injSpeedOptional: null, screwDiameter: 105, injPressureKgcm2: 1756, injPressureMpa: 172, theoInjVolume: 5022, shotWeight: 4628, injRate: 1041, screwStroke: 580, injSpeed: 120, plasticizingCapacity: 515, screwRotationSpeed: 125 }, general: { motorCapacity: 110, motorCapacityOptional: null, heaterCapacity: 44.7, totalElectricPower: 154.7, totalElectricPowerHigh: null, hydraulicOilTank: 920, coolingWater: 180, machineWeight: "50(37.5+12.5)", machineDimension: "9.9x3.6x2.7" } },
+            "IH8800 B(115mm)": { injection: { injHoldingPressureKgcm2: null, injHoldingPressureMpa: null, injRateOptional: null, injSpeedOptional: null, screwDiameter: 115, injPressureKgcm2: 1464, injPressureMpa: 144, theoInjVolume: 6024, shotWeight: 5551, injRate: 1248, screwStroke: 580, injSpeed: 120, plasticizingCapacity: 660, screwRotationSpeed: 125 }, general: { motorCapacity: 110, motorCapacityOptional: null, heaterCapacity: 49.4, totalElectricPower: 159.4, totalElectricPowerHigh: null, hydraulicOilTank: 920, coolingWater: 180, machineWeight: "50(37.5+12.5)", machineDimension: "9.9x3.6x2.7" } }
+        }
+    },
+
+    "DL1300A5": {
+        clamping: { clampingForce: "1300(12749)", moldOpeningForce: "98(956)", tieBarDistance: "1580x1280", platenDimension: "2230x1990", daylight: 3050, maxDaylight: null, minMoldHeight: 700, maxMoldHeight: 1400, ejectorForce: "34.4(337.3)", ejectorStroke: 300, dryCycleTime: 5, maxMoldWeight: "20.0/20.0/30.0" },
+        units: {
+            "IH11900 A(115mm)": { injection: { injHoldingPressureKgcm2: null, injHoldingPressureMpa: null, injRateOptional: null, injSpeedOptional: null, screwDiameter: 115, injPressureKgcm2: 1809, injPressureMpa: 177, theoInjVolume: 6544, shotWeight: 6030, injRate: 1249, screwStroke: 630, injSpeed: 120, plasticizingCapacity: 607, screwRotationSpeed: 115 }, general: { motorCapacity: 142.6, motorCapacityOptional: null, heaterCapacity: 54.7, totalElectricPower: 197.3, totalElectricPowerHigh: null, hydraulicOilTank: 1150, coolingWater: 180, machineWeight: "72(55+17)", machineDimension: "11.3x3.9x2.9" } },
+            "IH11900 B(125mm)": { injection: { injHoldingPressureKgcm2: null, injHoldingPressureMpa: null, injRateOptional: null, injSpeedOptional: null, screwDiameter: 125, injPressureKgcm2: 1531, injPressureMpa: 150, theoInjVolume: 7731, shotWeight: 7124, injRate: 1475, screwStroke: 630, injSpeed: 120, plasticizingCapacity: 757, screwRotationSpeed: 115 }, general: { motorCapacity: 142.6, motorCapacityOptional: null, heaterCapacity: 58.1, totalElectricPower: 200.7, totalElectricPowerHigh: null, hydraulicOilTank: 1150, coolingWater: 180, machineWeight: "72(55+17)", machineDimension: "11.3x3.9x2.9" } }
+        }
+    },
+
+    "DL1800A5": {
+        clamping: { clampingForce: "1800(17652)", moldOpeningForce: "135(1324)", tieBarDistance: "1850x1610", platenDimension: "2450x2200", daylight: 3400, maxDaylight: null, minMoldHeight: 700, maxMoldHeight: 1600, ejectorForce: "44.5(436.4)", ejectorStroke: 300, dryCycleTime: 5.8, maxMoldWeight: "30.0/30.0/45.0" },
+        units: {
+            "IH15300 A(125mm)": { injection: { injHoldingPressureKgcm2: null, injHoldingPressureMpa: null, injRateOptional: null, injSpeedOptional: null, screwDiameter: 125, injPressureKgcm2: 1814, injPressureMpa: 178, theoInjVolume: 8406, shotWeight: 7746, injRate: 1296, screwStroke: 685, injSpeed: 106, plasticizingCapacity: 692, screwRotationSpeed: 105 }, general: { motorCapacity: 142.6, motorCapacityOptional: null, heaterCapacity: 61.6, totalElectricPower: 204.2, totalElectricPowerHigh: null, hydraulicOilTank: 1450, coolingWater: 180, machineWeight: "89(70+19)", machineDimension: "12.8x4.2x3.4" } },
+            "IH15300 B(140mm)": { injection: { injHoldingPressureKgcm2: null, injHoldingPressureMpa: null, injRateOptional: null, injSpeedOptional: null, screwDiameter: 140, injPressureKgcm2: 1446, injPressureMpa: 142, theoInjVolume: 10545, shotWeight: 9717, injRate: 1626, screwStroke: 685, injSpeed: 106, plasticizingCapacity: 939, screwRotationSpeed: 105 }, general: { motorCapacity: 142.6, motorCapacityOptional: null, heaterCapacity: 70.8, totalElectricPower: 213.4, totalElectricPowerHigh: null, hydraulicOilTank: 1450, coolingWater: 180, machineWeight: "89(70+19)", machineDimension: "12.8x4.2x3.4" } }
+        }
+    },
+
+    "DL2000A5": {
+        clamping: { clampingForce: "2000(19613)", moldOpeningForce: "150(1471)", tieBarDistance: "2020x1610", platenDimension: "2600x2250", daylight: 3600, maxDaylight: null, minMoldHeight: 800, maxMoldHeight: 1700, ejectorForce: "44.5(436.4)", ejectorStroke: 300, dryCycleTime: 5.8, maxMoldWeight: "41.0/41.0/62.0" },
+        units: {
+            "IH15300 A(125mm)": { injection: { injHoldingPressureKgcm2: null, injHoldingPressureMpa: null, injRateOptional: null, injSpeedOptional: null, screwDiameter: 125, injPressureKgcm2: 1814, injPressureMpa: 178, theoInjVolume: 8406, shotWeight: 7746, injRate: 1296, screwStroke: 685, injSpeed: 106, plasticizingCapacity: 692, screwRotationSpeed: 105 }, general: { motorCapacity: 142.6, motorCapacityOptional: null, heaterCapacity: 61.6, totalElectricPower: 204.2, totalElectricPowerHigh: null, hydraulicOilTank: 1450, coolingWater: 180, machineWeight: "115(96+19)", machineDimension: "13.1x4.5x3.4" } },
+            "IH15300 B(140mm)": { injection: { injHoldingPressureKgcm2: null, injHoldingPressureMpa: null, injRateOptional: null, injSpeedOptional: null, screwDiameter: 140, injPressureKgcm2: 1446, injPressureMpa: 142, theoInjVolume: 10545, shotWeight: 9717, injRate: 1626, screwStroke: 685, injSpeed: 106, plasticizingCapacity: 939, screwRotationSpeed: 105 }, general: { motorCapacity: 142.6, motorCapacityOptional: null, heaterCapacity: 70.8, totalElectricPower: 213.4, totalElectricPowerHigh: null, hydraulicOilTank: 1450, coolingWater: 180, machineWeight: "115(96+19)", machineDimension: "13.1x4.5x3.4" } }
+        }
+    },
+
+    "DL2300A5": {
+        clamping: { clampingForce: "2300(22555)", moldOpeningForce: "173(1692)", tieBarDistance: "2020x1610", platenDimension: "2600x2250", daylight: 3600, maxDaylight: null, minMoldHeight: 800, maxMoldHeight: 1700, ejectorForce: "44.5(436.4)", ejectorStroke: 300, dryCycleTime: 5.8, maxMoldWeight: "41.0/41.0/62.0" },
+        units: {
+            "IH15300 A(125mm)": { injection: { injHoldingPressureKgcm2: null, injHoldingPressureMpa: null, injRateOptional: null, injSpeedOptional: null, screwDiameter: 125, injPressureKgcm2: 1814, injPressureMpa: 178, theoInjVolume: 8406, shotWeight: 7746, injRate: 1296, screwStroke: 685, injSpeed: 106, plasticizingCapacity: 692, screwRotationSpeed: 105 }, general: { motorCapacity: 142.6, motorCapacityOptional: null, heaterCapacity: 61.6, totalElectricPower: 204.2, totalElectricPowerHigh: null, hydraulicOilTank: 1450, coolingWater: 180, machineWeight: "115(96+19)", machineDimension: "13.1x4.5x3.4" } },
+            "IH15300 B(140mm)": { injection: { injHoldingPressureKgcm2: null, injHoldingPressureMpa: null, injRateOptional: null, injSpeedOptional: null, screwDiameter: 140, injPressureKgcm2: 1446, injPressureMpa: 142, theoInjVolume: 10545, shotWeight: 9717, injRate: 1626, screwStroke: 685, injSpeed: 106, plasticizingCapacity: 939, screwRotationSpeed: 105 }, general: { motorCapacity: 142.6, motorCapacityOptional: null, heaterCapacity: 70.8, totalElectricPower: 213.4, totalElectricPowerHigh: null, hydraulicOilTank: 1450, coolingWater: 180, machineWeight: "115(96+19)", machineDimension: "13.1x4.5x3.4" } }
+        }
+    },
+
+    "DL2500A5": {
+        clamping: { clampingForce: "2500(24517)", moldOpeningForce: "188(1839)", tieBarDistance: "2180x1760", platenDimension: "3020x2610", daylight: 3900, maxDaylight: null, minMoldHeight: 900, maxMoldHeight: 2000, ejectorForce: "67.8(664.9)", ejectorStroke: 350, dryCycleTime: 8.2, maxMoldWeight: "50.0/50.0/75.0" },
+        units: {
+            "IH21500 A(140mm)": { injection: { injHoldingPressureKgcm2: null, injHoldingPressureMpa: null, injRateOptional: null, injSpeedOptional: null, screwDiameter: 140, injPressureKgcm2: 1816, injPressureMpa: 178, theoInjVolume: 11853, shotWeight: 10923, injRate: 1537, screwStroke: 770, injSpeed: 100, plasticizingCapacity: 850, screwRotationSpeed: 95 }, general: { motorCapacity: 165, motorCapacityOptional: null, heaterCapacity: 78.4, totalElectricPower: 243.4, totalElectricPowerHigh: null, hydraulicOilTank: 1650, coolingWater: 240, machineWeight: "143(121+22)", machineDimension: "14.9x4.7x3.7" } },
+            "IH21500 B(160mm)": { injection: { injHoldingPressureKgcm2: null, injHoldingPressureMpa: null, injRateOptional: null, injSpeedOptional: null, screwDiameter: 160, injPressureKgcm2: 1391, injPressureMpa: 136, theoInjVolume: 15482, shotWeight: 14266, injRate: 2007, screwStroke: 770, injSpeed: 100, plasticizingCapacity: 1218, screwRotationSpeed: 95 }, general: { motorCapacity: 165, motorCapacityOptional: null, heaterCapacity: 93.1, totalElectricPower: 258.1, totalElectricPowerHigh: null, hydraulicOilTank: 1650, coolingWater: 240, machineWeight: "143(121+22)", machineDimension: "14.9x4.7x3.7" } }
+        }
+    },
+
+    "DL2700A5": {
+        clamping: { clampingForce: "2700(26478)", moldOpeningForce: "203(1986)", tieBarDistance: "2180x1760", platenDimension: "3020x2610", daylight: 3900, maxDaylight: null, minMoldHeight: 900, maxMoldHeight: 2000, ejectorForce: "67.8(664.9)", ejectorStroke: 350, dryCycleTime: 8.2, maxMoldWeight: "50.0/50.0/75.0" },
+        units: {
+            "IH21500 A(140mm)": { injection: { injHoldingPressureKgcm2: null, injHoldingPressureMpa: null, injRateOptional: null, injSpeedOptional: null, screwDiameter: 140, injPressureKgcm2: 1816, injPressureMpa: 178, theoInjVolume: 11853, shotWeight: 10923, injRate: 1537, screwStroke: 770, injSpeed: 100, plasticizingCapacity: 850, screwRotationSpeed: 95 }, general: { motorCapacity: 165, motorCapacityOptional: null, heaterCapacity: 78.4, totalElectricPower: 243.4, totalElectricPowerHigh: null, hydraulicOilTank: 1650, coolingWater: 240, machineWeight: "143(121+22)", machineDimension: "14.9x4.7x3.7" } },
+            "IH21500 B(160mm)": { injection: { injHoldingPressureKgcm2: null, injHoldingPressureMpa: null, injRateOptional: null, injSpeedOptional: null, screwDiameter: 160, injPressureKgcm2: 1391, injPressureMpa: 136, theoInjVolume: 15482, shotWeight: 14266, injRate: 2007, screwStroke: 770, injSpeed: 100, plasticizingCapacity: 1218, screwRotationSpeed: 95 }, general: { motorCapacity: 165, motorCapacityOptional: null, heaterCapacity: 93.1, totalElectricPower: 258.1, totalElectricPowerHigh: null, hydraulicOilTank: 1650, coolingWater: 240, machineWeight: "143(121+22)", machineDimension: "14.9x4.7x3.7" } }
+        }
+    },
+
+    "DL3000A5": {
+        clamping: { clampingForce: "3000(29420)", moldOpeningForce: "225(2206)", tieBarDistance: "2260x1810", platenDimension: "3140x2660", daylight: 4000, maxDaylight: null, minMoldHeight: 1100, maxMoldHeight: 2000, ejectorForce: "67.8(664.9)", ejectorStroke: 350, dryCycleTime: 8.2, maxMoldWeight: "56.0/56.0/85.0" },
+        units: {
+            "IH33000 A(160mm)": { injection: { injHoldingPressureKgcm2: null, injHoldingPressureMpa: null, injRateOptional: null, injSpeedOptional: null, screwDiameter: 160, injPressureKgcm2: 1800, injPressureMpa: 177, theoInjVolume: 16085, shotWeight: 14822, injRate: 1719, screwStroke: 800, injSpeed: 85, plasticizingCapacity: 1000, screwRotationSpeed: 78 }, general: { motorCapacity: 220, motorCapacityOptional: null, heaterCapacity: 149.1, totalElectricPower: 369.1, totalElectricPowerHigh: null, hydraulicOilTank: 2650, coolingWater: 240, machineWeight: "180(149+31)", machineDimension: "16.5x5.0x4.0" } },
+            "IH33000 B(180mm)": { injection: { injHoldingPressureKgcm2: null, injHoldingPressureMpa: null, injRateOptional: null, injSpeedOptional: null, screwDiameter: 180, injPressureKgcm2: 1400, injPressureMpa: 137, theoInjVolume: 20358, shotWeight: 18759, injRate: 2176, screwStroke: 800, injSpeed: 85, plasticizingCapacity: 1378, screwRotationSpeed: 78 }, general: { motorCapacity: 220, motorCapacityOptional: null, heaterCapacity: 167.1, totalElectricPower: 387.1, totalElectricPowerHigh: null, hydraulicOilTank: 2650, coolingWater: 240, machineWeight: "180(149+31)", machineDimension: "16.5x5.0x4.0" } },
+            "IH48000 O(180mm)": { injection: { injHoldingPressureKgcm2: null, injHoldingPressureMpa: null, injRateOptional: null, injSpeedOptional: null, screwDiameter: 180, injPressureKgcm2: 1800, injPressureMpa: 177, theoInjVolume: 22902, shotWeight: 21104, injRate: 2127, screwStroke: 900, injSpeed: 84, plasticizingCapacity: 1325, screwRotationSpeed: 75 }, general: { motorCapacity: 275, motorCapacityOptional: null, heaterCapacity: 178.4, totalElectricPower: 453.4, totalElectricPowerHigh: null, hydraulicOilTank: 3200, coolingWater: 240, machineWeight: "194(149+45)", machineDimension: "18.0x5.0x4.0" } },
+            "IH48000 A(190mm)": { injection: { injHoldingPressureKgcm2: null, injHoldingPressureMpa: null, injRateOptional: null, injSpeedOptional: null, screwDiameter: 190, injPressureKgcm2: 1600, injPressureMpa: 157, theoInjVolume: 25518, shotWeight: 23514, injRate: 2370, screwStroke: 900, injSpeed: 84, plasticizingCapacity: 1528, screwRotationSpeed: 75 }, general: { motorCapacity: 275, motorCapacityOptional: null, heaterCapacity: 183.6, totalElectricPower: 458.6, totalElectricPowerHigh: null, hydraulicOilTank: 3200, coolingWater: 240, machineWeight: "194(149+45)", machineDimension: "18.0x5.0x4.0" } },
+            "IH48000 B(200mm)": { injection: { injHoldingPressureKgcm2: null, injHoldingPressureMpa: null, injRateOptional: null, injSpeedOptional: null, screwDiameter: 200, injPressureKgcm2: 1450, injPressureMpa: 142, theoInjVolume: 28274, shotWeight: 26055, injRate: 2626, screwStroke: 900, injSpeed: 84, plasticizingCapacity: 1533, screwRotationSpeed: 65 }, general: { motorCapacity: 275, motorCapacityOptional: null, heaterCapacity: 194.3, totalElectricPower: 469.3, totalElectricPowerHigh: null, hydraulicOilTank: 3200, coolingWater: 240, machineWeight: "194(149+45)", machineDimension: "18.0x5.0x4.0" } }
+        }
+    },
+
+    "DL3300A5": {
+        clamping: { clampingForce: "3300(32362)", moldOpeningForce: "248(2427)", tieBarDistance: "2260x1810", platenDimension: "3140x2660", daylight: 4000, maxDaylight: null, minMoldHeight: 1100, maxMoldHeight: 2000, ejectorForce: "67.8(664.9)", ejectorStroke: 350, dryCycleTime: 8.2, maxMoldWeight: "56.0/56.0/85.0" },
+        units: {
+            "IH33000 A(160mm)": { injection: { injHoldingPressureKgcm2: null, injHoldingPressureMpa: null, injRateOptional: null, injSpeedOptional: null, screwDiameter: 160, injPressureKgcm2: 1800, injPressureMpa: 177, theoInjVolume: 16085, shotWeight: 14822, injRate: 1719, screwStroke: 800, injSpeed: 85, plasticizingCapacity: 1000, screwRotationSpeed: 78 }, general: { motorCapacity: 220, motorCapacityOptional: null, heaterCapacity: 149.1, totalElectricPower: 369.1, totalElectricPowerHigh: null, hydraulicOilTank: 2650, coolingWater: 240, machineWeight: "180(149+31)", machineDimension: "16.5x5.0x4.0" } },
+            "IH33000 B(180mm)": { injection: { injHoldingPressureKgcm2: null, injHoldingPressureMpa: null, injRateOptional: null, injSpeedOptional: null, screwDiameter: 180, injPressureKgcm2: 1400, injPressureMpa: 137, theoInjVolume: 20358, shotWeight: 18759, injRate: 2176, screwStroke: 800, injSpeed: 85, plasticizingCapacity: 1378, screwRotationSpeed: 78 }, general: { motorCapacity: 220, motorCapacityOptional: null, heaterCapacity: 167.1, totalElectricPower: 387.1, totalElectricPowerHigh: null, hydraulicOilTank: 2650, coolingWater: 240, machineWeight: "180(149+31)", machineDimension: "16.5x5.0x4.0" } },
+            "IH48000 O(180mm)": { injection: { injHoldingPressureKgcm2: null, injHoldingPressureMpa: null, injRateOptional: null, injSpeedOptional: null, screwDiameter: 180, injPressureKgcm2: 1800, injPressureMpa: 177, theoInjVolume: 22902, shotWeight: 21104, injRate: 2127, screwStroke: 900, injSpeed: 84, plasticizingCapacity: 1325, screwRotationSpeed: 75 }, general: { motorCapacity: 275, motorCapacityOptional: null, heaterCapacity: 178.4, totalElectricPower: 453.4, totalElectricPowerHigh: null, hydraulicOilTank: 3200, coolingWater: 240, machineWeight: "194(149+45)", machineDimension: "18.0x5.0x4.0" } },
+            "IH48000 A(190mm)": { injection: { injHoldingPressureKgcm2: null, injHoldingPressureMpa: null, injRateOptional: null, injSpeedOptional: null, screwDiameter: 190, injPressureKgcm2: 1600, injPressureMpa: 157, theoInjVolume: 25518, shotWeight: 23514, injRate: 2370, screwStroke: 900, injSpeed: 84, plasticizingCapacity: 1528, screwRotationSpeed: 75 }, general: { motorCapacity: 275, motorCapacityOptional: null, heaterCapacity: 183.6, totalElectricPower: 458.6, totalElectricPowerHigh: null, hydraulicOilTank: 3200, coolingWater: 240, machineWeight: "194(149+45)", machineDimension: "18.0x5.0x4.0" } },
+            "IH48000 B(200mm)": { injection: { injHoldingPressureKgcm2: null, injHoldingPressureMpa: null, injRateOptional: null, injSpeedOptional: null, screwDiameter: 200, injPressureKgcm2: 1450, injPressureMpa: 142, theoInjVolume: 28274, shotWeight: 26055, injRate: 2626, screwStroke: 900, injSpeed: 84, plasticizingCapacity: 1533, screwRotationSpeed: 65 }, general: { motorCapacity: 275, motorCapacityOptional: null, heaterCapacity: 194.3, totalElectricPower: 469.3, totalElectricPowerHigh: null, hydraulicOilTank: 3200, coolingWater: 240, machineWeight: "194(149+45)", machineDimension: "18.0x5.0x4.0" } },
+            "IH66500 O(200mm)": { injection: { injHoldingPressureKgcm2: null, injHoldingPressureMpa: null, injRateOptional: null, injSpeedOptional: null, screwDiameter: 200, injPressureKgcm2: 1800, injPressureMpa: 177, theoInjVolume: 34558, shotWeight: 31845, injRate: 2117, screwStroke: 1100, injSpeed: 67, plasticizingCapacity: 1415, screwRotationSpeed: 60 }, general: { motorCapacity: 275, motorCapacityOptional: null, heaterCapacity: 217.1, totalElectricPower: 492.1, totalElectricPowerHigh: null, hydraulicOilTank: 3400, coolingWater: 240, machineWeight: "204(149+55)", machineDimension: "19.1x5.0x4.0" } },
+            "IH66500 A(215mm)": { injection: { injHoldingPressureKgcm2: null, injHoldingPressureMpa: null, injRateOptional: null, injSpeedOptional: null, screwDiameter: 215, injPressureKgcm2: 1550, injPressureMpa: 152, theoInjVolume: 39936, shotWeight: 36801, injRate: 2447, screwStroke: 1100, injSpeed: 67, plasticizingCapacity: 1705, screwRotationSpeed: 60 }, general: { motorCapacity: 275, motorCapacityOptional: null, heaterCapacity: 231.9, totalElectricPower: 506.9, totalElectricPowerHigh: null, hydraulicOilTank: 3400, coolingWater: 240, machineWeight: "204(149+55)", machineDimension: "19.1x5.0x4.0" } },
+            "IH66500 B(230mm)": { injection: { injHoldingPressureKgcm2: null, injHoldingPressureMpa: null, injRateOptional: null, injSpeedOptional: null, screwDiameter: 230, injPressureKgcm2: 1360, injPressureMpa: 133, theoInjVolume: 45702, shotWeight: 42115, injRate: 2800, screwStroke: 1100, injSpeed: 67, plasticizingCapacity: 1693, screwRotationSpeed: 50 }, general: { motorCapacity: 275, motorCapacityOptional: null, heaterCapacity: 249.8, totalElectricPower: 524.8, totalElectricPowerHigh: null, hydraulicOilTank: 3400, coolingWater: 240, machineWeight: "204(149+55)", machineDimension: "19.1x5.0x4.0" } }
+        }
+    },
+
+    "DL4000A5": {
+        clamping: { clampingForce: "4000(39227)", moldOpeningForce: "300(2942)", tieBarDistance: "2350x2050", platenDimension: "3400x3100", daylight: 4400, maxDaylight: null, minMoldHeight: 1100, maxMoldHeight: 2200, ejectorForce: "67.8(664.9)", ejectorStroke: 400, dryCycleTime: 9.2, maxMoldWeight: "66.0/66.0/100.0" },
+        units: {
+            "IH66500 O(200mm)": { injection: { injHoldingPressureKgcm2: null, injHoldingPressureMpa: null, injRateOptional: null, injSpeedOptional: null, screwDiameter: 200, injPressureKgcm2: 1800, injPressureMpa: 177, theoInjVolume: 34558, shotWeight: 31845, injRate: 2117, screwStroke: 1100, injSpeed: 67, plasticizingCapacity: 1415, screwRotationSpeed: 60 }, general: { motorCapacity: 275, motorCapacityOptional: null, heaterCapacity: 217.1, totalElectricPower: 492.1, totalElectricPowerHigh: null, hydraulicOilTank: 3400, coolingWater: 240, machineWeight: "246(191+55)", machineDimension: "19.8x5.8x4.5" } },
+            "IH66500 A(215mm)": { injection: { injHoldingPressureKgcm2: null, injHoldingPressureMpa: null, injRateOptional: null, injSpeedOptional: null, screwDiameter: 215, injPressureKgcm2: 1550, injPressureMpa: 152, theoInjVolume: 39936, shotWeight: 36801, injRate: 2447, screwStroke: 1100, injSpeed: 67, plasticizingCapacity: 1705, screwRotationSpeed: 60 }, general: { motorCapacity: 275, motorCapacityOptional: null, heaterCapacity: 231.9, totalElectricPower: 506.9, totalElectricPowerHigh: null, hydraulicOilTank: 3400, coolingWater: 240, machineWeight: "246(191+55)", machineDimension: "19.8x5.8x4.5" } },
+            "IH66500 B(230mm)": { injection: { injHoldingPressureKgcm2: null, injHoldingPressureMpa: null, injRateOptional: null, injSpeedOptional: null, screwDiameter: 230, injPressureKgcm2: 1360, injPressureMpa: 133, theoInjVolume: 45702, shotWeight: 42115, injRate: 2800, screwStroke: 1100, injSpeed: 67, plasticizingCapacity: 1693, screwRotationSpeed: 50 }, general: { motorCapacity: 275, motorCapacityOptional: null, heaterCapacity: 249.8, totalElectricPower: 524.8, totalElectricPowerHigh: null, hydraulicOilTank: 3400, coolingWater: 240, machineWeight: "246(191+55)", machineDimension: "19.8x5.8x4.5" } },
+            "IH100000 O(230mm)": { injection: { injHoldingPressureKgcm2: null, injHoldingPressureMpa: null, injRateOptional: null, injSpeedOptional: null, screwDiameter: 230, injPressureKgcm2: 1600, injPressureMpa: 157, theoInjVolume: 56089, shotWeight: 51686, injRate: 2925, screwStroke: 1350, injSpeed: 70, plasticizingCapacity: 1693, screwRotationSpeed: 50 }, general: { motorCapacity: 330, motorCapacityOptional: null, heaterCapacity: 340.2, totalElectricPower: 670.2, totalElectricPowerHigh: null, hydraulicOilTank: 3500, coolingWater: 240, machineWeight: "263(191+72)", machineDimension: "20.6x5.8x4.5" } },
+            "IH100000 A(245mm)": { injection: { injHoldingPressureKgcm2: null, injHoldingPressureMpa: null, injRateOptional: null, injSpeedOptional: null, screwDiameter: 245, injPressureKgcm2: 1400, injPressureMpa: 137, theoInjVolume: 63644, shotWeight: 58648, injRate: 3319, screwStroke: 1350, injSpeed: 70, plasticizingCapacity: 1998, screwRotationSpeed: 50 }, general: { motorCapacity: 330, motorCapacityOptional: null, heaterCapacity: 357.4, totalElectricPower: 687.4, totalElectricPowerHigh: null, hydraulicOilTank: 3500, coolingWater: 240, machineWeight: "263(191+72)", machineDimension: "20.6x5.8x4.5" } },
+            "IH100000 B(260mm)": { injection: { injHoldingPressureKgcm2: null, injHoldingPressureMpa: null, injRateOptional: null, injSpeedOptional: null, screwDiameter: 260, injPressureKgcm2: 1220, injPressureMpa: 120, theoInjVolume: 71675, shotWeight: 66049, injRate: 3738, screwStroke: 1350, injSpeed: 70, plasticizingCapacity: 2102, screwRotationSpeed: 45 }, general: { motorCapacity: 330, motorCapacityOptional: null, heaterCapacity: 378, totalElectricPower: 708, totalElectricPowerHigh: null, hydraulicOilTank: 3500, coolingWater: 240, machineWeight: "263(191+72)", machineDimension: "20.6x5.8x4.5" } }
+        }
+    },
+
+    "DL4300A5": {
+        clamping: { clampingForce: "4300(42169)", moldOpeningForce: "323(3163)", tieBarDistance: "2350x2050", platenDimension: "3400x3100", daylight: 4400, maxDaylight: null, minMoldHeight: 1100, maxMoldHeight: 2200, ejectorForce: "67.8(664.9)", ejectorStroke: 400, dryCycleTime: 9.2, maxMoldWeight: "66.0/66.0/100.0" },
+        units: {
+            "IH66500 O(200mm)": { injection: { injHoldingPressureKgcm2: null, injHoldingPressureMpa: null, injRateOptional: null, injSpeedOptional: null, screwDiameter: 200, injPressureKgcm2: 1800, injPressureMpa: 177, theoInjVolume: 34558, shotWeight: 31845, injRate: 2117, screwStroke: 1100, injSpeed: 67, plasticizingCapacity: 1415, screwRotationSpeed: 60 }, general: { motorCapacity: 275, motorCapacityOptional: null, heaterCapacity: 217.1, totalElectricPower: 492.1, totalElectricPowerHigh: null, hydraulicOilTank: 3400, coolingWater: 240, machineWeight: "246(191+55)", machineDimension: "19.8x5.8x4.5" } },
+            "IH66500 A(215mm)": { injection: { injHoldingPressureKgcm2: null, injHoldingPressureMpa: null, injRateOptional: null, injSpeedOptional: null, screwDiameter: 215, injPressureKgcm2: 1550, injPressureMpa: 152, theoInjVolume: 39936, shotWeight: 36801, injRate: 2447, screwStroke: 1100, injSpeed: 67, plasticizingCapacity: 1705, screwRotationSpeed: 60 }, general: { motorCapacity: 275, motorCapacityOptional: null, heaterCapacity: 231.9, totalElectricPower: 506.9, totalElectricPowerHigh: null, hydraulicOilTank: 3400, coolingWater: 240, machineWeight: "246(191+55)", machineDimension: "19.8x5.8x4.5" } },
+            "IH66500 B(230mm)": { injection: { injHoldingPressureKgcm2: null, injHoldingPressureMpa: null, injRateOptional: null, injSpeedOptional: null, screwDiameter: 230, injPressureKgcm2: 1360, injPressureMpa: 133, theoInjVolume: 45702, shotWeight: 42115, injRate: 2800, screwStroke: 1100, injSpeed: 67, plasticizingCapacity: 1693, screwRotationSpeed: 50 }, general: { motorCapacity: 275, motorCapacityOptional: null, heaterCapacity: 249.8, totalElectricPower: 524.8, totalElectricPowerHigh: null, hydraulicOilTank: 3400, coolingWater: 240, machineWeight: "246(191+55)", machineDimension: "19.8x5.8x4.5" } },
+            "IH100000 O(230mm)": { injection: { injHoldingPressureKgcm2: null, injHoldingPressureMpa: null, injRateOptional: null, injSpeedOptional: null, screwDiameter: 230, injPressureKgcm2: 1600, injPressureMpa: 157, theoInjVolume: 56089, shotWeight: 51686, injRate: 2925, screwStroke: 1350, injSpeed: 70, plasticizingCapacity: 1693, screwRotationSpeed: 50 }, general: { motorCapacity: 330, motorCapacityOptional: null, heaterCapacity: 340.2, totalElectricPower: 670.2, totalElectricPowerHigh: null, hydraulicOilTank: 3500, coolingWater: 240, machineWeight: "263(191+72)", machineDimension: "20.6x5.8x4.5" } },
+            "IH100000 A(245mm)": { injection: { injHoldingPressureKgcm2: null, injHoldingPressureMpa: null, injRateOptional: null, injSpeedOptional: null, screwDiameter: 245, injPressureKgcm2: 1400, injPressureMpa: 137, theoInjVolume: 63644, shotWeight: 58648, injRate: 3319, screwStroke: 1350, injSpeed: 70, plasticizingCapacity: 1998, screwRotationSpeed: 50 }, general: { motorCapacity: 330, motorCapacityOptional: null, heaterCapacity: 357.4, totalElectricPower: 687.4, totalElectricPowerHigh: null, hydraulicOilTank: 3500, coolingWater: 240, machineWeight: "263(191+72)", machineDimension: "20.6x5.8x4.5" } },
+            "IH100000 B(260mm)": { injection: { injHoldingPressureKgcm2: null, injHoldingPressureMpa: null, injRateOptional: null, injSpeedOptional: null, screwDiameter: 260, injPressureKgcm2: 1220, injPressureMpa: 120, theoInjVolume: 71675, shotWeight: 66049, injRate: 3738, screwStroke: 1350, injSpeed: 70, plasticizingCapacity: 2102, screwRotationSpeed: 45 }, general: { motorCapacity: 330, motorCapacityOptional: null, heaterCapacity: 378, totalElectricPower: 708, totalElectricPowerHigh: null, hydraulicOilTank: 3500, coolingWater: 240, machineWeight: "263(191+72)", machineDimension: "20.6x5.8x4.5" } }
+        }
+    },
+
+    "TH130A5": {
+        clamping: { clampingForce: "130(1275)", moldOpeningForce: null, tieBarDistance: "470 x 470", platenDimension: "680 x 680", daylight: 400, maxDaylight: 850, minMoldHeight: 150, maxMoldHeight: 450, ejectorForce: "3.7(36.3)", ejectorStroke: 130, dryCycleTime: null, maxMoldWeight: null },
+        units: {
+            "IH190 O(25mm)": { injection: { screwDiameter: 25, injPressureKgcm2: 2688, injPressureMpa: 264, injHoldingPressureKgcm2: null, injHoldingPressureMpa: null, theoInjVolume: 64, shotWeight: 59, injRate: 62, injRateOptional: null, screwStroke: 130, injSpeed: 125, injSpeedOptional: null, plasticizingCapacity: 31, screwRotationSpeed: 360 }, general: { motorCapacity: 9.1, motorCapacityOptional: null, heaterCapacity: 6.1, totalElectricPower: 15.2, totalElectricPowerHigh: null, hydraulicOilTank: 190, coolingWater: 40, machineWeight: 4.5, machineDimension: null } },
+            "IH190 A(28mm)": { injection: { screwDiameter: 28, injPressureKgcm2: 2363, injPressureMpa: 232, injHoldingPressureKgcm2: null, injHoldingPressureMpa: null, theoInjVolume: 80, shotWeight: 74, injRate: 77, injRateOptional: null, screwStroke: 130, injSpeed: 125, injSpeedOptional: null, plasticizingCapacity: 41, screwRotationSpeed: 360 }, general: { motorCapacity: 9.1, motorCapacityOptional: null, heaterCapacity: 7, totalElectricPower: 16.1, totalElectricPowerHigh: null, hydraulicOilTank: 190, coolingWater: 40, machineWeight: 4.5, machineDimension: null } },
+            "IH190 B(32mm)": { injection: { screwDiameter: 32, injPressureKgcm2: 1809, injPressureMpa: 177, injHoldingPressureKgcm2: null, injHoldingPressureMpa: null, theoInjVolume: 105, shotWeight: 96, injRate: 101, injRateOptional: null, screwStroke: 130, injSpeed: 125, injSpeedOptional: null, plasticizingCapacity: 58, screwRotationSpeed: 360 }, general: { motorCapacity: 9.1, motorCapacityOptional: null, heaterCapacity: 7.8, totalElectricPower: 16.9, totalElectricPowerHigh: null, hydraulicOilTank: 190, coolingWater: 40, machineWeight: 4.5, machineDimension: null } },
+            "IH300 O(28mm)": { injection: { screwDiameter: 28, injPressureKgcm2: 2686, injPressureMpa: 263, injHoldingPressureKgcm2: null, injHoldingPressureMpa: null, theoInjVolume: 92, shotWeight: 85, injRate: 74, injRateOptional: null, screwStroke: 150, injSpeed: 120, injSpeedOptional: null, plasticizingCapacity: 41, screwRotationSpeed: 360 }, general: { motorCapacity: 9.1, motorCapacityOptional: null, heaterCapacity: 7, totalElectricPower: 16.1, totalElectricPowerHigh: null, hydraulicOilTank: 190, coolingWater: 40, machineWeight: 5, machineDimension: "4.9 x 1.5 x 1.7" } },
+            "IH300 A(32mm)": { injection: { screwDiameter: 32, injPressureKgcm2: 2450, injPressureMpa: 240, injHoldingPressureKgcm2: null, injHoldingPressureMpa: null, theoInjVolume: 121, shotWeight: 111, injRate: 97, injRateOptional: null, screwStroke: 150, injSpeed: 120, injSpeedOptional: null, plasticizingCapacity: 58, screwRotationSpeed: 360 }, general: { motorCapacity: 9.1, motorCapacityOptional: null, heaterCapacity: 7.8, totalElectricPower: 16.9, totalElectricPowerHigh: null, hydraulicOilTank: 190, coolingWater: 40, machineWeight: 5, machineDimension: null } },
+            "IH300 B(36mm)": { injection: { screwDiameter: 36, injPressureKgcm2: 1936, injPressureMpa: 190, injHoldingPressureKgcm2: null, injHoldingPressureMpa: null, theoInjVolume: 153, shotWeight: 141, injRate: 122, injRateOptional: null, screwStroke: 150, injSpeed: 120, injSpeedOptional: null, plasticizingCapacity: 82, screwRotationSpeed: 360 }, general: { motorCapacity: 9.1, motorCapacityOptional: null, heaterCapacity: 9.1, totalElectricPower: 18.2, totalElectricPowerHigh: null, hydraulicOilTank: 190, coolingWater: 40, machineWeight: 5, machineDimension: null } },
+            "IH600 O(36mm)": { injection: { screwDiameter: 36, injPressureKgcm2: 2690, injPressureMpa: 264, injHoldingPressureKgcm2: null, injHoldingPressureMpa: null, theoInjVolume: 204, shotWeight: 188, injRate: 122, injRateOptional: null, screwStroke: 200, injSpeed: 120, injSpeedOptional: null, plasticizingCapacity: 69, screwRotationSpeed: 300 }, general: { motorCapacity: 15.7, motorCapacityOptional: null, heaterCapacity: 9.9, totalElectricPower: 25.6, totalElectricPowerHigh: null, hydraulicOilTank: 190, coolingWater: 40, machineWeight: 5.5, machineDimension: null } },
+            "IH600 A(40mm)": { injection: { screwDiameter: 40, injPressureKgcm2: 2431, injPressureMpa: 238, injHoldingPressureKgcm2: null, injHoldingPressureMpa: null, theoInjVolume: 251, shotWeight: 232, injRate: 151, injRateOptional: null, screwStroke: 200, injSpeed: 120, injSpeedOptional: null, plasticizingCapacity: 94, screwRotationSpeed: 300 }, general: { motorCapacity: 15.7, motorCapacityOptional: null, heaterCapacity: 11.2, totalElectricPower: 26.9, totalElectricPowerHigh: null, hydraulicOilTank: 190, coolingWater: 40, machineWeight: 5.5, machineDimension: null } },
+            "IH600 B(45mm)": { injection: { screwDiameter: 45, injPressureKgcm2: 1920, injPressureMpa: 188, injHoldingPressureKgcm2: null, injHoldingPressureMpa: null, theoInjVolume: 318, shotWeight: 293, injRate: 191, injRateOptional: null, screwStroke: 200, injSpeed: 120, injSpeedOptional: null, plasticizingCapacity: 127, screwRotationSpeed: 300 }, general: { motorCapacity: 15.7, motorCapacityOptional: null, heaterCapacity: 12.6, totalElectricPower: 28.3, totalElectricPowerHigh: null, hydraulicOilTank: 190, coolingWater: 40, machineWeight: 5.5, machineDimension: null } }
+        }
+    },
+
+    "TH190A5": {
+        clamping: { clampingForce: "190(1863)", moldOpeningForce: null, tieBarDistance: "570 x 570", platenDimension: "840 x 790", daylight: 500, maxDaylight: 1000, minMoldHeight: 180, maxMoldHeight: 500, ejectorForce: "4.5(44.1)", ejectorStroke: 160, dryCycleTime: null, maxMoldWeight: null },
+        units: {
+            "IH300 O(28mm)": { injection: { screwDiameter: 28, injPressureKgcm2: 2686, injPressureMpa: 263, injHoldingPressureKgcm2: null, injHoldingPressureMpa: null, theoInjVolume: 92, shotWeight: 85, injRate: 74, injRateOptional: null, screwStroke: 150, injSpeed: 120, injSpeedOptional: null, plasticizingCapacity: 41, screwRotationSpeed: 360 }, general: { motorCapacity: 15.7, motorCapacityOptional: null, heaterCapacity: 7, totalElectricPower: 22.7, totalElectricPowerHigh: null, hydraulicOilTank: 300, coolingWater: 40, machineWeight: 6.5, machineDimension: null } },
+            "IH300 A(32mm)": { injection: { screwDiameter: 32, injPressureKgcm2: 2450, injPressureMpa: 240, injHoldingPressureKgcm2: null, injHoldingPressureMpa: null, theoInjVolume: 121, shotWeight: 111, injRate: 97, injRateOptional: null, screwStroke: 150, injSpeed: 120, injSpeedOptional: null, plasticizingCapacity: 58, screwRotationSpeed: 360 }, general: { motorCapacity: 15.7, motorCapacityOptional: null, heaterCapacity: 7.8, totalElectricPower: 23.5, totalElectricPowerHigh: null, hydraulicOilTank: 300, coolingWater: 40, machineWeight: 6.5, machineDimension: null } },
+            "IH300 B(36mm)": { injection: { screwDiameter: 36, injPressureKgcm2: 1936, injPressureMpa: 190, injHoldingPressureKgcm2: null, injHoldingPressureMpa: null, theoInjVolume: 153, shotWeight: 141, injRate: 122, injRateOptional: null, screwStroke: 150, injSpeed: 120, injSpeedOptional: null, plasticizingCapacity: 82, screwRotationSpeed: 360 }, general: { motorCapacity: 15.7, motorCapacityOptional: null, heaterCapacity: 9.1, totalElectricPower: 24.8, totalElectricPowerHigh: null, hydraulicOilTank: 300, coolingWater: 40, machineWeight: 6.5, machineDimension: null } },
+            "IH600 O(36mm)": { injection: { screwDiameter: 36, injPressureKgcm2: 2690, injPressureMpa: 264, injHoldingPressureKgcm2: null, injHoldingPressureMpa: null, theoInjVolume: 204, shotWeight: 188, injRate: 122, injRateOptional: null, screwStroke: 200, injSpeed: 120, injSpeedOptional: null, plasticizingCapacity: 69, screwRotationSpeed: 300 }, general: { motorCapacity: 15.7, motorCapacityOptional: null, heaterCapacity: 9.9, totalElectricPower: 25.6, totalElectricPowerHigh: null, hydraulicOilTank: 300, coolingWater: 40, machineWeight: 7, machineDimension: "5.8 x 1.6 x 1.9" } },
+            "IH600 A(40mm)": { injection: { screwDiameter: 40, injPressureKgcm2: 2431, injPressureMpa: 238, injHoldingPressureKgcm2: null, injHoldingPressureMpa: null, theoInjVolume: 251, shotWeight: 232, injRate: 151, injRateOptional: null, screwStroke: 200, injSpeed: 120, injSpeedOptional: null, plasticizingCapacity: 94, screwRotationSpeed: 300 }, general: { motorCapacity: 15.7, motorCapacityOptional: null, heaterCapacity: 11.2, totalElectricPower: 26.9, totalElectricPowerHigh: null, hydraulicOilTank: 300, coolingWater: 40, machineWeight: 7, machineDimension: null } },
+            "IH600 B(45mm)": { injection: { screwDiameter: 45, injPressureKgcm2: 1920, injPressureMpa: 188, injHoldingPressureKgcm2: null, injHoldingPressureMpa: null, theoInjVolume: 318, shotWeight: 293, injRate: 191, injRateOptional: null, screwStroke: 200, injSpeed: 120, injSpeedOptional: null, plasticizingCapacity: 127, screwRotationSpeed: 300 }, general: { motorCapacity: 15.7, motorCapacityOptional: null, heaterCapacity: 12.6, totalElectricPower: 28.3, totalElectricPowerHigh: null, hydraulicOilTank: 300, coolingWater: 40, machineWeight: 7, machineDimension: null } },
+            "IH1000 O(45mm)": { injection: { screwDiameter: 45, injPressureKgcm2: 2600, injPressureMpa: 255, injHoldingPressureKgcm2: null, injHoldingPressureMpa: null, theoInjVolume: 366, shotWeight: 337, injRate: 175, injRateOptional: null, screwStroke: 230, injSpeed: 110, injSpeedOptional: null, plasticizingCapacity: 110, screwRotationSpeed: 260 }, general: { motorCapacity: 19.8, motorCapacityOptional: null, heaterCapacity: 14.6, totalElectricPower: 34.4, totalElectricPowerHigh: null, hydraulicOilTank: 300, coolingWater: 40, machineWeight: 7.5, machineDimension: null } },
+            "IH1000 A(50mm)": { injection: { screwDiameter: 50, injPressureKgcm2: 2258, injPressureMpa: 221, injHoldingPressureKgcm2: null, injHoldingPressureMpa: null, theoInjVolume: 452, shotWeight: 416, injRate: 217, injRateOptional: null, screwStroke: 230, injSpeed: 110, injSpeedOptional: null, plasticizingCapacity: 148, screwRotationSpeed: 260 }, general: { motorCapacity: 19.8, motorCapacityOptional: null, heaterCapacity: 17.1, totalElectricPower: 36.9, totalElectricPowerHigh: null, hydraulicOilTank: 300, coolingWater: 40, machineWeight: 7.5, machineDimension: null } },
+            "IH1000 B(55mm)": { injection: { screwDiameter: 55, injPressureKgcm2: 1866, injPressureMpa: 183, injHoldingPressureKgcm2: null, injHoldingPressureMpa: null, theoInjVolume: 546, shotWeight: 504, injRate: 262, injRateOptional: null, screwStroke: 230, injSpeed: 110, injSpeedOptional: null, plasticizingCapacity: 189, screwRotationSpeed: 260 }, general: { motorCapacity: 19.8, motorCapacityOptional: null, heaterCapacity: 18.7, totalElectricPower: 38.5, totalElectricPowerHigh: null, hydraulicOilTank: 300, coolingWater: 40, machineWeight: 7.5, machineDimension: null } }
+        }
+    },
+
+    "TH240A5": {
+        clamping: { clampingForce: "240(2354)", moldOpeningForce: null, tieBarDistance: "625 x 625", platenDimension: "900 x 870", daylight: 550, maxDaylight: 1150, minMoldHeight: 200, maxMoldHeight: 600, ejectorForce: "6.3(61.8)", ejectorStroke: 180, dryCycleTime: null, maxMoldWeight: null },
+        units: {
+            "IH600 O(36mm)": { injection: { screwDiameter: 36, injPressureKgcm2: 2690, injPressureMpa: 264, injHoldingPressureKgcm2: null, injHoldingPressureMpa: null, theoInjVolume: 204, shotWeight: 188, injRate: 122, injRateOptional: null, screwStroke: 200, injSpeed: 120, injSpeedOptional: null, plasticizingCapacity: 69, screwRotationSpeed: 300 }, general: { motorCapacity: 19.8, motorCapacityOptional: null, heaterCapacity: 9.9, totalElectricPower: 29.7, totalElectricPowerHigh: null, hydraulicOilTank: 340, coolingWater: 40, machineWeight: 9.3, machineDimension: null } },
+            "IH600 A(40mm)": { injection: { screwDiameter: 40, injPressureKgcm2: 2431, injPressureMpa: 238, injHoldingPressureKgcm2: null, injHoldingPressureMpa: null, theoInjVolume: 251, shotWeight: 232, injRate: 151, injRateOptional: null, screwStroke: 200, injSpeed: 120, injSpeedOptional: null, plasticizingCapacity: 94, screwRotationSpeed: 300 }, general: { motorCapacity: 19.8, motorCapacityOptional: null, heaterCapacity: 11.2, totalElectricPower: 31, totalElectricPowerHigh: null, hydraulicOilTank: 340, coolingWater: 40, machineWeight: 9.3, machineDimension: null } },
+            "IH600 B(45mm)": { injection: { screwDiameter: 45, injPressureKgcm2: 1920, injPressureMpa: 188, injHoldingPressureKgcm2: null, injHoldingPressureMpa: null, theoInjVolume: 318, shotWeight: 293, injRate: 191, injRateOptional: null, screwStroke: 200, injSpeed: 120, injSpeedOptional: null, plasticizingCapacity: 127, screwRotationSpeed: 300 }, general: { motorCapacity: 19.8, motorCapacityOptional: null, heaterCapacity: 12.6, totalElectricPower: 32.4, totalElectricPowerHigh: null, hydraulicOilTank: 340, coolingWater: 40, machineWeight: 9.3, machineDimension: null } },
+            "IH1000 O(45mm)": { injection: { screwDiameter: 45, injPressureKgcm2: 2600, injPressureMpa: 255, injHoldingPressureKgcm2: null, injHoldingPressureMpa: null, theoInjVolume: 366, shotWeight: 337, injRate: 175, injRateOptional: null, screwStroke: 230, injSpeed: 110, injSpeedOptional: null, plasticizingCapacity: 110, screwRotationSpeed: 260 }, general: { motorCapacity: 19.8, motorCapacityOptional: null, heaterCapacity: 14.6, totalElectricPower: 34.4, totalElectricPowerHigh: null, hydraulicOilTank: 340, coolingWater: 40, machineWeight: 9.8, machineDimension: "6.5 x 1.7 x 2.1" } },
+            "IH1000 A(50mm)": { injection: { screwDiameter: 50, injPressureKgcm2: 2258, injPressureMpa: 221, injHoldingPressureKgcm2: null, injHoldingPressureMpa: null, theoInjVolume: 452, shotWeight: 416, injRate: 217, injRateOptional: null, screwStroke: 230, injSpeed: 110, injSpeedOptional: null, plasticizingCapacity: 148, screwRotationSpeed: 260 }, general: { motorCapacity: 19.8, motorCapacityOptional: null, heaterCapacity: 17.1, totalElectricPower: 36.9, totalElectricPowerHigh: null, hydraulicOilTank: 340, coolingWater: 40, machineWeight: 9.8, machineDimension: null } },
+            "IH1000 B(55mm)": { injection: { screwDiameter: 55, injPressureKgcm2: 1866, injPressureMpa: 183, injHoldingPressureKgcm2: null, injHoldingPressureMpa: null, theoInjVolume: 546, shotWeight: 504, injRate: 262, injRateOptional: null, screwStroke: 230, injSpeed: 110, injSpeedOptional: null, plasticizingCapacity: 189, screwRotationSpeed: 260 }, general: { motorCapacity: 19.8, motorCapacityOptional: null, heaterCapacity: 18.7, totalElectricPower: 38.5, totalElectricPowerHigh: null, hydraulicOilTank: 340, coolingWater: 40, machineWeight: 9.8, machineDimension: null } },
+            "IH1250 O(50mm)": { injection: { screwDiameter: 50, injPressureKgcm2: 2594, injPressureMpa: 254, injHoldingPressureKgcm2: null, injHoldingPressureMpa: null, theoInjVolume: 481, shotWeight: 443, injRate: 217, injRateOptional: null, screwStroke: 245, injSpeed: 110, injSpeedOptional: null, plasticizingCapacity: 142, screwRotationSpeed: 250 }, general: { motorCapacity: 25.1, motorCapacityOptional: null, heaterCapacity: 19.1, totalElectricPower: 44.2, totalElectricPowerHigh: null, hydraulicOilTank: 340, coolingWater: 40, machineWeight: 10.3, machineDimension: null } },
+            "IH1250 A(55mm)": { injection: { screwDiameter: 55, injPressureKgcm2: 2144, injPressureMpa: 210, injHoldingPressureKgcm2: null, injHoldingPressureMpa: null, theoInjVolume: 582, shotWeight: 536, injRate: 262, injRateOptional: null, screwStroke: 245, injSpeed: 110, injSpeedOptional: null, plasticizingCapacity: 182, screwRotationSpeed: 250 }, general: { motorCapacity: 25.1, motorCapacityOptional: null, heaterCapacity: 21, totalElectricPower: 46.1, totalElectricPowerHigh: null, hydraulicOilTank: 340, coolingWater: 40, machineWeight: 10.3, machineDimension: null } },
+            "IH1250 B(60mm)": { injection: { screwDiameter: 60, injPressureKgcm2: 1801, injPressureMpa: 177, injHoldingPressureKgcm2: null, injHoldingPressureMpa: null, theoInjVolume: 693, shotWeight: 638, injRate: 312, injRateOptional: null, screwStroke: 245, injSpeed: 110, injSpeedOptional: null, plasticizingCapacity: 233, screwRotationSpeed: 250 }, general: { motorCapacity: 25.1, motorCapacityOptional: null, heaterCapacity: 23.8, totalElectricPower: 48.9, totalElectricPowerHigh: null, hydraulicOilTank: 340, coolingWater: 40, machineWeight: 10.3, machineDimension: null } }
+        }
+    },
+
+    "TH280A5": {
+        clamping: { clampingForce: "280(2746)", moldOpeningForce: null, tieBarDistance: "670 x 670", platenDimension: "970 x 980", daylight: 600, maxDaylight: 1250, minMoldHeight: 250, maxMoldHeight: 650, ejectorForce: "6.3(61.8)", ejectorStroke: 200, dryCycleTime: null, maxMoldWeight: null },
+        units: {
+            "IH1000 O(45mm)": { injection: { screwDiameter: 45, injPressureKgcm2: 2600, injPressureMpa: 255, injHoldingPressureKgcm2: null, injHoldingPressureMpa: null, theoInjVolume: 366, shotWeight: 337, injRate: 175, injRateOptional: null, screwStroke: 230, injSpeed: 110, injSpeedOptional: null, plasticizingCapacity: 110, screwRotationSpeed: 260 }, general: { motorCapacity: 25.1, motorCapacityOptional: null, heaterCapacity: 14.6, totalElectricPower: 39.7, totalElectricPowerHigh: null, hydraulicOilTank: 340, coolingWater: 40, machineWeight: 11.8, machineDimension: null } },
+            "IH1000 A(50mm)": { injection: { screwDiameter: 50, injPressureKgcm2: 2258, injPressureMpa: 221, injHoldingPressureKgcm2: null, injHoldingPressureMpa: null, theoInjVolume: 452, shotWeight: 416, injRate: 217, injRateOptional: null, screwStroke: 230, injSpeed: 110, injSpeedOptional: null, plasticizingCapacity: 148, screwRotationSpeed: 260 }, general: { motorCapacity: 25.1, motorCapacityOptional: null, heaterCapacity: 17.1, totalElectricPower: 42.2, totalElectricPowerHigh: null, hydraulicOilTank: 340, coolingWater: 40, machineWeight: 11.8, machineDimension: null } },
+            "IH1000 B(55mm)": { injection: { screwDiameter: 55, injPressureKgcm2: 1866, injPressureMpa: 183, injHoldingPressureKgcm2: null, injHoldingPressureMpa: null, theoInjVolume: 546, shotWeight: 504, injRate: 262, injRateOptional: null, screwStroke: 230, injSpeed: 110, injSpeedOptional: null, plasticizingCapacity: 189, screwRotationSpeed: 260 }, general: { motorCapacity: 25.1, motorCapacityOptional: null, heaterCapacity: 18.7, totalElectricPower: 43.8, totalElectricPowerHigh: null, hydraulicOilTank: 340, coolingWater: 40, machineWeight: 11.8, machineDimension: null } },
+            "IH1250 O(50mm)": { injection: { screwDiameter: 50, injPressureKgcm2: 2594, injPressureMpa: 254, injHoldingPressureKgcm2: null, injHoldingPressureMpa: null, theoInjVolume: 481, shotWeight: 443, injRate: 217, injRateOptional: null, screwStroke: 245, injSpeed: 110, injSpeedOptional: null, plasticizingCapacity: 142, screwRotationSpeed: 250 }, general: { motorCapacity: 25.1, motorCapacityOptional: null, heaterCapacity: 19.1, totalElectricPower: 44.2, totalElectricPowerHigh: null, hydraulicOilTank: 340, coolingWater: 40, machineWeight: 12.3, machineDimension: "6.8 x 1.8 x 2.1" } },
+            "IH1250 A(55mm)": { injection: { screwDiameter: 55, injPressureKgcm2: 2144, injPressureMpa: 210, injHoldingPressureKgcm2: null, injHoldingPressureMpa: null, theoInjVolume: 582, shotWeight: 536, injRate: 262, injRateOptional: null, screwStroke: 245, injSpeed: 110, injSpeedOptional: null, plasticizingCapacity: 182, screwRotationSpeed: 250 }, general: { motorCapacity: 25.1, motorCapacityOptional: null, heaterCapacity: 21, totalElectricPower: 46.1, totalElectricPowerHigh: null, hydraulicOilTank: 340, coolingWater: 40, machineWeight: 12.3, machineDimension: null } },
+            "IH1250 B(60mm)": { injection: { screwDiameter: 60, injPressureKgcm2: 1801, injPressureMpa: 177, injHoldingPressureKgcm2: null, injHoldingPressureMpa: null, theoInjVolume: 693, shotWeight: 638, injRate: 312, injRateOptional: null, screwStroke: 245, injSpeed: 110, injSpeedOptional: null, plasticizingCapacity: 233, screwRotationSpeed: 250 }, general: { motorCapacity: 25.1, motorCapacityOptional: null, heaterCapacity: 23.8, totalElectricPower: 48.9, totalElectricPowerHigh: null, hydraulicOilTank: 340, coolingWater: 40, machineWeight: 12.3, machineDimension: null } },
+            "IH1800 O(55mm)": { injection: { screwDiameter: 55, injPressureKgcm2: 2494, injPressureMpa: 245, injHoldingPressureKgcm2: null, injHoldingPressureMpa: null, theoInjVolume: 677, shotWeight: 624, injRate: 249, injRateOptional: null, screwStroke: 285, injSpeed: 105, injSpeedOptional: null, plasticizingCapacity: 160, screwRotationSpeed: 220 }, general: { motorCapacity: 32.7, motorCapacityOptional: null, heaterCapacity: 21, totalElectricPower: 53.7, totalElectricPowerHigh: null, hydraulicOilTank: 340, coolingWater: 40, machineWeight: 12.8, machineDimension: null } },
+            "IH1800 A(60mm)": { injection: { screwDiameter: 60, injPressureKgcm2: 2257, injPressureMpa: 221, injHoldingPressureKgcm2: null, injHoldingPressureMpa: null, theoInjVolume: 806, shotWeight: 743, injRate: 296, injRateOptional: null, screwStroke: 285, injSpeed: 105, injSpeedOptional: null, plasticizingCapacity: 205, screwRotationSpeed: 220 }, general: { motorCapacity: 32.7, motorCapacityOptional: null, heaterCapacity: 23.8, totalElectricPower: 56.5, totalElectricPowerHigh: null, hydraulicOilTank: 340, coolingWater: 40, machineWeight: 12.8, machineDimension: null } },
+            "IH1800 B(65mm)": { injection: { screwDiameter: 65, injPressureKgcm2: 2008, injPressureMpa: 197, injHoldingPressureKgcm2: null, injHoldingPressureMpa: null, theoInjVolume: 946, shotWeight: 871, injRate: 347, injRateOptional: null, screwStroke: 285, injSpeed: 105, injSpeedOptional: null, plasticizingCapacity: 253, screwRotationSpeed: 220 }, general: { motorCapacity: 32.7, motorCapacityOptional: null, heaterCapacity: 25.7, totalElectricPower: 58.4, totalElectricPowerHigh: null, hydraulicOilTank: 340, coolingWater: 40, machineWeight: 12.8, machineDimension: null } }
+        }
+    },
+
+    "TH380A5": {
+        clamping: { clampingForce: "380(3727)", moldOpeningForce: null, tieBarDistance: "770 x 770", platenDimension: "1160 x 1090", daylight: 700, maxDaylight: 1450, minMoldHeight: 300, maxMoldHeight: 750, ejectorForce: "9.6(94.2)", ejectorStroke: 210, dryCycleTime: null, maxMoldWeight: null },
+        units: {
+            "IH1250 O(50mm)": { injection: { screwDiameter: 50, injPressureKgcm2: 2594, injPressureMpa: 254, injHoldingPressureKgcm2: null, injHoldingPressureMpa: null, theoInjVolume: 481, shotWeight: 443, injRate: 217, injRateOptional: null, screwStroke: 245, injSpeed: 110, injSpeedOptional: null, plasticizingCapacity: 142, screwRotationSpeed: 250 }, general: { motorCapacity: 32.7, motorCapacityOptional: null, heaterCapacity: 19.1, totalElectricPower: 51.8, totalElectricPowerHigh: null, hydraulicOilTank: 450, coolingWater: 65, machineWeight: 15.5, machineDimension: null } },
+            "IH1250 A(55mm)": { injection: { screwDiameter: 55, injPressureKgcm2: 2144, injPressureMpa: 210, injHoldingPressureKgcm2: null, injHoldingPressureMpa: null, theoInjVolume: 582, shotWeight: 536, injRate: 262, injRateOptional: null, screwStroke: 245, injSpeed: 110, injSpeedOptional: null, plasticizingCapacity: 182, screwRotationSpeed: 250 }, general: { motorCapacity: 32.7, motorCapacityOptional: null, heaterCapacity: 21, totalElectricPower: 53.7, totalElectricPowerHigh: null, hydraulicOilTank: 450, coolingWater: 65, machineWeight: 15.5, machineDimension: null } },
+            "IH1250 B(60mm)": { injection: { screwDiameter: 60, injPressureKgcm2: 1801, injPressureMpa: 177, injHoldingPressureKgcm2: null, injHoldingPressureMpa: null, theoInjVolume: 693, shotWeight: 638, injRate: 312, injRateOptional: null, screwStroke: 245, injSpeed: 110, injSpeedOptional: null, plasticizingCapacity: 233, screwRotationSpeed: 250 }, general: { motorCapacity: 32.7, motorCapacityOptional: null, heaterCapacity: 23.8, totalElectricPower: 56.5, totalElectricPowerHigh: null, hydraulicOilTank: 450, coolingWater: 65, machineWeight: 15.5, machineDimension: null } },
+            "IH1800 O(55mm)": { injection: { screwDiameter: 55, injPressureKgcm2: 2494, injPressureMpa: 245, injHoldingPressureKgcm2: null, injHoldingPressureMpa: null, theoInjVolume: 677, shotWeight: 624, injRate: 249, injRateOptional: null, screwStroke: 285, injSpeed: 105, injSpeedOptional: null, plasticizingCapacity: 160, screwRotationSpeed: 220 }, general: { motorCapacity: 32.7, motorCapacityOptional: null, heaterCapacity: 21, totalElectricPower: 53.7, totalElectricPowerHigh: null, hydraulicOilTank: 450, coolingWater: 65, machineWeight: 16, machineDimension: "7.6 x 1.9 x 2.1" } },
+            "IH1800 A(60mm)": { injection: { screwDiameter: 60, injPressureKgcm2: 2257, injPressureMpa: 221, injHoldingPressureKgcm2: null, injHoldingPressureMpa: null, theoInjVolume: 806, shotWeight: 743, injRate: 296, injRateOptional: null, screwStroke: 285, injSpeed: 105, injSpeedOptional: null, plasticizingCapacity: 205, screwRotationSpeed: 220 }, general: { motorCapacity: 32.7, motorCapacityOptional: null, heaterCapacity: 23.8, totalElectricPower: 56.5, totalElectricPowerHigh: null, hydraulicOilTank: 450, coolingWater: 65, machineWeight: 16, machineDimension: null } },
+            "IH1800 B(65mm)": { injection: { screwDiameter: 65, injPressureKgcm2: 2008, injPressureMpa: 197, injHoldingPressureKgcm2: null, injHoldingPressureMpa: null, theoInjVolume: 946, shotWeight: 871, injRate: 347, injRateOptional: null, screwStroke: 285, injSpeed: 105, injSpeedOptional: null, plasticizingCapacity: 253, screwRotationSpeed: 220 }, general: { motorCapacity: 32.7, motorCapacityOptional: null, heaterCapacity: 25.7, totalElectricPower: 58.4, totalElectricPowerHigh: null, hydraulicOilTank: 450, coolingWater: 65, machineWeight: 16, machineDimension: null } },
+            "IH2800 O(65mm)": { injection: { screwDiameter: 65, injPressureKgcm2: 2375, injPressureMpa: 233, injHoldingPressureKgcm2: null, injHoldingPressureMpa: null, theoInjVolume: 1161, shotWeight: 1070, injRate: 313, injRateOptional: null, screwStroke: 350, injSpeed: 94, injSpeedOptional: null, plasticizingCapacity: 201, screwRotationSpeed: 175 }, general: { motorCapacity: 32.7, motorCapacityOptional: null, heaterCapacity: 18.4, totalElectricPower: 51.1, totalElectricPowerHigh: null, hydraulicOilTank: 450, coolingWater: 65, machineWeight: 17, machineDimension: null } },
+            "IH2800 A(70mm)": { injection: { screwDiameter: 70, injPressureKgcm2: 2048, injPressureMpa: 201, injHoldingPressureKgcm2: null, injHoldingPressureMpa: null, theoInjVolume: 1347, shotWeight: 1241, injRate: 363, injRateOptional: null, screwStroke: 350, injSpeed: 94, injSpeedOptional: null, plasticizingCapacity: 244, screwRotationSpeed: 175 }, general: { motorCapacity: 32.7, motorCapacityOptional: null, heaterCapacity: 20.6, totalElectricPower: 53.3, totalElectricPowerHigh: null, hydraulicOilTank: 450, coolingWater: 65, machineWeight: 17, machineDimension: null } },
+            "IH2800 B(80mm)": { injection: { screwDiameter: 80, injPressureKgcm2: 1568, injPressureMpa: 154, injHoldingPressureKgcm2: null, injHoldingPressureMpa: null, theoInjVolume: 1759, shotWeight: 1621, injRate: 474, injRateOptional: null, screwStroke: 350, injSpeed: 94, injSpeedOptional: null, plasticizingCapacity: 347, screwRotationSpeed: 175 }, general: { motorCapacity: 32.7, motorCapacityOptional: null, heaterCapacity: 24.1, totalElectricPower: 56.8, totalElectricPowerHigh: null, hydraulicOilTank: 450, coolingWater: 65, machineWeight: 17, machineDimension: null } }
+        }
+    },
+
+    "TH420A5": {
+        clamping: { clampingForce: "420(4119)", moldOpeningForce: null, tieBarDistance: "820 x 820", platenDimension: "1210 x 1140", daylight: 750, maxDaylight: 1550, minMoldHeight: 350, maxMoldHeight: 800, ejectorForce: "9.6(94.2)", ejectorStroke: 210, dryCycleTime: null, maxMoldWeight: null },
+        units: {
+            "IH1250 O(50mm)": { injection: { screwDiameter: 50, injPressureKgcm2: 2594, injPressureMpa: 254, injHoldingPressureKgcm2: null, injHoldingPressureMpa: null, theoInjVolume: 481, shotWeight: 443, injRate: 217, injRateOptional: null, screwStroke: 245, injSpeed: 110, injSpeedOptional: null, plasticizingCapacity: 142, screwRotationSpeed: 250 }, general: { motorCapacity: 32.7, motorCapacityOptional: null, heaterCapacity: 19.1, totalElectricPower: 51.8, totalElectricPowerHigh: null, hydraulicOilTank: 450, coolingWater: 65, machineWeight: 16.5, machineDimension: null } },
+            "IH1250 A(55mm)": { injection: { screwDiameter: 55, injPressureKgcm2: 2144, injPressureMpa: 210, injHoldingPressureKgcm2: null, injHoldingPressureMpa: null, theoInjVolume: 582, shotWeight: 536, injRate: 262, injRateOptional: null, screwStroke: 245, injSpeed: 110, injSpeedOptional: null, plasticizingCapacity: 182, screwRotationSpeed: 250 }, general: { motorCapacity: 32.7, motorCapacityOptional: null, heaterCapacity: 21, totalElectricPower: 53.7, totalElectricPowerHigh: null, hydraulicOilTank: 450, coolingWater: 65, machineWeight: 16.5, machineDimension: null } },
+            "IH1250 B(60mm)": { injection: { screwDiameter: 60, injPressureKgcm2: 1801, injPressureMpa: 177, injHoldingPressureKgcm2: null, injHoldingPressureMpa: null, theoInjVolume: 693, shotWeight: 638, injRate: 312, injRateOptional: null, screwStroke: 245, injSpeed: 110, injSpeedOptional: null, plasticizingCapacity: 233, screwRotationSpeed: 250 }, general: { motorCapacity: 32.7, motorCapacityOptional: null, heaterCapacity: 23.8, totalElectricPower: 56.5, totalElectricPowerHigh: null, hydraulicOilTank: 450, coolingWater: 65, machineWeight: 16.5, machineDimension: null } },
+            "IH1800 O(55mm)": { injection: { screwDiameter: 55, injPressureKgcm2: 2494, injPressureMpa: 245, injHoldingPressureKgcm2: null, injHoldingPressureMpa: null, theoInjVolume: 677, shotWeight: 624, injRate: 249, injRateOptional: null, screwStroke: 285, injSpeed: 105, injSpeedOptional: null, plasticizingCapacity: 160, screwRotationSpeed: 220 }, general: { motorCapacity: 32.7, motorCapacityOptional: null, heaterCapacity: 21, totalElectricPower: 53.7, totalElectricPowerHigh: null, hydraulicOilTank: 450, coolingWater: 65, machineWeight: 17, machineDimension: "7.8 x 2.0 x 2.1" } },
+            "IH1800 A(60mm)": { injection: { screwDiameter: 60, injPressureKgcm2: 2257, injPressureMpa: 221, injHoldingPressureKgcm2: null, injHoldingPressureMpa: null, theoInjVolume: 806, shotWeight: 743, injRate: 296, injRateOptional: null, screwStroke: 285, injSpeed: 105, injSpeedOptional: null, plasticizingCapacity: 205, screwRotationSpeed: 220 }, general: { motorCapacity: 32.7, motorCapacityOptional: null, heaterCapacity: 23.8, totalElectricPower: 56.5, totalElectricPowerHigh: null, hydraulicOilTank: 450, coolingWater: 65, machineWeight: 17, machineDimension: null } },
+            "IH1800 B(65mm)": { injection: { screwDiameter: 65, injPressureKgcm2: 2008, injPressureMpa: 197, injHoldingPressureKgcm2: null, injHoldingPressureMpa: null, theoInjVolume: 946, shotWeight: 871, injRate: 347, injRateOptional: null, screwStroke: 285, injSpeed: 105, injSpeedOptional: null, plasticizingCapacity: 253, screwRotationSpeed: 220 }, general: { motorCapacity: 32.7, motorCapacityOptional: null, heaterCapacity: 25.7, totalElectricPower: 58.4, totalElectricPowerHigh: null, hydraulicOilTank: 450, coolingWater: 65, machineWeight: 17, machineDimension: null } },
+            "IH2800 O(65mm)": { injection: { screwDiameter: 65, injPressureKgcm2: 2375, injPressureMpa: 233, injHoldingPressureKgcm2: null, injHoldingPressureMpa: null, theoInjVolume: 1161, shotWeight: 1070, injRate: 313, injRateOptional: null, screwStroke: 350, injSpeed: 94, injSpeedOptional: null, plasticizingCapacity: 201, screwRotationSpeed: 175 }, general: { motorCapacity: 32.7, motorCapacityOptional: null, heaterCapacity: 18.4, totalElectricPower: 51.1, totalElectricPowerHigh: null, hydraulicOilTank: 450, coolingWater: 65, machineWeight: 18, machineDimension: null } },
+            "IH2800 A(70mm)": { injection: { screwDiameter: 70, injPressureKgcm2: 2048, injPressureMpa: 201, injHoldingPressureKgcm2: null, injHoldingPressureMpa: null, theoInjVolume: 1347, shotWeight: 1241, injRate: 363, injRateOptional: null, screwStroke: 350, injSpeed: 94, injSpeedOptional: null, plasticizingCapacity: 244, screwRotationSpeed: 175 }, general: { motorCapacity: 32.7, motorCapacityOptional: null, heaterCapacity: 20.6, totalElectricPower: 53.3, totalElectricPowerHigh: null, hydraulicOilTank: 450, coolingWater: 65, machineWeight: 18, machineDimension: null } },
+            "IH2800 B(80mm)": { injection: { screwDiameter: 80, injPressureKgcm2: 1568, injPressureMpa: 154, injHoldingPressureKgcm2: null, injHoldingPressureMpa: null, theoInjVolume: 1759, shotWeight: 1621, injRate: 474, injRateOptional: null, screwStroke: 350, injSpeed: 94, injSpeedOptional: null, plasticizingCapacity: 347, screwRotationSpeed: 175 }, general: { motorCapacity: 32.7, motorCapacityOptional: null, heaterCapacity: 24.1, totalElectricPower: 56.8, totalElectricPowerHigh: null, hydraulicOilTank: 450, coolingWater: 65, machineWeight: 18, machineDimension: null } }
+        }
+    },
+
+    "TH480A5": {
+        clamping: { clampingForce: "480(4707)", moldOpeningForce: null, tieBarDistance: "870 x 870", platenDimension: "1270 x 1190", daylight: 800, maxDaylight: 1600, minMoldHeight: 350, maxMoldHeight: 800, ejectorForce: "14.9(146.2)", ejectorStroke: 230, dryCycleTime: null, maxMoldWeight: null },
+        units: {
+            "IH1800 O(55mm)": { injection: { screwDiameter: 55, injPressureKgcm2: 2494, injPressureMpa: 245, injHoldingPressureKgcm2: null, injHoldingPressureMpa: null, theoInjVolume: 677, shotWeight: 624, injRate: 249, injRateOptional: null, screwStroke: 285, injSpeed: 105, injSpeedOptional: null, plasticizingCapacity: 160, screwRotationSpeed: 220 }, general: { motorCapacity: 32.7, motorCapacityOptional: null, heaterCapacity: 21, totalElectricPower: 53.7, totalElectricPowerHigh: null, hydraulicOilTank: 500, coolingWater: 65, machineWeight: 24, machineDimension: null } },
+            "IH1800 A(60mm)": { injection: { screwDiameter: 60, injPressureKgcm2: 2257, injPressureMpa: 221, injHoldingPressureKgcm2: null, injHoldingPressureMpa: null, theoInjVolume: 806, shotWeight: 743, injRate: 296, injRateOptional: null, screwStroke: 285, injSpeed: 105, injSpeedOptional: null, plasticizingCapacity: 205, screwRotationSpeed: 220 }, general: { motorCapacity: 32.7, motorCapacityOptional: null, heaterCapacity: 23.8, totalElectricPower: 56.5, totalElectricPowerHigh: null, hydraulicOilTank: 500, coolingWater: 65, machineWeight: 24, machineDimension: null } },
+            "IH1800 B(65mm)": { injection: { screwDiameter: 65, injPressureKgcm2: 2008, injPressureMpa: 197, injHoldingPressureKgcm2: null, injHoldingPressureMpa: null, theoInjVolume: 946, shotWeight: 871, injRate: 347, injRateOptional: null, screwStroke: 285, injSpeed: 105, injSpeedOptional: null, plasticizingCapacity: 253, screwRotationSpeed: 220 }, general: { motorCapacity: 32.7, motorCapacityOptional: null, heaterCapacity: 25.7, totalElectricPower: 58.4, totalElectricPowerHigh: null, hydraulicOilTank: 500, coolingWater: 65, machineWeight: 24, machineDimension: null } },
+            "IH2800 O(65mm)": { injection: { screwDiameter: 65, injPressureKgcm2: 2375, injPressureMpa: 233, injHoldingPressureKgcm2: null, injHoldingPressureMpa: null, theoInjVolume: 1161, shotWeight: 1070, injRate: 313, injRateOptional: null, screwStroke: 350, injSpeed: 94, injSpeedOptional: null, plasticizingCapacity: 201, screwRotationSpeed: 175 }, general: { motorCapacity: 32.7, motorCapacityOptional: null, heaterCapacity: 18.4, totalElectricPower: 51.1, totalElectricPowerHigh: null, hydraulicOilTank: 500, coolingWater: 65, machineWeight: 25, machineDimension: "8.7 x 2.1 x 2.2" } },
+            "IH2800 A(70mm)": { injection: { screwDiameter: 70, injPressureKgcm2: 2048, injPressureMpa: 201, injHoldingPressureKgcm2: null, injHoldingPressureMpa: null, theoInjVolume: 1347, shotWeight: 1241, injRate: 363, injRateOptional: null, screwStroke: 350, injSpeed: 94, injSpeedOptional: null, plasticizingCapacity: 244, screwRotationSpeed: 175 }, general: { motorCapacity: 32.7, motorCapacityOptional: null, heaterCapacity: 20.6, totalElectricPower: 53.3, totalElectricPowerHigh: null, hydraulicOilTank: 500, coolingWater: 65, machineWeight: 25, machineDimension: null } },
+            "IH2800 B(80mm)": { injection: { screwDiameter: 80, injPressureKgcm2: 1568, injPressureMpa: 154, injHoldingPressureKgcm2: null, injHoldingPressureMpa: null, theoInjVolume: 1759, shotWeight: 1621, injRate: 474, injRateOptional: null, screwStroke: 350, injSpeed: 94, injSpeedOptional: null, plasticizingCapacity: 347, screwRotationSpeed: 175 }, general: { motorCapacity: 32.7, motorCapacityOptional: null, heaterCapacity: 24.1, totalElectricPower: 56.8, totalElectricPowerHigh: null, hydraulicOilTank: 500, coolingWater: 65, machineWeight: 25, machineDimension: null } }
+        }
+    },
+
+    "TE50A5": {
+        clamping: { clampingForce: "50(490)", moldOpeningForce: null, tieBarDistance: "370x370", platenDimension: "550x550", daylight: 300, maxDaylight: 700, minMoldHeight: 140, maxMoldHeight: 400, ejectorForce: "1.9(19)", ejectorStroke: 80, dryCycleTime: null, maxMoldWeight: null },
+        units: {
+            "IE70 S(16mm)": { injection: { screwDiameter: 16, injPressureKgcm2: 2800, injPressureMpa: 275, injHoldingPressureKgcm2: 2520, injHoldingPressureMpa: 247, theoInjVolume: 20, shotWeight: 18, injRate: 70, injRateOptional: 141, screwStroke: 100, injSpeed: 350, injSpeedOptional: 700, plasticizingCapacity: 12, screwRotationSpeed: 470 }, general: { motorCapacity: 11, motorCapacityOptional: 22, heaterCapacity: 3.6, totalElectricPower: 14.6, totalElectricPowerHigh: 25.6, machineWeight: 3.9, machineDimension: "4.2x1.3x1.7", hydraulicOilTank: null, coolingWater: null } },
+            "IE70 O(18mm)": { injection: { screwDiameter: 18, injPressureKgcm2: 2597, injPressureMpa: 255, injHoldingPressureKgcm2: 2337, injHoldingPressureMpa: 229, theoInjVolume: 25, shotWeight: 23, injRate: 89, injRateOptional: 178, screwStroke: 100, injSpeed: 350, injSpeedOptional: 700, plasticizingCapacity: 17, screwRotationSpeed: 470 }, general: { motorCapacity: 11, motorCapacityOptional: 22, heaterCapacity: 3.9, totalElectricPower: 14.9, totalElectricPowerHigh: 25.9, machineWeight: 3.9, machineDimension: "4.2x1.3x1.7", hydraulicOilTank: null, coolingWater: null } },
+            "IE70 A(20mm)": { injection: { screwDiameter: 20, injPressureKgcm2: 2103, injPressureMpa: 206, injHoldingPressureKgcm2: 1893, injHoldingPressureMpa: 186, theoInjVolume: 31, shotWeight: 28, injRate: 110, injRateOptional: 220, screwStroke: 100, injSpeed: 350, injSpeedOptional: 700, plasticizingCapacity: 24, screwRotationSpeed: 470 }, general: { motorCapacity: 11, motorCapacityOptional: 22, heaterCapacity: 4.3, totalElectricPower: 15.3, totalElectricPowerHigh: 26.3, machineWeight: 3.9, machineDimension: "4.2x1.3x1.7", hydraulicOilTank: null, coolingWater: null } },
+            "IE70 B(22mm)": { injection: { screwDiameter: 22, injPressureKgcm2: 1738, injPressureMpa: 170, injHoldingPressureKgcm2: 1564, injHoldingPressureMpa: 153, theoInjVolume: 38, shotWeight: 35, injRate: 133, injRateOptional: 266, screwStroke: 100, injSpeed: 350, injSpeedOptional: 700, plasticizingCapacity: 29, screwRotationSpeed: 470 }, general: { motorCapacity: 11, motorCapacityOptional: 22, heaterCapacity: 4.7, totalElectricPower: 15.7, totalElectricPowerHigh: 26.7, machineWeight: 3.9, machineDimension: "4.2x1.3x1.7", hydraulicOilTank: null, coolingWater: null } },
+            "IE125 O(22mm)": { injection: { screwDiameter: 22, injPressureKgcm2: 2610, injPressureMpa: 256, injHoldingPressureKgcm2: 2349, injHoldingPressureMpa: 230, theoInjVolume: 48, shotWeight: 44, injRate: 95, injRateOptional: 190, screwStroke: 125, injSpeed: 250, injSpeedOptional: 500, plasticizingCapacity: 29, screwRotationSpeed: 470 }, general: { motorCapacity: 11, motorCapacityOptional: 22, heaterCapacity: 4.5, totalElectricPower: 15.5, totalElectricPowerHigh: 26.5, machineWeight: 3.9, machineDimension: "4.2x1.3x1.7", hydraulicOilTank: null, coolingWater: null } },
+            "IE125 A(25mm)": { injection: { screwDiameter: 25, injPressureKgcm2: 2021, injPressureMpa: 198, injHoldingPressureKgcm2: 1819, injHoldingPressureMpa: 178, theoInjVolume: 61, shotWeight: 56, injRate: 123, injRateOptional: 245, screwStroke: 125, injSpeed: 250, injSpeedOptional: 500, plasticizingCapacity: 41, screwRotationSpeed: 470 }, general: { motorCapacity: 11, motorCapacityOptional: 22, heaterCapacity: 5.1, totalElectricPower: 16.1, totalElectricPowerHigh: 27.1, machineWeight: 3.9, machineDimension: "4.2x1.3x1.7", hydraulicOilTank: null, coolingWater: null } },
+            "IE125 B(28mm)": { injection: { screwDiameter: 28, injPressureKgcm2: 1612, injPressureMpa: 158, injHoldingPressureKgcm2: 1451, injHoldingPressureMpa: 142, theoInjVolume: 77, shotWeight: 70, injRate: 154, injRateOptional: 308, screwStroke: 125, injSpeed: 250, injSpeedOptional: 500, plasticizingCapacity: 54, screwRotationSpeed: 470 }, general: { motorCapacity: 11, motorCapacityOptional: 22, heaterCapacity: 5.9, totalElectricPower: 16.9, totalElectricPowerHigh: 27.9, machineWeight: 3.9, machineDimension: "4.2x1.3x1.7", hydraulicOilTank: null, coolingWater: null } },
+            "IE260 O(28mm)": { injection: { screwDiameter: 28, injPressureKgcm2: 2644, injPressureMpa: 259, injHoldingPressureKgcm2: 2380, injHoldingPressureMpa: 233, theoInjVolume: 99, shotWeight: 90, injRate: 132, injRateOptional: 265, screwStroke: 160, injSpeed: 215, injSpeedOptional: 430, plasticizingCapacity: 45, screwRotationSpeed: 400 }, general: { motorCapacity: 15.1, motorCapacityOptional: 30.2, heaterCapacity: 7, totalElectricPower: 22.1, totalElectricPowerHigh: 37.2, machineWeight: 4.2, machineDimension: null, hydraulicOilTank: null, coolingWater: null } },
+            "IE260 A(32mm)": { injection: { screwDiameter: 32, injPressureKgcm2: 2024, injPressureMpa: 198, injHoldingPressureKgcm2: 1822, injHoldingPressureMpa: 179, theoInjVolume: 129, shotWeight: 117, injRate: 173, injRateOptional: 346, screwStroke: 160, injSpeed: 215, injSpeedOptional: 430, plasticizingCapacity: 64, screwRotationSpeed: 400 }, general: { motorCapacity: 15.1, motorCapacityOptional: 30.2, heaterCapacity: 7.8, totalElectricPower: 22.9, totalElectricPowerHigh: 38, machineWeight: 4.2, machineDimension: null, hydraulicOilTank: null, coolingWater: null } },
+            "IE260 B(36mm)": { injection: { screwDiameter: 36, injPressureKgcm2: 1599, injPressureMpa: 157, injHoldingPressureKgcm2: 1439, injHoldingPressureMpa: 141, theoInjVolume: 163, shotWeight: 148, injRate: 219, injRateOptional: 438, screwStroke: 160, injSpeed: 215, injSpeedOptional: 430, plasticizingCapacity: 92, screwRotationSpeed: 400 }, general: { motorCapacity: 15.1, motorCapacityOptional: 30.2, heaterCapacity: 9.1, totalElectricPower: 24.2, totalElectricPowerHigh: 39.3, machineWeight: 4.2, machineDimension: null, hydraulicOilTank: null, coolingWater: null } }
+        }
+    },
+
+    "TE110A5": {
+        clamping: { clampingForce: "110(1078)", moldOpeningForce: null, tieBarDistance: "470x470", platenDimension: "680x680", daylight: 400, maxDaylight: 850, minMoldHeight: 150, maxMoldHeight: 450, ejectorForce: "3.1(31)", ejectorStroke: 120, dryCycleTime: null, maxMoldWeight: null },
+        units: {
+            "IE125 O(22mm)": { injection: { screwDiameter: 22, injPressureKgcm2: 2610, injPressureMpa: 256, injHoldingPressureKgcm2: 2349, injHoldingPressureMpa: 230, theoInjVolume: 48, shotWeight: 44, injRate: 95, injRateOptional: 190, screwStroke: 125, injSpeed: 250, injSpeedOptional: 500, plasticizingCapacity: 29, screwRotationSpeed: 470 }, general: { motorCapacity: 11, motorCapacityOptional: 22, heaterCapacity: 4.5, totalElectricPower: 15.5, totalElectricPowerHigh: 26.5, machineWeight: 4.5, machineDimension: null, hydraulicOilTank: null, coolingWater: null } },
+            "IE125 A(25mm)": { injection: { screwDiameter: 25, injPressureKgcm2: 2021, injPressureMpa: 198, injHoldingPressureKgcm2: 1819, injHoldingPressureMpa: 178, theoInjVolume: 61, shotWeight: 56, injRate: 123, injRateOptional: 245, screwStroke: 125, injSpeed: 250, injSpeedOptional: 500, plasticizingCapacity: 41, screwRotationSpeed: 470 }, general: { motorCapacity: 11, motorCapacityOptional: 22, heaterCapacity: 5.1, totalElectricPower: 16.1, totalElectricPowerHigh: 27.1, machineWeight: 4.5, machineDimension: null, hydraulicOilTank: null, coolingWater: null } },
+            "IE125 B(28mm)": { injection: { screwDiameter: 28, injPressureKgcm2: 1612, injPressureMpa: 158, injHoldingPressureKgcm2: 1451, injHoldingPressureMpa: 142, theoInjVolume: 77, shotWeight: 70, injRate: 154, injRateOptional: 308, screwStroke: 125, injSpeed: 250, injSpeedOptional: 500, plasticizingCapacity: 54, screwRotationSpeed: 470 }, general: { motorCapacity: 11, motorCapacityOptional: 22, heaterCapacity: 5.9, totalElectricPower: 16.9, totalElectricPowerHigh: 27.9, machineWeight: 4.5, machineDimension: null, hydraulicOilTank: null, coolingWater: null } },
+            "IE260 O(28mm)": { injection: { screwDiameter: 28, injPressureKgcm2: 2644, injPressureMpa: 259, injHoldingPressureKgcm2: 2380, injHoldingPressureMpa: 233, theoInjVolume: 99, shotWeight: 90, injRate: 132, injRateOptional: 265, screwStroke: 160, injSpeed: 215, injSpeedOptional: 430, plasticizingCapacity: 45, screwRotationSpeed: 400 }, general: { motorCapacity: 15.1, motorCapacityOptional: 30.2, heaterCapacity: 7, totalElectricPower: 22.1, totalElectricPowerHigh: 37.2, machineWeight: 4.7, machineDimension: "5.0 x 1.3 x 1.8", hydraulicOilTank: null, coolingWater: null } },
+            "IE260 A(32mm)": { injection: { screwDiameter: 32, injPressureKgcm2: 2024, injPressureMpa: 198, injHoldingPressureKgcm2: 1822, injHoldingPressureMpa: 179, theoInjVolume: 129, shotWeight: 117, injRate: 173, injRateOptional: 346, screwStroke: 160, injSpeed: 215, injSpeedOptional: 430, plasticizingCapacity: 64, screwRotationSpeed: 400 }, general: { motorCapacity: 15.1, motorCapacityOptional: 30.2, heaterCapacity: 7.8, totalElectricPower: 22.9, totalElectricPowerHigh: 38, machineWeight: 4.7, machineDimension: "5.0 x 1.3 x 1.8", hydraulicOilTank: null, coolingWater: null } },
+            "IE260 B(36mm)": { injection: { screwDiameter: 36, injPressureKgcm2: 1599, injPressureMpa: 157, injHoldingPressureKgcm2: 1439, injHoldingPressureMpa: 141, theoInjVolume: 163, shotWeight: 148, injRate: 219, injRateOptional: 438, screwStroke: 160, injSpeed: 215, injSpeedOptional: 430, plasticizingCapacity: 92, screwRotationSpeed: 400 }, general: { motorCapacity: 15.1, motorCapacityOptional: 30.2, heaterCapacity: 9.1, totalElectricPower: 24.2, totalElectricPowerHigh: 39.3, machineWeight: 4.7, machineDimension: "5.0 x 1.3 x 1.8", hydraulicOilTank: null, coolingWater: null } },
+            "IE370 O(32mm)": { injection: { screwDiameter: 32, injPressureKgcm2: 2573, injPressureMpa: 252, injHoldingPressureKgcm2: 2316, injHoldingPressureMpa: 227, theoInjVolume: 145, shotWeight: 132, injRate: 161, injRateOptional: 322, screwStroke: 180, injSpeed: 200, injSpeedOptional: 400, plasticizingCapacity: 60, screwRotationSpeed: 375 }, general: { motorCapacity: 17.8, motorCapacityOptional: 35.6, heaterCapacity: 8.5, totalElectricPower: 26.3, totalElectricPowerHigh: 44.1, machineWeight: 5.2, machineDimension: null, hydraulicOilTank: null, coolingWater: null } },
+            "IE370 A(36mm)": { injection: { screwDiameter: 36, injPressureKgcm2: 2033, injPressureMpa: 199, injHoldingPressureKgcm2: 1830, injHoldingPressureMpa: 179, theoInjVolume: 183, shotWeight: 167, injRate: 204, injRateOptional: 407, screwStroke: 180, injSpeed: 200, injSpeedOptional: 400, plasticizingCapacity: 86, screwRotationSpeed: 375 }, general: { motorCapacity: 17.8, motorCapacityOptional: 35.6, heaterCapacity: 9.9, totalElectricPower: 27.7, totalElectricPowerHigh: 45.5, machineWeight: 5.2, machineDimension: null, hydraulicOilTank: null, coolingWater: null } },
+            "IE370 B(40mm)": { injection: { screwDiameter: 40, injPressureKgcm2: 1647, injPressureMpa: 162, injHoldingPressureKgcm2: 1482, injHoldingPressureMpa: 145, theoInjVolume: 226, shotWeight: 206, injRate: 251, injRateOptional: 503, screwStroke: 180, injSpeed: 200, injSpeedOptional: 400, plasticizingCapacity: 117, screwRotationSpeed: 375 }, general: { motorCapacity: 17.8, motorCapacityOptional: 35.6, heaterCapacity: 11.2, totalElectricPower: 29, totalElectricPowerHigh: 46.8, machineWeight: 5.2, machineDimension: null, hydraulicOilTank: null, coolingWater: null } }
+        }
+    },
+
+    "TE170A5": {
+        clamping: { clampingForce: "170(1667)", moldOpeningForce: null, tieBarDistance: "570x570", platenDimension: "840x790", daylight: 500, maxDaylight: 1000, minMoldHeight: 180, maxMoldHeight: 500, ejectorForce: "3.4(34)", ejectorStroke: 150, dryCycleTime: null, maxMoldWeight: null },
+        units: {
+            "IE260 O(28mm)": { injection: { screwDiameter: 28, injPressureKgcm2: 2644, injPressureMpa: 259, injHoldingPressureKgcm2: 2380, injHoldingPressureMpa: 233, theoInjVolume: 99, shotWeight: 90, injRate: 132, injRateOptional: 265, screwStroke: 160, injSpeed: 215, injSpeedOptional: 430, plasticizingCapacity: 45, screwRotationSpeed: 400 }, general: { motorCapacity: 15.1, motorCapacityOptional: 30.2, heaterCapacity: 7, totalElectricPower: 22.1, totalElectricPowerHigh: 37.2, machineWeight: 7, machineDimension: null, hydraulicOilTank: null, coolingWater: null } },
+            "IE260 A(32mm)": { injection: { screwDiameter: 32, injPressureKgcm2: 2024, injPressureMpa: 198, injHoldingPressureKgcm2: 1822, injHoldingPressureMpa: 179, theoInjVolume: 129, shotWeight: 117, injRate: 173, injRateOptional: 346, screwStroke: 160, injSpeed: 215, injSpeedOptional: 430, plasticizingCapacity: 64, screwRotationSpeed: 400 }, general: { motorCapacity: 15.1, motorCapacityOptional: 30.2, heaterCapacity: 7.8, totalElectricPower: 22.9, totalElectricPowerHigh: 38, machineWeight: 7, machineDimension: null, hydraulicOilTank: null, coolingWater: null } },
+            "IE260 B(36mm)": { injection: { screwDiameter: 36, injPressureKgcm2: 1599, injPressureMpa: 157, injHoldingPressureKgcm2: 1439, injHoldingPressureMpa: 141, theoInjVolume: 163, shotWeight: 148, injRate: 219, injRateOptional: 438, screwStroke: 160, injSpeed: 215, injSpeedOptional: 430, plasticizingCapacity: 92, screwRotationSpeed: 400 }, general: { motorCapacity: 15.1, motorCapacityOptional: 30.2, heaterCapacity: 9.1, totalElectricPower: 24.2, totalElectricPowerHigh: 39.3, machineWeight: 7, machineDimension: null, hydraulicOilTank: null, coolingWater: null } },
+            "IE370 O(32mm)": { injection: { screwDiameter: 32, injPressureKgcm2: 2573, injPressureMpa: 252, injHoldingPressureKgcm2: 2316, injHoldingPressureMpa: 227, theoInjVolume: 145, shotWeight: 132, injRate: 161, injRateOptional: 322, screwStroke: 180, injSpeed: 200, injSpeedOptional: 400, plasticizingCapacity: 60, screwRotationSpeed: 375 }, general: { motorCapacity: 17.8, motorCapacityOptional: 35.6, heaterCapacity: 8.5, totalElectricPower: 26.3, totalElectricPowerHigh: 44.1, machineWeight: 7.5, machineDimension: "5.7 x 1.6 x 2.0", hydraulicOilTank: null, coolingWater: null } },
+            "IE370 A(36mm)": { injection: { screwDiameter: 36, injPressureKgcm2: 2033, injPressureMpa: 199, injHoldingPressureKgcm2: 1830, injHoldingPressureMpa: 179, theoInjVolume: 183, shotWeight: 167, injRate: 204, injRateOptional: 407, screwStroke: 180, injSpeed: 200, injSpeedOptional: 400, plasticizingCapacity: 86, screwRotationSpeed: 375 }, general: { motorCapacity: 17.8, motorCapacityOptional: 35.6, heaterCapacity: 9.9, totalElectricPower: 27.7, totalElectricPowerHigh: 45.5, machineWeight: 7.5, machineDimension: "5.7 x 1.6 x 2.0", hydraulicOilTank: null, coolingWater: null } },
+            "IE370 B(40mm)": { injection: { screwDiameter: 40, injPressureKgcm2: 1647, injPressureMpa: 162, injHoldingPressureKgcm2: 1482, injHoldingPressureMpa: 145, theoInjVolume: 226, shotWeight: 206, injRate: 251, injRateOptional: 503, screwStroke: 180, injSpeed: 200, injSpeedOptional: 400, plasticizingCapacity: 117, screwRotationSpeed: 375 }, general: { motorCapacity: 17.8, motorCapacityOptional: 35.6, heaterCapacity: 11.2, totalElectricPower: 29, totalElectricPowerHigh: 46.8, machineWeight: 7.5, machineDimension: "5.7 x 1.6 x 2.0", hydraulicOilTank: null, coolingWater: null } },
+            "IE520 O(36mm)": { injection: { screwDiameter: 36, injPressureKgcm2: 2541, injPressureMpa: 249, injHoldingPressureKgcm2: 2287, injHoldingPressureMpa: 224, theoInjVolume: 204, shotWeight: 186, injRate: 163, injRateOptional: 326, screwStroke: 200, injSpeed: 160, injSpeedOptional: 320, plasticizingCapacity: 86, screwRotationSpeed: 375 }, general: { motorCapacity: 17.8, motorCapacityOptional: 35.6, heaterCapacity: 9.9, totalElectricPower: 27.7, totalElectricPowerHigh: 45.5, machineWeight: 8, machineDimension: null, hydraulicOilTank: null, coolingWater: null } },
+            "IE520 A(40mm)": { injection: { screwDiameter: 40, injPressureKgcm2: 2059, injPressureMpa: 202, injHoldingPressureKgcm2: 1853, injHoldingPressureMpa: 182, theoInjVolume: 251, shotWeight: 228, injRate: 201, injRateOptional: 402, screwStroke: 200, injSpeed: 160, injSpeedOptional: 320, plasticizingCapacity: 117, screwRotationSpeed: 375 }, general: { motorCapacity: 17.8, motorCapacityOptional: 35.6, heaterCapacity: 11.2, totalElectricPower: 29, totalElectricPowerHigh: 46.8, machineWeight: 8, machineDimension: null, hydraulicOilTank: null, coolingWater: null } },
+            "IE520 B(45mm)": { injection: { screwDiameter: 45, injPressureKgcm2: 1627, injPressureMpa: 160, injHoldingPressureKgcm2: 1464, injHoldingPressureMpa: 144, theoInjVolume: 318, shotWeight: 289, injRate: 254, injRateOptional: 509, screwStroke: 200, injSpeed: 160, injSpeedOptional: 320, plasticizingCapacity: 158, screwRotationSpeed: 375 }, general: { motorCapacity: 17.8, motorCapacityOptional: 35.6, heaterCapacity: 12.6, totalElectricPower: 30.4, totalElectricPowerHigh: 48.2, machineWeight: 8, machineDimension: null, hydraulicOilTank: null, coolingWater: null } }
+        }
+    },
+
+    "TE220A5": {
+        clamping: { clampingForce: "220(2157)", moldOpeningForce: null, tieBarDistance: "625x625", platenDimension: "900x870", daylight: 550, maxDaylight: 1150, minMoldHeight: 200, maxMoldHeight: 600, ejectorForce: "3.4(34)", ejectorStroke: 180, dryCycleTime: null, maxMoldWeight: null },
+        units: {
+            "IE370 O(32mm)": { injection: { screwDiameter: 32, injPressureKgcm2: 2573, injPressureMpa: 252, injHoldingPressureKgcm2: 2316, injHoldingPressureMpa: 227, theoInjVolume: 145, shotWeight: 132, injRate: 161, injRateOptional: 322, screwStroke: 180, injSpeed: 200, injSpeedOptional: 400, plasticizingCapacity: 60, screwRotationSpeed: 375 }, general: { motorCapacity: 17.8, motorCapacityOptional: 35.6, heaterCapacity: 8.5, totalElectricPower: 26.3, totalElectricPowerHigh: 44.1, machineWeight: 9.7, machineDimension: null, hydraulicOilTank: null, coolingWater: null } },
+            "IE370 A(36mm)": { injection: { screwDiameter: 36, injPressureKgcm2: 2033, injPressureMpa: 199, injHoldingPressureKgcm2: 1830, injHoldingPressureMpa: 179, theoInjVolume: 183, shotWeight: 167, injRate: 204, injRateOptional: 407, screwStroke: 180, injSpeed: 200, injSpeedOptional: 400, plasticizingCapacity: 86, screwRotationSpeed: 375 }, general: { motorCapacity: 17.8, motorCapacityOptional: 35.6, heaterCapacity: 9.9, totalElectricPower: 27.7, totalElectricPowerHigh: 45.5, machineWeight: 9.7, machineDimension: null, hydraulicOilTank: null, coolingWater: null } },
+            "IE370 B(40mm)": { injection: { screwDiameter: 40, injPressureKgcm2: 1647, injPressureMpa: 162, injHoldingPressureKgcm2: 1482, injHoldingPressureMpa: 145, theoInjVolume: 226, shotWeight: 206, injRate: 251, injRateOptional: 503, screwStroke: 180, injSpeed: 200, injSpeedOptional: 400, plasticizingCapacity: 117, screwRotationSpeed: 375 }, general: { motorCapacity: 17.8, motorCapacityOptional: 35.6, heaterCapacity: 11.2, totalElectricPower: 29, totalElectricPowerHigh: 46.8, machineWeight: 9.7, machineDimension: null, hydraulicOilTank: null, coolingWater: null } },
+            "IE520 O(36mm)": { injection: { screwDiameter: 36, injPressureKgcm2: 2541, injPressureMpa: 249, injHoldingPressureKgcm2: 2287, injHoldingPressureMpa: 224, theoInjVolume: 204, shotWeight: 186, injRate: 163, injRateOptional: 326, screwStroke: 200, injSpeed: 160, injSpeedOptional: 320, plasticizingCapacity: 86, screwRotationSpeed: 375 }, general: { motorCapacity: 17.8, motorCapacityOptional: 35.6, heaterCapacity: 9.9, totalElectricPower: 27.7, totalElectricPowerHigh: 45.5, machineWeight: 10.3, machineDimension: "6.2 x 1.7 x 2.1", hydraulicOilTank: null, coolingWater: null } },
+            "IE520 A(40mm)": { injection: { screwDiameter: 40, injPressureKgcm2: 2059, injPressureMpa: 202, injHoldingPressureKgcm2: 1853, injHoldingPressureMpa: 182, theoInjVolume: 251, shotWeight: 228, injRate: 201, injRateOptional: 402, screwStroke: 200, injSpeed: 160, injSpeedOptional: 320, plasticizingCapacity: 117, screwRotationSpeed: 375 }, general: { motorCapacity: 17.8, motorCapacityOptional: 35.6, heaterCapacity: 11.2, totalElectricPower: 29, totalElectricPowerHigh: 46.8, machineWeight: 10.3, machineDimension: "6.2 x 1.7 x 2.1", hydraulicOilTank: null, coolingWater: null } },
+            "IE520 B(45mm)": { injection: { screwDiameter: 45, injPressureKgcm2: 1627, injPressureMpa: 160, injHoldingPressureKgcm2: 1464, injHoldingPressureMpa: 144, theoInjVolume: 318, shotWeight: 289, injRate: 254, injRateOptional: 509, screwStroke: 200, injSpeed: 160, injSpeedOptional: 320, plasticizingCapacity: 158, screwRotationSpeed: 375 }, general: { motorCapacity: 17.8, motorCapacityOptional: 35.6, heaterCapacity: 12.6, totalElectricPower: 30.4, totalElectricPowerHigh: 48.2, machineWeight: 10.3, machineDimension: "6.2 x 1.7 x 2.1", hydraulicOilTank: null, coolingWater: null } },
+            "IE720 O(40mm)": { injection: { screwDiameter: 40, injPressureKgcm2: 2605, injPressureMpa: 255, injHoldingPressureKgcm2: 2345, injHoldingPressureMpa: 230, theoInjVolume: 276, shotWeight: 251, injRate: 188, injRateOptional: 377, screwStroke: 220, injSpeed: 150, injSpeedOptional: 300, plasticizingCapacity: 117, screwRotationSpeed: 375 }, general: { motorCapacity: 23.1, motorCapacityOptional: 46.2, heaterCapacity: 13.6, totalElectricPower: 36.7, totalElectricPowerHigh: 59.8, machineWeight: 10.8, machineDimension: null, hydraulicOilTank: null, coolingWater: null } },
+            "IE720 A(45mm)": { injection: { screwDiameter: 45, injPressureKgcm2: 2058, injPressureMpa: 202, injHoldingPressureKgcm2: 1852, injHoldingPressureMpa: 182, theoInjVolume: 350, shotWeight: 319, injRate: 239, injRateOptional: 477, screwStroke: 220, injSpeed: 150, injSpeedOptional: 300, plasticizingCapacity: 158, screwRotationSpeed: 375 }, general: { motorCapacity: 23.1, motorCapacityOptional: 46.2, heaterCapacity: 14.6, totalElectricPower: 37.7, totalElectricPowerHigh: 60.8, machineWeight: 10.8, machineDimension: null, hydraulicOilTank: null, coolingWater: null } },
+            "IE720 B(50mm)": { injection: { screwDiameter: 50, injPressureKgcm2: 1667, injPressureMpa: 163, injHoldingPressureKgcm2: 1500, injHoldingPressureMpa: 147, theoInjVolume: 432, shotWeight: 393, injRate: 295, injRateOptional: 589, screwStroke: 220, injSpeed: 150, injSpeedOptional: 300, plasticizingCapacity: 213, screwRotationSpeed: 375 }, general: { motorCapacity: 23.1, motorCapacityOptional: 46.2, heaterCapacity: 17.1, totalElectricPower: 40.2, totalElectricPowerHigh: 63.3, machineWeight: 10.8, machineDimension: null, hydraulicOilTank: null, coolingWater: null } }
+        }
+    },
+
+    "TE280A5": {
+        clamping: { clampingForce: "280(2745)", moldOpeningForce: null, tieBarDistance: "670x670", platenDimension: "970x980", daylight: 600, maxDaylight: 1250, minMoldHeight: 250, maxMoldHeight: 650, ejectorForce: "4.3(43)", ejectorStroke: 200, dryCycleTime: null, maxMoldWeight: null },
+        units: {
+            "IE520 O(36mm)": { injection: { screwDiameter: 36, injPressureKgcm2: 2541, injPressureMpa: 249, injHoldingPressureKgcm2: 2287, injHoldingPressureMpa: 224, theoInjVolume: 204, shotWeight: 186, injRate: 163, injRateOptional: 326, screwStroke: 200, injSpeed: 160, injSpeedOptional: 320, plasticizingCapacity: 86, screwRotationSpeed: 375 }, general: { motorCapacity: 23.1, motorCapacityOptional: 35.6, heaterCapacity: 9.9, totalElectricPower: 33, totalElectricPowerHigh: 45.5, machineWeight: 14, machineDimension: null, hydraulicOilTank: null, coolingWater: null } },
+            "IE520 A(40mm)": { injection: { screwDiameter: 40, injPressureKgcm2: 2059, injPressureMpa: 202, injHoldingPressureKgcm2: 1853, injHoldingPressureMpa: 182, theoInjVolume: 251, shotWeight: 228, injRate: 201, injRateOptional: 402, screwStroke: 200, injSpeed: 160, injSpeedOptional: 320, plasticizingCapacity: 117, screwRotationSpeed: 375 }, general: { motorCapacity: 23.1, motorCapacityOptional: 35.6, heaterCapacity: 11.2, totalElectricPower: 34.3, totalElectricPowerHigh: 46.8, machineWeight: 14, machineDimension: null, hydraulicOilTank: null, coolingWater: null } },
+            "IE520 B(45mm)": { injection: { screwDiameter: 45, injPressureKgcm2: 1627, injPressureMpa: 160, injHoldingPressureKgcm2: 1464, injHoldingPressureMpa: 144, theoInjVolume: 318, shotWeight: 289, injRate: 254, injRateOptional: 509, screwStroke: 200, injSpeed: 160, injSpeedOptional: 320, plasticizingCapacity: 158, screwRotationSpeed: 375 }, general: { motorCapacity: 23.1, motorCapacityOptional: 35.6, heaterCapacity: 12.6, totalElectricPower: 35.7, totalElectricPowerHigh: 48.2, machineWeight: 14, machineDimension: null, hydraulicOilTank: null, coolingWater: null } },
+            "IE720 O(40mm)": { injection: { screwDiameter: 40, injPressureKgcm2: 2605, injPressureMpa: 255, injHoldingPressureKgcm2: 2345, injHoldingPressureMpa: 230, theoInjVolume: 276, shotWeight: 251, injRate: 188, injRateOptional: 377, screwStroke: 220, injSpeed: 150, injSpeedOptional: 300, plasticizingCapacity: 117, screwRotationSpeed: 375 }, general: { motorCapacity: 23.1, motorCapacityOptional: 46.2, heaterCapacity: 13.6, totalElectricPower: 36.7, totalElectricPowerHigh: 59.8, machineWeight: 14.5, machineDimension: "6.9 x 1.8 x 2.1", hydraulicOilTank: null, coolingWater: null } },
+            "IE720 A(45mm)": { injection: { screwDiameter: 45, injPressureKgcm2: 2058, injPressureMpa: 202, injHoldingPressureKgcm2: 1852, injHoldingPressureMpa: 182, theoInjVolume: 350, shotWeight: 319, injRate: 239, injRateOptional: 477, screwStroke: 220, injSpeed: 150, injSpeedOptional: 300, plasticizingCapacity: 158, screwRotationSpeed: 375 }, general: { motorCapacity: 23.1, motorCapacityOptional: 46.2, heaterCapacity: 14.6, totalElectricPower: 37.7, totalElectricPowerHigh: 60.8, machineWeight: 14.5, machineDimension: "6.9 x 1.8 x 2.1", hydraulicOilTank: null, coolingWater: null } },
+            "IE720 B(50mm)": { injection: { screwDiameter: 50, injPressureKgcm2: 1667, injPressureMpa: 163, injHoldingPressureKgcm2: 1500, injHoldingPressureMpa: 147, theoInjVolume: 432, shotWeight: 393, injRate: 295, injRateOptional: 589, screwStroke: 220, injSpeed: 150, injSpeedOptional: 300, plasticizingCapacity: 213, screwRotationSpeed: 375 }, general: { motorCapacity: 23.1, motorCapacityOptional: 46.2, heaterCapacity: 17.1, totalElectricPower: 40.2, totalElectricPowerHigh: 63.3, machineWeight: 14.5, machineDimension: "6.9 x 1.8 x 2.1", hydraulicOilTank: null, coolingWater: null } },
+            "IE1000 O(45mm)": { injection: { screwDiameter: 45, injPressureKgcm2: 2525, injPressureMpa: 248, injHoldingPressureKgcm2: 2273, injHoldingPressureMpa: 223, theoInjVolume: 398, shotWeight: 362, injRate: 239, injRateOptional: 477, screwStroke: 250, injSpeed: 150, injSpeedOptional: 300, plasticizingCapacity: 158, screwRotationSpeed: 300 }, general: { motorCapacity: 32.7, motorCapacityOptional: 65.4, heaterCapacity: 14.6, totalElectricPower: 47.3, totalElectricPowerHigh: 80, machineWeight: 15, machineDimension: null, hydraulicOilTank: null, coolingWater: null } },
+            "IE1000 A(50mm)": { injection: { screwDiameter: 50, injPressureKgcm2: 2045, injPressureMpa: 201, injHoldingPressureKgcm2: 1841, injHoldingPressureMpa: 180, theoInjVolume: 491, shotWeight: 447, injRate: 295, injRateOptional: 589, screwStroke: 250, injSpeed: 150, injSpeedOptional: 300, plasticizingCapacity: 213, screwRotationSpeed: 300 }, general: { motorCapacity: 32.7, motorCapacityOptional: 65.4, heaterCapacity: 17.1, totalElectricPower: 49.8, totalElectricPowerHigh: 82.5, machineWeight: 15, machineDimension: null, hydraulicOilTank: null, coolingWater: null } },
+            "IE1000 B(55mm)": { injection: { screwDiameter: 55, injPressureKgcm2: 1690, injPressureMpa: 166, injHoldingPressureKgcm2: 1521, injHoldingPressureMpa: 149, theoInjVolume: 594, shotWeight: 541, injRate: 356, injRateOptional: 713, screwStroke: 250, injSpeed: 150, injSpeedOptional: 300, plasticizingCapacity: 273, screwRotationSpeed: 300 }, general: { motorCapacity: 32.7, motorCapacityOptional: 65.4, heaterCapacity: 18.7, totalElectricPower: 51.4, totalElectricPowerHigh: 84.1, machineWeight: 15, machineDimension: null, hydraulicOilTank: null, coolingWater: null } }
+        }
+    },
+
+    "TE280WA5": {
+        clamping: { clampingForce: "280(2745)", moldOpeningForce: null, tieBarDistance: "720x720", platenDimension: "1020x1020", daylight: 650, maxDaylight: 1350, minMoldHeight: 300, maxMoldHeight: 700, ejectorForce: "4.3(43)", ejectorStroke: 200, dryCycleTime: null, maxMoldWeight: null },
+        units: {
+            "IE720 O(40mm)": { injection: { screwDiameter: 40, injPressureKgcm2: 2605, injPressureMpa: 255, injHoldingPressureKgcm2: 2345, injHoldingPressureMpa: 230, theoInjVolume: 276, shotWeight: 251, injRate: 188, injRateOptional: 377, screwStroke: 220, injSpeed: 150, injSpeedOptional: 300, plasticizingCapacity: 117, screwRotationSpeed: 375 }, general: { motorCapacity: 23.1, motorCapacityOptional: 46.2, heaterCapacity: 13.6, totalElectricPower: 36.7, totalElectricPowerHigh: 59.8, machineWeight: 15.5, machineDimension: null, hydraulicOilTank: null, coolingWater: null } },
+            "IE720 A(45mm)": { injection: { screwDiameter: 45, injPressureKgcm2: 2058, injPressureMpa: 202, injHoldingPressureKgcm2: 1852, injHoldingPressureMpa: 182, theoInjVolume: 350, shotWeight: 319, injRate: 239, injRateOptional: 477, screwStroke: 220, injSpeed: 150, injSpeedOptional: 300, plasticizingCapacity: 158, screwRotationSpeed: 375 }, general: { motorCapacity: 23.1, motorCapacityOptional: 46.2, heaterCapacity: 14.6, totalElectricPower: 37.7, totalElectricPowerHigh: 60.8, machineWeight: 15.5, machineDimension: null, hydraulicOilTank: null, coolingWater: null } },
+            "IE720 B(50mm)": { injection: { screwDiameter: 50, injPressureKgcm2: 1667, injPressureMpa: 163, injHoldingPressureKgcm2: 1500, injHoldingPressureMpa: 147, theoInjVolume: 432, shotWeight: 393, injRate: 295, injRateOptional: 589, screwStroke: 220, injSpeed: 150, injSpeedOptional: 300, plasticizingCapacity: 213, screwRotationSpeed: 375 }, general: { motorCapacity: 23.1, motorCapacityOptional: 46.2, heaterCapacity: 17.1, totalElectricPower: 40.2, totalElectricPowerHigh: 63.3, machineWeight: 15.5, machineDimension: null, hydraulicOilTank: null, coolingWater: null } },
+            "IE1000 O(45mm)": { injection: { screwDiameter: 45, injPressureKgcm2: 2525, injPressureMpa: 248, injHoldingPressureKgcm2: 2273, injHoldingPressureMpa: 223, theoInjVolume: 398, shotWeight: 362, injRate: 239, injRateOptional: 477, screwStroke: 250, injSpeed: 150, injSpeedOptional: 300, plasticizingCapacity: 158, screwRotationSpeed: 300 }, general: { motorCapacity: 32.7, motorCapacityOptional: 65.4, heaterCapacity: 14.6, totalElectricPower: 47.3, totalElectricPowerHigh: 80, machineWeight: 16, machineDimension: "7.4 x 1.8 x 2.1", hydraulicOilTank: null, coolingWater: null } },
+            "IE1000 A(50mm)": { injection: { screwDiameter: 50, injPressureKgcm2: 2045, injPressureMpa: 201, injHoldingPressureKgcm2: 1841, injHoldingPressureMpa: 180, theoInjVolume: 491, shotWeight: 447, injRate: 295, injRateOptional: 589, screwStroke: 250, injSpeed: 150, injSpeedOptional: 300, plasticizingCapacity: 213, screwRotationSpeed: 300 }, general: { motorCapacity: 32.7, motorCapacityOptional: 65.4, heaterCapacity: 17.1, totalElectricPower: 49.8, totalElectricPowerHigh: 82.5, machineWeight: 16, machineDimension: "7.4 x 1.8 x 2.1", hydraulicOilTank: null, coolingWater: null } },
+            "IE1000 B(55mm)": { injection: { screwDiameter: 55, injPressureKgcm2: 1690, injPressureMpa: 166, injHoldingPressureKgcm2: 1521, injHoldingPressureMpa: 149, theoInjVolume: 594, shotWeight: 541, injRate: 356, injRateOptional: 713, screwStroke: 250, injSpeed: 150, injSpeedOptional: 300, plasticizingCapacity: 273, screwRotationSpeed: 300 }, general: { motorCapacity: 32.7, motorCapacityOptional: 65.4, heaterCapacity: 18.7, totalElectricPower: 51.4, totalElectricPowerHigh: 84.1, machineWeight: 16, machineDimension: "7.4 x 1.8 x 2.1", hydraulicOilTank: null, coolingWater: null } },
+            "IE1360 O(50mm)": { injection: { screwDiameter: 50, injPressureKgcm2: 2472, injPressureMpa: 242, injHoldingPressureKgcm2: 2225, injHoldingPressureMpa: 218, theoInjVolume: 530, shotWeight: 482, injRate: 295, injRateOptional: 589, screwStroke: 270, injSpeed: 150, injSpeedOptional: 300, plasticizingCapacity: 142, screwRotationSpeed: 250 }, general: { motorCapacity: 32.7, motorCapacityOptional: 65.4, heaterCapacity: 19.1, totalElectricPower: 51.8, totalElectricPowerHigh: 84.5, machineWeight: 16.5, machineDimension: null, hydraulicOilTank: null, coolingWater: null } },
+            "IE1360 A(55mm)": { injection: { screwDiameter: 55, injPressureKgcm2: 2043, injPressureMpa: 200, injHoldingPressureKgcm2: 1839, injHoldingPressureMpa: 180, theoInjVolume: 641, shotWeight: 583, injRate: 356, injRateOptional: 713, screwStroke: 270, injSpeed: 150, injSpeedOptional: 300, plasticizingCapacity: 182, screwRotationSpeed: 250 }, general: { motorCapacity: 32.7, motorCapacityOptional: 65.4, heaterCapacity: 21, totalElectricPower: 53.7, totalElectricPowerHigh: 86.4, machineWeight: 16.5, machineDimension: null, hydraulicOilTank: null, coolingWater: null } },
+            "IE1360 B(60mm)": { injection: { screwDiameter: 60, injPressureKgcm2: 1716, injPressureMpa: 168, injHoldingPressureKgcm2: 1544, injHoldingPressureMpa: 151, theoInjVolume: 763, shotWeight: 694, injRate: 424, injRateOptional: 848, screwStroke: 270, injSpeed: 150, injSpeedOptional: 300, plasticizingCapacity: 233, screwRotationSpeed: 250 }, general: { motorCapacity: 32.7, motorCapacityOptional: 65.4, heaterCapacity: 23.8, totalElectricPower: 56.5, totalElectricPowerHigh: 89.2, machineWeight: 16.5, machineDimension: null, hydraulicOilTank: null, coolingWater: null } }
+        }
+    },
+
+    "TE350A5": {
+        clamping: { clampingForce: "350(3432)", moldOpeningForce: null, tieBarDistance: "770x770", platenDimension: "1160x1090", daylight: 700, maxDaylight: 1450, minMoldHeight: 300, maxMoldHeight: 750, ejectorForce: "5.7(57)", ejectorStroke: 210, dryCycleTime: null, maxMoldWeight: null },
+        units: {
+            "IE1000 O(45mm)": { injection: { screwDiameter: 45, injPressureKgcm2: 2525, injPressureMpa: 248, injHoldingPressureKgcm2: 2273, injHoldingPressureMpa: 223, theoInjVolume: 398, shotWeight: 362, injRate: 239, injRateOptional: 477, screwStroke: 250, injSpeed: 150, injSpeedOptional: 300, plasticizingCapacity: 158, screwRotationSpeed: 300 }, general: { motorCapacity: 32.7, motorCapacityOptional: 65.4, heaterCapacity: 14.6, totalElectricPower: 47.3, totalElectricPowerHigh: 80, machineWeight: 16.8, machineDimension: null, hydraulicOilTank: null, coolingWater: null } },
+            "IE1000 A(50mm)": { injection: { screwDiameter: 50, injPressureKgcm2: 2045, injPressureMpa: 201, injHoldingPressureKgcm2: 1841, injHoldingPressureMpa: 180, theoInjVolume: 491, shotWeight: 447, injRate: 295, injRateOptional: 589, screwStroke: 250, injSpeed: 150, injSpeedOptional: 300, plasticizingCapacity: 213, screwRotationSpeed: 300 }, general: { motorCapacity: 32.7, motorCapacityOptional: 65.4, heaterCapacity: 17.1, totalElectricPower: 49.8, totalElectricPowerHigh: 82.5, machineWeight: 16.8, machineDimension: null, hydraulicOilTank: null, coolingWater: null } },
+            "IE1000 B(55mm)": { injection: { screwDiameter: 55, injPressureKgcm2: 1690, injPressureMpa: 166, injHoldingPressureKgcm2: 1521, injHoldingPressureMpa: 149, theoInjVolume: 594, shotWeight: 541, injRate: 356, injRateOptional: 713, screwStroke: 250, injSpeed: 150, injSpeedOptional: 300, plasticizingCapacity: 273, screwRotationSpeed: 300 }, general: { motorCapacity: 32.7, motorCapacityOptional: 65.4, heaterCapacity: 18.7, totalElectricPower: 51.4, totalElectricPowerHigh: 84.1, machineWeight: 16.8, machineDimension: null, hydraulicOilTank: null, coolingWater: null } },
+            "IE1360 O(50mm)": { injection: { screwDiameter: 50, injPressureKgcm2: 2472, injPressureMpa: 242, injHoldingPressureKgcm2: 2225, injHoldingPressureMpa: 218, theoInjVolume: 530, shotWeight: 482, injRate: 295, injRateOptional: 589, screwStroke: 270, injSpeed: 150, injSpeedOptional: 300, plasticizingCapacity: 142, screwRotationSpeed: 250 }, general: { motorCapacity: 32.7, motorCapacityOptional: 65.4, heaterCapacity: 19.1, totalElectricPower: 51.8, totalElectricPowerHigh: 84.5, machineWeight: 17.3, machineDimension: "8.0 x 1.9 x 2.3", hydraulicOilTank: null, coolingWater: null } },
+            "IE1360 A(55mm)": { injection: { screwDiameter: 55, injPressureKgcm2: 2043, injPressureMpa: 200, injHoldingPressureKgcm2: 1839, injHoldingPressureMpa: 180, theoInjVolume: 641, shotWeight: 583, injRate: 356, injRateOptional: 713, screwStroke: 270, injSpeed: 150, injSpeedOptional: 300, plasticizingCapacity: 182, screwRotationSpeed: 250 }, general: { motorCapacity: 32.7, motorCapacityOptional: 65.4, heaterCapacity: 21, totalElectricPower: 53.7, totalElectricPowerHigh: 86.4, machineWeight: 17.3, machineDimension: "8.0 x 1.9 x 2.3", hydraulicOilTank: null, coolingWater: null } },
+            "IE1360 B(60mm)": { injection: { screwDiameter: 60, injPressureKgcm2: 1716, injPressureMpa: 168, injHoldingPressureKgcm2: 1544, injHoldingPressureMpa: 151, theoInjVolume: 763, shotWeight: 694, injRate: 424, injRateOptional: 848, screwStroke: 270, injSpeed: 150, injSpeedOptional: 300, plasticizingCapacity: 233, screwRotationSpeed: 250 }, general: { motorCapacity: 32.7, motorCapacityOptional: 65.4, heaterCapacity: 23.8, totalElectricPower: 56.5, totalElectricPowerHigh: 89.2, machineWeight: 17.3, machineDimension: "8.0 x 1.9 x 2.3", hydraulicOilTank: null, coolingWater: null } },
+            "IE1700 O(55mm)": { injection: { screwDiameter: 55, injPressureKgcm2: 2391, injPressureMpa: 234, injHoldingPressureKgcm2: 2152, injHoldingPressureMpa: 211, theoInjVolume: 713, shotWeight: 649, injRate: 356, injRateOptional: 713, screwStroke: 300, injSpeed: 150, injSpeedOptional: 300, plasticizingCapacity: 163, screwRotationSpeed: 225 }, general: { motorCapacity: 44, motorCapacityOptional: 88, heaterCapacity: 21, totalElectricPower: 65, totalElectricPowerHigh: 109, machineWeight: 17.8, machineDimension: null, hydraulicOilTank: null, coolingWater: null } },
+            "IE1700 A(60mm)": { injection: { screwDiameter: 60, injPressureKgcm2: 2017, injPressureMpa: 198, injHoldingPressureKgcm2: 1815, injHoldingPressureMpa: 178, theoInjVolume: 848, shotWeight: 772, injRate: 424, injRateOptional: 848, screwStroke: 300, injSpeed: 150, injSpeedOptional: 300, plasticizingCapacity: 210, screwRotationSpeed: 225 }, general: { motorCapacity: 44, motorCapacityOptional: 88, heaterCapacity: 23.8, totalElectricPower: 67.8, totalElectricPowerHigh: 111.8, machineWeight: 17.8, machineDimension: null, hydraulicOilTank: null, coolingWater: null } },
+            "IE1700 B(65mm)": { injection: { screwDiameter: 65, injPressureKgcm2: 1712, injPressureMpa: 168, injHoldingPressureKgcm2: 1541, injHoldingPressureMpa: 151, theoInjVolume: 995, shotWeight: 905, injRate: 498, injRateOptional: 995, screwStroke: 300, injSpeed: 150, injSpeedOptional: 300, plasticizingCapacity: 259, screwRotationSpeed: 225 }, general: { motorCapacity: 44, motorCapacityOptional: 88, heaterCapacity: 25.7, totalElectricPower: 69.7, totalElectricPowerHigh: 113.7, machineWeight: 17.8, machineDimension: null, hydraulicOilTank: null, coolingWater: null } }
+        }
+    },
+
+    "TE400A5": {
+        clamping: { clampingForce: "400(3922)", moldOpeningForce: null, tieBarDistance: "820x820", platenDimension: "1210x1140", daylight: 750, maxDaylight: 1550, minMoldHeight: 350, maxMoldHeight: 800, ejectorForce: "5.7(57)", ejectorStroke: 210, dryCycleTime: null, maxMoldWeight: null },
+        units: {
+            "IE1360 O(50mm)": { injection: { screwDiameter: 50, injPressureKgcm2: 2472, injPressureMpa: 242, injHoldingPressureKgcm2: 2225, injHoldingPressureMpa: 218, theoInjVolume: 530, shotWeight: 482, injRate: 295, injRateOptional: 589, screwStroke: 270, injSpeed: 150, injSpeedOptional: 300, plasticizingCapacity: 142, screwRotationSpeed: 250 }, general: { motorCapacity: 32.7, motorCapacityOptional: 65.4, heaterCapacity: 19.1, totalElectricPower: 51.8, totalElectricPowerHigh: 84.5, machineWeight: 21.5, machineDimension: null, hydraulicOilTank: null, coolingWater: null } },
+            "IE1360 A(55mm)": { injection: { screwDiameter: 55, injPressureKgcm2: 2043, injPressureMpa: 200, injHoldingPressureKgcm2: 1839, injHoldingPressureMpa: 180, theoInjVolume: 641, shotWeight: 583, injRate: 356, injRateOptional: 713, screwStroke: 270, injSpeed: 150, injSpeedOptional: 300, plasticizingCapacity: 182, screwRotationSpeed: 250 }, general: { motorCapacity: 32.7, motorCapacityOptional: 65.4, heaterCapacity: 21, totalElectricPower: 53.7, totalElectricPowerHigh: 86.4, machineWeight: 21.5, machineDimension: null, hydraulicOilTank: null, coolingWater: null } },
+            "IE1360 B(60mm)": { injection: { screwDiameter: 60, injPressureKgcm2: 1716, injPressureMpa: 168, injHoldingPressureKgcm2: 1544, injHoldingPressureMpa: 151, theoInjVolume: 763, shotWeight: 694, injRate: 424, injRateOptional: 848, screwStroke: 270, injSpeed: 150, injSpeedOptional: 300, plasticizingCapacity: 233, screwRotationSpeed: 250 }, general: { motorCapacity: 32.7, motorCapacityOptional: 65.4, heaterCapacity: 23.8, totalElectricPower: 56.5, totalElectricPowerHigh: 89.2, machineWeight: 21.5, machineDimension: null, hydraulicOilTank: null, coolingWater: null } },
+            "IE1700 O(55mm)": { injection: { screwDiameter: 55, injPressureKgcm2: 2391, injPressureMpa: 234, injHoldingPressureKgcm2: 2152, injHoldingPressureMpa: 211, theoInjVolume: 713, shotWeight: 649, injRate: 356, injRateOptional: 713, screwStroke: 300, injSpeed: 150, injSpeedOptional: 300, plasticizingCapacity: 163, screwRotationSpeed: 225 }, general: { motorCapacity: 44, motorCapacityOptional: 88, heaterCapacity: 21, totalElectricPower: 65, totalElectricPowerHigh: 109, machineWeight: 22, machineDimension: "8.3 x 2.0 x 2.3", hydraulicOilTank: null, coolingWater: null } },
+            "IE1700 A(60mm)": { injection: { screwDiameter: 60, injPressureKgcm2: 2017, injPressureMpa: 198, injHoldingPressureKgcm2: 1815, injHoldingPressureMpa: 178, theoInjVolume: 848, shotWeight: 772, injRate: 424, injRateOptional: 848, screwStroke: 300, injSpeed: 150, injSpeedOptional: 300, plasticizingCapacity: 210, screwRotationSpeed: 225 }, general: { motorCapacity: 44, motorCapacityOptional: 88, heaterCapacity: 23.8, totalElectricPower: 67.8, totalElectricPowerHigh: 111.8, machineWeight: 22, machineDimension: "8.3 x 2.0 x 2.3", hydraulicOilTank: null, coolingWater: null } },
+            "IE1700 B(65mm)": { injection: { screwDiameter: 65, injPressureKgcm2: 1712, injPressureMpa: 168, injHoldingPressureKgcm2: 1541, injHoldingPressureMpa: 151, theoInjVolume: 995, shotWeight: 905, injRate: 498, injRateOptional: 995, screwStroke: 300, injSpeed: 150, injSpeedOptional: 300, plasticizingCapacity: 259, screwRotationSpeed: 225 }, general: { motorCapacity: 44, motorCapacityOptional: 88, heaterCapacity: 25.7, totalElectricPower: 69.7, totalElectricPowerHigh: 113.7, machineWeight: 22, machineDimension: "8.3 x 2.0 x 2.3", hydraulicOilTank: null, coolingWater: null } },
+            "IE2800 O(65mm)": { injection: { screwDiameter: 65, injPressureKgcm2: 2416, injPressureMpa: 237, injHoldingPressureKgcm2: 2174, injHoldingPressureMpa: 213, theoInjVolume: 1161, shotWeight: 1057, injRate: 498, injRateOptional: null, screwStroke: 350, injSpeed: 150, injSpeedOptional: null, plasticizingCapacity: 230, screwRotationSpeed: 200 }, general: { motorCapacity: 65.4, motorCapacityOptional: null, heaterCapacity: 18.4, totalElectricPower: 83.8, totalElectricPowerHigh: null, machineWeight: 22.5, machineDimension: null, hydraulicOilTank: null, coolingWater: null } },
+            "IE2800 A(70mm)": { injection: { screwDiameter: 70, injPressureKgcm2: 2083, injPressureMpa: 204, injHoldingPressureKgcm2: 1875, injHoldingPressureMpa: 184, theoInjVolume: 1347, shotWeight: 1226, injRate: 577, injRateOptional: null, screwStroke: 350, injSpeed: 150, injSpeedOptional: null, plasticizingCapacity: 279, screwRotationSpeed: 200 }, general: { motorCapacity: 65.4, motorCapacityOptional: null, heaterCapacity: 20.6, totalElectricPower: 86, totalElectricPowerHigh: null, machineWeight: 22.5, machineDimension: null, hydraulicOilTank: null, coolingWater: null } },
+            "IE2800 B(80mm)": { injection: { screwDiameter: 80, injPressureKgcm2: 1595, injPressureMpa: 156, injHoldingPressureKgcm2: 1436, injHoldingPressureMpa: 141, theoInjVolume: 1759, shotWeight: 1601, injRate: 754, injRateOptional: null, screwStroke: 350, injSpeed: 150, injSpeedOptional: null, plasticizingCapacity: 397, screwRotationSpeed: 200 }, general: { motorCapacity: 65.4, motorCapacityOptional: null, heaterCapacity: 24.1, totalElectricPower: 89.5, totalElectricPowerHigh: null, machineWeight: 22.5, machineDimension: null, hydraulicOilTank: null, coolingWater: null } }
+        }
+    },
+
+    "TE450A5": {
+        clamping: { clampingForce: "450(4413)", moldOpeningForce: null, tieBarDistance: "870x870", platenDimension: "1270x1190", daylight: 800, maxDaylight: 1600, minMoldHeight: 350, maxMoldHeight: 800, ejectorForce: "10(100)", ejectorStroke: 220, dryCycleTime: null, maxMoldWeight: null },
+        units: {
+            "IE1700 O(55mm)": { injection: { screwDiameter: 55, injPressureKgcm2: 2391, injPressureMpa: 234, injHoldingPressureKgcm2: 2152, injHoldingPressureMpa: 211, theoInjVolume: 713, shotWeight: 649, injRate: 356, injRateOptional: 713, screwStroke: 300, injSpeed: 150, injSpeedOptional: 300, plasticizingCapacity: 163, screwRotationSpeed: 225 }, general: { motorCapacity: 44, motorCapacityOptional: 88, heaterCapacity: 21, totalElectricPower: 65, totalElectricPowerHigh: 109, machineWeight: 26.2, machineDimension: null, hydraulicOilTank: null, coolingWater: null } },
+            "IE1700 A(60mm)": { injection: { screwDiameter: 60, injPressureKgcm2: 2017, injPressureMpa: 198, injHoldingPressureKgcm2: 1815, injHoldingPressureMpa: 178, theoInjVolume: 848, shotWeight: 772, injRate: 424, injRateOptional: 848, screwStroke: 300, injSpeed: 150, injSpeedOptional: 300, plasticizingCapacity: 210, screwRotationSpeed: 225 }, general: { motorCapacity: 44, motorCapacityOptional: 88, heaterCapacity: 23.8, totalElectricPower: 67.8, totalElectricPowerHigh: 111.8, machineWeight: 26.2, machineDimension: null, hydraulicOilTank: null, coolingWater: null } },
+            "IE1700 B(65mm)": { injection: { screwDiameter: 65, injPressureKgcm2: 1712, injPressureMpa: 168, injHoldingPressureKgcm2: 1541, injHoldingPressureMpa: 151, theoInjVolume: 995, shotWeight: 905, injRate: 498, injRateOptional: 995, screwStroke: 300, injSpeed: 150, injSpeedOptional: 300, plasticizingCapacity: 259, screwRotationSpeed: 225 }, general: { motorCapacity: 44, motorCapacityOptional: 88, heaterCapacity: 25.7, totalElectricPower: 69.7, totalElectricPowerHigh: 113.7, machineWeight: 26.2, machineDimension: null, hydraulicOilTank: null, coolingWater: null } },
+            "IE2800 O(65mm)": { injection: { screwDiameter: 65, injPressureKgcm2: 2416, injPressureMpa: 237, injHoldingPressureKgcm2: 2174, injHoldingPressureMpa: 213, theoInjVolume: 1161, shotWeight: 1057, injRate: 498, injRateOptional: null, screwStroke: 350, injSpeed: 150, injSpeedOptional: null, plasticizingCapacity: 230, screwRotationSpeed: 200 }, general: { motorCapacity: 65.4, motorCapacityOptional: null, heaterCapacity: 18.4, totalElectricPower: 83.8, totalElectricPowerHigh: null, machineWeight: 26.7, machineDimension: "9.0 x 2.1 x 2.4", hydraulicOilTank: null, coolingWater: null } },
+            "IE2800 A(70mm)": { injection: { screwDiameter: 70, injPressureKgcm2: 2083, injPressureMpa: 204, injHoldingPressureKgcm2: 1875, injHoldingPressureMpa: 184, theoInjVolume: 1347, shotWeight: 1226, injRate: 577, injRateOptional: null, screwStroke: 350, injSpeed: 150, injSpeedOptional: null, plasticizingCapacity: 279, screwRotationSpeed: 200 }, general: { motorCapacity: 65.4, motorCapacityOptional: null, heaterCapacity: 20.6, totalElectricPower: 86, totalElectricPowerHigh: null, machineWeight: 26.7, machineDimension: "9.0 x 2.1 x 2.4", hydraulicOilTank: null, coolingWater: null } },
+            "IE2800 B(80mm)": { injection: { screwDiameter: 80, injPressureKgcm2: 1595, injPressureMpa: 156, injHoldingPressureKgcm2: 1436, injHoldingPressureMpa: 141, theoInjVolume: 1759, shotWeight: 1601, injRate: 754, injRateOptional: null, screwStroke: 350, injSpeed: 150, injSpeedOptional: null, plasticizingCapacity: 397, screwRotationSpeed: 200 }, general: { motorCapacity: 65.4, motorCapacityOptional: null, heaterCapacity: 24.1, totalElectricPower: 89.5, totalElectricPowerHigh: null, machineWeight: 26.7, machineDimension: "9.0 x 2.1 x 2.4", hydraulicOilTank: null, coolingWater: null } },
+            "IE4000 O(70mm)": { injection: { screwDiameter: 70, injPressureKgcm2: 2657, injPressureMpa: 261, injHoldingPressureKgcm2: 2391, injHoldingPressureMpa: 235, theoInjVolume: 1539, shotWeight: 1400, injRate: 577, injRateOptional: null, screwStroke: 400, injSpeed: 150, injSpeedOptional: null, plasticizingCapacity: 244, screwRotationSpeed: 175 }, general: { motorCapacity: 88, motorCapacityOptional: null, heaterCapacity: 23, totalElectricPower: 111, totalElectricPowerHigh: null, machineWeight: 27.2, machineDimension: null, hydraulicOilTank: null, coolingWater: null } },
+            "IE4000 A(80mm)": { injection: { screwDiameter: 80, injPressureKgcm2: 2034, injPressureMpa: 199, injHoldingPressureKgcm2: 1831, injHoldingPressureMpa: 180, theoInjVolume: 2011, shotWeight: 1830, injRate: 754, injRateOptional: null, screwStroke: 400, injSpeed: 150, injSpeedOptional: null, plasticizingCapacity: 347, screwRotationSpeed: 175 }, general: { motorCapacity: 88, motorCapacityOptional: null, heaterCapacity: 26.7, totalElectricPower: 114.7, totalElectricPowerHigh: null, machineWeight: 27.2, machineDimension: null, hydraulicOilTank: null, coolingWater: null } },
+            "IE4000 B(90mm)": { injection: { screwDiameter: 90, injPressureKgcm2: 1607, injPressureMpa: 158, injHoldingPressureKgcm2: 1446, injHoldingPressureMpa: 142, theoInjVolume: 2545, shotWeight: 2316, injRate: 954, injRateOptional: null, screwStroke: 400, injSpeed: 150, injSpeedOptional: null, plasticizingCapacity: 458, screwRotationSpeed: 175 }, general: { motorCapacity: 88, motorCapacityOptional: null, heaterCapacity: 30.7, totalElectricPower: 118.7, totalElectricPowerHigh: null, machineWeight: 27.2, machineDimension: null, hydraulicOilTank: null, coolingWater: null } }
+        }
+    },
+
+    "TE550A5": {
+        clamping: { clampingForce: "550(5394)", moldOpeningForce: null, tieBarDistance: "980x980", platenDimension: "1445x1365", daylight: 900, maxDaylight: 1850, minMoldHeight: 400, maxMoldHeight: 950, ejectorForce: "14.6(145)", ejectorStroke: 220, dryCycleTime: null, maxMoldWeight: null },
+        units: {
+            "IE2800 O(65mm)": { injection: { screwDiameter: 65, injPressureKgcm2: 2416, injPressureMpa: 237, injHoldingPressureKgcm2: 2174, injHoldingPressureMpa: 213, theoInjVolume: 1161, shotWeight: 1057, injRate: 498, injRateOptional: null, screwStroke: 350, injSpeed: 150, injSpeedOptional: null, plasticizingCapacity: 230, screwRotationSpeed: 200 }, general: { motorCapacity: 65.4, motorCapacityOptional: null, heaterCapacity: 18.4, totalElectricPower: 83.8, totalElectricPowerHigh: null, machineWeight: 35.7, machineDimension: null, hydraulicOilTank: null, coolingWater: null } },
+            "IE2800 A(70mm)": { injection: { screwDiameter: 70, injPressureKgcm2: 2083, injPressureMpa: 204, injHoldingPressureKgcm2: 1875, injHoldingPressureMpa: 184, theoInjVolume: 1347, shotWeight: 1226, injRate: 577, injRateOptional: null, screwStroke: 350, injSpeed: 150, injSpeedOptional: null, plasticizingCapacity: 279, screwRotationSpeed: 200 }, general: { motorCapacity: 65.4, motorCapacityOptional: null, heaterCapacity: 20.6, totalElectricPower: 86, totalElectricPowerHigh: null, machineWeight: 35.7, machineDimension: null, hydraulicOilTank: null, coolingWater: null } },
+            "IE2800 B(80mm)": { injection: { screwDiameter: 80, injPressureKgcm2: 1595, injPressureMpa: 156, injHoldingPressureKgcm2: 1436, injHoldingPressureMpa: 141, theoInjVolume: 1759, shotWeight: 1601, injRate: 754, injRateOptional: null, screwStroke: 350, injSpeed: 150, injSpeedOptional: null, plasticizingCapacity: 397, screwRotationSpeed: 200 }, general: { motorCapacity: 65.4, motorCapacityOptional: null, heaterCapacity: 24.1, totalElectricPower: 89.5, totalElectricPowerHigh: null, machineWeight: 35.7, machineDimension: null, hydraulicOilTank: null, coolingWater: null } },
+            "IE4000 O(70mm)": { injection: { screwDiameter: 70, injPressureKgcm2: 2657, injPressureMpa: 261, injHoldingPressureKgcm2: 2391, injHoldingPressureMpa: 235, theoInjVolume: 1539, shotWeight: 1400, injRate: 577, injRateOptional: null, screwStroke: 400, injSpeed: 150, injSpeedOptional: null, plasticizingCapacity: 244, screwRotationSpeed: 175 }, general: { motorCapacity: 88, motorCapacityOptional: null, heaterCapacity: 23, totalElectricPower: 111, totalElectricPowerHigh: null, machineWeight: 36.2, machineDimension: "9.9 x 2.5 x 2.2", hydraulicOilTank: null, coolingWater: null } },
+            "IE4000 A(80mm)": { injection: { screwDiameter: 80, injPressureKgcm2: 2034, injPressureMpa: 199, injHoldingPressureKgcm2: 1831, injHoldingPressureMpa: 180, theoInjVolume: 2011, shotWeight: 1830, injRate: 754, injRateOptional: null, screwStroke: 400, injSpeed: 150, injSpeedOptional: null, plasticizingCapacity: 347, screwRotationSpeed: 175 }, general: { motorCapacity: 88, motorCapacityOptional: null, heaterCapacity: 26.7, totalElectricPower: 114.7, totalElectricPowerHigh: null, machineWeight: 36.2, machineDimension: "9.9 x 2.5 x 2.2", hydraulicOilTank: null, coolingWater: null } },
+            "IE4000 B(90mm)": { injection: { screwDiameter: 90, injPressureKgcm2: 1607, injPressureMpa: 158, injHoldingPressureKgcm2: 1446, injHoldingPressureMpa: 142, theoInjVolume: 2545, shotWeight: 2316, injRate: 954, injRateOptional: null, screwStroke: 400, injSpeed: 150, injSpeedOptional: null, plasticizingCapacity: 458, screwRotationSpeed: 175 }, general: { motorCapacity: 88, motorCapacityOptional: null, heaterCapacity: 30.7, totalElectricPower: 118.7, totalElectricPowerHigh: null, machineWeight: 36.2, machineDimension: "9.9 x 2.5 x 2.2", hydraulicOilTank: null, coolingWater: null } },
+            "IE5700 O(80mm)": { injection: { screwDiameter: 80, injPressureKgcm2: 2543, injPressureMpa: 249, injHoldingPressureKgcm2: 2289, injHoldingPressureMpa: 224, theoInjVolume: 2262, shotWeight: 2058, injRate: 754, injRateOptional: null, screwStroke: 450, injSpeed: 150, injSpeedOptional: null, plasticizingCapacity: 298, screwRotationSpeed: 150 }, general: { motorCapacity: 110, motorCapacityOptional: null, heaterCapacity: 29.4, totalElectricPower: 139.4, totalElectricPowerHigh: null, machineWeight: 36.7, machineDimension: null, hydraulicOilTank: null, coolingWater: null } },
+            "IE5700 A(90mm)": { injection: { screwDiameter: 90, injPressureKgcm2: 2009, injPressureMpa: 197, injHoldingPressureKgcm2: 1808, injHoldingPressureMpa: 177, theoInjVolume: 2863, shotWeight: 2605, injRate: 954, injRateOptional: null, screwStroke: 450, injSpeed: 150, injSpeedOptional: null, plasticizingCapacity: 408, screwRotationSpeed: 150 }, general: { motorCapacity: 110, motorCapacityOptional: null, heaterCapacity: 33.6, totalElectricPower: 143.6, totalElectricPowerHigh: null, machineWeight: 36.7, machineDimension: null, hydraulicOilTank: null, coolingWater: null } },
+            "IE5700 B(105mm)": { injection: { screwDiameter: 105, injPressureKgcm2: 1476, injPressureMpa: 145, injHoldingPressureKgcm2: 1328, injHoldingPressureMpa: 130, theoInjVolume: 3897, shotWeight: 3546, injRate: 1299, injRateOptional: null, screwStroke: 450, injSpeed: 150, injSpeedOptional: null, plasticizingCapacity: 618, screwRotationSpeed: 150 }, general: { motorCapacity: 110, motorCapacityOptional: null, heaterCapacity: 39.3, totalElectricPower: 149.3, totalElectricPowerHigh: null, machineWeight: 36.7, machineDimension: null, hydraulicOilTank: null, coolingWater: null } }
+        }
+    },
+
+    "TE650A5": {
+        clamping: { clampingForce: "650(6374)", moldOpeningForce: null, tieBarDistance: "1080x1080", platenDimension: "1560x1480", daylight: 1000, maxDaylight: 2100, minMoldHeight: 450, maxMoldHeight: 1100, ejectorForce: "14.6(145)", ejectorStroke: 230, dryCycleTime: null, maxMoldWeight: null },
+        units: {
+            "IE4000 O(70mm)": { injection: { screwDiameter: 70, injPressureKgcm2: 2657, injPressureMpa: 261, injHoldingPressureKgcm2: 2391, injHoldingPressureMpa: 235, theoInjVolume: 1539, shotWeight: 1400, injRate: 577, injRateOptional: null, screwStroke: 400, injSpeed: 150, injSpeedOptional: null, plasticizingCapacity: 244, screwRotationSpeed: 175 }, general: { motorCapacity: 88, motorCapacityOptional: null, heaterCapacity: 23, totalElectricPower: 111, totalElectricPowerHigh: null, machineWeight: 44, machineDimension: null, hydraulicOilTank: null, coolingWater: null } },
+            "IE4000 A(80mm)": { injection: { screwDiameter: 80, injPressureKgcm2: 2034, injPressureMpa: 199, injHoldingPressureKgcm2: 1831, injHoldingPressureMpa: 180, theoInjVolume: 2011, shotWeight: 1830, injRate: 754, injRateOptional: null, screwStroke: 400, injSpeed: 150, injSpeedOptional: null, plasticizingCapacity: 347, screwRotationSpeed: 175 }, general: { motorCapacity: 88, motorCapacityOptional: null, heaterCapacity: 26.7, totalElectricPower: 114.7, totalElectricPowerHigh: null, machineWeight: 44, machineDimension: null, hydraulicOilTank: null, coolingWater: null } },
+            "IE4000 B(90mm)": { injection: { screwDiameter: 90, injPressureKgcm2: 1607, injPressureMpa: 158, injHoldingPressureKgcm2: 1446, injHoldingPressureMpa: 142, theoInjVolume: 2545, shotWeight: 2316, injRate: 954, injRateOptional: null, screwStroke: 400, injSpeed: 150, injSpeedOptional: null, plasticizingCapacity: 458, screwRotationSpeed: 175 }, general: { motorCapacity: 88, motorCapacityOptional: null, heaterCapacity: 30.7, totalElectricPower: 118.7, totalElectricPowerHigh: null, machineWeight: 44, machineDimension: null, hydraulicOilTank: null, coolingWater: null } },
+            "IE5700 O(80mm)": { injection: { screwDiameter: 80, injPressureKgcm2: 2543, injPressureMpa: 249, injHoldingPressureKgcm2: 2289, injHoldingPressureMpa: 224, theoInjVolume: 2262, shotWeight: 2058, injRate: 754, injRateOptional: null, screwStroke: 450, injSpeed: 150, injSpeedOptional: null, plasticizingCapacity: 298, screwRotationSpeed: 150 }, general: { motorCapacity: 110, motorCapacityOptional: null, heaterCapacity: 29.4, totalElectricPower: 139.4, totalElectricPowerHigh: null, machineWeight: 44.5, machineDimension: "10.5 x 2.5 x 2.4", hydraulicOilTank: null, coolingWater: null } },
+            "IE5700 A(90mm)": { injection: { screwDiameter: 90, injPressureKgcm2: 2009, injPressureMpa: 197, injHoldingPressureKgcm2: 1808, injHoldingPressureMpa: 177, theoInjVolume: 2863, shotWeight: 2605, injRate: 954, injRateOptional: null, screwStroke: 450, injSpeed: 150, injSpeedOptional: null, plasticizingCapacity: 408, screwRotationSpeed: 150 }, general: { motorCapacity: 110, motorCapacityOptional: null, heaterCapacity: 33.6, totalElectricPower: 143.6, totalElectricPowerHigh: null, machineWeight: 44.5, machineDimension: "10.5 x 2.5 x 2.4", hydraulicOilTank: null, coolingWater: null } },
+            "IE5700 B(105mm)": { injection: { screwDiameter: 105, injPressureKgcm2: 1476, injPressureMpa: 145, injHoldingPressureKgcm2: 1328, injHoldingPressureMpa: 130, theoInjVolume: 3897, shotWeight: 3546, injRate: 1299, injRateOptional: null, screwStroke: 450, injSpeed: 150, injSpeedOptional: null, plasticizingCapacity: 618, screwRotationSpeed: 150 }, general: { motorCapacity: 110, motorCapacityOptional: null, heaterCapacity: 39.3, totalElectricPower: 149.3, totalElectricPowerHigh: null, machineWeight: 44.5, machineDimension: "10.5 x 2.5 x 2.4", hydraulicOilTank: null, coolingWater: null } },
+            "IE8000 O(95mm)": { injection: { screwDiameter: 95, injPressureKgcm2: 2118, injPressureMpa: 208, injHoldingPressureKgcm2: 1906, injHoldingPressureMpa: 187, theoInjVolume: 3509, shotWeight: 3193, injRate: 1063, injRateOptional: null, screwStroke: 495, injSpeed: 150, injSpeedOptional: null, plasticizingCapacity: 393, screwRotationSpeed: 125 }, general: { motorCapacity: 125.6, motorCapacityOptional: null, heaterCapacity: 52.7, totalElectricPower: 178.3, totalElectricPowerHigh: null, machineWeight: 45, machineDimension: null, hydraulicOilTank: null, coolingWater: null } },
+            "IE8000 A(105mm)": { injection: { screwDiameter: 105, injPressureKgcm2: 1734, injPressureMpa: 170, injHoldingPressureKgcm2: 1561, injHoldingPressureMpa: 153, theoInjVolume: 4286, shotWeight: 3900, injRate: 1299, injRateOptional: null, screwStroke: 495, injSpeed: 150, injSpeedOptional: null, plasticizingCapacity: 515, screwRotationSpeed: 125 }, general: { motorCapacity: 125.6, motorCapacityOptional: null, heaterCapacity: 55.9, totalElectricPower: 181.5, totalElectricPowerHigh: null, machineWeight: 45, machineDimension: null, hydraulicOilTank: null, coolingWater: null } }
+        }
+    },
+
+    "TE850A5": {
+        clamping: { clampingForce: "850(8336)", moldOpeningForce: null, tieBarDistance: "1180x1180", platenDimension: "1710x1650", daylight: 1200, maxDaylight: 2400, minMoldHeight: 500, maxMoldHeight: 1200, ejectorForce: "20(199)", ejectorStroke: 230, dryCycleTime: null, maxMoldWeight: null },
+        units: {
+            "IE5700 O(80mm)": { injection: { screwDiameter: 80, injPressureKgcm2: 2543, injPressureMpa: 249, injHoldingPressureKgcm2: 2289, injHoldingPressureMpa: 224, theoInjVolume: 2262, shotWeight: 2058, injRate: 754, injRateOptional: null, screwStroke: 450, injSpeed: 150, injSpeedOptional: null, plasticizingCapacity: 298, screwRotationSpeed: 150 }, general: { motorCapacity: 110, motorCapacityOptional: null, heaterCapacity: 29.4, totalElectricPower: 139.4, totalElectricPowerHigh: null, machineWeight: 64.5, machineDimension: null, hydraulicOilTank: null, coolingWater: null } },
+            "IE5700 A(90mm)": { injection: { screwDiameter: 90, injPressureKgcm2: 2009, injPressureMpa: 197, injHoldingPressureKgcm2: 1808, injHoldingPressureMpa: 177, theoInjVolume: 2863, shotWeight: 2605, injRate: 954, injRateOptional: null, screwStroke: 450, injSpeed: 150, injSpeedOptional: null, plasticizingCapacity: 408, screwRotationSpeed: 150 }, general: { motorCapacity: 110, motorCapacityOptional: null, heaterCapacity: 33.6, totalElectricPower: 143.6, totalElectricPowerHigh: null, machineWeight: 64.5, machineDimension: null, hydraulicOilTank: null, coolingWater: null } },
+            "IE5700 B(105mm)": { injection: { screwDiameter: 105, injPressureKgcm2: 1476, injPressureMpa: 145, injHoldingPressureKgcm2: 1328, injHoldingPressureMpa: 130, theoInjVolume: 3897, shotWeight: 3546, injRate: 1299, injRateOptional: null, screwStroke: 450, injSpeed: 150, injSpeedOptional: null, plasticizingCapacity: 618, screwRotationSpeed: 150 }, general: { motorCapacity: 110, motorCapacityOptional: null, heaterCapacity: 39.3, totalElectricPower: 149.3, totalElectricPowerHigh: null, machineWeight: 64.5, machineDimension: null, hydraulicOilTank: null, coolingWater: null } },
+            "IE8000 O(95mm)": { injection: { screwDiameter: 95, injPressureKgcm2: 2118, injPressureMpa: 208, injHoldingPressureKgcm2: 1906, injHoldingPressureMpa: 187, theoInjVolume: 3509, shotWeight: 3193, injRate: 1063, injRateOptional: null, screwStroke: 495, injSpeed: 150, injSpeedOptional: null, plasticizingCapacity: 393, screwRotationSpeed: 125 }, general: { motorCapacity: 125.6, motorCapacityOptional: null, heaterCapacity: 52.7, totalElectricPower: 178.3, totalElectricPowerHigh: null, machineWeight: 65, machineDimension: "11.6 x 2.8 x 2.5", hydraulicOilTank: null, coolingWater: null } },
+            "IE8000 A(105mm)": { injection: { screwDiameter: 105, injPressureKgcm2: 1734, injPressureMpa: 170, injHoldingPressureKgcm2: 1561, injHoldingPressureMpa: 153, theoInjVolume: 4286, shotWeight: 3900, injRate: 1299, injRateOptional: null, screwStroke: 495, injSpeed: 150, injSpeedOptional: null, plasticizingCapacity: 515, screwRotationSpeed: 125 }, general: { motorCapacity: 125.6, motorCapacityOptional: null, heaterCapacity: 55.9, totalElectricPower: 181.5, totalElectricPowerHigh: null, machineWeight: 65, machineDimension: "11.6 x 2.8 x 2.5", hydraulicOilTank: null, coolingWater: null } }
+        }
+    },
+
+    "TL220A5": {
+        clamping: { clampingForce: "220(2157)", moldOpeningForce: null, tieBarDistance: null, platenDimension: "960 x 880", daylight: 800, maxDaylight: 1100, minMoldHeight: 300, maxMoldHeight: null, ejectorForce: "7.6(74.5)", ejectorStroke: 180, dryCycleTime: null, maxMoldWeight: null },
+        units: {
+            "IH1000 O(45mm)": { injection: { screwDiameter: 45, injPressureKgcm2: 2600, injPressureMpa: 255, injHoldingPressureKgcm2: null, injHoldingPressureMpa: null, theoInjVolume: 366, shotWeight: 337, injRate: 175, injRateOptional: null, screwStroke: 230, injSpeed: 110, injSpeedOptional: null, plasticizingCapacity: 110, screwRotationSpeed: 260 }, general: { motorCapacity: 30, motorCapacityOptional: null, heaterCapacity: 14.6, totalElectricPower: 44.6, totalElectricPowerHigh: null, hydraulicOilTank: 595, coolingWater: 40, machineWeight: 14, machineDimension: "7.1 x 1.8 x 2.2" } },
+            "IH1000 A(50mm)": { injection: { screwDiameter: 50, injPressureKgcm2: 2258, injPressureMpa: 221, injHoldingPressureKgcm2: null, injHoldingPressureMpa: null, theoInjVolume: 452, shotWeight: 416, injRate: 217, injRateOptional: null, screwStroke: 230, injSpeed: 110, injSpeedOptional: null, plasticizingCapacity: 148, screwRotationSpeed: 260 }, general: { motorCapacity: 30, motorCapacityOptional: null, heaterCapacity: 17.1, totalElectricPower: 47.1, totalElectricPowerHigh: null, hydraulicOilTank: 595, coolingWater: 40, machineWeight: 14, machineDimension: "7.1 x 1.8 x 2.2" } },
+            "IH1000 B(55mm)": { injection: { screwDiameter: 55, injPressureKgcm2: 1866, injPressureMpa: 183, injHoldingPressureKgcm2: null, injHoldingPressureMpa: null, theoInjVolume: 546, shotWeight: 504, injRate: 262, injRateOptional: null, screwStroke: 230, injSpeed: 110, injSpeedOptional: null, plasticizingCapacity: 189, screwRotationSpeed: 260 }, general: { motorCapacity: 30, motorCapacityOptional: null, heaterCapacity: 18.7, totalElectricPower: 48.7, totalElectricPowerHigh: null, hydraulicOilTank: 595, coolingWater: 40, machineWeight: 14, machineDimension: "7.1 x 1.8 x 2.2" } }
+        }
+    },
+
+    "TL300A5": {
+        clamping: { clampingForce: "300(2941)", moldOpeningForce: null, tieBarDistance: null, platenDimension: "1120 x 1000", daylight: 900, maxDaylight: 1300, minMoldHeight: 400, maxMoldHeight: null, ejectorForce: "9.1(89.2)", ejectorStroke: 200, dryCycleTime: null, maxMoldWeight: null },
+        units: {
+            "IH1800 O(55mm)": { injection: { screwDiameter: 55, injPressureKgcm2: 2494, injPressureMpa: 245, injHoldingPressureKgcm2: null, injHoldingPressureMpa: null, theoInjVolume: 677, shotWeight: 624, injRate: 249, injRateOptional: null, screwStroke: 285, injSpeed: 105, injSpeedOptional: null, plasticizingCapacity: 160, screwRotationSpeed: 220 }, general: { motorCapacity: 55, motorCapacityOptional: null, heaterCapacity: 21, totalElectricPower: 76, totalElectricPowerHigh: null, hydraulicOilTank: 860, coolingWater: 65, machineWeight: 19.5, machineDimension: "7.9 x 2.0 x 2.3" } },
+            "IH1800 A(60mm)": { injection: { screwDiameter: 60, injPressureKgcm2: 2257, injPressureMpa: 221, injHoldingPressureKgcm2: null, injHoldingPressureMpa: null, theoInjVolume: 806, shotWeight: 743, injRate: 296, injRateOptional: null, screwStroke: 285, injSpeed: 105, injSpeedOptional: null, plasticizingCapacity: 205, screwRotationSpeed: 220 }, general: { motorCapacity: 55, motorCapacityOptional: null, heaterCapacity: 23.8, totalElectricPower: 78.8, totalElectricPowerHigh: null, hydraulicOilTank: 860, coolingWater: 65, machineWeight: 19.5, machineDimension: "7.9 x 2.0 x 2.3" } },
+            "IH1800 B(65mm)": { injection: { screwDiameter: 65, injPressureKgcm2: 2008, injPressureMpa: 197, injHoldingPressureKgcm2: null, injHoldingPressureMpa: null, theoInjVolume: 946, shotWeight: 871, injRate: 347, injRateOptional: null, screwStroke: 285, injSpeed: 105, injSpeedOptional: null, plasticizingCapacity: 253, screwRotationSpeed: 220 }, general: { motorCapacity: 55, motorCapacityOptional: null, heaterCapacity: 25.7, totalElectricPower: 80.7, totalElectricPowerHigh: null, hydraulicOilTank: 860, coolingWater: 65, machineWeight: 19.5, machineDimension: "7.9 x 2.0 x 2.3" } }
+        }
+    },
+
+    "TL400A5": {
+        clamping: { clampingForce: "400(3922)", moldOpeningForce: null, tieBarDistance: null, platenDimension: "1250 x 1100", daylight: 1000, maxDaylight: 1450, minMoldHeight: 450, maxMoldHeight: null, ejectorForce: "11.3(110.8)", ejectorStroke: 250, dryCycleTime: null, maxMoldWeight: null },
+        units: {
+            "IH2800 O(65mm)": { injection: { screwDiameter: 65, injPressureKgcm2: 2375, injPressureMpa: 233, injHoldingPressureKgcm2: null, injHoldingPressureMpa: null, theoInjVolume: 1161, shotWeight: 1070, injRate: 313, injRateOptional: null, screwStroke: 350, injSpeed: 94, injSpeedOptional: null, plasticizingCapacity: 201, screwRotationSpeed: 175 }, general: { motorCapacity: 55, motorCapacityOptional: null, heaterCapacity: 18.4, totalElectricPower: 73.4, totalElectricPowerHigh: null, hydraulicOilTank: 965, coolingWater: 65, machineWeight: 25.5, machineDimension: "8.6 x 2.2 x 2.3" } },
+            "IH2800 A(70mm)": { injection: { screwDiameter: 70, injPressureKgcm2: 2048, injPressureMpa: 201, injHoldingPressureKgcm2: null, injHoldingPressureMpa: null, theoInjVolume: 1347, shotWeight: 1241, injRate: 363, injRateOptional: null, screwStroke: 350, injSpeed: 94, injSpeedOptional: null, plasticizingCapacity: 244, screwRotationSpeed: 175 }, general: { motorCapacity: 55, motorCapacityOptional: null, heaterCapacity: 20.6, totalElectricPower: 75.6, totalElectricPowerHigh: null, hydraulicOilTank: 965, coolingWater: 65, machineWeight: 25.5, machineDimension: "8.6 x 2.2 x 2.3" } },
+            "IH2800 B(80mm)": { injection: { screwDiameter: 80, injPressureKgcm2: 1568, injPressureMpa: 154, injHoldingPressureKgcm2: null, injHoldingPressureMpa: null, theoInjVolume: 1759, shotWeight: 1621, injRate: 474, injRateOptional: null, screwStroke: 350, injSpeed: 94, injSpeedOptional: null, plasticizingCapacity: 347, screwRotationSpeed: 175 }, general: { motorCapacity: 55, motorCapacityOptional: null, heaterCapacity: 24.1, totalElectricPower: 79.1, totalElectricPowerHigh: null, hydraulicOilTank: 965, coolingWater: 65, machineWeight: 25.5, machineDimension: "8.6 x 2.2 x 2.3" } }
+        }
+    }
+};
+
+// =====================================================================
 // STAN KONFIGURATORA
 // =====================================================================
 
 let currentStep = 1;
 let selectedMachineType = 'DL-A5';
 let lastCalculationResults = null;
+
+// Sposób, w jaki wybrano konkretny model w Kroku 2: 'tech' (na podstawie
+// danych technologicznych) albo 'list' (bezpośrednio z listy modeli).
+// Krok 3 i Krok 4 działają identycznie niezależnie od wybranej ścieżki -
+// obie ścieżki ustawiają dokładnie ten sam <select id="selected_machine_model">.
+let machineSelectionSource = null;
+
+// Ścieżka "dane technologiczne" zawsze daje dokładnie jedną maszynę (wynik
+// kalkulatora), więc jej wybrane opcje dodatkowe (Krok 3) trzymamy w jednym
+// obiekcie "sloto-podobnym", analogicznym do wpisów w step2Selections -
+// dzięki temu Krok 3/4 mogą używać wspólnej funkcji getConfiguredMachines()
+// niezależnie od ścieżki wyboru z Kroku 2. Odtwarzany od nowa, gdy zmieni
+// się wybrany model/agregat (patrz getConfiguredMachines).
+let techPathMachine = null;
+
+// Aktualnie widoczny "pod-widok" Kroku 2: 'tech' (formularz danych
+// technologicznych) albo 'list' (wybór z listy). Wybór sposobu doboru
+// odbywa się już w Kroku 1 (przyciski "Kalkulator" / "Wybierz z listy").
+let step2SubView = 'tech';
+
+// Typy maszyn dodane do Kroku 1 (widok 360° + krótki opis), dla których
+// dalsze kroki konfiguratora (dobór wtryskarki na podstawie danych
+// technologicznych) nie zostały jeszcze opracowane. Dla tych typów
+// przycisk "Dalej" w Kroku 1 celowo nic nie robi - pozostałe typy
+// (DL-A5, TH-A5, TE-A5, TL-A5) działają dokładnie tak jak wcześniej.
+const CONFIGURATOR_STEP1_ONLY_TYPES = ['VHA-RS', 'MULTI', 'Super-Foam'];
 
 // Wypełnienie listy materiałów przy starcie
 document.addEventListener('DOMContentLoaded', function () {
@@ -348,9 +874,550 @@ function initMachineCardSelection() {
     updateSelection();
 }
 
+// -------------------- Krok 2: dobór wtryskarki (tech / lista) --------------------
+
+// Pokazuje jeden z dwóch "pod-widoków" Kroku 2: formularz danych
+// technologicznych ('tech') albo listę modeli ('list'). Sposób doboru
+// wybierany jest już w Kroku 1.
+function showStep2SubView(view) {
+    step2SubView = view;
+    document.getElementById('step2TechPath').style.display = view === 'tech' ? '' : 'none';
+    document.getElementById('step2ListPath').style.display = view === 'list' ? '' : 'none';
+
+    if (view === 'list') buildStep2List();
+
+    const container = document.querySelector('.configurator-container');
+    if (container) window.scrollTo({ top: container.offsetTop - 100, behavior: 'smooth' });
+}
+
+// Reset Kroku 2 przy każdorazowym wejściu z Kroku 1 (nowo wybrany typ maszyny
+// mógł unieważnić poprzednio wybrany model / wprowadzone dane technologiczne).
+// `view` to sposób doboru wybrany przyciskiem w Kroku 1 ('tech' albo 'list').
+function resetStep2ForType(view) {
+    machineSelectionSource = null;
+    lastCalculationResults = null;
+
+    const selectEl = document.getElementById('selected_machine_model');
+    if (selectEl) selectEl.innerHTML = '';
+
+    const resultsSection = document.getElementById('resultsSection');
+    if (resultsSection) resultsSection.style.display = 'none';
+
+    clearCalcError();
+
+    const listErr = document.getElementById('step2ListError');
+    if (listErr) { listErr.style.display = 'none'; listErr.textContent = ''; }
+
+    showStep2SubView(view === 'list' ? 'list' : 'tech');
+}
+
+// Lista wybranych w Kroku 2 (ścieżka "z listy") konfiguracji - każdy wpis to
+// jeden "slot": wybrany model + agregat wtryskowy + liczba maszyn. Zawsze
+// istnieje przynajmniej jeden (pusty) slot - kolejne dodaje się przyciskiem
+// "+ Dodaj kolejny model" (patrz addAnotherStep2Model). Nowe wybory z listy
+// modeli trafiają zawsze do OSTATNIEGO slotu (patrz onStep2ListSelect).
+let step2Selections = [];
+
+// Element wysuwanego menu agregatów jest jeden, współdzielony przez wszystkie
+// wiersze listy - jego zawartość i pozycja są ustawiane dynamicznie przez
+// openStep2UnitsFlyout(), w zależności od tego, nad którym paskiem modelu
+// znajduje się aktualnie kursor / który pasek został kliknięty. Menu NIE
+// znika samo przy zjechaniu kursorem - zamyka je dopiero wybór konkretnego
+// agregatu (onStep2ListSelect) albo kliknięcie poza listą i poza menu.
+let step2FlyoutOpenRow = null;
+
+// Buduje listę wszystkich wtryskarek (model + średnica ślimaka) dla aktualnie
+// wybranego typu (Krok 1), na podstawie tych samych danych (machineData), z
+// których korzysta ścieżka "dane technologiczne". Każdy model (np. DL450A5)
+// to jeden pasek - wszystkie jego agregaty wtryskowe są ukryte wewnątrz
+// wspólnego, wysuwanego menu (patrz #step2UnitsFlyout / openStep2UnitsFlyout)
+// i pokazują się po najechaniu myszką / kliknięciu paska.
+function buildStep2List() {
+    const itemsContainer = document.getElementById('step2ListItems');
+    const specsContainer = document.getElementById('step2ListSpecs');
+    if (!itemsContainer || !specsContainer) return;
+
+    const typeData = machineData[selectedMachineType];
+    if (!typeData) { itemsContainer.innerHTML = ''; return; }
+
+    closeStep2UnitsFlyout();
+    step2Selections = [null];
+
+    let rowsHtml = '';
+    typeData.models.forEach(m => {
+        rowsHtml += `
+            <div class="step2-list-model-row" data-model="${m.name}">
+                <button type="button" class="step2-list-model-bar"
+                    onmouseenter="openStep2UnitsFlyout(this)"
+                    onclick="openStep2UnitsFlyout(this)">
+                    <span class="step2-list-model-name">${m.name}</span>
+                    <span class="step2-list-model-arrow">›</span>
+                </button>
+            </div>`;
+    });
+    itemsContainer.innerHTML = rowsHtml;
+
+    renderStep2Specs();
+}
+
+// Znajduje dane modelu (siła zwarcia, agregaty, itd.) dla aktualnie
+// wybranego typu maszyny (Krok 1) po nazwie modelu.
+function getStep2Model(modelName) {
+    const typeData = machineData[selectedMachineType];
+    if (!typeData) return null;
+    return typeData.models.find(m => m.name === modelName) || null;
+}
+
+// Formatuje etykietę agregatu wtryskowego z wariantem ślimaka, np. z
+// "IH190 O(25mm)" robi "IH190:O" - ten sam agregat (korpus) może
+// występować z kilkoma średnicami ślimaka (oznaczonymi literami wg
+// katalogu, np. O/A/B - od najmniejszej do największej), dlatego litera
+// musi być widoczna obok nazwy agregatu, a nie tylko sama średnica.
+function formatStep2AgregatLabel(unit) {
+    const m = unit.match(/^(\S+)\s+([A-Za-z]*)\(/);
+    if (!m) return unit.split(' ')[0];
+    return m[2] ? `${m[1]}:${m[2]}` : m[1];
+}
+
+// Otwiera (i pozycjonuje) wspólne wysuwane menu agregatów wtryskowych tuż
+// obok paska modelu, nad którym znajduje się kursor. Menu jest rodzeństwem
+// (a nie potomkiem) przewijanej listy #step2ListItems, więc może swobodnie
+// nachodzić na panel najważniejszych danych po prawej stronie, zamiast być
+// przycinane przez jej "overflow-y: auto". Jeśli przy naturalnej pozycji
+// (na wysokości najechanego paska) menu wystawałoby poza dolną krawędź
+// widocznego okna przeglądarki, zostaje podciągnięte tak, aby zmieściło się
+// w całości na ekranie (bez konieczności przewijania strony) - patrz sekcja
+// "dopasowanie do wysokości okna" poniżej.
+function openStep2UnitsFlyout(barEl) {
+    const row = barEl.closest('.step2-list-model-row');
+    const flyout = document.getElementById('step2UnitsFlyout');
+    const layout = document.querySelector('.step2-list-layout');
+    if (!row || !flyout || !layout) return;
+
+    const modelName = row.dataset.model;
+    const model = getStep2Model(modelName);
+    if (!model) return;
+
+    let unitsHtml = '';
+    model.units.forEach(unit => {
+        const agregat = formatStep2AgregatLabel(unit);
+        const screwMatch = unit.match(/\((\d+)\s*mm\)/i);
+        const screwDiameter = screwMatch ? screwMatch[1] : '–';
+        const isSelected = step2Selections.some(s => s && s.modelName === modelName && s.unitStr === unit);
+        const tieBarAttr = model.tieBar !== null ? model.tieBar : '';
+        unitsHtml += `
+            <button type="button" class="step2-list-unit-item${isSelected ? ' is-selected' : ''}"
+                onclick="onStep2ListSelect('${modelName}', '${unit}', '${model.force}', '${tieBarAttr}', '${model.minH}', '${model.maxH}')">
+                <span class="step2-list-unit-name">${agregat}</span>
+                <span class="step2-list-unit-screw">Ø${screwDiameter} mm</span>
+            </button>`;
+    });
+    flyout.innerHTML = unitsHtml;
+
+    const barRect = barEl.getBoundingClientRect();
+    const layoutRect = layout.getBoundingClientRect();
+
+    // Dopasowanie do wysokości okna: domyślnie górna krawędź menu wyrównana
+    // jest z górną krawędzią najechanego paska. Gdy przy tej pozycji menu
+    // nie zmieściłoby się w całości nad dolną krawędzią widocznego okna,
+    // zostaje podciągnięte w górę - w skrajnym przypadku aż do tuż pod
+    // stały nagłówek strony - tak, aby wszystkie pozycje były widoczne bez
+    // przewijania.
+    const viewportBottomMargin = 16;
+    const viewportTopMargin = 100; // wysokość stałego nagłówka + odstęp
+    const flyoutHeight = flyout.offsetHeight;
+    let desiredViewportTop = barRect.top;
+    if (desiredViewportTop + flyoutHeight > window.innerHeight - viewportBottomMargin) {
+        desiredViewportTop = Math.max(viewportTopMargin, window.innerHeight - viewportBottomMargin - flyoutHeight);
+    }
+
+    flyout.style.top = Math.max(0, desiredViewportTop - layoutRect.top) + 'px';
+    flyout.style.left = (barRect.right - layoutRect.left + 10) + 'px';
+    flyout.classList.add('is-open');
+
+    document.querySelectorAll('.step2-list-model-row.is-expanded').forEach(r => r.classList.remove('is-expanded'));
+    row.classList.add('is-expanded');
+    step2FlyoutOpenRow = row;
+}
+
+// Zamyka wspólne menu agregatów - wywoływane po wybraniu konkretnego
+// agregatu (patrz onStep2ListSelect) albo po kliknięciu poza listą modeli
+// i poza samym menu (patrz nasłuchiwacz "click" na document poniżej).
+function closeStep2UnitsFlyout() {
+    const flyout = document.getElementById('step2UnitsFlyout');
+    if (flyout) { flyout.classList.remove('is-open'); flyout.innerHTML = ''; }
+    if (step2FlyoutOpenRow) step2FlyoutOpenRow.classList.remove('is-expanded');
+    step2FlyoutOpenRow = null;
+}
+
+// Kliknięcie gdziekolwiek poza listą modeli i poza samym menu agregatów
+// zamyka je (np. dotknięcie ekranu obok, na urządzeniach dotykowych).
+document.addEventListener('click', function (e) {
+    const flyout = document.getElementById('step2UnitsFlyout');
+    if (!flyout || !flyout.classList.contains('is-open')) return;
+    if (flyout.contains(e.target)) return;
+    const itemsContainer = document.getElementById('step2ListItems');
+    if (itemsContainer && itemsContainer.contains(e.target)) return;
+    closeStep2UnitsFlyout();
+});
+
+// Po kliknięciu konkretnego agregatu w wysuwanym menu: zapisuje wybór w
+// OSTATNIM slocie z step2Selections, natychmiast zamyka menu agregatów
+// (nawet jeśli kursor wciąż znajduje się nad paskiem/menu), odświeża panel
+// najważniejszych danych i ustawia <select id="selected_machine_model">
+// dokładnie tak, jak robi to calculateAndShowModels() - dzięki temu Krok 3
+// i Krok 4 działają identycznie, niezależnie od wybranej ścieżki w Kroku 2
+// (dla wielu wybranych modeli, jako "główny" traktowany jest pierwszy slot).
+function onStep2ListSelect(modelName, unitStr, force, tieBar, minH, maxH) {
+    // Wypełniamy pierwszy WOLNY (pusty) slot, a nie zawsze ostatni - dzięki
+    // temu, jeśli użytkownik naciśnie "+ Dodaj kolejny model" kilka razy z
+    // rzędu (tworząc kilka pustych placeholderów naraz), kolejne wybierane
+    // konfiguracje trafiają po kolei do pierwszego wolnego pola, a nie zawsze
+    // do ostatniego, pomijając wcześniejsze puste placeholdery.
+    let idx = step2Selections.findIndex(s => !s);
+    if (idx === -1) idx = Math.max(step2Selections.length - 1, 0);
+    const existingQty = (step2Selections[idx] && step2Selections[idx].qty) || 1;
+    const existingOptions = (step2Selections[idx] && step2Selections[idx].selectedOptions) || [];
+    step2Selections[idx] = { modelName, unitStr, force, tieBar, minH, maxH, qty: existingQty, detailsExpanded: false, selectedOptions: existingOptions, optionsExpanded: false };
+
+    closeStep2UnitsFlyout();
+    renderStep2Specs();
+    updateSelectedMachineModelFromStep2();
+
+    const errEl = document.getElementById('step2ListError');
+    if (errEl) { errEl.style.display = 'none'; errEl.textContent = ''; }
+}
+
+// Zmiana liczby maszyn (+/-) dla danego slotu, z dolnym limitem 1.
+function changeStep2Qty(slotIndex, delta) {
+    const slot = step2Selections[slotIndex];
+    if (!slot) return;
+    const current = parseInt(slot.qty, 10) || 1;
+    slot.qty = Math.max(1, current + delta);
+    renderStep2Specs();
+}
+
+// Ręczna edycja liczby maszyn w polu tekstowym - również z dolnym limitem 1.
+function setStep2Qty(slotIndex, value) {
+    const slot = step2Selections[slotIndex];
+    if (!slot) return;
+    let n = parseInt(value, 10);
+    if (isNaN(n) || n < 1) n = 1;
+    slot.qty = n;
+    renderStep2Specs();
+}
+
+// Przycisk "+ Dodaj kolejny model" - dodaje kolejny, pusty slot na dole listy
+// wybranych konfiguracji; kolejny wybór z listy modeli wypełni właśnie jego.
+function addAnotherStep2Model() {
+    step2Selections.push(null);
+    renderStep2Specs();
+}
+
+// Przycisk kosza - usuwa cały typ maszyny (dany slot) z listy wybranych
+// konfiguracji. Jeśli był to ostatni pozostały slot, zostawiamy jeden pusty
+// placeholder (tak jak na starcie), żeby panel po prawej nigdy nie zniknął
+// całkowicie. Po usunięciu trzeba też odświeżyć "główny" wybór dla Kroku 3/4,
+// bo mógł zniknąć właśnie pierwszy (główny) slot.
+function removeStep2Model(slotIndex) {
+    step2Selections.splice(slotIndex, 1);
+    if (step2Selections.length === 0) {
+        step2Selections.push(null);
+    }
+    renderStep2Specs();
+    updateSelectedMachineModelFromStep2();
+}
+
+// Rozwija/zwija pełną specyfikację techniczną (3 kolumny: Wtrysk/Zwarcie/
+// Ogólne) pod podstawowymi danymi danego slotu. Domyślnie zwinięta - widoczne
+// jest tylko te kilka podstawowych pól, tak jak przed dodaniem pełnych danych
+// katalogowych; pulsujący trójkąt na dole karty rozwija resztę na życzenie.
+function toggleStep2Details(slotIndex) {
+    const slot = step2Selections[slotIndex];
+    if (!slot) return;
+    slot.detailsExpanded = !slot.detailsExpanded;
+    renderStep2Specs();
+}
+
+// -------------------- Krok 2 (lista): pełne dane technologiczne --------------------
+//
+// Formatuje wartości zapisane w machineTechSpecs w formacie "450(4413)"
+// (wartość_główna(wartość_w_nawiasie), tak jak drukowane są w katalogach
+// producenta w układzie ton(kN)) na czytelny string "450 T (4413 kN)".
+// Zwraca oryginalny string bez zmian, jeśli nie pasuje do wzorca (np. gdy
+// to już gotowy tekst typu "3.5/3.5/5.0").
+function formatTonKn(value) {
+    if (value === null || value === undefined) return null;
+    const m = String(value).match(/^([\d.]+)\(([\d.]+)\)$/);
+    if (!m) return value;
+    return `${m[1]} T (${m[2]} kN)`;
+}
+
+// Odczytuje jedno pole z machineTechSpecs dla danego modelu/agregatu. Dla
+// "machineDimension" (które w katalogach bywa wydrukowane tylko raz na całą
+// grupę korpusów wtryskowych, a nie dla każdej dokładnej średnicy ślimaka)
+// szuka wartości u "siostrzanego" wariantu tego samego korpusu (ten sam
+// prefiks przed spacją, np. "IH2800"), a w ostateczności u jakiegokolwiek
+// wariantu w obrębie tego samego modelu - dzięki temu wymiar maszyny nie
+// znika tylko dlatego, że akurat ta konkretna litera (O/A/B) go nie ma
+// wydrukowanego osobno.
+function getTechField(modelName, unitStr, section, field) {
+    const spec = machineTechSpecs[modelName];
+    if (!spec) return null;
+
+    // "clamping" to dane wspólne dla całego modelu (jeden wiersz w katalogu
+    // na cały model), zapisane bezpośrednio w spec.clamping - w
+    // przeciwieństwie do "injection"/"general", które są per-agregat i
+    // siedzą w spec.units[unitStr].
+    if (section === 'clamping') {
+        const val = spec.clamping ? spec.clamping[field] : null;
+        return (val !== null && val !== undefined) ? val : null;
+    }
+
+    const unit = spec.units[unitStr];
+    if (!unit || !unit[section]) return null;
+    const val = unit[section][field];
+    if (val !== null && val !== undefined) return val;
+
+    if (field === 'machineDimension') {
+        const bodyPrefix = unitStr.split(' ')[0];
+        const entries = Object.entries(spec.units);
+        const sameBody = entries.find(([k, v]) => k.split(' ')[0] === bodyPrefix && v.general.machineDimension);
+        if (sameBody) return sameBody[1].general.machineDimension;
+        const anyWithDim = entries.find(([, v]) => v.general.machineDimension);
+        if (anyWithDim) return anyWithDim[1].general.machineDimension;
+    }
+    return null;
+}
+
+// Buduje znacznik 3 kolumn (Wtrysk / Zwarcie / Ogólne) z pełnymi danymi
+// technologicznymi dla wybranej pary model+agregat, pomijając wiersze,
+// których dana seria maszyn nie posiada (wartość null w machineTechSpecs).
+// Jeśli danych brak (nie powinno się zdarzyć - patrz walidacja przy
+// budowie machineTechSpecs), zwraca null, a wywołujący spada na starą,
+// płaską listę jako zabezpieczenie.
+function renderStep2TechColumns(modelName, unitStr) {
+    if (!machineTechSpecs[modelName] || !machineTechSpecs[modelName].units[unitStr]) return null;
+    const g = (section, field) => getTechField(modelName, unitStr, section, field);
+
+    const injectionRows = [];
+    const screwD = g('injection', 'screwDiameter');
+    if (screwD != null) injectionRows.push(['Średnica ślimaka', `${screwD} mm`]);
+    const pMpa = g('injection', 'injPressureMpa');
+    if (pMpa != null) injectionRows.push(['Ciśnienie wtrysku', `${pMpa} MPa`]);
+    const pHoldMpa = g('injection', 'injHoldingPressureMpa');
+    if (pHoldMpa != null) injectionRows.push(['Ciśnienie docisku', `${pHoldMpa} MPa`]);
+    const theoVol = g('injection', 'theoInjVolume');
+    if (theoVol != null) injectionRows.push(['Teoret. objętość wtrysku', `${theoVol} cm³`]);
+    const shotW = g('injection', 'shotWeight');
+    if (shotW != null) injectionRows.push(['Masa wtrysku (PS)', `${shotW} g`]);
+    const injRate = g('injection', 'injRate');
+    const injRateOpt = g('injection', 'injRateOptional');
+    if (injRate != null) injectionRows.push(['Prędkość wtrysku', `${injRate}${injRateOpt != null ? ` / ${injRateOpt} (opc.)` : ''} cm³/s`]);
+    const screwStroke = g('injection', 'screwStroke');
+    if (screwStroke != null) injectionRows.push(['Skok ślimaka', `${screwStroke} mm`]);
+    const injSpeed = g('injection', 'injSpeed');
+    const injSpeedOpt = g('injection', 'injSpeedOptional');
+    if (injSpeed != null) injectionRows.push(['Prędkość wtrysku (liniowa)', `${injSpeed}${injSpeedOpt != null ? ` / ${injSpeedOpt} (opc.)` : ''} mm/s`]);
+    const plastCap = g('injection', 'plasticizingCapacity');
+    if (plastCap != null) injectionRows.push(['Wydajność plastyfikacji', `${plastCap} kg/h`]);
+    const screwRpm = g('injection', 'screwRotationSpeed');
+    if (screwRpm != null) injectionRows.push(['Obroty ślimaka', `${screwRpm} obr/min`]);
+
+    const clampingRows = [];
+    const clampForce = g('clamping', 'clampingForce');
+    if (clampForce != null) clampingRows.push(['Siła zwarcia', formatTonKn(clampForce)]);
+    const moldOpenForce = g('clamping', 'moldOpeningForce');
+    if (moldOpenForce != null) clampingRows.push(['Siła otwierania formy', formatTonKn(moldOpenForce)]);
+    const tieBarD = g('clamping', 'tieBarDistance');
+    if (tieBarD != null) clampingRows.push(['Prześwit między kolumnami', `${tieBarD} mm`]);
+    const platenDim = g('clamping', 'platenDimension');
+    if (platenDim != null) clampingRows.push(['Wymiar płyty', `${platenDim} mm`]);
+    const daylight = g('clamping', 'daylight');
+    if (daylight != null) clampingRows.push(['Prześwit', `${daylight} mm`]);
+    const maxDaylight = g('clamping', 'maxDaylight');
+    if (maxDaylight != null) clampingRows.push(['Maks. prześwit', `${maxDaylight} mm`]);
+    const minMoldH = g('clamping', 'minMoldHeight');
+    if (minMoldH != null) clampingRows.push(['Min. wysokość formy', `${minMoldH} mm`]);
+    const maxMoldH = g('clamping', 'maxMoldHeight');
+    if (maxMoldH != null) clampingRows.push(['Maks. wysokość formy', `${maxMoldH} mm`]);
+    const ejectForce = g('clamping', 'ejectorForce');
+    if (ejectForce != null) clampingRows.push(['Siła wypychacza', formatTonKn(ejectForce)]);
+    const ejectStroke = g('clamping', 'ejectorStroke');
+    if (ejectStroke != null) clampingRows.push(['Skok wypychacza', `${ejectStroke} mm`]);
+    const dryCycle = g('clamping', 'dryCycleTime');
+    if (dryCycle != null) clampingRows.push(['Czas cyklu suchego', `${dryCycle} s`]);
+    const maxMoldW = g('clamping', 'maxMoldWeight');
+    if (maxMoldW != null) clampingRows.push(['Maks. masa formy', `${maxMoldW} t`]);
+
+    const generalRows = [];
+    const motorCap = g('general', 'motorCapacity');
+    const motorCapOpt = g('general', 'motorCapacityOptional');
+    if (motorCap != null) generalRows.push(['Moc silnika', `${motorCap}${motorCapOpt != null ? ` / ${motorCapOpt} (opc.)` : ''} kW`]);
+    const heaterCap = g('general', 'heaterCapacity');
+    if (heaterCap != null) generalRows.push(['Moc grzałek', `${heaterCap} kW`]);
+    const totalPower = g('general', 'totalElectricPower');
+    const totalPowerHigh = g('general', 'totalElectricPowerHigh');
+    if (totalPower != null) generalRows.push(['Całkowita moc elektryczna', `${totalPower}${totalPowerHigh != null ? ` / ${totalPowerHigh} (High)` : ''} kW`]);
+    const oilTank = g('general', 'hydraulicOilTank');
+    if (oilTank != null) generalRows.push(['Zbiornik oleju hydraulicznego', `${oilTank} l`]);
+    const coolingW = g('general', 'coolingWater');
+    if (coolingW != null) generalRows.push(['Zużycie wody chłodzącej', `${coolingW} l/min`]);
+    const machineW = g('general', 'machineWeight');
+    if (machineW != null) generalRows.push(['Masa maszyny', `${machineW} t`]);
+    const machineDim = g('general', 'machineDimension');
+    if (machineDim != null) generalRows.push(['Wymiary maszyny', `${machineDim} m`]);
+
+    const col = (title, rows) => `
+                    <div class="step2-tech-col">
+                        <h4 class="step2-tech-col-title">${title}</h4>
+                        <ul class="step2-tech-list">
+                            ${rows.map(([label, value]) => `<li><span>${label}</span><strong>${value}</strong></li>`).join('')}
+                        </ul>
+                    </div>`;
+
+    return `
+                <div class="step2-tech-grid">
+                    ${col('Wtrysk', injectionRows)}
+                    ${col('Zwarcie', clampingRows)}
+                    ${col('Ogólne', generalRows)}
+                </div>`;
+}
+
+// Odtwarza panel "najważniejszych danych" po prawej stronie na podstawie
+// step2Selections - jedna karta na slot (placeholder, jeśli jeszcze pusty),
+// a pod nimi zawsze pulsujący przycisk "+ Dodaj kolejny model".
+function renderStep2Specs() {
+    const specsContainer = document.getElementById('step2ListSpecs');
+    if (!specsContainer) return;
+
+    const typeData = machineData[selectedMachineType];
+    let html = '';
+
+    step2Selections.forEach((slot, i) => {
+        if (!slot) {
+            // Kosz pojawia się na pustym placeholderze wszędzie poza pierwszym
+            // polem, dopóki użytkownik nie wybrał jeszcze żadnej konfiguracji
+            // (czyli slot 0) - tamto pole zawsze zostaje, dodatkowe puste
+            // placeholdery (powstałe np. z kilkukrotnego kliknięcia "+ Dodaj
+            // kolejny model") można natomiast usunąć tym samym przyciskiem,
+            // w tym samym miejscu co w wypełnionych kartach.
+            // Przycisk pozycjonowany bezwzględnie w rogu karty (position:
+            // absolute we CSS), a nie w normalnym przepływie dokumentu -
+            // dzięki temu jego obecność nie dokłada dodatkowej wysokości do
+            // karty (patrz .step2-placeholder-header) i puste pole zawsze ma
+            // ten sam, standardowy rozmiar, niezależnie od tego, czy kosz
+            // jest pokazany.
+            const removeBtn = i > 0 ? `
+                    <div class="step2-placeholder-header">
+                        <button type="button" class="step2-remove-btn" onclick="removeStep2Model(${i})" aria-label="Usuń to pole" title="Usuń to pole">
+                            <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 7 20 7"></polyline><path d="M6 7l1 13a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2l1-13"></path><path d="M9 7V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v3"></path></svg>
+                        </button>
+                    </div>` : '';
+            html += `
+                <div class="step2-spec-card is-placeholder" data-slot="${i}">
+                    ${removeBtn}
+                    <p class="step2-list-specs-placeholder">Wybierz wtryskarkę z listy po lewej, aby zobaczyć jej najważniejsze dane.</p>
+                </div>`;
+            return;
+        }
+
+        const screwMatch = slot.unitStr.match(/\((\d+)\s*mm\)/i);
+        const screwDiameter = screwMatch ? `${screwMatch[1]} mm` : '–';
+        const agregat = formatStep2AgregatLabel(slot.unitStr);
+
+        html += `
+            <div class="step2-spec-card" data-slot="${i}">
+                <div class="step2-spec-card-header">
+                    <div class="step2-spec-card-titles">
+                        <h3>${slot.modelName}</h3>
+                        <p class="step2-list-specs-sub">${typeData ? typeData.label : ''} — ${agregat}</p>
+                    </div>
+                    <div class="step2-qty-stepper">
+                        <button type="button" class="step2-qty-btn" onclick="changeStep2Qty(${i}, -1)" aria-label="Zmniejsz liczbę maszyn">−</button>
+                        <input type="text" inputmode="numeric" class="step2-qty-input" value="${slot.qty}" onchange="setStep2Qty(${i}, this.value)">
+                        <button type="button" class="step2-qty-btn" onclick="changeStep2Qty(${i}, 1)" aria-label="Zwiększ liczbę maszyn">+</button>
+                        <button type="button" class="step2-remove-btn" onclick="removeStep2Model(${i})" aria-label="Usuń ten typ maszyny" title="Usuń ten typ maszyny">
+                            <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 7 20 7"></polyline><path d="M6 7l1 13a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2l1-13"></path><path d="M9 7V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v3"></path></svg>
+                        </button>
+                    </div>
+                </div>
+                <ul class="step2-list-specs-table">
+                    <li><span>Siła zwarcia</span><strong>${slot.force} ton</strong></li>
+                    <li><span>Agregat wtryskowy</span><strong>${agregat}</strong></li>
+                    <li><span>Średnica ślimaka</span><strong>${screwDiameter}</strong></li>
+                    ${slot.tieBar ? `<li><span>Prześwit między kolumnami</span><strong>${slot.tieBar} mm</strong></li>` : ''}
+                    <li><span>Min. wysokość formy</span><strong>${slot.minH} mm</strong></li>
+                    <li><span>Maks. wysokość formy</span><strong>${slot.maxH} mm</strong></li>
+                </ul>
+                ${machineTechSpecs[slot.modelName] && machineTechSpecs[slot.modelName].units[slot.unitStr] ? `
+                <button type="button" class="step2-details-toggle${slot.detailsExpanded ? ' is-expanded' : ''}" onclick="toggleStep2Details(${i})" aria-expanded="${slot.detailsExpanded ? 'true' : 'false'}">
+                    <span>${slot.detailsExpanded ? 'Ukryj pełną specyfikację techniczną' : 'Pokaż pełną specyfikację techniczną'}</span>
+                    <svg class="step2-details-toggle-arrow" viewBox="0 0 12 8" width="12" height="8" aria-hidden="true"><polygon points="0,0 12,0 6,8" fill="currentColor"></polygon></svg>
+                </button>
+                ${slot.detailsExpanded ? (renderStep2TechColumns(slot.modelName, slot.unitStr) || '') : ''}` : ''}
+            </div>`;
+    });
+
+    html += `
+        <button type="button" class="step2-add-model-btn" onclick="addAnotherStep2Model()">
+            <span class="pulse-plus">+</span> Dodaj kolejny model
+        </button>`;
+
+    specsContainer.innerHTML = html;
+
+    document.querySelectorAll('.step2-list-model-row').forEach(row => {
+        const isSelected = step2Selections.some(s => s && s.modelName === row.dataset.model);
+        row.classList.toggle('has-selected', isSelected);
+    });
+}
+
+// Ustawia <select id="selected_machine_model"> na podstawie pierwszego
+// wypełnionego slotu z step2Selections - Krok 3 i Krok 4 pracują zawsze na
+// tym jednym, "głównym" wyborze, niezależnie od tego, ile dodatkowych modeli
+// użytkownik dodał na liście w Kroku 2.
+function updateSelectedMachineModelFromStep2() {
+    const selectEl = document.getElementById('selected_machine_model');
+    if (!selectEl) return;
+
+    const primary = step2Selections.find(s => s);
+    if (!primary) {
+        selectEl.innerHTML = '';
+        machineSelectionSource = null;
+        return;
+    }
+
+    selectEl.innerHTML = '';
+    const opt = document.createElement('option');
+    opt.value = `${primary.modelName} – agregat wtryskowy ${primary.unitStr}`;
+    opt.dataset.model = primary.modelName;
+    opt.dataset.unit = primary.unitStr;
+    opt.textContent = `${primary.modelName}  (siła zwarcia: ${primary.force} T)  →  ${primary.unitStr}`;
+    opt.selected = true;
+    selectEl.appendChild(opt);
+
+    machineSelectionSource = 'list';
+    lastCalculationResults = null;
+}
+
+// Walidacja przed przejściem dalej ścieżką "wybierz z listy" (odpowiednik
+// sprawdzenia wykonywanego dla ścieżki z danymi technologicznymi).
+function goToStep3FromList() {
+    const selectEl = document.getElementById('selected_machine_model');
+    if (!selectEl || !selectEl.value || machineSelectionSource !== 'list') {
+        const errEl = document.getElementById('step2ListError');
+        if (errEl) {
+            errEl.textContent = 'Wybierz wtryskarkę z listy, aby przejść dalej.';
+            errEl.style.display = 'block';
+        }
+        return;
+    }
+    nextStep(3);
+}
+
 // -------------------- Nawigacja między krokami --------------------
 
-function nextStep(step) {
+function nextStep(step, targetView) {
     if (step < 1 || step > 4) return;
 
     if (currentStep === 1) {
@@ -358,10 +1425,14 @@ function nextStep(step) {
         for (const r of radios) {
             if (r.checked) selectedMachineType = r.value;
         }
+        if (step === 2 && CONFIGURATOR_STEP1_ONLY_TYPES.includes(selectedMachineType)) {
+            return;
+        }
+        if (step === 2) resetStep2ForType(targetView);
     }
 
-    if (step >= 3 && !(lastCalculationResults && document.getElementById('selected_machine_model').value)) {
-        showCalcError('Najpierw kliknij przycisk „DOBIERZ WTRYSKARKĘ” i wybierz konkretny model oraz agregat wtryskowy.');
+    if (step >= 3 && !(document.getElementById('selected_machine_model').value && (lastCalculationResults || machineSelectionSource === 'list'))) {
+        showCalcError('Najpierw kliknij przycisk „DOBIERZ WTRYSKARKĘ” i wybierz konkretny model oraz agregat wtryskowy, albo wybierz wtryskarkę z listy.');
         return;
     }
 
@@ -520,28 +1591,69 @@ function calculateAndShowModels() {
 }
 
 // -------------------- Wspólne: wyróżniony pasek z wybraną wtryskarką i średnicą ślimaka --------------------
-// Używane zarówno w Kroku 3 (pod paskiem postępu), jak i w Kroku 4 (pod paskiem postępu, nad podsumowaniem).
+// Używane zarówno w Kroku 3 (przy każdym bloku opcji dodatkowych), jak i w
+// Kroku 4 (przy każdym bloku podsumowania). "Wyposażenie standardowe" w
+// Kroku 3 pokazuje tylko nazwy maszyn w nagłówku (patrz populateStep3),
+// bez tego paska.
 
-function renderMachineHighlight(elementId) {
-    const highlightDiv = document.getElementById(elementId);
-    if (!highlightDiv) return;
+function buildMachineHighlightInnerHtml(modelName, screwDiameter) {
+    return `
+        <span class="machine-highlight-item"><span class="machine-highlight-label">Wybrana wtryskarka:</span> <strong>${modelName}</strong></span>
+        <span class="machine-highlight-item"><span class="machine-highlight-label">Średnica ślimaka:</span> <strong>${screwDiameter}</strong></span>
+    `;
+}
 
-    const machineSelectEl = document.getElementById('selected_machine_model');
-    const selectedMachineOption = machineSelectEl ? machineSelectEl.selectedOptions[0] : null;
-
-    if (selectedMachineOption && selectedMachineOption.dataset.model) {
-        const modelName = selectedMachineOption.dataset.model;
-        const unitStr = selectedMachineOption.dataset.unit || '';
-        const screwMatch = unitStr.match(/\((\d+)\s*mm\)/i);
-        const screwDiameter = screwMatch ? `${screwMatch[1]} mm` : '–';
-        highlightDiv.innerHTML = `
-            <span class="machine-highlight-item"><span class="machine-highlight-label">Wybrana wtryskarka:</span> <strong>${modelName}</strong></span>
-            <span class="machine-highlight-item"><span class="machine-highlight-label">Średnica ślimaka:</span> <strong>${screwDiameter}</strong></span>
-        `;
-        highlightDiv.style.display = 'flex';
-    } else {
-        highlightDiv.style.display = 'none';
+// Zwraca listę wszystkich skonfigurowanych maszyn dla Kroku 3/4. Dla ścieżki
+// "wybierz z listy" to WSZYSTKIE wypełnione sloty z step2Selections (klient
+// mógł dodać kilka różnych modeli/agregatów - patrz "+ Dodaj kolejny model"
+// w Kroku 2); dla ścieżki "dane technologiczne" to zawsze dokładnie jedna
+// maszyna, zbudowana na podstawie <select id="selected_machine_model">. Każdy
+// wpis ma WŁASNĄ listę wybranych opcji dodatkowych (selectedOptions) oraz
+// stan rozwinięcia tej listy w Kroku 3 (optionsExpanded) - dzięki temu klient
+// może wybrać różne opcje dla różnych typów wtryskarek w tym samym
+// zamówieniu. "slotRef" to referencja do oryginalnego obiektu (slotu z
+// step2Selections albo techPathMachine), żeby zmiany (checkboxy, rozwijanie,
+// "zastosuj do wszystkich") od razu zapisywały się z powrotem.
+function getConfiguredMachines() {
+    if (machineSelectionSource === 'list') {
+        return step2Selections
+            .map((slot, idx) => (slot ? { slot, idx } : null))
+            .filter(Boolean)
+            .map(({ slot, idx }) => {
+                if (!slot.selectedOptions) slot.selectedOptions = [];
+                const screwMatch = slot.unitStr.match(/\((\d+)\s*mm\)/i);
+                return {
+                    idx,
+                    modelName: slot.modelName,
+                    unitStr: slot.unitStr,
+                    qty: slot.qty || 1,
+                    screwDiameter: screwMatch ? `${screwMatch[1]} mm` : '–',
+                    selectedOptions: slot.selectedOptions,
+                    optionsExpanded: !!slot.optionsExpanded,
+                    slotRef: slot
+                };
+            });
     }
+
+    // Ścieżka "dane technologiczne" - zawsze dokładnie jedna maszyna.
+    const selectEl = document.getElementById('selected_machine_model');
+    const opt = selectEl ? selectEl.selectedOptions[0] : null;
+    if (!opt || !opt.dataset.model) return [];
+
+    if (!techPathMachine || techPathMachine.modelName !== opt.dataset.model || techPathMachine.unitStr !== opt.dataset.unit) {
+        techPathMachine = { modelName: opt.dataset.model, unitStr: opt.dataset.unit, selectedOptions: [] };
+    }
+    const screwMatch = (opt.dataset.unit || '').match(/\((\d+)\s*mm\)/i);
+    return [{
+        idx: 0,
+        modelName: techPathMachine.modelName,
+        unitStr: techPathMachine.unitStr,
+        qty: 1,
+        screwDiameter: screwMatch ? `${screwMatch[1]} mm` : '–',
+        selectedOptions: techPathMachine.selectedOptions,
+        optionsExpanded: true,
+        slotRef: techPathMachine
+    }];
 }
 
 // -------------------- Krok 3: wyposażenie standardowe i opcje --------------------
@@ -555,55 +1667,192 @@ function formatNumbered(text) {
 }
 
 function populateStep3() {
-    renderMachineHighlight('step3MachineHighlight');
+    const machines = getConfiguredMachines();
+
+    // "Wyposażenie standardowe" dotyczy całej serii (ten sam zestaw dla
+    // wszystkich modeli wybranego typu wtryskarki) - w nagłówku wypisujemy po
+    // prostu nazwy WSZYSTKICH wybranych wtryskarek wraz ze średnicą ślimaka,
+    // oddzielone znakiem "//", zamiast wyróżnionego paska.
+    const stdMachinesList = document.getElementById('step3StdMachinesList');
+    if (stdMachinesList) {
+        stdMachinesList.textContent = machines
+            .map(m => `${m.modelName} (Ø ${m.screwDiameter})`)
+            .join(' // ');
+    }
 
     const data = optionSets[selectedMachineType];
-
     document.getElementById('std_injection_unit').innerHTML = data.std.injection.map(i => `<li>${formatNumbered(i)}</li>`).join('');
     document.getElementById('std_clamping_unit').innerHTML = data.std.clamping.map(i => `<li>${formatNumbered(i)}</li>`).join('');
     document.getElementById('std_general').innerHTML = data.std.general.map(i => `<li>${formatNumbered(i)}</li>`).join('');
 
-    const renderOptions = (containerId, list) => {
-        document.getElementById(containerId).innerHTML = list.map((opt, idx) => `
-            <label class="checkbox-item">
-                <input type="checkbox" name="add_option" value="${opt}">
-                ${formatNumbered(opt)}
-            </label>
-        `).join('');
-    };
+    renderStep3OptionsContainer(machines);
+}
 
-    renderOptions('opt_injection_unit', data.opt.injection);
-    renderOptions('opt_clamping_unit', data.opt.clamping);
-    renderOptions('opt_general', data.opt.general);
+// Buduje sekcję "Opcje dodatkowe (do wyboru):" - jeden blok na każdą wybraną
+// wtryskarkę. Checkboxy są tworzone przez DOM (nie inline onclick), żeby
+// uniknąć problemów z cudzysłowami w opisach opcji z katalogu; ich stan
+// zapisuje się bezpośrednio do slotRef.selectedOptions danej maszyny.
+function renderStep3OptionsContainer(machines) {
+    const container = document.getElementById('step3OptionsContainer');
+    if (!container) return;
+
+    if (!machines || machines.length === 0) {
+        container.innerHTML = '';
+        return;
+    }
+
+    const data = optionSets[selectedMachineType];
+    const primary = machines[0];
+
+    let html = `
+        <div class="step3-machine-options-block" data-machine-idx="${primary.idx}">
+            <div class="step3-machine-options-header">
+                <div class="machine-highlight-box">${buildMachineHighlightInnerHtml(primary.modelName, primary.screwDiameter)}${buildStep3QtyControlsHtml(primary)}</div>
+            </div>
+            <div class="options-columns-grid" id="step3OptCols-${primary.idx}"></div>
+            ${machines.length > 1 ? `
+            <button type="button" class="step2-add-model-btn step3-apply-all-btn" onclick="applyStep3OptionsToAll()">
+                <span class="pulse-plus">+</span> Zastosuj do wszystkich
+            </button>` : ''}
+        </div>`;
+
+    // Kolejne maszyny (jeśli klient wybrał więcej niż jeden model w Kroku 2) -
+    // opcje domyślnie zwinięte, rozwijane pulsującym trójkątem (ten sam
+    // mechanizm/styl co "Pokaż pełną specyfikację techniczną" w Kroku 2).
+    machines.slice(1).forEach(m => {
+        html += `
+            <div class="step3-machine-options-block" data-machine-idx="${m.idx}">
+                <div class="step3-machine-options-header">
+                    <div class="machine-highlight-box">${buildMachineHighlightInnerHtml(m.modelName, m.screwDiameter)}${buildStep3QtyControlsHtml(m)}</div>
+                </div>
+                <button type="button" class="step2-details-toggle${m.optionsExpanded ? ' is-expanded' : ''}" onclick="toggleStep3MachineOptionsPanel(${m.idx})" aria-expanded="${m.optionsExpanded ? 'true' : 'false'}">
+                    <span>${m.optionsExpanded ? 'Ukryj opcje dodatkowe dla tej maszyny' : 'Pokaż opcje dodatkowe dla tej maszyny'}</span>
+                    <svg class="step2-details-toggle-arrow" viewBox="0 0 12 8" width="12" height="8" aria-hidden="true"><polygon points="0,0 12,0 6,8" fill="currentColor"></polygon></svg>
+                </button>
+                ${m.optionsExpanded ? `<div class="options-columns-grid" id="step3OptCols-${m.idx}"></div>` : ''}
+            </div>`;
+    });
+
+    container.innerHTML = html;
+
+    machines.filter(m => m.idx === primary.idx || m.optionsExpanded).forEach(m => {
+        const colsEl = document.getElementById(`step3OptCols-${m.idx}`);
+        if (!colsEl) return;
+        colsEl.innerHTML = `
+            <div class="option-col"><h4>Injection Unit</h4><div class="checkbox-grid" data-group="injection"></div></div>
+            <div class="option-col"><h4>Clamping Unit</h4><div class="checkbox-grid" data-group="clamping"></div></div>
+            <div class="option-col"><h4>General</h4><div class="checkbox-grid" data-group="general"></div></div>
+        `;
+        ['injection', 'clamping', 'general'].forEach(group => {
+            const groupEl = colsEl.querySelector(`[data-group="${group}"]`);
+            data.opt[group].forEach(optText => {
+                const label = document.createElement('label');
+                label.className = 'checkbox-item';
+                const checkbox = document.createElement('input');
+                checkbox.type = 'checkbox';
+                checkbox.checked = m.selectedOptions.includes(optText);
+                checkbox.addEventListener('change', () => {
+                    const pos = m.selectedOptions.indexOf(optText);
+                    if (checkbox.checked && pos === -1) m.selectedOptions.push(optText);
+                    if (!checkbox.checked && pos !== -1) m.selectedOptions.splice(pos, 1);
+                });
+                label.appendChild(checkbox);
+                label.insertAdjacentHTML('beforeend', formatNumbered(optText));
+                groupEl.appendChild(label);
+            });
+        });
+    });
+}
+
+// Przycisk "Zastosuj do wszystkich" (widoczny tylko gdy wybrano więcej niż
+// jedną wtryskarkę) - kopiuje wybrane opcje dodatkowe z pierwszej (głównej)
+// maszyny do wszystkich pozostałych.
+function applyStep3OptionsToAll() {
+    const machines = getConfiguredMachines();
+    if (machines.length < 2) return;
+    const primaryOptions = machines[0].selectedOptions.slice();
+    machines.slice(1).forEach(m => {
+        m.slotRef.selectedOptions = primaryOptions.slice();
+    });
+    populateStep3();
+}
+
+// Rozwija/zwija listę opcji dodatkowych danej (nie-głównej) maszyny.
+function toggleStep3MachineOptionsPanel(machineIdx) {
+    const machines = getConfiguredMachines();
+    const machine = machines.find(m => m.idx === machineIdx);
+    if (!machine) return;
+    machine.slotRef.optionsExpanded = !machine.slotRef.optionsExpanded;
+    populateStep3();
+}
+
+// Licznik sztuk (+/-) i kosz do usunięcia danego typu wtryskarki, po prawej
+// stronie paska z jej nazwą - dokładnie ten sam znacznik/styl co stepper przy
+// liście modeli w Kroku 2 (.step2-qty-stepper/.step2-qty-btn/.step2-remove-btn,
+// patrz renderStep2Specs). Dostępne tylko dla ścieżki "wybierz z listy" -
+// ścieżka "dane technologiczne" zawsze daje dokładnie jedną maszynę bez
+// pojęcia "liczby sztuk".
+function buildStep3QtyControlsHtml(m) {
+    if (machineSelectionSource !== 'list') return '';
+    return `
+        <span class="machine-highlight-item step3-qty-controls">
+            <div class="step2-qty-stepper">
+                <button type="button" class="step2-qty-btn" onclick="changeStep3MachineQty(${m.idx}, -1)" aria-label="Zmniejsz liczbę maszyn">−</button>
+                <input type="text" inputmode="numeric" class="step2-qty-input" value="${m.qty}" onchange="setStep3MachineQty(${m.idx}, this.value)">
+                <button type="button" class="step2-qty-btn" onclick="changeStep3MachineQty(${m.idx}, 1)" aria-label="Zwiększ liczbę maszyn">+</button>
+                <button type="button" class="step2-remove-btn" onclick="removeStep3Machine(${m.idx})" aria-label="Usuń ten typ maszyny" title="Usuń ten typ maszyny">
+                    <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 7 20 7"></polyline><path d="M6 7l1 13a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2l1-13"></path><path d="M9 7V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v3"></path></svg>
+                </button>
+            </div>
+        </span>
+    `;
+}
+
+// Zmiana liczby sztuk / usunięcie danego typu wtryskarki bezpośrednio z
+// Kroku 3 - deleguje do tych samych funkcji co licznik w Kroku 2
+// (step2Selections to jedno, wspólne źródło prawdy dla obu widoków), po
+// czym odświeża panel opcji w Kroku 3.
+function changeStep3MachineQty(slotIndex, delta) {
+    changeStep2Qty(slotIndex, delta);
+    populateStep3();
+}
+
+function setStep3MachineQty(slotIndex, value) {
+    setStep2Qty(slotIndex, value);
+    populateStep3();
+}
+
+function removeStep3Machine(slotIndex) {
+    removeStep2Model(slotIndex);
+    populateStep3();
 }
 
 // -------------------- Krok 4: podsumowanie --------------------
 
-function getSelectedOptions() {
-    return Array.from(document.querySelectorAll('input[name="add_option"]:checked')).map(c => c.value);
+// Przycisk "Edytuj" przy danej maszynie w podsumowaniu (Krok 4) - wraca do
+// Kroku 3 i od razu rozwija jej sekcję opcji dodatkowych, gotową do zmiany.
+function editStep3Machine(machineIdx) {
+    if (machineSelectionSource === 'list' && step2Selections[machineIdx]) {
+        step2Selections[machineIdx].optionsExpanded = true;
+    }
+    nextStep(3);
 }
 
 function populateStep4Summary() {
-    const machineSelectEl = document.getElementById('selected_machine_model');
-    const selectedModelText = machineSelectEl.value;
-    const selectedOptions = getSelectedOptions();
+    const machines = getConfiguredMachines();
     const r = lastCalculationResults;
     const typeData = machineData[selectedMachineType];
-
-    // Wyróżniona informacja: dokładnie wybrany model wtryskarki + średnica ślimaka
-    renderMachineHighlight('step4MachineHighlight');
 
     const moldLength = document.getElementById('mold_length').value || '–';
     const moldWidth = document.getElementById('mold_width').value || '–';
     const wallThickness = document.getElementById('wall_thickness').value || '–';
     const materialLabel = document.getElementById('material_select').selectedOptions[0].textContent;
 
-    const summaryDiv = document.getElementById('summaryView');
-    summaryDiv.innerHTML = `
-        <h4>Wybrana konfiguracja</h4>
-        <table>
-            <tr><td>Typ wtryskarki</td><td><strong>${typeData.label}</strong></td></tr>
-            <tr><td>Model i agregat wtryskowy</td><td><strong>${selectedModelText}</strong></td></tr>
+    // Ścieżka "dane technologiczne" (r != null) pokazuje pełne wyliczenia -
+    // dotyczą jednej, jedynej maszyny tej ścieżki. Ścieżka "wybierz z listy"
+    // (r == null) nie zbiera tych danych, więc odpowiedni wiersz jest
+    // pomijany zamiast pokazywać puste/błędne wartości.
+    const techRowsHtml = r ? `
             <tr><td>Wymiary formy (dł. x szer.)</td><td>${moldLength} x ${moldWidth} mm</td></tr>
             <tr><td>Prześwit między kolumnami</td><td>${r.tieClearance} mm</td></tr>
             ${r.moldHeight > 0 ? `<tr><td>Wysokość formy</td><td>${r.moldHeight} mm</td></tr>` : ''}
@@ -614,9 +1863,36 @@ function populateStep4Summary() {
             <tr><td>Całkowita masa wtrysku</td><td>${r.totalWeight.toFixed(2)} g</td></tr>
             <tr><td>Całkowita objętość wtrysku</td><td>${r.totalVwtr.toFixed(2)} cm³</td></tr>
             <tr><td>Wymagana siła zwarcia</td><td>${r.requiredForceTon.toFixed(1)} ton</td></tr>
-        </table>
-        <h4>Wybrane opcje dodatkowe</h4>
-        ${selectedOptions.length > 0 ? `<ul>${selectedOptions.map(o => `<li>${o}</li>`).join('')}</ul>` : '<p>Brak wybranych opcji dodatkowych.</p>'}
+    ` : `
+            <tr><td>Sposób doboru</td><td>Wybór bezpośrednio z listy modeli (bez danych technologicznych)</td></tr>
+    `;
+
+    // Podsumowanie z podziałem na każdą wybraną wtryskarkę osobno (jeśli
+    // klient dodał w Kroku 2 więcej niż jeden model, każdy dostaje własny
+    // blok z przyciskiem "Edytuj" wracającym do jego opcji w Kroku 3). Gdy
+    // maszyn jest więcej niż jedna, każdy blok dostaje dodatkową klasę
+    // (--multi), która styluje go jak osobne, białe pole na tle strony -
+    // wyraźnie odseparowane od pozostałych, zamiast cienkiej linii-przerywnika.
+    const machinesHtml = machines.map(m => `
+        <div class="step4-machine-block${machines.length > 1 ? ' step4-machine-block--multi' : ''}" data-machine-idx="${m.idx}">
+            <div class="step4-machine-block-header">
+                <div class="machine-highlight-box">${buildMachineHighlightInnerHtml(m.modelName, m.screwDiameter)}<span class="machine-highlight-item step4-qty-label">ilość: <strong>${m.qty}</strong></span></div>
+                <button type="button" class="btn-secondary btn-small step4-edit-btn" onclick="editStep3Machine(${m.idx})">Edytuj</button>
+            </div>
+            <table>
+                <tr><td>Typ wtryskarki</td><td><strong>${typeData ? typeData.label : selectedMachineType}</strong></td></tr>
+                <tr><td>Model i agregat wtryskowy</td><td><strong>${m.modelName} – agregat wtryskowy ${m.unitStr}</strong></td></tr>
+                ${machines.length === 1 ? techRowsHtml : ''}
+            </table>
+            <h4>Wybrane opcje dodatkowe</h4>
+            ${m.selectedOptions.length > 0 ? `<ul>${m.selectedOptions.map(o => `<li>${o}</li>`).join('')}</ul>` : '<p>Brak wybranych opcji dodatkowych.</p>'}
+        </div>
+    `).join('');
+
+    const summaryDiv = document.getElementById('summaryView');
+    summaryDiv.innerHTML = `
+        <h4 class="step4-summary-title">Wybrana konfiguracja${machines.length > 1 ? ` (${machines.length} wtryskarki)` : ''}</h4>
+        ${machinesHtml}
     `;
 }
 
@@ -656,8 +1932,7 @@ function generatePDF() {
     const doc = new jsPDF({ unit: 'mm', format: 'a4' });
     const r = lastCalculationResults;
     const typeData = machineData[selectedMachineType];
-    const selectedModelText = document.getElementById('selected_machine_model').value || '–';
-    const selectedOptions = getSelectedOptions();
+    const machines = getConfiguredMachines();
 
     let y = 18;
     const left = 15;
@@ -679,50 +1954,73 @@ function generatePDF() {
     y += lineGap;
 
     doc.setTextColor(20, 20, 20);
-    doc.setFontSize(12);
-    doc.text('Wybrana konfiguracja', left, y);
-    y += lineGap;
-
-    doc.setFontSize(10);
-    const rows = [
-        ['Typ wtryskarki', typeData ? typeData.label : selectedMachineType],
-        ['Model i agregat wtryskowy', selectedModelText],
-        ['Liczba gniazd', r ? String(r.cavities) : '-'],
-        ['Prześwit między kolumnami', r ? `${r.tieClearance} mm` : '-'],
-        ['Masa jednej wypraski', r ? `${r.partWeight} g` : '-'],
-        ['Całkowita masa wtrysku', r ? `${r.totalWeight.toFixed(2)} g` : '-'],
-        ['Całkowita objętość wtrysku', r ? `${r.totalVwtr.toFixed(2)} cm³` : '-'],
-        ['Wymagana siła zwarcia', r ? `${r.requiredForceTon.toFixed(1)} ton` : '-'],
-        ['Materiał', document.getElementById('material_select').selectedOptions[0].textContent]
-    ];
-    rows.forEach(([label, value]) => {
-        doc.setFont(undefined, 'bold');
-        doc.text(`${label}:`, left, y);
-        doc.setFont(undefined, 'normal');
-        doc.text(String(value), left + 65, y);
-        y += lineGap - 1;
-    });
-
-    y += 3;
-    doc.setFontSize(12);
+    doc.setFontSize(9);
     doc.setFont(undefined, 'bold');
-    doc.text('Wybrane opcje dodatkowe', left, y);
+    doc.text('Typ wtryskarki:', left, y);
     doc.setFont(undefined, 'normal');
-    y += lineGap;
-    doc.setFontSize(10);
-    if (selectedOptions.length === 0) {
-        doc.text('Brak wybranych opcji dodatkowych.', left, y);
-        y += lineGap - 1;
-    } else {
-        selectedOptions.forEach(opt => {
-            const wrapped = doc.splitTextToSize(`• ${opt}`, pageWidth - left * 2);
-            wrapped.forEach(line => {
-                if (y > 280) { doc.addPage(); y = 18; }
-                doc.text(line, left, y);
-                y += lineGap - 2;
-            });
+    doc.text(String(typeData ? typeData.label : selectedMachineType), left + 65, y);
+    y += lineGap + 2;
+
+    // Podsumowanie z podziałem na każdą wybraną wtryskarkę osobno (klient
+    // mógł w Kroku 2 dodać więcej niż jeden model/agregat - patrz
+    // getConfiguredMachines powyżej).
+    machines.forEach((m, i) => {
+        if (y > 250) { doc.addPage(); y = 18; }
+
+        doc.setFontSize(12);
+        doc.setFont(undefined, 'bold');
+        doc.text(machines.length > 1 ? `Maszyna ${i + 1}: ${m.modelName}` : 'Wybrana konfiguracja', left, y);
+        doc.setFont(undefined, 'normal');
+        y += lineGap;
+
+        doc.setFontSize(10);
+        const rows = [
+            ['Model wtryskarki', m.modelName],
+            ['Agregat wtryskowy', m.unitStr],
+            ['Średnica ślimaka', m.screwDiameter]
+        ];
+        if (r) {
+            rows.push(
+                ['Liczba gniazd', String(r.cavities)],
+                ['Prześwit między kolumnami', `${r.tieClearance} mm`],
+                ['Masa jednej wypraski', `${r.partWeight} g`],
+                ['Całkowita masa wtrysku', `${r.totalWeight.toFixed(2)} g`],
+                ['Całkowita objętość wtrysku', `${r.totalVwtr.toFixed(2)} cm³`],
+                ['Wymagana siła zwarcia', `${r.requiredForceTon.toFixed(1)} ton`],
+                ['Materiał', document.getElementById('material_select').selectedOptions[0].textContent]
+            );
+        }
+        rows.forEach(([label, value]) => {
+            if (y > 280) { doc.addPage(); y = 18; }
+            doc.setFont(undefined, 'bold');
+            doc.text(`${label}:`, left, y);
+            doc.setFont(undefined, 'normal');
+            doc.text(String(value), left + 65, y);
+            y += lineGap - 1;
         });
-    }
+
+        y += 3;
+        if (y > 280) { doc.addPage(); y = 18; }
+        doc.setFont(undefined, 'bold');
+        doc.text('Wybrane opcje dodatkowe:', left, y);
+        doc.setFont(undefined, 'normal');
+        y += lineGap - 1;
+        if (m.selectedOptions.length === 0) {
+            if (y > 280) { doc.addPage(); y = 18; }
+            doc.text('Brak wybranych opcji dodatkowych.', left, y);
+            y += lineGap - 1;
+        } else {
+            m.selectedOptions.forEach(opt => {
+                const wrapped = doc.splitTextToSize(`• ${opt}`, pageWidth - left * 2);
+                wrapped.forEach(line => {
+                    if (y > 280) { doc.addPage(); y = 18; }
+                    doc.text(line, left, y);
+                    y += lineGap - 2;
+                });
+            });
+        }
+        y += 4;
+    });
 
     y += 4;
     if (y > 260) { doc.addPage(); y = 18; }
@@ -770,6 +2068,135 @@ function cancelSendEmail() {
     document.getElementById('sendBtn').disabled = false;
 }
 
+// Proste escapowanie znaków specjalnych HTML - stosowane przy wstawianiu do
+// treści e-maila wartości, które teoretycznie mogłyby zawierać "<"/">"/"&"
+// (np. gdyby ktoś kiedyś dodał nazwę modelu z takim znakiem). Nie dotyczy to
+// pola "message" (komentarz klienta), które - tak jak dotychczas - trafia do
+// szablonu bez zmian.
+function escapeEmailHtml(value) {
+    return String(value === null || value === undefined ? '' : value)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;');
+}
+
+// Buduje gotowy fragment HTML (jeden <tr> na wtryskarkę) z jej modelem,
+// średnicą ślimaka, ilością i własnymi opcjami dodatkowymi - dokładnie te
+// same dane, co karta danej maszyny w Kroku 4 witryny. Szablon EmailJS (pole
+// tekstowe wklejane na ich stronie) nie potrafi samodzielnie zapętlić listy
+// maszyn ani nic obliczyć, dlatego cała pętla po maszynach odbywa się tutaj,
+// w JS, a gotowy HTML trafia do jednej zmiennej szablonu ({{machines_html}}),
+// wstawianej wprost (EmailJS podstawia wartości zmiennych bez ucieczki HTML,
+// więc surowy HTML w wartości renderuje się poprawnie w treści e-maila).
+function buildMachineEmailCardHtml(m) {
+    const optsHtml = m.selectedOptions.length > 0
+        ? escapeEmailHtml(m.selectedOptions.join(', '))
+        : 'Brak wybranych opcji dodatkowych.';
+    // Struktura odwzorowuje kartę maszyny z Kroku 4 na stronie
+    // (.step4-machine-block--multi): białe "pole" z cienkim obramowaniem i
+    // delikatnym cieniem, a w jego wnętrzu - u góry - ten sam wyróżniony,
+    // turkusowy pasek co gdzie indziej w tym szablonie (model, średnica
+    // ślimaka, ilość), a pod nim opcje dodatkowe tej konkretnej maszyny.
+    return `
+        <tr>
+          <td style="padding:0 40px 24px;">
+            <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background-color:#ffffff;border:1px solid #e1e8ed;border-radius:8px;box-shadow:0 2px 10px rgba(0,0,0,0.05);">
+              <tr>
+                <td style="padding:20px;">
+                  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background-color:#e6fcfb;border-left:4px solid #0abeb5;border-radius:0 6px 6px 0;margin-bottom:16px;">
+                    <tr>
+                      <td style="padding:14px 18px;">
+                        <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
+                          <tr>
+                            <td style="font-size:16px;font-weight:900;color:#0f4c47;letter-spacing:-0.2px;font-family:'Lato', Arial, sans-serif;">${escapeEmailHtml(m.modelName)}</td>
+                            <td align="right" style="font-size:13px;font-weight:700;color:#0a8f88;white-space:nowrap;font-family:'Lato', Arial, sans-serif;">ilość: ${escapeEmailHtml(m.qty)}</td>
+                          </tr>
+                        </table>
+                        <span style="display:block;font-size:13px;color:#0f4c47;margin-top:4px;font-family:Arial, Helvetica, sans-serif;">Średnica ślimaka: ${escapeEmailHtml(m.screwDiameter)} &middot; Agregat wtryskowy: ${escapeEmailHtml(m.unitStr)}</span>
+                      </td>
+                    </tr>
+                  </table>
+                  <span style="display:block;font-size:11px;font-weight:700;letter-spacing:1px;color:#888888;text-transform:uppercase;padding-bottom:4px;font-family:'Lato', Arial, sans-serif;">Wybrane opcje dodatkowe</span>
+                  <span style="display:block;font-size:14px;color:#111d35;line-height:1.5;font-family:Arial, Helvetica, sans-serif;">${optsHtml}</span>
+                </td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+    `;
+}
+
+// Buduje fragment HTML z danymi technologicznymi (wymiary formy, materiał,
+// masy, wymagana siła zwarcia itd.) - dokładnie te same informacje, co
+// techRowsHtml w populateStep4Summary() (Krok 4 na stronie). Pokazywane tylko
+// gdy klient korzystał ze ścieżki "Kalkulator" (są wyliczone dane); w
+// przeciwnym razie (wybór bezpośrednio z listy modeli) zwraca krótką
+// informację o sposobie doboru, tak jak w Kroku 4.
+function buildTechDetailsEmailHtml() {
+    const r = lastCalculationResults;
+
+    if (!r) {
+        return `
+        <tr>
+          <td style="padding:0 40px 8px;">
+            <span style="display:block;font-size:15px;font-weight:600;color:#111d35;font-family:Arial, Helvetica, sans-serif;">Sposób doboru: Wybór bezpośrednio z listy modeli (bez danych technologicznych)</span>
+          </td>
+        </tr>
+        `;
+    }
+
+    const moldLength = getVal('mold_length') || '–';
+    const moldWidth = getVal('mold_width') || '–';
+    const wallThickness = getVal('wall_thickness') || '–';
+    const materialLabel = document.getElementById('material_select').selectedOptions[0].textContent;
+
+    const rows = [
+        ['Wymiary formy (dł. x szer.)', `${moldLength} x ${moldWidth} mm`],
+        ['Prześwit między kolumnami', `${r.tieClearance} mm`]
+    ];
+    if (r.moldHeight > 0) rows.push(['Wysokość formy', `${r.moldHeight} mm`]);
+    rows.push(
+        ['Liczba gniazd', `${r.cavities}`],
+        ['Materiał', materialLabel],
+        ['Grubość ścianki', `${wallThickness} mm`],
+        ['Masa jednej wypraski', `${r.partWeight} g`],
+        ['Całkowita masa wtrysku', `${r.totalWeight.toFixed(2)} g`],
+        ['Całkowita objętość wtrysku', `${r.totalVwtr.toFixed(2)} cm³`],
+        ['Wymagana siła zwarcia', `${r.requiredForceTon.toFixed(1)} ton`]
+    );
+
+    // Wiersze parami (dwie kolumny), tak jak "Dane kontaktowe klienta" w
+    // istniejącym szablonie - jeśli liczba pól jest nieparzysta, druga
+    // kolumna ostatniego wiersza zostaje po prostu pusta.
+    let gridHtml = '';
+    for (let i = 0; i < rows.length; i += 2) {
+        const [label1, value1] = rows[i];
+        const second = rows[i + 1];
+        gridHtml += `
+            <tr>
+              <td width="50%" style="padding:0 12px 18px 0;vertical-align:top;">
+                <span style="display:block;font-size:11px;font-weight:700;letter-spacing:1px;color:#888888;text-transform:uppercase;padding-bottom:4px;font-family:'Lato', Arial, sans-serif;">${escapeEmailHtml(label1)}</span>
+                <span style="display:block;font-size:15px;font-weight:600;color:#111d35;font-family:Arial, Helvetica, sans-serif;">${escapeEmailHtml(value1)}</span>
+              </td>
+              <td width="50%" style="padding:0 0 18px 12px;vertical-align:top;">${second ? `
+                <span style="display:block;font-size:11px;font-weight:700;letter-spacing:1px;color:#888888;text-transform:uppercase;padding-bottom:4px;font-family:'Lato', Arial, sans-serif;">${escapeEmailHtml(second[0])}</span>
+                <span style="display:block;font-size:15px;font-weight:600;color:#111d35;font-family:Arial, Helvetica, sans-serif;">${escapeEmailHtml(second[1])}</span>` : ''}
+              </td>
+            </tr>
+        `;
+    }
+
+    return `
+        <tr>
+          <td style="padding:0 40px 8px;">
+            <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
+              ${gridHtml}
+            </table>
+          </td>
+        </tr>
+    `;
+}
+
 function confirmSendEmail() {
     document.getElementById('confirmSendBox').style.display = 'none';
     const statusEl = document.getElementById('sendStatus');
@@ -787,20 +2214,33 @@ function confirmSendEmail() {
     statusEl.className = 'send-status';
     statusEl.textContent = 'Wysyłanie konfiguracji…';
 
-    const r = lastCalculationResults;
     const typeData = machineData[selectedMachineType];
-    const selectedOptions = getSelectedOptions();
+    const machines = getConfiguredMachines();
+
+    // Zwarty opis tekstowy KAŻDEJ wybranej maszyny (wersja czysto tekstowa,
+    // zachowana dla zgodności wstecznej / na wypadek własnego, prostszego
+    // szablonu) oraz gotowy HTML tych samych danych (machines_html) i danych
+    // technologicznych (tech_details_html) do wstawienia wprost w aktualnym
+    // szablonie e-mail (patrz emailjs_szablon.html).
+    const machinesSummaryText = machines.map((m, i) => {
+        const optsText = m.selectedOptions.length > 0 ? m.selectedOptions.join(', ') : 'brak';
+        return `Maszyna ${i + 1}: ${m.modelName} (agregat ${m.unitStr}, średnica ślimaka ${m.screwDiameter}, ilość ${m.qty})\nOpcje dodatkowe: ${optsText}`;
+    }).join('\n\n');
 
     const templateParams = {
         to_email: EMAILJS_CONFIG.recipient,
         client_copy_email: getVal('client_email'),
         machine_type: typeData ? typeData.label : selectedMachineType,
-        selected_model: document.getElementById('selected_machine_model').value,
-        cavities: r ? r.cavities : '',
-        required_force: r ? `${r.requiredForceTon.toFixed(1)} ton` : '',
-        total_shot_volume: r ? `${r.totalVwtr.toFixed(2)} cm3` : '',
+        selected_model: machines.map(m => `${m.modelName} (${m.unitStr})`).join(', '),
+        machines_count: machines.length,
+        machines_summary: machinesSummaryText,
+        machines_html: machines.map(buildMachineEmailCardHtml).join(''),
+        tech_details_html: buildTechDetailsEmailHtml(),
+        cavities: lastCalculationResults ? lastCalculationResults.cavities : '',
+        required_force: lastCalculationResults ? `${lastCalculationResults.requiredForceTon.toFixed(1)} ton` : '',
+        total_shot_volume: lastCalculationResults ? `${lastCalculationResults.totalVwtr.toFixed(2)} cm3` : '',
         material: document.getElementById('material_select').selectedOptions[0].textContent,
-        options_list: selectedOptions.join(', ') || 'brak',
+        options_list: machines[0] ? (machines[0].selectedOptions.join(', ') || 'brak') : 'brak',
         from_name: `${getVal('client_firstname')} ${getVal('client_lastname')}`,
         from_email: getVal('client_email'),
         phone: getVal('client_phone'),
@@ -857,7 +2297,7 @@ function confirmSendEmail() {
         { name: 'TH-A5',      folder: '360-TH',    available: true,  model: 'TH-A5',              desc: 'Wysokiej klasy nowa seria hybrydowa z układem kolankowym' },
         { name: 'TE-A5',      folder: '360-TE',    available: true,  model: 'TE-A5',              desc: 'Wysokiej klasy nowa, w pełni elektryczna seria z układem kolankowym' },
         { name: 'TL-A5',      folder: '360-TL',    available: false, model: 'TL-A5',              desc: '' },
-        { name: 'VH',         folder: '360-VH',    available: true,  model: 'VH',                 desc: 'Wysokiej klasy seria wtryskarek pionowych' },
+        { name: 'VHA-RS',     folder: '360-VH',    available: true,  model: 'VHA-RS',             desc: 'Wysokiej klasy, pionowa seria wtryskarek' },
         { name: 'MULTI',      folder: '360-MULTI', available: true,  model: 'NC-G5',              desc: 'Nowoczesna, pozioma, dwukolorowa seria hybrydowa' },
         { name: 'Super-Foam', folder: '360-SF',    available: true,  model: 'DL-A5(super-foam)',  desc: 'Wysokiej klasy seria z technologią super spieniania i bezpośrednim ryglowaniem' }
     ];
@@ -1120,6 +2560,7 @@ function confirmSendEmail() {
     const stage = document.getElementById('cfgViewer360Stage');
     const imageEl = document.getElementById('cfgViewer360Image');
     const slider = document.getElementById('cfgViewer360Slider');
+    const handEl = document.getElementById('cfgViewer360Hand');
     const nameLabel = document.getElementById('step1ViewerName');
     const descLabel = document.getElementById('step1ViewerDesc');
     const radios = Array.from(document.querySelectorAll('.machine-card input[name="machine_type"]'));
@@ -1138,11 +2579,40 @@ function confirmSendEmail() {
         'DL-A5': { folder: '360-DL', available: true, desc: 'Premium, energooszczędna wtryskarka dwupłytowa z systemem podwójnego ryglowania (Dual Lock) — do dużych, precyzyjnych wyprasek wymagających wysokiej siły zwarcia.' },
         'TH-A5': { folder: '360-TH', available: true, desc: 'Klasyczna, energooszczędna wtryskarka hydrauliczna o dużej sztywności konstrukcji i wysokiej powtarzalności procesu wtrysku.' },
         'TE-A5': { folder: '360-TE', available: true, desc: 'W pełni elektryczna wtryskarka zapewniająca najwyższą precyzję, powtarzalność wagi wypraski oraz najniższe zużycie energii.' },
-        'TL-A5': { folder: '360-TL', available: false, desc: 'Wtryskarka bez kolumn (tie-bar-less) dająca pełną swobodę doboru wielkości formy, wielogniazdowości i automatyzacji.' }
+        'TL-A5': { folder: '360-TL', available: false, desc: 'Wtryskarka bez kolumn (tie-bar-less) dająca pełną swobodę doboru wielkości formy, wielogniazdowości i automatyzacji.' },
+        'VHA-RS': { folder: '360-VH', available: true, desc: 'Wysokiej klasy, pionowa wtryskarka hydrauliczna z obrotowym stołem (turntable), przeznaczona do formowania z insertami oraz pionowego układu wtrysku.' },
+        'MULTI': { folder: '360-MULTI', available: true, desc: 'Nowoczesna, pozioma wtryskarka dwukolorowa (2K) do formowania dwóch różnych tworzyw lub kolorów w jednym cyklu produkcyjnym (ONE-CYCLE).' },
+        'Super-Foam': { folder: '360-SF', available: true, desc: 'Dwupłytowa wtryskarka z systemem bezpośredniego ryglowania (Dual Lock) i technologią super spieniania, dedykowana produkcji dużych, lekkich elementów, w tym palet.' }
     };
 
     let currentType = 'DL-A5';
     const preloadedFolders = {};
+
+    // Dłoń podpowiadająca możliwość obracania widoku pojawia się na nowo i
+    // znika na stałe 5 sekund po każdym załadowaniu widoku 360° - zarówno
+    // przy pierwszym wejściu na stronę, jak i po każdej zmianie typu
+    // wtryskarki z kafelków (patrz wywołanie w setViewerType() poniżej).
+    // Klasa .is-gone (display:none) ma pierwszeństwo przed ewentualnym
+    // późniejszym usunięciem klasy .is-hidden przez handleDragEnd.
+    let handAutoHideTimer = null;
+
+    function scheduleHandAutoHide() {
+        if (!handEl) return;
+        clearTimeout(handAutoHideTimer);
+        handEl.classList.remove('is-gone');
+        handAutoHideTimer = setTimeout(() => {
+            handEl.classList.add('is-gone');
+        }, 5000);
+    }
+
+    // Automatyczne obracanie widoku 360° - ten sam mechanizm co w
+    // initViewer360() na podstronie "Maszyny": włączone domyślnie, pauzuje
+    // się przy ręcznej interakcji (suwak/przeciąganie) i wznawia po chwili
+    // bezczynności.
+    const AUTO_ROTATE_FRAME_INTERVAL_MS = 90;
+    const AUTO_ROTATE_RESUME_DELAY_MS = 3500;
+    let autoRotateTimer = null;
+    let autoRotateResumeTimer = null;
 
     // Skala, z jakiej obraz "startuje" przy każdej zmianie typu, zanim
     // zmniejszy się do swojego standardowego rozmiaru (scale: 1) - ten sam
@@ -1168,8 +2638,38 @@ function confirmSendEmail() {
         slider.value = clamped;
     }
 
+    function advanceAutoRotateFrame() {
+        const current = parseInt(slider.value, 10) || 1;
+        const next = current >= TOTAL_FRAMES ? 1 : current + 1;
+        setFrame(next);
+    }
+
+    function stopAutoRotate() {
+        if (autoRotateTimer) {
+            clearInterval(autoRotateTimer);
+            autoRotateTimer = null;
+        }
+    }
+
+    function startAutoRotate() {
+        stopAutoRotate();
+        if (!TYPE_VIEWER_DATA[currentType].available) return;
+        autoRotateTimer = setInterval(advanceAutoRotateFrame, AUTO_ROTATE_FRAME_INTERVAL_MS);
+    }
+
+    function scheduleAutoRotateResume() {
+        clearTimeout(autoRotateResumeTimer);
+        autoRotateResumeTimer = setTimeout(startAutoRotate, AUTO_ROTATE_RESUME_DELAY_MS);
+    }
+
+    function pauseAutoRotate() {
+        stopAutoRotate();
+        scheduleAutoRotateResume();
+    }
+
     function setViewerType(typeName) {
         if (!TYPE_VIEWER_DATA[typeName]) return;
+        clearTimeout(autoRotateResumeTimer);
         currentType = typeName;
         const data = TYPE_VIEWER_DATA[currentType];
 
@@ -1191,11 +2691,14 @@ function confirmSendEmail() {
             slider.disabled = false;
             preloadCurrentType();
             setFrame(1);
+            startAutoRotate();
         } else {
             stage.classList.add('is-unavailable');
             slider.disabled = true;
-            if (magnifier) magnifier.classList.remove('is-active');
+            stopAutoRotate();
         }
+
+        scheduleHandAutoHide();
     }
 
     radios.forEach((radio) => {
@@ -1206,6 +2709,7 @@ function confirmSendEmail() {
 
     slider.addEventListener('input', () => {
         setFrame(parseInt(slider.value, 10));
+        pauseAutoRotate();
     });
 
     // Obracanie przeciąganiem (mysz i dotyk) - identycznie jak na
@@ -1221,6 +2725,11 @@ function confirmSendEmail() {
         startX = clientX;
         startFrame = parseInt(slider.value, 10);
         stage.classList.add('is-dragging');
+        // Ukrycie dłoni sygnalizującej możliwość obracania widoku - na
+        // komputerach robi to już samo :hover w CSS, ale na dotyku (gdzie
+        // hover nie występuje) trzeba to zrobić ręcznie w JS.
+        if (handEl) handEl.classList.add('is-hidden');
+        pauseAutoRotate();
     }
 
     function handleDragMove(clientX) {
@@ -1230,11 +2739,13 @@ function confirmSendEmail() {
         let newFrame = (startFrame - frameDelta - 1) % TOTAL_FRAMES;
         if (newFrame < 0) newFrame += TOTAL_FRAMES;
         setFrame(newFrame + 1);
+        pauseAutoRotate();
     }
 
     function handleDragEnd() {
         isDragging = false;
         stage.classList.remove('is-dragging');
+        if (handEl) handEl.classList.remove('is-hidden');
     }
 
     stage.addEventListener('mousedown', (e) => handleDragStart(e.clientX));
@@ -1245,40 +2756,8 @@ function confirmSendEmail() {
     stage.addEventListener('touchmove', (e) => handleDragMove(e.touches[0].clientX), { passive: true });
     stage.addEventListener('touchend', handleDragEnd);
 
-    // ---- Efekt "lupy" na komputerach (tak jak na podstronie Maszyny) ----
-    const magnifier = document.getElementById('cfgViewer360Magnifier');
-    const supportsHoverMagnifier = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
-
-    if (magnifier && supportsHoverMagnifier) {
-        const MAGNIFIER_ZOOM = 2.2;
-
-        function updateMagnifier(clientX, clientY) {
-            if (!TYPE_VIEWER_DATA[currentType].available) {
-                magnifier.classList.remove('is-active');
-                return;
-            }
-
-            const rect = stage.getBoundingClientRect();
-            const x = clientX - rect.left;
-            const y = clientY - rect.top;
-            const half = (magnifier.offsetWidth || 170) / 2;
-
-            magnifier.style.left = `${x - half}px`;
-            magnifier.style.top = `${y - half}px`;
-
-            magnifier.style.backgroundImage = `url("${imageEl.currentSrc || imageEl.src}")`;
-            magnifier.style.backgroundSize = `${rect.width * MAGNIFIER_ZOOM}px ${rect.height * MAGNIFIER_ZOOM}px`;
-            magnifier.style.backgroundPosition = `${-(x * MAGNIFIER_ZOOM - half)}px ${-(y * MAGNIFIER_ZOOM - half)}px`;
-
-            magnifier.classList.add('is-active');
-        }
-
-        stage.addEventListener('mouseenter', (e) => updateMagnifier(e.clientX, e.clientY));
-        stage.addEventListener('mousemove', (e) => updateMagnifier(e.clientX, e.clientY));
-        stage.addEventListener('mouseleave', () => magnifier.classList.remove('is-active'));
-    }
-
     // Inicjalizacja - typ aktualnie zaznaczony w formularzu (checked)
+    // (setViewerType() uruchamia też powyższy 5-sekundowy timer dłoni)
     const checkedRadio = radios.find((r) => r.checked);
     setViewerType(checkedRadio ? checkedRadio.value : 'DL-A5');
 })();

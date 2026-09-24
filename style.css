@@ -1698,6 +1698,97 @@ main.contact-section {
     transition: transform 0.32s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
+/* Dłoń sygnalizująca użytkownikowi, że widokiem 360° (Krok 1 konfiguratora)
+   można poruszać - wyśrodkowana w poziomie i w pionie, na wysokości 50%
+   widoku licząc od dołu (czyli dokładnie na środku). Dłoń "próbuje coś
+   złapać": otwarta dłoń płynnie przechodzi w zaciśniętą pięść i z powrotem
+   (przenikanie dwóch emoji), cała w jednolitym białym kolorze (filtr
+   wymuszający białą sylwetkę, niezależnie od domyślnych barw emoji). Znika
+   po najechaniu kursorem na widok, a także automatycznie i na stałe 5
+   sekund po załadowaniu widoku (patrz initConfiguratorViewer360() w
+   script.js) - klasa .is-gone poniżej. */
+.cfg-viewer360-hand {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 45px;
+    height: 45px;
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+    user-select: none;
+    z-index: 4;
+    transition: opacity 0.25s ease;
+}
+
+.cfg-viewer360-hand span {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 39px;
+    line-height: 1;
+    /* Wymusza jednolitą, białą sylwetkę dłoni z emoji: grayscale + brightness(0)
+       zamienia rysunek na czarną sylwetkę (z zachowaniem przezroczystości tła),
+       invert(1) zamienia czerń na biel. Kolejne drop-shadow o zerowym rozmyciu
+       i niewielkim przesunięciu w różnych kierunkach dorysowują czarny kontur
+       wokół białej sylwetki, a ostatni - miękki cień dla głębi. */
+    filter: grayscale(1) brightness(0) invert(1)
+        drop-shadow(1px 0 0 #000)
+        drop-shadow(-1px 0 0 #000)
+        drop-shadow(0 1px 0 #000)
+        drop-shadow(0 -1px 0 #000)
+        drop-shadow(0 6px 14px rgba(0, 0, 0, 0.4));
+}
+
+.cfg-viewer360-hand-open {
+    animation: cfgViewer360HandOpen 1.8s ease-in-out infinite;
+}
+
+.cfg-viewer360-hand-fist {
+    animation: cfgViewer360HandFist 1.8s ease-in-out infinite;
+}
+
+@keyframes cfgViewer360HandOpen {
+    0%, 15% {
+        opacity: 0.6;
+        transform: scale(1);
+    }
+    40%, 60% {
+        opacity: 0;
+        transform: scale(0.8);
+    }
+    85%, 100% {
+        opacity: 0.6;
+        transform: scale(1);
+    }
+}
+
+@keyframes cfgViewer360HandFist {
+    0%, 15% {
+        opacity: 0;
+        transform: scale(0.8);
+    }
+    40%, 60% {
+        opacity: 0.6;
+        transform: scale(1);
+    }
+    85%, 100% {
+        opacity: 0;
+        transform: scale(0.8);
+    }
+}
+
+#cfgViewer360Stage:hover .cfg-viewer360-hand,
+.cfg-viewer360-hand.is-hidden {
+    opacity: 0;
+}
+
+.viewer360-stage.is-unavailable .cfg-viewer360-hand,
+.cfg-viewer360-hand.is-gone {
+    display: none;
+}
+
 /* Efekt "lupy" na komputerach: po najechaniu na widok 360° pojawia się
    okrągłe szkło powiększające pokazujące przybliżony fragment aktualnej
    klatki pod kursorem - ułatwia dostrzeżenie detali maszyny. Widoczna
@@ -1756,9 +1847,12 @@ main.contact-section {
     visibility: hidden;
 }
 
-/* Pasek przesuwania - zaraz pod widokiem 360°, z niewielką przerwą */
+/* Pasek przesuwania - zaraz pod widokiem 360°, z niewielką przerwą.
+   Szerokość paska skrócona o 50% względem widoku 360° nad nim (640px ->
+   320px) - pasek pozostaje wycentrowany (margin: auto), więc jego pozycja
+   względem widoku się nie zmienia. */
 .viewer360-slider-row {
-    max-width: 640px;
+    max-width: 320px;
     margin: 6px auto 0;
     padding: 0 6px;
 }
@@ -1953,8 +2047,26 @@ main.contact-section {
     border-bottom: 1px solid #e3e6ea;
 }
 
+/* Pionowy pasek w kolorze marki po lewej stronie opisu - jego wysokość
+   wynika bezpośrednio z wysokości zawartości panelu (nagłówek + akapit),
+   więc dopasowuje się automatycznie do długości tekstu dla każdego typu
+   wtryskarki, bez potrzeby ręcznego ustawiania wysokości w JS. */
+.machine-description-panel {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 40px;
+    padding-left: 24px;
+    border-left: 4px solid #0abeb5;
+}
+
 .machine-description-panel.is-hidden-type {
     display: none;
+}
+
+.machine-description-text {
+    flex: 1 1 auto;
+    min-width: 0;
 }
 
 .machine-description-panel h3 {
@@ -1970,6 +2082,79 @@ main.contact-section {
     line-height: 1.85;
     color: #666;
     max-width: 900px;
+}
+
+/* Przycisk pobierania katalogu wyświetlany po prawej stronie opisu
+   maszyny. Domyślnie ciemny prostokąt z tekstem + mniejszy, kwadratowy
+   akcent w kolorze typowym dla strony ze strzałką; po najechaniu kolor
+   marki szybko "wjeżdża" od prawej do lewej strony, wypełniając cały
+   ciemny prostokąt. */
+.catalog-dl-btn {
+    flex: 0 0 auto;
+    display: inline-flex;
+    align-items: stretch;
+    text-decoration: none;
+    line-height: 1;
+}
+
+.catalog-dl-btn-label {
+    position: relative;
+    display: flex;
+    align-items: center;
+    padding: 16px 28px;
+    background-color: #2d2c28;
+    color: #ffffff;
+    font-weight: 700;
+    font-size: 14px;
+    letter-spacing: 0.2px;
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+.catalog-dl-btn-label::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: 0;
+    background-color: #0abeb5;
+    transition: width 0.18s ease-out;
+}
+
+.catalog-dl-btn-label-text {
+    position: relative;
+    z-index: 1;
+}
+
+.catalog-dl-btn-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 46px;
+    background-color: #0abeb5;
+    color: #ffffff;
+}
+
+.catalog-dl-btn-icon svg {
+    width: 10px;
+    height: 16px;
+}
+
+.catalog-dl-btn:hover .catalog-dl-btn-label::before {
+    width: 100%;
+}
+
+@media (max-width: 860px) {
+    .machine-description-panel {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 24px;
+    }
+
+    .catalog-dl-btn {
+        align-self: flex-start;
+    }
 }
 
 @media (max-width: 860px) {
@@ -2056,12 +2241,13 @@ main.contact-section {
 .machine-cards-list {
     display: flex;
     flex-direction: column;
-    gap: 16px;
+    justify-content: flex-start;
+    gap: 6px;
     height: 100%;
 }
 
 .machine-cards-list .machine-card {
-    flex: 1;
+    flex: 0 0 auto;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -2107,9 +2293,12 @@ main.contact-section {
     border: none;
 }
 
+/* Pasek suwaka w konfiguratorze skrócony o 50% (784px -> 392px), tak samo
+   jak na podstronie "Maszyny" - prędkość automatycznego obracania w
+   script.js (AUTO_ROTATE_FRAME_INTERVAL_MS) pozostaje bez zmian. */
 .step1-viewer .viewer360-slider-row {
     width: 100%;
-    max-width: 784px;
+    max-width: 392px;
 }
 
 @media (max-width: 860px) {
@@ -2136,7 +2325,7 @@ main.contact-section {
     position: relative;
     border: 2px solid #e1e8ed;
     border-radius: 8px;
-    padding: 20px;
+    padding: 8px 16px;
     cursor: pointer;
     transition: all 0.3s ease;
     display: block;
@@ -2170,17 +2359,17 @@ main.contact-section {
 }
 
 .machine-card h3 {
-    margin: 0 0 5px 0;
+    margin: 0 0 2px 0;
     color: #111;
-    font-size: 1.1rem;
+    font-size: 1rem;
 }
 
 .machine-card .sub {
     color: #0abeb5;
     font-weight: bold;
-    font-size: 0.9rem;
+    font-size: 0.8rem;
     display: block;
-    margin-bottom: 10px;
+    margin-bottom: 0;
 }
 
 .machine-card .short-desc {
@@ -2262,6 +2451,528 @@ main.contact-section {
     font-size: 1rem;
     padding: 12px;
     border: 2px solid #0abeb5;
+}
+
+/* =====================================================
+   KROK 1: WYBÓR SPOSOBU DOBORU WTRYSKARKI (przyciski)
+   Zamiast pojedynczego przycisku "Dalej" w Kroku 1 - dwa przyciski
+   obok siebie ("Kalkulator" / "Wybierz z listy") rozdzielone napisem
+   "lub", prowadzące bezpośrednio do odpowiedniej ścieżki Kroku 2.
+===================================================== */
+
+.step1-next-choice {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+}
+
+.step1-next-or {
+    color: #111111;
+    font-weight: 700;
+    font-size: 15px;
+}
+
+@media (max-width: 600px) {
+    .step1-next-choice {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 10px;
+    }
+
+    .step1-next-or {
+        text-align: center;
+    }
+}
+
+/* =====================================================
+   KROK 2: WYBÓR Z LISTY
+   Układ dwukolumnowy: po lewej przewijana lista wszystkich modeli
+   danego typu (jeden "pasek" na model), po prawej najważniejsze dane
+   wybranej wtryskarki.
+===================================================== */
+
+.step2-list-layout {
+    display: grid;
+    grid-template-columns: minmax(230px, 280px) 1fr;
+    gap: 16px;
+    margin: 25px 0;
+    align-items: start;
+    position: relative;
+}
+
+.step2-list-specs {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    position: sticky;
+    top: 110px;
+}
+
+.step2-spec-card {
+    background-color: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 22px;
+    position: relative;
+}
+
+.step2-list-specs-placeholder {
+    color: #888;
+    font-size: 14px;
+    line-height: 1.6;
+    margin: 0;
+    /* Miejsce na kosz (patrz .step2-placeholder-header) pozycjonowany
+       bezwzględnie w rogu karty, żeby tekst się z nim nie nakładał. */
+    padding-right: 38px;
+}
+
+/* Kosz nad pustym placeholderem (dodatkowe, jeszcze nie wypełnione pole) -
+   pozycjonowany bezwzględnie w rogu karty, a NIE w normalnym przepływie
+   dokumentu, żeby jego obecność nie powiększała wysokości całej karty -
+   dzięki temu puste pole ma zawsze taki sam, standardowy rozmiar,
+   niezależnie od tego, czy kosz jest pokazany (patrz .step2-spec-card
+   .is-placeholder poniżej). */
+.step2-placeholder-header {
+    position: absolute;
+    top: 14px;
+    right: 14px;
+}
+
+.step2-spec-card-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 14px;
+    margin-bottom: 12px;
+}
+
+.step2-spec-card-titles h3 {
+    font-size: 22px;
+    font-weight: 900;
+    color: #111d35;
+    margin-bottom: 4px;
+}
+
+.step2-list-specs-sub {
+    font-size: 13px;
+    color: #0abeb5;
+    font-weight: 700;
+    margin-bottom: 0;
+}
+
+/* Licznik liczby maszyn (- / wpisz ręcznie / +), obok nazwy modelu i agregatu. */
+.step2-qty-stepper {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-shrink: 0;
+}
+
+.step2-qty-btn {
+    width: 28px;
+    height: 28px;
+    border-radius: 6px;
+    border: 1.5px solid #e1e8ed;
+    background: #ffffff;
+    color: #111d35;
+    font-size: 16px;
+    font-weight: 700;
+    line-height: 1;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: border-color 0.2s ease, background-color 0.2s ease;
+}
+
+.step2-qty-btn:hover {
+    border-color: #0abeb5;
+    background-color: #f0faf9;
+}
+
+/* Kosz - usuwa cały typ maszyny (dany slot); lekko odsunięty od stepperu +/-.
+   Ikona rysowana jako SVG (stroke: currentColor), a nie emoji, żeby jej kolor
+   faktycznie reagował na CSS - dzięki temu domyślnie jest tak samo ciemna i
+   wyraźna jak przyciski -/+, a nie wyblakła/szara jak przy emoji "🗑️". */
+.step2-remove-btn {
+    width: 28px;
+    height: 28px;
+    margin-left: 6px;
+    border-radius: 6px;
+    border: 1.5px solid #e1e8ed;
+    background: #ffffff;
+    color: #111d35;
+    line-height: 1;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: border-color 0.2s ease, background-color 0.2s ease, color 0.2s ease;
+}
+
+.step2-remove-btn svg {
+    display: block;
+}
+
+.step2-remove-btn:hover {
+    border-color: #e0575c;
+    background-color: #fdf0f0;
+    color: #e0575c;
+}
+
+.step2-qty-input {
+    width: 42px;
+    height: 28px;
+    text-align: center;
+    border: 1.5px solid #e1e8ed;
+    border-radius: 6px;
+    font: inherit;
+    font-size: 14px;
+    font-weight: 700;
+    color: #111d35;
+}
+
+.step2-list-specs-table {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 0;
+    margin: 0;
+}
+
+.step2-list-specs-table li {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 10px;
+    font-size: 14px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+/* Ostatni wiersz podstawowych danych nie ma własnej linii pod spodem, żeby
+   nie dublować się z linią nad przyciskiem "Pokaż/Ukryj pełną specyfikację
+   techniczną" (.step2-details-toggle powyżej) - bez tego wyjątku widoczne
+   były dwie kreski tuż obok siebie. */
+.step2-list-specs-table li:last-child {
+    padding-bottom: 0;
+    border-bottom: none;
+}
+
+.step2-list-specs-table li span {
+    color: #666;
+}
+
+.step2-list-specs-table li strong {
+    color: #111d35;
+    text-align: right;
+    white-space: nowrap;
+}
+
+/* Przycisk rozwijający/zwijający pełną specyfikację techniczną - domyślnie
+   zwiniętą, żeby karta pokazywała tylko podstawowe dane (tak jak wcześniej).
+   Pulsujący trójkąt (ta sama animacja co pulsujący "+" przy licznikach -
+   .pulse-plus / @keyframes pulseGlow) sygnalizuje, że jest więcej danych do
+   zobaczenia; po rozwinięciu obraca się o 180°, wskazując "do góry" (zwiń). */
+.step2-details-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    width: 100%;
+    margin-top: 14px;
+    padding: 12px 0 0;
+    border: none;
+    border-top: 1px solid #e2e8f0;
+    background: none;
+    color: #0abeb5;
+    font: inherit;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: color 0.2s ease;
+}
+
+.step2-details-toggle:hover {
+    color: #089b94;
+}
+
+.step2-details-toggle-arrow {
+    flex-shrink: 0;
+    animation: pulseGlow 1.8s infinite ease-in-out;
+    transition: transform 0.25s ease;
+    transform-origin: center;
+}
+
+.step2-details-toggle.is-expanded .step2-details-toggle-arrow {
+    animation: none;
+    transform: rotate(180deg);
+}
+
+/* Pełne dane technologiczne (Krok 2: "Wybierz z listy") - 3 kolumny
+   odpowiadające układowi katalogów producenta: Wtrysk (Injection Unit) /
+   Zwarcie (Clamping Unit) / Ogólne (General), oddzielone pionową kreską w
+   kolorze typowym dla strony (#0abeb5). Widoczne dopiero po rozwinięciu
+   (.step2-details-toggle powyżej), więc czcionka może być większa i
+   wygodniejsza do czytania niż gdyby były pokazane zawsze. */
+.step2-tech-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 0;
+    margin-top: 16px;
+}
+
+.step2-tech-col {
+    padding: 0 12px;
+}
+
+.step2-tech-col:first-child {
+    padding-left: 0;
+}
+
+.step2-tech-col:not(:first-child) {
+    border-left: 2px solid #0abeb5;
+}
+
+.step2-tech-col-title {
+    font-size: 13px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: #0abeb5;
+    margin: 0 0 10px;
+}
+
+.step2-tech-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 0;
+    margin: 0;
+}
+
+.step2-tech-list li {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.step2-tech-list li span {
+    font-size: 12px;
+    line-height: 1.25;
+    color: #8a94a6;
+}
+
+.step2-tech-list li strong {
+    font-size: 15px;
+    line-height: 1.3;
+    color: #111d35;
+    font-weight: 700;
+}
+
+@media (max-width: 768px) {
+    .step2-tech-grid {
+        grid-template-columns: 1fr;
+        gap: 14px;
+    }
+
+    .step2-tech-col {
+        padding: 0;
+    }
+
+    .step2-tech-col:not(:first-child) {
+        border-left: none;
+        border-top: 2px solid #0abeb5;
+        padding-top: 10px;
+    }
+}
+
+/* Pulsujący "+" pod najważniejszymi danymi - pozwala dodać kolejny model. */
+.step2-add-model-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    align-self: flex-start;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font: inherit;
+    font-size: 14px;
+    font-weight: 700;
+    color: #0abeb5;
+    padding: 4px 2px;
+}
+
+.step2-add-model-btn:hover {
+    color: #088f88;
+}
+
+.step2-add-model-btn .pulse-plus {
+    font-size: 20px;
+    font-weight: 900;
+    color: #0abeb5;
+}
+
+.step2-list-items {
+    max-height: 560px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding-right: 6px;
+}
+
+/* Jeden "pasek" na model (np. DL450A5). Wszystkie dostępne dla niego
+   agregaty wtryskowe są ukryte domyślnie i pojawiają się jako "wysuwane"
+   menu (patrz #step2UnitsFlyout) po najechaniu na pasek myszką (na
+   dotyku - również po kliknięciu, patrz JS toggleStep2UnitsFlyout). */
+.step2-list-model-row {
+    position: relative;
+    display: flex;
+    align-items: flex-start;
+}
+
+.step2-list-model-bar {
+    position: relative;
+    z-index: 2;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    padding: 12px 14px;
+    background: #ffffff;
+    background-clip: border-box;
+    border: 2px solid #e1e8ed;
+    border-radius: 8px;
+    cursor: pointer;
+    font: inherit;
+    text-align: left;
+    transition: border-color 0.25s ease, background-color 0.25s ease, box-shadow 0.25s ease;
+}
+
+.step2-list-model-row:hover .step2-list-model-bar,
+.step2-list-model-row.is-expanded .step2-list-model-bar,
+.step2-list-model-row:focus-within .step2-list-model-bar {
+    border-color: #0abeb5;
+}
+
+/* Pasek modelu z wybranym już agregatem: ten sam efekt "biegnącego" wzdłuż
+   ramki światła co przy zaznaczonej karcie typu wtryskarki w Kroku 1 (patrz
+   .machine-card.is-selected i @property --border-angle powyżej) - zamiast
+   statycznej, teal ramki. */
+.step2-list-model-row.has-selected .step2-list-model-bar {
+    border-color: transparent;
+    background:
+        linear-gradient(#f0faf9, #f0faf9) padding-box,
+        conic-gradient(from var(--border-angle), #0abeb5 0%, #47e2d9 10%, #0abeb5 20%, #0abeb5 100%) border-box;
+    box-shadow: 0 4px 14px rgba(10, 190, 181, 0.25);
+    animation: runBorderLight 2.4s linear infinite;
+}
+
+.step2-list-model-name {
+    font-weight: 700;
+    color: #111d35;
+    font-size: 15px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+/* Migający znaczek ">" - podpowiedź, że po najechaniu na pasek pojawią
+   się dostępne agregaty wtryskowe. */
+.step2-list-model-arrow {
+    flex-shrink: 0;
+    color: #0abeb5;
+    font-size: 18px;
+    font-weight: 700;
+    line-height: 1;
+    animation: step2ModelArrowBlink 1.4s ease-in-out infinite;
+}
+
+@keyframes step2ModelArrowBlink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.2; }
+}
+
+/* Wysuwane menu agregatów - jeden wspólny element, pozycjonowany przez JS
+   (patrz openStep2UnitsFlyout w script.js) tuż przy najechanym/klikniętym
+   pasku modelu. Jest rodzeństwem (nie potomkiem) przewijanej listy
+   #step2ListItems, dzięki czemu może swobodnie nachodzić na panel
+   najważniejszych danych po prawej, zamiast być przycięty przez jej
+   overflow. */
+.step2-units-flyout {
+    position: absolute;
+    z-index: 30;
+    width: 230px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding: 8px;
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.14);
+    opacity: 0;
+    pointer-events: none;
+    transform: translateX(-6px);
+    transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.step2-units-flyout.is-open {
+    opacity: 1;
+    pointer-events: auto;
+    transform: translateX(0);
+}
+
+.step2-list-unit-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    width: 100%;
+    padding: 7px 12px;
+    background: #ffffff;
+    border: 1.5px solid #e1e8ed;
+    border-radius: 6px;
+    cursor: pointer;
+    font: inherit;
+    text-align: left;
+    transition: border-color 0.2s ease, background-color 0.2s ease;
+}
+
+.step2-list-unit-item:hover {
+    border-color: #0abeb5;
+}
+
+.step2-list-unit-item.is-selected {
+    border-color: #0abeb5;
+    background-color: #f0faf9;
+}
+
+.step2-list-unit-name {
+    font-size: 13px;
+    font-weight: 700;
+    color: #111d35;
+}
+
+.step2-list-unit-screw {
+    font-size: 12px;
+    color: #0abeb5;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+@media (max-width: 860px) {
+    .step2-list-layout {
+        grid-template-columns: 1fr;
+    }
+
+    .step2-list-specs {
+        position: static;
+    }
 }
 
 /* Krok 3: Kolumny Standardów */
@@ -2363,6 +3074,138 @@ main.contact-section {
     margin-top: 2px;
 }
 
+/* Widok mobilny Kroku 3 (Wyposażenie standardowe i Opcje dodatkowe) - kolumny
+   (3 -> 2 -> 1) zamiast sztywnych trzech obok siebie, żeby tekst się nie
+   ściskał na wąskim ekranie. .checkbox-grid ma już własne auto-dopasowanie
+   (auto-fit, minmax) i nie wymaga dodatkowych reguł. */
+@media (max-width: 992px) {
+    .options-columns-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 640px) {
+    .options-columns-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Krok 3: nazwy wybranych wtryskarek dopisane wprost w nagłówku "Wyposażenie
+   standardowe" (zamiast wyróżnionego paska) - patrz populateStep3() w
+   script.js. Kilka maszyn naraz oddzielonych znakiem "//". */
+.step3-std-machines-list {
+    color: #0a8f88;
+    font-weight: 600;
+}
+
+/* Krok 3: blok opcji dodatkowych dla JEDNEJ wybranej wtryskarki - może być
+   ich kilka, jeśli klient wybrał więcej niż jeden model na liście w Kroku 2
+   (patrz renderStep3OptionsContainer w script.js). Pierwsza (główna) maszyna
+   ma opcje zawsze widoczne; każda kolejna - domyślnie zwinięte, rozwijane
+   przyciskiem .step2-details-toggle (dokładnie ten sam styl/animacja co
+   "Pokaż pełną specyfikację techniczną" w Kroku 2, klasa użyta ponownie). */
+.step3-machine-options-block {
+    margin-bottom: 32px;
+}
+
+.step3-machine-options-block:last-child {
+    margin-bottom: 0;
+}
+
+.step3-machine-options-header {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 4px;
+}
+
+.step3-machine-options-header .machine-highlight-box {
+    flex: 1 1 auto;
+    margin-bottom: 0;
+}
+
+/* Licznik sztuk (+/-) i kosz danej maszyny - dosunięty do prawej krawędzi
+   paska (machine-highlight-box ma już display:flex; flex-wrap:wrap), a na
+   wąskich ekranach zwyczajnie zawija się do własnej linii. Stepper/kosz w
+   środku to dokładnie te same klasy co w Kroku 2 (.step2-qty-stepper i
+   spółka) - patrz buildStep3QtyControlsHtml() w script.js. */
+.step3-qty-controls {
+    margin-left: auto;
+}
+
+/* Ten sam styl/pulsujący "+" co "+ Dodaj kolejny model" w Kroku 2
+   (.step2-add-model-btn) - teraz pod listą opcji pierwszej maszyny, a nie
+   w pasku z jej nazwą. */
+.step3-apply-all-btn {
+    margin-top: 12px;
+}
+
+@media (max-width: 600px) {
+    .step3-machine-options-header {
+        flex-direction: column;
+        align-items: stretch;
+    }
+}
+
+/* Krok 4: podsumowanie z podziałem na poszczególne wybrane wtryskarki -
+   każda maszyna to osobny blok z wyróżnionym paskiem i przyciskiem edycji
+   jej opcji dodatkowych (wraca do Kroku 3 i od razu rozwija jej sekcję
+   opcji - patrz editStep3Machine w script.js). */
+.step4-summary-title {
+    margin-bottom: 16px;
+}
+
+.step4-machine-block {
+    margin-bottom: 32px;
+}
+
+.step4-machine-block:last-child {
+    margin-bottom: 0;
+}
+
+/* Gdy wybrano więcej niż jedną wtryskarkę, każdy blok dostaje własne, białe
+   "pole" (obramowanie + delikatny cień) zamiast scalania się w jedną całość
+   wewnątrz szarego .summary-box - odstęp między blokami (margin-bottom
+   powyżej) staje się wtedy wyraźną, jasną przerwą. Klasa dodawana warunkowo
+   w populateStep4Summary() w script.js. */
+.step4-machine-block--multi {
+    background: #ffffff;
+    border: 1px solid #e1e8ed;
+    border-radius: 8px;
+    padding: 20px 24px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+}
+
+.step4-machine-block-header {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 4px;
+}
+
+.step4-machine-block-header .machine-highlight-box {
+    flex: 1 1 auto;
+    margin-bottom: 0;
+}
+
+.step4-edit-btn {
+    flex-shrink: 0;
+    white-space: nowrap;
+}
+
+/* Ilość danej wtryskarki w Kroku 4 - dosunięta do prawej krawędzi paska,
+   tuż przed przyciskiem "Edytuj" (patrz populateStep4Summary() w script.js). */
+.step4-qty-label {
+    margin-left: auto;
+}
+
+@media (max-width: 600px) {
+    .step4-machine-block-header {
+        flex-direction: column;
+        align-items: stretch;
+    }
+}
+
 /* Formularz kontaktowy 2 col */
 .form-grid-2col {
     display: grid;
@@ -2376,6 +3219,21 @@ main.contact-section {
     padding: 20px;
     border-radius: 6px;
     margin-bottom: 25px;
+}
+
+/* Gdy w środku jest więcej niż jedna wtryskarka, każda ma już własne białe
+   "pole" (.step4-machine-block--multi) - szare tło i obramowanie
+   .summary-box stają się wtedy zbędne (widoczne tylko jako szary pasek nad
+   pierwszą kartą i w przerwie między nimi). Usuwamy je w tym wypadku,
+   zostawiając margin-bottom blokom jako jedyny, jasny odstęp; typy
+   wtryskarek pozostają odseparowane dzięki obramowaniu/cieniowi kart. Przy
+   jednej maszynie .summary-box nadal pełni rolę jedynego "pola" i zachowuje
+   swój styl. */
+.summary-box:has(.step4-machine-block--multi) {
+    background: transparent;
+    border: none;
+    padding: 0;
+    border-radius: 0;
 }
 
 /* Przyciski nawigacji */
