@@ -1017,22 +1017,38 @@ function openStep2UnitsFlyout(barEl) {
     const barRect = barEl.getBoundingClientRect();
     const layoutRect = layout.getBoundingClientRect();
 
-    // Dopasowanie do wysokości okna: domyślnie górna krawędź menu wyrównana
-    // jest z górną krawędzią najechanego paska. Gdy przy tej pozycji menu
-    // nie zmieściłoby się w całości nad dolną krawędzią widocznego okna,
-    // zostaje podciągnięte w górę - w skrajnym przypadku aż do tuż pod
-    // stały nagłówek strony - tak, aby wszystkie pozycje były widoczne bez
-    // przewijania.
-    const viewportBottomMargin = 16;
-    const viewportTopMargin = 100; // wysokość stałego nagłówka + odstęp
-    const flyoutHeight = flyout.offsetHeight;
-    let desiredViewportTop = barRect.top;
-    if (desiredViewportTop + flyoutHeight > window.innerHeight - viewportBottomMargin) {
-        desiredViewportTop = Math.max(viewportTopMargin, window.innerHeight - viewportBottomMargin - flyoutHeight);
+    // W widoku mobilnym (@media (max-width: 860px) - patrz .step2-list-layout
+    // w CSS) lista modeli i panel danych są ułożone jedna kolumna pod drugą,
+    // a pasek modelu zajmuje całą szerokość - menu agregatów pojawia się
+    // wtedy POD najechanym/klikniętym paskiem (pełna jego szerokość), a nie
+    // OBOK niego jak na desktopie, bo inaczej wystawałoby poza ekran.
+    const isMobileList = window.matchMedia('(max-width: 860px)').matches;
+
+    if (isMobileList) {
+        flyout.style.width = barRect.width + 'px';
+        flyout.style.left = (barRect.left - layoutRect.left) + 'px';
+        flyout.style.top = (barRect.bottom - layoutRect.top + 8) + 'px';
+    } else {
+        flyout.style.width = '';
+
+        // Dopasowanie do wysokości okna: domyślnie górna krawędź menu
+        // wyrównana jest z górną krawędzią najechanego paska. Gdy przy tej
+        // pozycji menu nie zmieściłoby się w całości nad dolną krawędzią
+        // widocznego okna, zostaje podciągnięte w górę - w skrajnym
+        // przypadku aż do tuż pod stały nagłówek strony - tak, aby
+        // wszystkie pozycje były widoczne bez przewijania.
+        const viewportBottomMargin = 16;
+        const viewportTopMargin = 100; // wysokość stałego nagłówka + odstęp
+        const flyoutHeight = flyout.offsetHeight;
+        let desiredViewportTop = barRect.top;
+        if (desiredViewportTop + flyoutHeight > window.innerHeight - viewportBottomMargin) {
+            desiredViewportTop = Math.max(viewportTopMargin, window.innerHeight - viewportBottomMargin - flyoutHeight);
+        }
+
+        flyout.style.top = Math.max(0, desiredViewportTop - layoutRect.top) + 'px';
+        flyout.style.left = (barRect.right - layoutRect.left + 10) + 'px';
     }
 
-    flyout.style.top = Math.max(0, desiredViewportTop - layoutRect.top) + 'px';
-    flyout.style.left = (barRect.right - layoutRect.left + 10) + 'px';
     flyout.classList.add('is-open');
 
     document.querySelectorAll('.step2-list-model-row.is-expanded').forEach(r => r.classList.remove('is-expanded'));
@@ -1317,7 +1333,7 @@ function renderStep2Specs() {
             html += `
                 <div class="step2-spec-card is-placeholder" data-slot="${i}">
                     ${removeBtn}
-                    <p class="step2-list-specs-placeholder">Wybierz wtryskarkę z listy po lewej, aby zobaczyć jej najważniejsze dane.</p>
+                    <p class="step2-list-specs-placeholder">Wybierz wtryskarkę z listy<span class="step2-desktop-only-text"> po lewej</span>, aby zobaczyć jej najważniejsze dane.</p>
                 </div>`;
             return;
         }

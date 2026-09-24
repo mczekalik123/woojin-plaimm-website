@@ -1448,18 +1448,45 @@ main.contact-section {
     }
 
     .woojin-grid {
-        grid-template-columns: 1fr;
+        grid-template-columns: 1fr 1fr;
     }
 
     .woojin-intro {
-        grid-column: span 1;
+        grid-column: span 2;
+        grid-row: 1;
         padding: 30px 20px;
     }
 
+    /* Układ 2x2 w widoku mobilnym: "Maszyn produkowanych rocznie" (góra) i
+       "Pracowników na całym świecie" (dół) po lewej stronie; "Lat
+       doświadczenia" (góra) i "Lokalizacji na całym świecie" (dół) po
+       prawej stronie - inna kolejność niż naturalne ułożenie w DOM, dlatego
+       pozycje trzeba wymusić jawnie przez nth-child. */
     .woojin-stat {
         border-left: 0;
-        border-top: 1px solid #d9dce1;
         padding: 25px 20px;
+    }
+
+    .woojin-stat:nth-child(2) {
+        grid-column: 1;
+        grid-row: 2;
+    }
+
+    .woojin-stat:nth-child(3) {
+        grid-column: 2;
+        grid-row: 2;
+        border-left: 1px solid #d9dce1;
+    }
+
+    .woojin-stat:nth-child(4) {
+        grid-column: 2;
+        grid-row: 3;
+        border-left: 1px solid #d9dce1;
+    }
+
+    .woojin-stat:nth-child(5) {
+        grid-column: 1;
+        grid-row: 3;
     }
 
     .product-grid {
@@ -2313,6 +2340,13 @@ main.contact-section {
     .machine-cards-list .machine-card {
         flex: none;
     }
+
+    /* Animacja "łapki" nakładana na widok 360° w Kroku 1 ma być całkowicie
+       ukryta w widoku mobilnym (na dotyku i tak nie ma najechania myszką,
+       które normalnie ją ukrywa - tutaj wyłączamy ją na stałe). */
+    .cfg-viewer360-hand {
+        display: none;
+    }
 }
 
 @property --border-angle {
@@ -2473,14 +2507,30 @@ main.contact-section {
 }
 
 @media (max-width: 600px) {
+    /* Przyciski "Kalkulator" / "Wybierz z listy" mają zostać obok siebie
+       (w jednym rzędzie) również w widoku mobilnym - zamiast układu w
+       kolumnie jak wcześniej. Żeby oba zmieściły się na wąskim ekranie,
+       dzielą dostępną szerokość po równo (flex: 1 1 0) i mają zmniejszony
+       padding/czcionkę; tekst może się zawinąć do dwóch linii zamiast być
+       ucinany. */
     .step1-next-choice {
-        flex-direction: column;
-        align-items: stretch;
-        gap: 10px;
+        flex-wrap: nowrap;
+        gap: 8px;
+    }
+
+    .step1-next-choice .btn-next {
+        flex: 1 1 0;
+        min-width: 0;
+        padding: 10px 8px;
+        font-size: 12.5px;
+        line-height: 1.3;
+        white-space: normal;
+        text-align: center;
     }
 
     .step1-next-or {
-        text-align: center;
+        flex: 0 0 auto;
+        font-size: 13px;
     }
 }
 
@@ -2972,6 +3022,24 @@ main.contact-section {
 
     .step2-list-specs {
         position: static;
+    }
+
+    /* W widoku mobilnym lista modeli nie jest już "po lewej" (kolumny są
+       ułożone jedna pod drugą), więc ta część opisu placeholdera znika -
+       zostaje "Wybierz wtryskarkę z listy, aby zobaczyć..." */
+    .step2-desktop-only-text {
+        display: none;
+    }
+
+    /* Menu agregatów wysuwa się w widoku mobilnym w pionie (od góry, spod
+       paska modelu), a nie w poziomie jak na desktopie (patrz JS -
+       openStep2UnitsFlyout ustawia wtedy pozycję POD paskiem). */
+    .step2-units-flyout {
+        transform: translateY(-6px);
+    }
+
+    .step2-units-flyout.is-open {
+        transform: translateY(0);
     }
 }
 
