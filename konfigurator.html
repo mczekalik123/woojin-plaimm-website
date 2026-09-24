@@ -172,93 +172,22 @@
         <div class="step-content" id="step2">
 
             <!-- ============ ŚCIEŻKA A: DANE TECHNOLOGICZNE ============ -->
+            <!-- Zawartość (jedno lub więcej "okien kalkulatora" po lewej, panel
+                 najważniejszych danych po prawej) jest w całości budowana w
+                 script.js (patrz buildStep2TechPath/addStep2TechBlock) -
+                 dokładnie tak samo jak ścieżka "wybierz z listy" niżej. Karta z
+                 danymi każdej maszyny (nazwa modelu, licznik sztuk, najważniejsze
+                 parametry) jest renderowana bezpośrednio w jej oknie kalkulatora,
+                 obok wyników - patrz renderStep2TechInlineSpec w script.js -
+                 więc nie ma tu już osobnego panelu po prawej stronie. -->
             <div id="step2TechPath" class="step2-subview" style="display:none;">
                 <h2>Krok 2: Najważniejsze dane technologiczne</h2>
 
-                <div class="form-grid">
-
-                    <div class="form-section">
-                        <h3>Wymiary formy</h3>
-                        <div class="form-group">
-                            <label>Długość formy [mm]</label>
-                            <input type="number" id="mold_length" min="0" placeholder="np. 400">
-                        </div>
-                        <div class="form-group">
-                            <label>Szerokość formy [mm]</label>
-                            <input type="number" id="mold_width" min="0" placeholder="np. 350">
-                        </div>
-                        <div class="form-group">
-                            <label>Dostępny prześwit między kolumnami [mm] <span class="required-star">*</span></label>
-                            <input type="number" id="tie_bar_clearance" min="0" placeholder="np. 620">
-                        </div>
-                        <div class="form-group">
-                            <label>Wysokość (grubość) formy [mm] <span class="opt-label">(opcjonalnie)</span></label>
-                            <input type="number" id="mold_height" min="0" placeholder="np. 500">
-                        </div>
-                        <div class="form-group">
-                            <label>Liczba gniazd formy (wyprasek na cykl) <span class="required-star">*</span></label>
-                            <input type="number" id="cavities" min="1" step="1" value="1">
-                        </div>
-                    </div>
-
-                    <div class="form-section">
-                        <h3>Wymiary wypraski</h3>
-                        <div class="form-group">
-                            <label>Masa detalu m [g] <span class="required-star">*</span></label>
-                            <input type="number" id="part_weight" min="0" step="0.01" placeholder="np. 25">
-                        </div>
-                        <div class="form-group">
-                            <label>Powierzchnia wypraski F [cm²] <span class="required-star">*</span></label>
-                            <input type="number" id="part_surface" min="0" step="0.1" placeholder="np. 45">
-                        </div>
-                        <div class="form-group">
-                            <label>Grubość ścianki [mm] <span class="opt-label">(opcjonalnie)</span></label>
-                            <input type="number" id="wall_thickness" min="0" step="0.1" placeholder="np. 2.0">
-                        </div>
-                        <div class="form-group checkbox-inline">
-                            <label><input type="checkbox" id="has_fillets"> Zaokrąglenia krawędzi</label>
-                            <label><input type="checkbox" id="has_ribs"> Żebra usztywniające</label>
-                        </div>
-                    </div>
-
-                    <div class="form-section">
-                        <h3>Materiał</h3>
-                        <div class="form-group">
-                            <label>Rodzaj tworzywa <span class="required-star">*</span></label>
-                            <select id="material_select" onchange="handleMaterialChange()"></select>
-                        </div>
-                        <div class="form-group density-row">
-                            <label>Gęstość wybranego tworzywa [g/cm³]</label>
-                            <div class="density-row-inner">
-                                <input type="number" step="0.01" id="density_value" readonly>
-                                <button type="button" class="btn-secondary btn-small" id="toggleCustomDensityBtn" onclick="toggleCustomDensity()">Inna gęstość</button>
-                            </div>
-                        </div>
-                        <div class="form-group" id="custom_density_group" style="display:none;">
-                            <label>Własna gęstość [g/cm³]</label>
-                            <input type="number" step="0.01" id="custom_density" placeholder="np. 1.15">
-                        </div>
-                        <div class="form-group">
-                            <label>Współczynnik ciśnienia w gnieździe formy k <span class="opt-label">(×100 kg/cm², typowo 3–8)</span></label>
-                            <input type="number" id="k_factor" value="6" min="1" max="12" step="0.5">
-                        </div>
-                    </div>
-
+                <div class="step2-tech-layout">
+                    <div class="step2-tech-blocks" id="step2TechBlocks"></div>
                 </div>
 
-                <div class="action-calc-bar">
-                    <button type="button" class="btn-primary btn-wave" id="calcMachineBtn" onclick="calculateAndShowModels()"><span class="btn-wave-label">DOBIERZ WTRYSKARKĘ</span></button>
-                </div>
-
-                <div id="calcError" class="calc-error" style="display:none;"></div>
-
-                <div class="results-box" id="resultsSection" style="display:none;">
-                    <div class="calc-details" id="calcDetails"></div>
-                    <div class="form-group">
-                        <label>Wybierz konkretny model i wielkość agregatu wtryskowego</label>
-                        <select id="selected_machine_model" class="large-select"></select>
-                    </div>
-                </div>
+                <div id="step2TechNavError" class="calc-error" style="display:none;"></div>
 
                 <div class="btn-group">
                     <button type="button" class="btn-prev" onclick="nextStep(1)">← Wstecz</button>
@@ -273,7 +202,7 @@
                 <div class="step2-list-layout">
                     <div class="step2-list-items" id="step2ListItems"></div>
                     <div class="step2-list-specs" id="step2ListSpecs">
-                        <p class="step2-list-specs-placeholder">Wybierz wtryskarkę z listy po lewej, aby zobaczyć jej najważniejsze dane.</p>
+                        <p class="step2-list-specs-placeholder">Wybierz wtryskarkę z listy<span class="step2-desktop-only-text"> po lewej</span>, aby zobaczyć jej najważniejsze dane.</p>
                     </div>
                     <div class="step2-units-flyout" id="step2UnitsFlyout"></div>
                 </div>
@@ -282,7 +211,7 @@
 
                 <div class="btn-group">
                     <button type="button" class="btn-prev" onclick="nextStep(1)">← Wstecz</button>
-                    <button type="button" class="btn-next" onclick="goToStep3FromList()">Dalej →</button>
+                    <button type="button" class="btn-next" onclick="nextStep(3)">Dalej →</button>
                 </div>
             </div>
 
@@ -298,15 +227,15 @@
             <h3>Wyposażenie standardowe: <span class="step3-std-machines-list" id="step3StdMachinesList"></span></h3>
             <div class="options-columns-grid">
                 <div class="option-col">
-                    <h4>Injection Unit</h4>
+                    <h4>Wtrysk</h4>
                     <ul id="std_injection_unit"></ul>
                 </div>
                 <div class="option-col">
-                    <h4>Clamping Unit</h4>
+                    <h4>Zwarcie</h4>
                     <ul id="std_clamping_unit"></ul>
                 </div>
                 <div class="option-col">
-                    <h4>General</h4>
+                    <h4>Ogólne</h4>
                     <ul id="std_general"></ul>
                 </div>
             </div>
@@ -320,6 +249,13 @@
                  zwinięte, rozwijane tym samym pulsującym trójkątem co "Pokaż pełną
                  specyfikację techniczną" w Kroku 2. -->
             <div id="step3OptionsContainer"></div>
+
+            <!-- Wspólny dymek z polskim tłumaczeniem pozycji z listy - nazwy wyposażenia
+                 standardowego i opcji dodatkowych zostają po angielsku (zgodnie z
+                 oryginalnym katalogiem), a tłumaczenie pojawia się dopiero po najechaniu/
+                 dotknięciu danej pozycji - patrz showStep3OptionTooltip w script.js.
+                 Stylowany podobnie do wysuwanego menu agregatów w Kroku 2 (#step2UnitsFlyout). -->
+            <div class="step3-option-tooltip" id="step3OptionTooltip"></div>
 
             <div class="btn-group">
                 <button type="button" class="btn-prev" onclick="nextStep(2)">← Wstecz</button>
@@ -402,19 +338,19 @@
             </div>
 
             <div class="footer-column">
-                <h4>Company</h4>
+                <h4>Firma</h4>
                 <a href="#">O nas</a>
                 <a href="#">Historia</a>
             </div>
 
             <div class="footer-column">
-                <h4>Products</h4>
-                <a href="#">Product Lineup</a>
-                <a href="#">Technology</a>
+                <h4>Produkty</h4>
+                <a href="#">Oferta produktowa</a>
+                <a href="#">Technologia</a>
             </div>
 
             <div class="footer-column">
-                <h4>Customer</h4>
+                <h4>Obsługa klienta</h4>
                 <a href="#">Kontakt</a>
                 <a href="#">Serwis</a>
             </div>
@@ -424,7 +360,7 @@
             <p>© 2026 WOOJIN PLAIMM Co., Ltd.</p>
             <div class="footer-links">
                 <a href="#">Polityka prywatności</a>
-                <a href="#">Terms</a>
+                <a href="#">Regulamin</a>
             </div>
         </div>
     </div>
