@@ -1,3 +1,34 @@
+// =====================================================================
+// WIBRACJA (HAPTYKA) NA URZĄDZENIACH MOBILNYCH
+// Krótkie wibracje przy interakcjach: naciśnięcie przycisku (na każdej
+// podstronie - ten plik jest wspólny dla całego serwisu), zaznaczenie
+// (dodanie) opcji dodatkowej w Kroku 3 konfiguratora oraz przesuwanie
+// paska widoku 360° (patrz initViewer360 / initConfiguratorViewer360
+// niżej). Działa wyłącznie na urządzeniach dotykowych - na komputerze
+// z myszką wibracja i tak nie miałaby żadnego efektu. Tam, gdzie
+// przeglądarka w ogóle nie obsługuje Vibration API (np. iPhone/Safari,
+// które nie wspiera go wcale), funkcja po prostu nic nie robi, bez
+// żadnego błędu - stąd "jeśli to możliwe" w treści prośby klienta.
+function triggerHapticFeedback(durationMs) {
+    if (!window.matchMedia('(pointer: coarse)').matches) return;
+    if (!('vibrate' in navigator)) return;
+    try {
+        navigator.vibrate(durationMs);
+    } catch (e) {
+        // Ignorujemy - część przeglądarek może zgłosić wyjątek mimo
+        // formalnej obecności API (np. gdy strona nie jest aktywną kartą).
+    }
+}
+
+// Delegowany nasłuchiwacz na całym dokumencie zamiast podpinania go
+// osobno pod każdy przycisk z osobna - obejmuje automatycznie wszystkie
+// przyciski nawigacji, kroków konfiguratora, pobierania katalogów/PDF,
+// wysyłki formularzy itd. na każdej podstronie serwisu.
+document.addEventListener('click', function (e) {
+    const target = e.target.closest('button, a.apply-btn, a.catalog-row, a.catalog-dl-btn');
+    if (target) triggerHapticFeedback(10);
+});
+
 document.addEventListener("DOMContentLoaded", function () {
 
     const section = document.querySelector("#woojinStats");
@@ -272,6 +303,135 @@ const optionSets = {
     }
 };
 
+// Tlumaczenia PL poszczegolnych pozycji wyposazenia/opcji z powyzszej listy
+// (uzywane WYLACZNIE do dymka podpowiedzi po najechaniu myszka w Kroku 3 -
+// patrz showStep3OptionTooltip nizej; nazwy w samej liscie zostaja po
+// angielsku, zgodnie z oryginalnym katalogiem). Klucz = dokladny tekst opisu
+// BEZ numeru porzadkowego (np. 'Single Flight Screw'), bo ten sam opis moze
+// wystapic pod roznymi numerami w roznych seriach/sekcjach.
+const OPTION_TRANSLATIONS = {
+    '3 Phase electric outlet (2 ea)': 'Gniazdo elektryczne 3-fazowe (2 szt.)',
+    '3 color alarm light': 'Trójkolorowa lampa sygnalizacyjna (alarmowa)',
+    'AVR (Automatic Voltage Regulator) on Electric Panel': 'AVR (automatyczny regulator napięcia) w szafie elektrycznej',
+    'Air blow-off unit (Fixed side 1 + Moving side 1)': 'Zespół przedmuchu powietrznego (1 x strona stała + 1 x strona ruchoma)',
+    'Alarming & History save': 'Zapis alarmów i historii zdarzeń',
+    'Anchor-bolt set (Clamping unit)': 'Zestaw śrub kotwiących (zespół zamykający)',
+    'Auto Purging': 'Automatyczne przedmuchiwanie (czyszczenie ślimaka)',
+    'Automatic Ball-screw grease lubrication (All parts)': 'Automatyczne smarowanie śrub kulowych (wszystkie punkty)',
+    'Automatic Grease Lubrication (Clamping unit)': 'Automatyczne smarowanie smarem stałym (zespół zamykający)',
+    'Automatic Grease Lubrication (Injection unit)': 'Automatyczne smarowanie smarem stałym (agregat wtryskowy)',
+    'Automatic Injection unit swiveling (Below IH 11900)': 'Automatyczny obrót boczny agregatu wtryskowego (dla IH poniżej 11900)',
+    'Automatic Mold thickness adjust mode': 'Tryb automatycznej regulacji grubości formy',
+    'Automatic clamp force measurement mode': 'Tryb automatycznego pomiaru siły zwarcia',
+    'Automatic grease lubrication (Clamping)': 'Automatyczne smarowanie smarem stałym (zwarcie)',
+    'Automatic oil lubrication (Toggle)': 'Automatyczne smarowanie olejowe (mechanizm kolankowy)',
+    'Automatic safety Door open/close': 'Automatyczne otwieranie/zamykanie drzwi bezpieczeństwa',
+    'Automatic safety Door open/close (Above 450ton)': 'Automatyczne otwieranie/zamykanie drzwi bezpieczeństwa (powyżej 450 ton)',
+    'Back Pressure control step (3 step)': 'Skokowa regulacja ciśnienia wstecznego (3 stopnie)',
+    'Back-Pressure Closed-loop system': 'System regulacji ciśnienia wstecznego w pętli zamkniętej',
+    'CMS (Central Monitoring System)': 'CMS (centralny system monitorowania)',
+    'Charging Speed & Pressure step (3 step)': 'Skokowa regulacja prędkości i ciśnienia dozowania (3 stopnie)',
+    'Charging on Fly (AC Motor)': 'Dozowanie w ruchu (napęd silnikiem AC)',
+    'Charging on Fly (Pump type)': 'Dozowanie w ruchu (typ pompowy)',
+    'Charging time count & alarm': 'Pomiar czasu dozowania i alarm',
+    'Clamping area Curtain sensor (Above 550ton)': 'Kurtyna świetlna strefy zwarcia (powyżej 550 ton)',
+    'Cold screw protection mode': 'Tryb zabezpieczenia przed pracą zimnego ślimaka',
+    'Cold screw start protection mode': 'Tryb zabezpieczenia przed rozruchem zimnego ślimaka',
+    'Cooling water distributor': 'Rozdzielacz wody chłodzącej',
+    'Core & Ejector on Fly': 'Rdzeń i wypychacz w ruchu',
+    'Core Pressure release Circuit (Automatic)': 'Układ zwalniania nacisku rdzenia (automatyczny)',
+    'Core Pressure release Circuit (Manual)': 'Układ zwalniania nacisku rdzenia (ręczny)',
+    'Core on Fly': 'Rdzeń w ruchu',
+    'Core-Back Mode': 'Tryb cofania rdzenia (core-back)',
+    'Cushion Display & Alarm': 'Wskazanie poduszki wtrysku (cushion) i alarm',
+    'Customized Design Screw (SB, Mixing, Coating)': 'Ślimak w wykonaniu specjalnym (SB, mieszający, z powłoką)',
+    'Daylight Extension': 'Zwiększenie prześwitu (daylight)',
+    'Dosing unit Interface (for Masterbatch)': 'Interfejs dozownika (do masterbatchu)',
+    'Ejecting on fly': 'Wypychanie w ruchu',
+    'Ejector Check Valve': 'Zawór zwrotny wypychacza',
+    'Ejector Forward/Backward External switch': 'Zewnętrzny przełącznik wysuwu/cofania wypychacza',
+    'Ejector Interlock Connector (WJ Standard, EM13)': 'Złącze blokady wypychacza (standard WJ, EM13)',
+    'Ejector Speed & Pressure step (2 step)': 'Skokowa regulacja prędkości i ciśnienia wypychacza (2 stopnie)',
+    'Ejector Speed & Pressure step (3 step)': 'Skokowa regulacja prędkości i ciśnienia wypychacza (3 stopnie)',
+    'External Temperature Display (F/P)': 'Zewnętrzny wyświetlacz temperatury (F/P)',
+    'Fast Injection Circuit (ACC)': 'Układ szybkiego wtrysku (ACC)',
+    'Gas Injection Interface': 'Interfejs wtrysku gazu',
+    'Heater Disconnection check device': 'Urządzenie kontroli przerwania obwodu grzałki',
+    'Heater Insulation Band': 'Osłona izolacyjna grzałek',
+    'Holding Speed & Pressure step (5 step)': 'Skokowa regulacja prędkości i ciśnienia docisku (5 stopni)',
+    'Hopper Ladder & Stand': 'Drabinka i podest zasypowy',
+    'Hopper Slide (L/M)': 'Przesuwny lej zasypowy (L/M)',
+    'Hopper throat temperature control device': 'Regulacja temperatury gardła leja zasypowego',
+    'Hydraulic Auto-Clamp unit': 'Hydrauliczny zespół automatycznego mocowania formy',
+    'Hydraulic Core Check Valve': 'Hydrauliczny zawór zwrotny rdzenia',
+    'Hydraulic Core Device (Fixed: 170~400ton / Moving: 1or2 stage)': 'Hydrauliczny mechanizm rdzenia (strona stała: 170–400 t / strona ruchoma: 1 lub 2 stopnie)',
+    'Hydraulic Core Interlock Connector (EM13, WJ Standard)': 'Złącze blokady rdzenia (EM13, standard WJ)',
+    'Hydraulic Core Puller (2~8 Stages)': 'Hydrauliczny wyciągacz rdzenia (2–8 stopni)',
+    'Hydraulic Core Puller (Fixed, 1~4 Stages)': 'Hydrauliczny wyciągacz rdzenia (strona stała, 1–4 stopnie)',
+    'Hydraulic Core Puller (Moving 2~4 Stages)': 'Hydrauliczny wyciągacz rdzenia (strona ruchoma, 2–4 stopnie)',
+    'Hydraulic Core puller (Moving platen side, 1 stage)': 'Hydrauliczny wyciągacz rdzenia (strona płyty ruchomej, 1 stopień)',
+    'Hydraulic Valve Gate Block (Interior type)': 'Hydrauliczny blok zaworu iglicowego (typ wewnętrzny)',
+    'Hydraulic Valve Gate Device (External device)': 'Hydrauliczne urządzenie zaworu iglicowego (zewnętrzne)',
+    'Hydraulic oil heating mode': 'Tryb podgrzewania oleju hydraulicznego',
+    'Hydraulic oil level alarm': 'Alarm poziomu oleju hydraulicznego',
+    'Hydraulic oil purification device': 'Urządzenie oczyszczania oleju hydraulicznego',
+    'Hydraulic oil temperature check & alarm': 'Kontrola i alarm temperatury oleju hydraulicznego',
+    'Hydraulic oil temperature control device': 'Urządzenie regulacji temperatury oleju hydraulicznego',
+    'I/O circuit display': 'Wyświetlacz stanu wejść/wyjść (I/O)',
+    'Injection Pressure Graph Display': 'Wykres ciśnienia wtrysku',
+    'Injection Speed & Pressure step (10 step)': 'Skokowa regulacja prędkości i ciśnienia wtrysku (10 stopni)',
+    'Injection Speed Graph Display': 'Wykres prędkości wtrysku',
+    'Injection valve gate circuit (AC 1 + DC 1)': 'Obwód zaworu iglicowego wtrysku (1 x AC + 1 x DC)',
+    'Interior type Hot Runner Controller (EM13, WJ Standard)': 'Wbudowany sterownik gorącokanałowy (EM13, standard WJ)',
+    'Leveling pad': 'Podkładka niwelacyjna (poziomująca)',
+    'Log history save': 'Zapis historii zdarzeń (logów)',
+    'Long-holding pressure type upgrade': 'Rozszerzenie do długiego czasu docisku',
+    'Lubricating oil Recycling device': 'Urządzenie do recyklingu oleju smarującego',
+    'Mold Insulation Platen': 'Płyta izolacyjna formy',
+    'Mold ring on Moving-Platen': 'Pierścień centrujący na płycie ruchomej',
+    'Mold thickness adjusting break unit': 'Hamulec regulacji grubości formy',
+    'Mold-Close Speed & Pressure step (5 step)': 'Skokowa regulacja prędkości i ciśnienia zamykania formy (5 stopni)',
+    'Mold-Open Speed & Pressure step (4 step)': 'Skokowa regulacja prędkości i ciśnienia otwierania formy (4 stopnie)',
+    'Mold-Open Speed & Pressure step (5 step)': 'Skokowa regulacja prędkości i ciśnienia otwierania formy (5 stopni)',
+    'Nozzle cylinders equipped with Potentiometers': 'Cylindry dyszy wyposażone w potencjometry',
+    'PID Heating Control': 'Regulacja grzania PID',
+    'Pneumatic Core Puller (1-3 Stages)': 'Pneumatyczny wyciągacz rdzenia (1–3 stopnie)',
+    'Pneumatic Core Puller (1~7 Stages)': 'Pneumatyczny wyciągacz rdzenia (1–7 stopni)',
+    'Pneumatic Valve Gate Block (Interior type)': 'Pneumatyczny blok zaworu iglicowego (typ wewnętrzny)',
+    'Product Chute': 'Zsyp na wyroby',
+    'Product drop check device': 'Czujnik kontroli zrzutu wyrobu',
+    'Product quality sorting device (Below 280ton)': 'Urządzenie do sortowania jakości wyrobów (dla maszyn poniżej 280 ton)',
+    'Production data statistics': 'Statystyki danych produkcyjnych',
+    'Robot Interface (EM12, EM67, EM67.1, SPI)': 'Interfejs robota (EM12, EM67, EM67.1, SPI)',
+    'Robot interface (Standard)': 'Interfejs robota (standardowy)',
+    'Rotating Core Circuit': 'Układ obrotowego rdzenia',
+    'Safety Foot-board (Above 1050ton)': 'Podest bezpieczeństwa (powyżej 1050 ton)',
+    'Safety Foot-board (Above 650ton)': 'Podest bezpieczeństwa (powyżej 650 ton)',
+    'Safety Foot-board (Below 850ton)': 'Podest bezpieczeństwa (poniżej 850 ton)',
+    'Safety device (for electric & hydraulic)': 'Urządzenie zabezpieczające (dla napędu elektrycznego i hydraulicznego)',
+    'Screw & Barrel (Anti Wear & Corrosive)': 'Ślimak i cylinder (odporne na zużycie i korozję)',
+    'Screw & Barrel (Anti Wear)': 'Ślimak i cylinder (odporne na zużycie)',
+    'Screw & Barrel (Nitrided barrel)': 'Ślimak i cylinder (cylinder azotowany)',
+    'Screw RPM Display': 'Wskazanie obrotów ślimaka',
+    'Shot data save (Internal 1,000 / External device)': 'Zapis danych wtrysku (1000 wewnętrznie / urządzenie zewnętrzne)',
+    'Shot data saving by external way': 'Zapis danych wtrysku na urządzeniu zewnętrznym',
+    'Shut-off Nozzle': 'Dysza zamykająca (odcinająca)',
+    'Shut-off Nozzle (Hydraulic)': 'Dysza zamykająca (hydrauliczna)',
+    'Shut-off Nozzle (Pneumatic, Hydraulic, Spring)': 'Dysza zamykająca (pneumatyczna, hydrauliczna, sprężynowa)',
+    'Single Flight Screw': 'Ślimak jednozwojowy',
+    'Single Phase electric outlet (1 ea)': 'Gniazdo elektryczne jednofazowe (1 szt.)',
+    'Spring mold mode': 'Tryb formy sprężynowej',
+    'Spring type Ejector retraction': 'Cofanie wypychacza typu sprężynowego',
+    'Standard Maintenance tools': 'Standardowy zestaw narzędzi serwisowych',
+    'Standard spare part': 'Standardowy zestaw części zamiennych',
+    'Steam Injection Interface': 'Interfejs wtrysku pary',
+    'Steel tray for resin leakage': 'Stalowa taca na wyciek tworzywa',
+    'Temperature display & Alarm in abnormal Temp.': 'Wskazanie temperatury i alarm przy nieprawidłowej temperaturze',
+    'UPS (Uninterruptible Power Supply) on Electric Panel': 'UPS (zasilacz awaryjny) w szafie elektrycznej',
+    'Valve Gate Circuit & Connector (Interior type)': 'Obwód i złącze zaworu iglicowego (typ wewnętrzny)',
+    'Weekly Heating Timer': 'Tygodniowy zegar sterowania grzaniem',
+};
+
 // -------------------- Modele maszyn (na podstawie specyfikacji katalogowej A5) --------------------
 // force: siła zwarcia [ton], tieBar: prześwit między kolumnami [mm] (null = brak kolumn, TL-A5),
 // minH/maxH: min./maks. wysokość formy [mm], units: dostępne agregaty wtryskowe (nazwa + średnica ślimaka)
@@ -345,8 +505,8 @@ const machineData = {
 // SZCZEGOLOWE DANE TECHNOLOGICZNE WTRYSKAREK (Krok 2: "Wybierz z listy")
 // =====================================================================
 // Pelne dane techniczne z katalogow producenta (DL-A5, TH-A5, TE-A5,
-// TL-A5), w podziale na 3 kolumny zgodnie z ukladem katalogow: Injection
-// Unit / Clamping Unit / General. Klucze najwyzszego poziomu = dokladne
+// TL-A5), w podziale na 3 kolumny zgodnie z ukladem katalogow: Agregat
+// wtryskowy / Zespol zamykajacy / Ogolne. Klucze najwyzszego poziomu = dokladne
 // nazwy modeli z machineData.models[].name, a klucze w "units" = dokladne
 // stringi z machineData.models[].units[] (zeby dobor po liscie mogl
 // bezposrednio odpytac te dane bez dodatkowego parsowania).
@@ -821,25 +981,14 @@ const machineTechSpecs = {
 
 let currentStep = 1;
 let selectedMachineType = 'DL-A5';
-let lastCalculationResults = null;
 
-// Sposób, w jaki wybrano konkretny model w Kroku 2: 'tech' (na podstawie
-// danych technologicznych) albo 'list' (bezpośrednio z listy modeli).
-// Krok 3 i Krok 4 działają identycznie niezależnie od wybranej ścieżki -
-// obie ścieżki ustawiają dokładnie ten sam <select id="selected_machine_model">.
-let machineSelectionSource = null;
-
-// Ścieżka "dane technologiczne" zawsze daje dokładnie jedną maszynę (wynik
-// kalkulatora), więc jej wybrane opcje dodatkowe (Krok 3) trzymamy w jednym
-// obiekcie "sloto-podobnym", analogicznym do wpisów w step2Selections -
-// dzięki temu Krok 3/4 mogą używać wspólnej funkcji getConfiguredMachines()
-// niezależnie od ścieżki wyboru z Kroku 2. Odtwarzany od nowa, gdy zmieni
-// się wybrany model/agregat (patrz getConfiguredMachines).
-let techPathMachine = null;
-
-// Aktualnie widoczny "pod-widok" Kroku 2: 'tech' (formularz danych
-// technologicznych) albo 'list' (wybór z listy). Wybór sposobu doboru
-// odbywa się już w Kroku 1 (przyciski "Kalkulator" / "Wybierz z listy").
+// Aktualnie widoczny "pod-widok" Kroku 2: 'tech' (jedno lub więcej "okien"
+// kalkulatora danych technologicznych) albo 'list' (wybór z listy). Wybór
+// sposobu doboru odbywa się już w Kroku 1 (przyciski "Kalkulator" / "Wybierz
+// z listy"). Obie ścieżki zapisują wybrane maszyny do WSPÓLNEJ tablicy
+// step2Selections (patrz niżej), dzięki czemu Krok 3, Krok 4 i panel
+// "najważniejszych danych" po prawej stronie Kroku 2 działają identycznie,
+// niezależnie od wybranej ścieżki.
 let step2SubView = 'tech';
 
 // Typy maszyn dodane do Kroku 1 (widok 360° + krótki opis), dla których
@@ -849,13 +998,11 @@ let step2SubView = 'tech';
 // (DL-A5, TH-A5, TE-A5, TL-A5) działają dokładnie tak jak wcześniej.
 const CONFIGURATOR_STEP1_ONLY_TYPES = ['VHA-RS', 'MULTI', 'Super-Foam'];
 
-// Wypełnienie listy materiałów przy starcie
+// Lista materiałów jest wypełniana per "okno kalkulatora" dopiero przy jego
+// utworzeniu (patrz populateMaterialSelect/addStep2TechBlock) - przy starcie
+// strony żadne okno jeszcze nie istnieje (Krok 2 pokazuje się dopiero po
+// wyborze sposobu doboru w Kroku 1).
 document.addEventListener('DOMContentLoaded', function () {
-    const sel = document.getElementById('material_select');
-    if (sel) {
-        sel.innerHTML = materialsData.map(m => `<option value="${m.density}">${m.label} (${m.density.toFixed(2)} g/cm³)</option>`).join('');
-        handleMaterialChange();
-    }
     initMachineCardSelection();
 });
 
@@ -885,6 +1032,7 @@ function showStep2SubView(view) {
     document.getElementById('step2ListPath').style.display = view === 'list' ? '' : 'none';
 
     if (view === 'list') buildStep2List();
+    if (view === 'tech') buildStep2TechPath();
 
     const container = document.querySelector('.configurator-container');
     if (container) window.scrollTo({ top: container.offsetTop - 100, behavior: 'smooth' });
@@ -894,29 +1042,40 @@ function showStep2SubView(view) {
 // mógł unieważnić poprzednio wybrany model / wprowadzone dane technologiczne).
 // `view` to sposób doboru wybrany przyciskiem w Kroku 1 ('tech' albo 'list').
 function resetStep2ForType(view) {
-    machineSelectionSource = null;
-    lastCalculationResults = null;
-
-    const selectEl = document.getElementById('selected_machine_model');
-    if (selectEl) selectEl.innerHTML = '';
-
-    const resultsSection = document.getElementById('resultsSection');
-    if (resultsSection) resultsSection.style.display = 'none';
-
     clearCalcError();
 
     const listErr = document.getElementById('step2ListError');
     if (listErr) { listErr.style.display = 'none'; listErr.textContent = ''; }
 
+    const techNavErr = document.getElementById('step2TechNavError');
+    if (techNavErr) { techNavErr.style.display = 'none'; techNavErr.textContent = ''; }
+
     showStep2SubView(view === 'list' ? 'list' : 'tech');
 }
 
-// Lista wybranych w Kroku 2 (ścieżka "z listy") konfiguracji - każdy wpis to
-// jeden "slot": wybrany model + agregat wtryskowy + liczba maszyn. Zawsze
-// istnieje przynajmniej jeden (pusty) slot - kolejne dodaje się przyciskiem
-// "+ Dodaj kolejny model" (patrz addAnotherStep2Model). Nowe wybory z listy
-// modeli trafiają zawsze do OSTATNIEGO slotu (patrz onStep2ListSelect).
+// Lista wybranych w Kroku 2 konfiguracji - WSPÓLNA dla obu ścieżek doboru
+// ("wybierz z listy" i "dane technologiczne"/kalkulator). Każdy wpis to
+// jeden "slot": wybrany model + agregat wtryskowy + liczba maszyn, a dla
+// slotów pochodzących z kalkulatora dodatkowo snapshot obliczeń
+// technologicznych (pole techResults - patrz applyTechSelection). W ścieżce
+// "z listy" zawsze istnieje przynajmniej jeden (pusty) slot - kolejne dodaje
+// się przyciskiem "+ Dodaj kolejny model" (patrz addAnotherStep2Model), a
+// nowe wybory z listy modeli trafiają zawsze do pierwszego wolnego slotu
+// (patrz onStep2ListSelect). W ścieżce "dane technologiczne" każdy slot
+// odpowiada jednemu "oknu kalkulatora" - ten sam indeks w step2Selections i
+// w step2TechBlockIds (patrz niżej).
 let step2Selections = [];
+
+// Stabilny numer porządkowy każdego "okna kalkulatora" w ścieżce "dane
+// technologiczne" (step2TechBlockIds[i] odpowiada step2Selections[i], ten
+// sam indeks, przez cały czas życia obu tablic) - nadawany raz, przy
+// utworzeniu okna, i już niezmienny, nawet gdy wcześniejsze okno zostanie
+// usunięte. Dzięki temu pola formularza danego okna (z id zawierającym ten
+// numer, np. "mold_length_t3") zawsze odnoszą się do właściwego okna, bez
+// potrzeby przenumerowywania/odtwarzania DOM pozostałych okien przy usuwaniu
+// jednego z nich (co skasowałoby wpisane już w nich dane).
+let step2TechNextId = 0;
+let step2TechBlockIds = [];
 
 // Element wysuwanego menu agregatów jest jeden, współdzielony przez wszystkie
 // wiersze listy - jego zawartość i pozycja są ustawiane dynamicznie przez
@@ -1017,22 +1176,38 @@ function openStep2UnitsFlyout(barEl) {
     const barRect = barEl.getBoundingClientRect();
     const layoutRect = layout.getBoundingClientRect();
 
-    // Dopasowanie do wysokości okna: domyślnie górna krawędź menu wyrównana
-    // jest z górną krawędzią najechanego paska. Gdy przy tej pozycji menu
-    // nie zmieściłoby się w całości nad dolną krawędzią widocznego okna,
-    // zostaje podciągnięte w górę - w skrajnym przypadku aż do tuż pod
-    // stały nagłówek strony - tak, aby wszystkie pozycje były widoczne bez
-    // przewijania.
-    const viewportBottomMargin = 16;
-    const viewportTopMargin = 100; // wysokość stałego nagłówka + odstęp
-    const flyoutHeight = flyout.offsetHeight;
-    let desiredViewportTop = barRect.top;
-    if (desiredViewportTop + flyoutHeight > window.innerHeight - viewportBottomMargin) {
-        desiredViewportTop = Math.max(viewportTopMargin, window.innerHeight - viewportBottomMargin - flyoutHeight);
+    // W widoku mobilnym (@media (max-width: 860px) - patrz .step2-list-layout
+    // w CSS) lista modeli i panel danych są ułożone jedna kolumna pod drugą,
+    // a pasek modelu zajmuje całą szerokość - menu agregatów pojawia się
+    // wtedy POD najechanym/klikniętym paskiem (pełna jego szerokość), a nie
+    // OBOK niego jak na desktopie, bo inaczej wystawałoby poza ekran.
+    const isMobileList = window.matchMedia('(max-width: 860px)').matches;
+
+    if (isMobileList) {
+        flyout.style.width = barRect.width + 'px';
+        flyout.style.left = (barRect.left - layoutRect.left) + 'px';
+        flyout.style.top = (barRect.bottom - layoutRect.top + 8) + 'px';
+    } else {
+        flyout.style.width = '';
+
+        // Dopasowanie do wysokości okna: domyślnie górna krawędź menu
+        // wyrównana jest z górną krawędzią najechanego paska. Gdy przy tej
+        // pozycji menu nie zmieściłoby się w całości nad dolną krawędzią
+        // widocznego okna, zostaje podciągnięte w górę - w skrajnym
+        // przypadku aż do tuż pod stały nagłówek strony - tak, aby
+        // wszystkie pozycje były widoczne bez przewijania.
+        const viewportBottomMargin = 16;
+        const viewportTopMargin = 100; // wysokość stałego nagłówka + odstęp
+        const flyoutHeight = flyout.offsetHeight;
+        let desiredViewportTop = barRect.top;
+        if (desiredViewportTop + flyoutHeight > window.innerHeight - viewportBottomMargin) {
+            desiredViewportTop = Math.max(viewportTopMargin, window.innerHeight - viewportBottomMargin - flyoutHeight);
+        }
+
+        flyout.style.top = Math.max(0, desiredViewportTop - layoutRect.top) + 'px';
+        flyout.style.left = (barRect.right - layoutRect.left + 10) + 'px';
     }
 
-    flyout.style.top = Math.max(0, desiredViewportTop - layoutRect.top) + 'px';
-    flyout.style.left = (barRect.right - layoutRect.left + 10) + 'px';
     flyout.classList.add('is-open');
 
     document.querySelectorAll('.step2-list-model-row.is-expanded').forEach(r => r.classList.remove('is-expanded'));
@@ -1062,12 +1237,9 @@ document.addEventListener('click', function (e) {
 });
 
 // Po kliknięciu konkretnego agregatu w wysuwanym menu: zapisuje wybór w
-// OSTATNIM slocie z step2Selections, natychmiast zamyka menu agregatów
-// (nawet jeśli kursor wciąż znajduje się nad paskiem/menu), odświeża panel
-// najważniejszych danych i ustawia <select id="selected_machine_model">
-// dokładnie tak, jak robi to calculateAndShowModels() - dzięki temu Krok 3
-// i Krok 4 działają identycznie, niezależnie od wybranej ścieżki w Kroku 2
-// (dla wielu wybranych modeli, jako "główny" traktowany jest pierwszy slot).
+// pierwszym wolnym slocie z step2Selections, natychmiast zamyka menu
+// agregatów (nawet jeśli kursor wciąż znajduje się nad paskiem/menu) i
+// odświeża panel najważniejszych danych.
 function onStep2ListSelect(modelName, unitStr, force, tieBar, minH, maxH) {
     // Wypełniamy pierwszy WOLNY (pusty) slot, a nie zawsze ostatni - dzięki
     // temu, jeśli użytkownik naciśnie "+ Dodaj kolejny model" kilka razy z
@@ -1082,7 +1254,6 @@ function onStep2ListSelect(modelName, unitStr, force, tieBar, minH, maxH) {
 
     closeStep2UnitsFlyout();
     renderStep2Specs();
-    updateSelectedMachineModelFromStep2();
 
     const errEl = document.getElementById('step2ListError');
     if (errEl) { errEl.style.display = 'none'; errEl.textContent = ''; }
@@ -1117,15 +1288,13 @@ function addAnotherStep2Model() {
 // Przycisk kosza - usuwa cały typ maszyny (dany slot) z listy wybranych
 // konfiguracji. Jeśli był to ostatni pozostały slot, zostawiamy jeden pusty
 // placeholder (tak jak na starcie), żeby panel po prawej nigdy nie zniknął
-// całkowicie. Po usunięciu trzeba też odświeżyć "główny" wybór dla Kroku 3/4,
-// bo mógł zniknąć właśnie pierwszy (główny) slot.
+// całkowicie.
 function removeStep2Model(slotIndex) {
     step2Selections.splice(slotIndex, 1);
     if (step2Selections.length === 0) {
         step2Selections.push(null);
     }
     renderStep2Specs();
-    updateSelectedMachineModelFromStep2();
 }
 
 // Rozwija/zwija pełną specyfikację techniczną (3 kolumny: Wtrysk/Zwarcie/
@@ -1285,13 +1454,24 @@ function renderStep2TechColumns(modelName, unitStr) {
 }
 
 // Odtwarza panel "najważniejszych danych" po prawej stronie na podstawie
-// step2Selections - jedna karta na slot (placeholder, jeśli jeszcze pusty),
-// a pod nimi zawsze pulsujący przycisk "+ Dodaj kolejny model".
+// step2Selections - jedna karta na slot (placeholder, jeśli jeszcze pusty).
+// Używana WYŁĄCZNIE przez ścieżkę "wybierz z listy" (wpisuje się do
+// #step2ListSpecs) - pod kartami dodatkowo pojawia się pulsujący przycisk
+// "+ Dodaj kolejny model". Ścieżka "dane technologiczne" ma od teraz własny,
+// analogiczny mechanizm (patrz renderStep2TechInlineSpec niżej) - karta z
+// danymi każdej maszyny jest tam renderowana bezpośrednio w jej oknie
+// kalkulatora, obok wyników, a nie w osobnym panelu po prawej stronie strony.
 function renderStep2Specs() {
+    if (step2SubView === 'tech') {
+        step2TechBlockIds.forEach(techId => renderStep2TechInlineSpec(techId));
+        return;
+    }
+
     const specsContainer = document.getElementById('step2ListSpecs');
     if (!specsContainer) return;
 
     const typeData = machineData[selectedMachineType];
+    const placeholderText = 'Wybierz wtryskarkę z listy<span class="step2-desktop-only-text"> po lewej</span>, aby zobaczyć jej najważniejsze dane.';
     let html = '';
 
     step2Selections.forEach((slot, i) => {
@@ -1317,7 +1497,7 @@ function renderStep2Specs() {
             html += `
                 <div class="step2-spec-card is-placeholder" data-slot="${i}">
                     ${removeBtn}
-                    <p class="step2-list-specs-placeholder">Wybierz wtryskarkę z listy po lewej, aby zobaczyć jej najważniejsze dane.</p>
+                    <p class="step2-list-specs-placeholder">${placeholderText}</p>
                 </div>`;
             return;
         }
@@ -1372,47 +1552,60 @@ function renderStep2Specs() {
     });
 }
 
-// Ustawia <select id="selected_machine_model"> na podstawie pierwszego
-// wypełnionego slotu z step2Selections - Krok 3 i Krok 4 pracują zawsze na
-// tym jednym, "głównym" wyborze, niezależnie od tego, ile dodatkowych modeli
-// użytkownik dodał na liście w Kroku 2.
-function updateSelectedMachineModelFromStep2() {
-    const selectEl = document.getElementById('selected_machine_model');
-    if (!selectEl) return;
+// Wypełnia kartę z danymi wybranej maszyny (nazwa modelu, licznik sztuk,
+// najważniejsze parametry, przycisk pełnej specyfikacji technicznej) w
+// obrębie danego okna kalkulatora - #techInlineSpec_t{techId}, obok "Wyniki
+// obliczeń technologicznych" (patrz .step2-tech-results-row w style.css).
+// Dokładny odpowiednik karty ".step2-spec-card" używanej w ścieżce "wybierz
+// z listy" (patrz renderStep2Specs powyżej), tyle że renderowany bezpośrednio
+// w oknie kalkulatora zamiast w osobnym panelu po prawej stronie strony -
+// zgodnie z życzeniem klienta, żeby wszystko było w jednym oknie razem z
+// "Dane technologiczne". Pierwsze okno (techId 0) nie ma przycisku kosza -
+// dokładnie tak samo jak w nagłówku samego okna kalkulatora (patrz trashBtn
+// w renderStep2TechBlockHtml) - więc tutaj nie jest powielany.
+function renderStep2TechInlineSpec(techId) {
+    const card = document.getElementById('techInlineSpec_t' + techId);
+    if (!card) return;
 
-    const primary = step2Selections.find(s => s);
-    if (!primary) {
-        selectEl.innerHTML = '';
-        machineSelectionSource = null;
+    const pos = step2TechBlockIds.indexOf(techId);
+    const slot = pos !== -1 ? step2Selections[pos] : null;
+    if (!slot) {
+        card.innerHTML = '';
         return;
     }
 
-    selectEl.innerHTML = '';
-    const opt = document.createElement('option');
-    opt.value = `${primary.modelName} – agregat wtryskowy ${primary.unitStr}`;
-    opt.dataset.model = primary.modelName;
-    opt.dataset.unit = primary.unitStr;
-    opt.textContent = `${primary.modelName}  (siła zwarcia: ${primary.force} T)  →  ${primary.unitStr}`;
-    opt.selected = true;
-    selectEl.appendChild(opt);
+    const typeData = machineData[selectedMachineType];
+    const screwMatch = slot.unitStr.match(/\((\d+)\s*mm\)/i);
+    const screwDiameter = screwMatch ? `${screwMatch[1]} mm` : '–';
+    const agregat = formatStep2AgregatLabel(slot.unitStr);
 
-    machineSelectionSource = 'list';
-    lastCalculationResults = null;
-}
-
-// Walidacja przed przejściem dalej ścieżką "wybierz z listy" (odpowiednik
-// sprawdzenia wykonywanego dla ścieżki z danymi technologicznymi).
-function goToStep3FromList() {
-    const selectEl = document.getElementById('selected_machine_model');
-    if (!selectEl || !selectEl.value || machineSelectionSource !== 'list') {
-        const errEl = document.getElementById('step2ListError');
-        if (errEl) {
-            errEl.textContent = 'Wybierz wtryskarkę z listy, aby przejść dalej.';
-            errEl.style.display = 'block';
-        }
-        return;
-    }
-    nextStep(3);
+    card.innerHTML = `
+        <div class="step2-spec-card-header">
+            <div class="step2-spec-card-titles">
+                <h3>${slot.modelName}</h3>
+                <p class="step2-list-specs-sub">${typeData ? typeData.label : ''} — ${agregat}</p>
+            </div>
+            <div class="step2-qty-stepper">
+                <button type="button" class="step2-qty-btn" onclick="changeStep2Qty(${pos}, -1)" aria-label="Zmniejsz liczbę maszyn">−</button>
+                <input type="text" inputmode="numeric" class="step2-qty-input" value="${slot.qty}" onchange="setStep2Qty(${pos}, this.value)">
+                <button type="button" class="step2-qty-btn" onclick="changeStep2Qty(${pos}, 1)" aria-label="Zwiększ liczbę maszyn">+</button>
+            </div>
+        </div>
+        <ul class="step2-list-specs-table">
+            <li><span>Siła zwarcia</span><strong>${slot.force} ton</strong></li>
+            <li><span>Agregat wtryskowy</span><strong>${agregat}</strong></li>
+            <li><span>Średnica ślimaka</span><strong>${screwDiameter}</strong></li>
+            ${slot.tieBar ? `<li><span>Prześwit między kolumnami</span><strong>${slot.tieBar} mm</strong></li>` : ''}
+            <li><span>Min. wysokość formy</span><strong>${slot.minH} mm</strong></li>
+            <li><span>Maks. wysokość formy</span><strong>${slot.maxH} mm</strong></li>
+        </ul>
+        ${machineTechSpecs[slot.modelName] && machineTechSpecs[slot.modelName].units[slot.unitStr] ? `
+        <button type="button" class="step2-details-toggle${slot.detailsExpanded ? ' is-expanded' : ''}" onclick="toggleStep2Details(${pos})" aria-expanded="${slot.detailsExpanded ? 'true' : 'false'}">
+            <span>${slot.detailsExpanded ? 'Ukryj pełną specyfikację techniczną' : 'Pokaż pełną specyfikację techniczną'}</span>
+            <svg class="step2-details-toggle-arrow" viewBox="0 0 12 8" width="12" height="8" aria-hidden="true"><polygon points="0,0 12,0 6,8" fill="currentColor"></polygon></svg>
+        </button>
+        ${slot.detailsExpanded ? (renderStep2TechColumns(slot.modelName, slot.unitStr) || '') : ''}` : ''}
+    `;
 }
 
 // -------------------- Nawigacja między krokami --------------------
@@ -1431,8 +1624,16 @@ function nextStep(step, targetView) {
         if (step === 2) resetStep2ForType(targetView);
     }
 
-    if (step >= 3 && !(document.getElementById('selected_machine_model').value && (lastCalculationResults || machineSelectionSource === 'list'))) {
-        showCalcError('Najpierw kliknij przycisk „DOBIERZ WTRYSKARKĘ” i wybierz konkretny model oraz agregat wtryskowy, albo wybierz wtryskarkę z listy.');
+    // Wspólna walidacja dla obu ścieżek Kroku 2 - wystarczy przynajmniej
+    // jeden wypełniony slot w step2Selections (czy to wynik kalkulatora,
+    // czy wybór bezpośrednio z listy modeli).
+    if (step >= 3 && !step2Selections.some(s => s)) {
+        if (step2SubView === 'list') {
+            const errEl = document.getElementById('step2ListError');
+            if (errEl) { errEl.textContent = 'Wybierz wtryskarkę z listy, aby przejść dalej.'; errEl.style.display = 'block'; }
+        } else {
+            showCalcError('Najpierw kliknij przycisk „DOBIERZ WTRYSKARKĘ” i wybierz rozmiar agregatu wtryskowego, aby przejść dalej.', 'step2TechNavError');
+        }
         return;
     }
 
@@ -1448,29 +1649,226 @@ function nextStep(step, targetView) {
     if (currentStep === 4) populateStep4Summary();
 }
 
-function showCalcError(msg) {
-    const el = document.getElementById('calcError');
+function showCalcError(msg, elId) {
+    const el = document.getElementById(elId || 'calcError');
     if (!el) { alert(msg); return; }
     el.textContent = msg;
     el.style.display = 'block';
 }
 
-function clearCalcError() {
-    const el = document.getElementById('calcError');
+function clearCalcError(elId) {
+    const el = document.getElementById(elId || 'calcError');
     if (el) { el.style.display = 'none'; el.textContent = ''; }
 }
 
-// -------------------- Obsługa wyboru tworzywa --------------------
+// -------------------- Krok 2 (dane technologiczne): "okna kalkulatora" --------------------
+//
+// Ścieżka "dane technologiczne" pozwala dodać więcej niż jedną maszynę -
+// każda ma WŁASNE "okno kalkulatora" (własny formularz + własny wynik),
+// dokładnie tak jak ścieżka "wybierz z listy" pozwala dodać więcej niż jeden
+// model przyciskiem "+ Dodaj kolejny model". step2TechBlockIds[i] to stabilny
+// numer danego okna (patrz deklaracja step2TechBlockIds wyżej) - pola
+// formularza mają id zakończone na "_t<numer>" (np. "mold_length_t0").
 
-function handleMaterialChange() {
-    const sel = document.getElementById('material_select');
-    const disp = document.getElementById('density_value');
+// Buduje ścieżkę "dane technologiczne" od zera (wywoływane przy każdorazowym
+// wejściu do Kroku 2 tą ścieżką) - czyści poprzednie okna i tworzy jedno,
+// puste okno kalkulatora.
+function buildStep2TechPath() {
+    const container = document.getElementById('step2TechBlocks');
+    if (!container) return;
+
+    step2Selections = [];
+    step2TechBlockIds = [];
+    step2TechNextId = 0;
+    container.innerHTML = '';
+
+    const addBtn = document.createElement('button');
+    addBtn.type = 'button';
+    addBtn.className = 'step2-add-model-btn';
+    addBtn.onclick = addStep2TechBlock;
+    addBtn.innerHTML = '<span class="pulse-plus">+</span> Dodaj kolejny model';
+    container.appendChild(addBtn);
+
+    addStep2TechBlock();
+}
+
+// Przycisk "+ Dodaj kolejny model" (pod obliczeniami) - dokłada kolejne,
+// puste okno kalkulatora tuż przed samym przyciskiem (który zawsze zostaje
+// na końcu), nie ruszając istniejących okien (i wpisanych już w nich danych).
+function addStep2TechBlock() {
+    const container = document.getElementById('step2TechBlocks');
+    if (!container) return;
+
+    const id = step2TechNextId++;
+    step2TechBlockIds.push(id);
+    step2Selections.push(null);
+
+    const wrapper = document.createElement('div');
+    wrapper.className = 'step2-tech-block';
+    wrapper.dataset.techId = id;
+    wrapper.innerHTML = renderStep2TechBlockHtml(id);
+
+    const addBtn = container.querySelector('.step2-add-model-btn');
+    if (addBtn) {
+        container.insertBefore(wrapper, addBtn);
+    } else {
+        container.appendChild(wrapper);
+    }
+
+    populateMaterialSelect(id);
+    renderStep2Specs();
+}
+
+// Kosz w nagłówku okna (poza pierwszym) - usuwa całe okno kalkulatora wraz z
+// odpowiadającą mu maszyną w panelu po prawej. Pozostałe okna (i wpisane w
+// nich dane) zostają nietknięte - usuwany jest tylko ten jeden element DOM.
+function removeStep2TechBlock(techId) {
+    const pos = step2TechBlockIds.indexOf(techId);
+    if (pos === -1) return;
+
+    step2TechBlockIds.splice(pos, 1);
+    step2Selections.splice(pos, 1);
+
+    const blockEl = document.querySelector(`.step2-tech-block[data-tech-id="${techId}"]`);
+    if (blockEl) blockEl.remove();
+
+    renderStep2Specs();
+}
+
+// Znacznik jednego okna kalkulatora - formularz identyczny jak wcześniej
+// (Wymiary formy / Wymiary wypraski / Materiał), tylko z polami
+// zaindeksowanymi numerem okna, plus wynik: "Sugerowany model" (sam model,
+// dobrany automatycznie) i wybór rozmiaru agregatu wtryskowego - WYŁĄCZNIE
+// spośród agregatów należących do tego jednego, sugerowanego modelu.
+function renderStep2TechBlockHtml(id) {
+    const trashBtn = id !== 0 ? `
+        <button type="button" class="step2-remove-btn" onclick="removeStep2TechBlock(${id})" aria-label="Usuń tę maszynę" title="Usuń tę maszynę">
+            <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 7 20 7"></polyline><path d="M6 7l1 13a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2l1-13"></path><path d="M9 7V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v3"></path></svg>
+        </button>` : '';
+
+    return `
+        <div class="step2-tech-block-header">
+            <h3>Dane technologiczne</h3>
+            ${trashBtn}
+        </div>
+
+        <div class="form-grid">
+
+            <div class="form-section">
+                <h3>Wymiary formy</h3>
+                <div class="form-group">
+                    <label>Długość formy [mm]</label>
+                    <input type="number" id="mold_length_t${id}" min="0" placeholder="np. 400">
+                </div>
+                <div class="form-group">
+                    <label>Szerokość formy [mm]</label>
+                    <input type="number" id="mold_width_t${id}" min="0" placeholder="np. 350">
+                </div>
+                <div class="form-group">
+                    <label>Dostępny prześwit między kolumnami [mm] <span class="required-star">*</span></label>
+                    <input type="number" id="tie_bar_clearance_t${id}" min="0" placeholder="np. 620">
+                </div>
+                <div class="form-group">
+                    <label>Wysokość (grubość) formy [mm] <span class="opt-label">(opcjonalnie)</span></label>
+                    <input type="number" id="mold_height_t${id}" min="0" placeholder="np. 500">
+                </div>
+                <div class="form-group">
+                    <label>Liczba gniazd formy (wyprasek na cykl) <span class="required-star">*</span></label>
+                    <input type="number" id="cavities_t${id}" min="1" step="1" value="1">
+                </div>
+            </div>
+
+            <div class="form-section">
+                <h3>Wymiary wypraski</h3>
+                <div class="form-group">
+                    <label>Masa detalu m [g] <span class="required-star">*</span></label>
+                    <input type="number" id="part_weight_t${id}" min="0" step="0.01" placeholder="np. 25">
+                </div>
+                <div class="form-group">
+                    <label>Powierzchnia wypraski F [cm²] <span class="required-star">*</span></label>
+                    <input type="number" id="part_surface_t${id}" min="0" step="0.1" placeholder="np. 45">
+                </div>
+                <div class="form-group">
+                    <label>Grubość ścianki [mm] <span class="opt-label">(opcjonalnie)</span></label>
+                    <input type="number" id="wall_thickness_t${id}" min="0" step="0.1" placeholder="np. 2.0">
+                </div>
+                <div class="form-group checkbox-inline">
+                    <label><input type="checkbox" id="has_fillets_t${id}"> Zaokrąglenia krawędzi</label>
+                    <label><input type="checkbox" id="has_ribs_t${id}"> Żebra usztywniające</label>
+                </div>
+            </div>
+
+            <div class="form-section">
+                <h3>Materiał</h3>
+                <div class="form-group">
+                    <label>Rodzaj tworzywa <span class="required-star">*</span></label>
+                    <select id="material_select_t${id}" onchange="handleMaterialChange(${id})"></select>
+                </div>
+                <div class="form-group density-row">
+                    <label>Gęstość wybranego tworzywa [g/cm³]</label>
+                    <div class="density-row-inner">
+                        <input type="number" step="0.01" id="density_value_t${id}" readonly>
+                        <button type="button" class="btn-secondary btn-small" id="toggleCustomDensityBtn_t${id}" onclick="toggleCustomDensity(${id})">Inna gęstość</button>
+                    </div>
+                </div>
+                <div class="form-group" id="custom_density_group_t${id}" style="display:none;">
+                    <label>Własna gęstość [g/cm³]</label>
+                    <input type="number" step="0.01" id="custom_density_t${id}" placeholder="np. 1.15">
+                </div>
+                <div class="form-group">
+                    <label>Współczynnik ciśnienia w gnieździe formy k <span class="opt-label">(×100 kg/cm², typowo 3–8)</span></label>
+                    <input type="number" id="k_factor_t${id}" value="6" min="1" max="12" step="0.5">
+                </div>
+            </div>
+
+        </div>
+
+        <div class="action-calc-bar">
+            <button type="button" class="btn-primary btn-wave" onclick="calculateAndShowModels(${id})"><span class="btn-wave-label">DOBIERZ WTRYSKARKĘ</span></button>
+        </div>
+
+        <div id="calcError_t${id}" class="calc-error" style="display:none;"></div>
+
+        <!-- Wyniki obliczeń (po lewej) i karta z danymi wybranej maszyny
+             (po prawej, przeniesiona tutaj z panelu po prawej stronie strony -
+             patrz renderStep2TechInlineSpec w script.js) - obie w jednym
+             wierszu, w obrębie tego samego okna kalkulatora ("Dane
+             technologiczne"), pokazywane/ukrywane razem. -->
+        <div class="step2-tech-results-row" id="resultsSection_t${id}" style="display:none;">
+            <div class="results-box">
+                <div class="step2-suggested-model step2-suggested-model-top">
+                    <span class="step2-suggested-model-label">Sugerowany model:</span>
+                    <strong class="step2-suggested-model-name" id="suggestedModelName_t${id}">–</strong>
+                </div>
+                <div class="form-group">
+                    <label>Wybierz rozmiar agregatu wtryskowego</label>
+                    <select id="selected_agregat_t${id}" class="large-select" onchange="onTechAgregatChange(${id}, this.value)"></select>
+                </div>
+                <div class="calc-details" id="calcDetails_t${id}"></div>
+            </div>
+            <div class="step2-spec-card" id="techInlineSpec_t${id}"></div>
+        </div>
+    `;
+}
+
+// -------------------- Obsługa wyboru tworzywa (per okno kalkulatora) --------------------
+
+function populateMaterialSelect(id) {
+    const sel = document.getElementById('material_select_t' + id);
+    if (!sel) return;
+    sel.innerHTML = materialsData.map(m => `<option value="${m.density}">${m.label} (${m.density.toFixed(2)} g/cm³)</option>`).join('');
+    handleMaterialChange(id);
+}
+
+function handleMaterialChange(id) {
+    const sel = document.getElementById('material_select_t' + id);
+    const disp = document.getElementById('density_value_t' + id);
     if (sel && disp) disp.value = parseFloat(sel.value).toFixed(2);
 }
 
-function toggleCustomDensity() {
-    const group = document.getElementById('custom_density_group');
-    const btn = document.getElementById('toggleCustomDensityBtn');
+function toggleCustomDensity(id) {
+    const group = document.getElementById('custom_density_group_t' + id);
+    const btn = document.getElementById('toggleCustomDensityBtn_t' + id);
     const showing = group.style.display !== 'none' && group.style.display !== '';
     if (showing) {
         group.style.display = 'none';
@@ -1478,41 +1876,49 @@ function toggleCustomDensity() {
     } else {
         group.style.display = 'block';
         btn.textContent = 'Użyj gęstości z listy';
-        document.getElementById('custom_density').focus();
+        document.getElementById('custom_density_t' + id).focus();
     }
 }
 
-function getSelectedDensity() {
-    const customGroup = document.getElementById('custom_density_group');
+function getSelectedDensity(id) {
+    const customGroup = document.getElementById('custom_density_group_t' + id);
     if (customGroup && customGroup.style.display === 'block') {
-        const v = parseFloat(document.getElementById('custom_density').value);
+        const v = parseFloat(document.getElementById('custom_density_t' + id).value);
         if (!isNaN(v) && v > 0) return v;
     }
-    return parseFloat(document.getElementById('material_select').value) || 1.0;
+    return parseFloat(document.getElementById('material_select_t' + id).value) || 1.0;
 }
 
-// -------------------- Obliczenia (Krok 2) --------------------
+// -------------------- Obliczenia (Krok 2, ścieżka "dane technologiczne") --------------------
 // Wzory wg materiału "Dobór Wtryskarek":
 //   V_wtr = m / rho                 (objętość wtrysku pojedynczej wypraski)
 //   P_s   = (m_T * g * k) / 1000    (orientacyjna siła zwarcia wg wzoru masowego, kN)
 // Do praktycznego doboru maszyny (siła zwarcia w tonach) stosuje się przybliżenie
 // inżynierskie oparte na powierzchni rzutu wypraski i ciśnieniu specyficznym w gnieździe:
 //   F [ton] = F_wypraski[cm2] * liczba_gniazd * p_specyficzne[kg/cm2] / 1000
+//
+// Spośród modeli spełniających wymaganą siłę zwarcia (i pozostałe warunki)
+// jako "sugerowany" traktowany jest pierwszy z nich (modele w machineData są
+// uporządkowane rosnąco wg tonażu) - czyli najmniejszy model, który wystarcza.
+// Lista "Wybierz rozmiar agregatu wtryskowego" pokazuje WYŁĄCZNIE agregaty
+// należące do tego jednego modelu (a nie wszystkich pasujących modeli, jak
+// poprzednio).
 
-function calculateAndShowModels() {
-    clearCalcError();
+function calculateAndShowModels(id) {
+    clearCalcError('calcError_t' + id);
 
-    const cavities = parseInt(document.getElementById('cavities').value) || 0;
-    const partWeight = parseFloat(document.getElementById('part_weight').value) || 0; // g
-    const partSurface = parseFloat(document.getElementById('part_surface').value) || 0; // cm2
-    const tieClearance = parseFloat(document.getElementById('tie_bar_clearance').value) || 0; // mm
-    const moldHeight = parseFloat(document.getElementById('mold_height').value) || 0; // mm (opcjonalne)
-    const kFactor = parseFloat(document.getElementById('k_factor').value) || 6; // x100 kg/cm2
-    const density = getSelectedDensity(); // g/cm3
+    const cavities = parseInt(document.getElementById('cavities_t' + id).value) || 0;
+    const partWeight = parseFloat(document.getElementById('part_weight_t' + id).value) || 0; // g
+    const partSurface = parseFloat(document.getElementById('part_surface_t' + id).value) || 0; // cm2
+    const tieClearance = parseFloat(document.getElementById('tie_bar_clearance_t' + id).value) || 0; // mm
+    const moldHeight = parseFloat(document.getElementById('mold_height_t' + id).value) || 0; // mm (opcjonalne)
+    const kFactor = parseFloat(document.getElementById('k_factor_t' + id).value) || 6; // x100 kg/cm2
+    const density = getSelectedDensity(id); // g/cm3
 
     if (cavities <= 0 || partWeight <= 0 || partSurface <= 0 || tieClearance <= 0) {
-        showCalcError('Uzupełnij wymagane pola oznaczone gwiazdką (*): liczba gniazd, masa i powierzchnia wypraski oraz dostępny prześwit między kolumnami.');
-        document.getElementById('resultsSection').style.display = 'none';
+        showCalcError('Uzupełnij wymagane pola oznaczone gwiazdką (*): liczba gniazd, masa i powierzchnia wypraski oraz dostępny prześwit między kolumnami.', 'calcError_t' + id);
+        const resultsEl = document.getElementById('resultsSection_t' + id);
+        if (resultsEl) resultsEl.style.display = 'none';
         return;
     }
 
@@ -1552,42 +1958,90 @@ function calculateAndShowModels() {
     }
 
     const modelsToDisplay = suitableModels.length > 0 ? suitableModels : typeData.models;
+    const suggestedModel = modelsToDisplay[0];
 
-    const calcDiv = document.getElementById('calcDetails');
+    const calcDiv = document.getElementById('calcDetails_t' + id);
     calcDiv.innerHTML = `
-        <p><strong>Wyniki obliczeń technologicznych (${typeData.label}):</strong></p>
         <ul>
             <li>Objętość wtrysku pojedynczej wypraski (V<sub>wtr</sub> = m / ρ): <strong>${singleVwtr.toFixed(2)} cm³</strong></li>
             <li>Całkowita objętość wtrysku dla ${cavities} gniazd/a: <strong>${totalVwtr.toFixed(2)} cm³</strong></li>
             <li>Całkowita masa wtrysku: <strong>${totalWeight.toFixed(2)} g</strong></li>
             <li>Wymagana minimalna siła zwarcia (metoda powierzchniowa, p = ${specificPressure} kg/cm²): <strong>${requiredForceTon.toFixed(1)} ton</strong></li>
-            <li>Orientacyjna siła zwarcia wg uproszczonego wzoru masowego P<sub>s</sub> = m·g·k/1000 (wartość informacyjna wg materiału szkoleniowego, k=${docK}): <strong>${psDocN.toFixed(2)} N</strong></li>
+            <li>Orientacyjna siła zwarcia wg uproszczonego wzoru masowego P<sub>s</sub> = m·g·k/1000: <strong>${psDocN.toFixed(2)} N</strong></li>
             <li>Wymagany prześwit między kolumnami: min. <strong>${tieClearance} mm</strong></li>
             ${moldHeight > 0 ? `<li>Wysokość formy: <strong>${moldHeight} mm</strong></li>` : ''}
         </ul>
-        ${usedFallback ? '<p class="calc-warning">Uwaga: żaden model nie spełnia jednocześnie podanej wysokości formy — pokazano modele dobrane wyłącznie wg siły zwarcia i prześwitu. Zweryfikuj wysokość formy z działem technicznym.</p>' : ''}
+        ${usedFallback ? '<p class="calc-warning">Uwaga: żaden model nie spełnia jednocześnie podanej wysokości formy — pokazano model dobrany wyłącznie wg siły zwarcia i prześwitu. Zweryfikuj wysokość formy z działem technicznym.</p>' : ''}
     `;
 
-    const selectEl = document.getElementById('selected_machine_model');
-    selectEl.innerHTML = '';
-    modelsToDisplay.forEach(m => {
-        m.units.forEach(unit => {
-            const opt = document.createElement('option');
-            opt.value = `${m.name} – agregat wtryskowy ${unit}`;
-            opt.dataset.model = m.name;
-            opt.dataset.unit = unit;
-            opt.textContent = `${m.name}  (siła zwarcia: ${m.force} T)  →  ${unit}`;
-            selectEl.appendChild(opt);
-        });
-    });
+    document.getElementById('suggestedModelName_t' + id).textContent = suggestedModel.name;
 
-    lastCalculationResults = {
+    const agregatSelect = document.getElementById('selected_agregat_t' + id);
+    agregatSelect.innerHTML = suggestedModel.units.map(unit => {
+        const agregat = formatStep2AgregatLabel(unit);
+        const screwMatch = unit.match(/\((\d+)\s*mm\)/i);
+        const screwDiameter = screwMatch ? screwMatch[1] : '–';
+        return `<option value="${unit}">${agregat} (Ø${screwDiameter} mm)</option>`;
+    }).join('');
+
+    const materialLabel = document.getElementById('material_select_t' + id).selectedOptions[0].textContent;
+    const moldLength = document.getElementById('mold_length_t' + id).value || '–';
+    const moldWidth = document.getElementById('mold_width_t' + id).value || '–';
+    const wallThickness = document.getElementById('wall_thickness_t' + id).value || '–';
+
+    const techResults = {
         singleVwtr, totalVwtr, totalWeight, requiredForceTon, psDocN,
         cavities, partWeight, partSurface, density, tieClearance, moldHeight,
-        selectedType: selectedMachineType
+        moldLength, moldWidth, wallThickness, materialLabel
     };
 
-    document.getElementById('resultsSection').style.display = 'block';
+    // Pokazuje wiersz z wynikami (Wyniki obliczeń + karta z danymi maszyny)
+    // PRZED wypełnieniem go treścią poniżej (applyTechSelection -> renderStep2Specs).
+    document.getElementById('resultsSection_t' + id).style.display = 'grid';
+
+    applyTechSelection(id, suggestedModel, agregatSelect.value, techResults);
+}
+
+// Zapisuje wybór (model + agregat) danego okna kalkulatora do step2Selections
+// (na tej samej pozycji, na której znajduje się jego techId w
+// step2TechBlockIds) - dokładnie w takim samym kształcie, co sloty ścieżki
+// "wybierz z listy" (patrz onStep2ListSelect), dzięki czemu Krok 3, Krok 4
+// i panel po prawej działają identycznie niezależnie od wybranej ścieżki w
+// Kroku 2. Dodatkowo zapamiętuje snapshot obliczeń technologicznych
+// (techResults) - wykorzystywany w Kroku 4 oraz w mailu z konfiguracją.
+function applyTechSelection(techId, model, unitStr, techResults) {
+    const pos = step2TechBlockIds.indexOf(techId);
+    if (pos === -1) return;
+
+    const existing = step2Selections[pos];
+    const existingQty = (existing && existing.qty) || 1;
+    const existingOptions = (existing && existing.selectedOptions) || [];
+
+    step2Selections[pos] = {
+        modelName: model.name,
+        unitStr,
+        force: model.force,
+        tieBar: model.tieBar,
+        minH: model.minH,
+        maxH: model.maxH,
+        qty: existingQty,
+        detailsExpanded: false,
+        selectedOptions: existingOptions,
+        optionsExpanded: false,
+        techId,
+        techResults
+    };
+
+    renderStep2Specs();
+}
+
+// Zmiana wybranego rozmiaru agregatu (bez ponownego przeliczania) - np. gdy
+// klient chce inny wariant średnicy ślimaka tego samego, sugerowanego modelu.
+function onTechAgregatChange(techId, unitStr) {
+    const pos = step2TechBlockIds.indexOf(techId);
+    if (pos === -1 || !step2Selections[pos]) return;
+    step2Selections[pos].unitStr = unitStr;
+    renderStep2Specs();
 }
 
 // -------------------- Wspólne: wyróżniony pasek z wybraną wtryskarką i średnicą ślimaka --------------------
@@ -1603,57 +2057,36 @@ function buildMachineHighlightInnerHtml(modelName, screwDiameter) {
     `;
 }
 
-// Zwraca listę wszystkich skonfigurowanych maszyn dla Kroku 3/4. Dla ścieżki
-// "wybierz z listy" to WSZYSTKIE wypełnione sloty z step2Selections (klient
-// mógł dodać kilka różnych modeli/agregatów - patrz "+ Dodaj kolejny model"
-// w Kroku 2); dla ścieżki "dane technologiczne" to zawsze dokładnie jedna
-// maszyna, zbudowana na podstawie <select id="selected_machine_model">. Każdy
-// wpis ma WŁASNĄ listę wybranych opcji dodatkowych (selectedOptions) oraz
-// stan rozwinięcia tej listy w Kroku 3 (optionsExpanded) - dzięki temu klient
-// może wybrać różne opcje dla różnych typów wtryskarek w tym samym
-// zamówieniu. "slotRef" to referencja do oryginalnego obiektu (slotu z
-// step2Selections albo techPathMachine), żeby zmiany (checkboxy, rozwijanie,
-// "zastosuj do wszystkich") od razu zapisywały się z powrotem.
+// Zwraca listę wszystkich skonfigurowanych maszyn dla Kroku 3/4 - WSZYSTKIE
+// wypełnione sloty z step2Selections, niezależnie od tego, którą ścieżką
+// Kroku 2 powstały (klient mógł dodać kilka różnych modeli/agregatów, zarówno
+// przyciskiem "+ Dodaj kolejny model" przy wyborze z listy, jak i dodając
+// kolejne "okna kalkulatora" w ścieżce "dane technologiczne"). Każdy wpis ma
+// WŁASNĄ listę wybranych opcji dodatkowych (selectedOptions), stan rozwinięcia
+// tej listy w Kroku 3 (optionsExpanded) oraz - jeśli pochodzi z kalkulatora -
+// snapshot obliczeń technologicznych (techResults, patrz applyTechSelection).
+// "slotRef" to referencja do oryginalnego slotu z step2Selections, żeby zmiany
+// (checkboxy, rozwijanie, "zastosuj do wszystkich") od razu zapisywały się
+// z powrotem.
 function getConfiguredMachines() {
-    if (machineSelectionSource === 'list') {
-        return step2Selections
-            .map((slot, idx) => (slot ? { slot, idx } : null))
-            .filter(Boolean)
-            .map(({ slot, idx }) => {
-                if (!slot.selectedOptions) slot.selectedOptions = [];
-                const screwMatch = slot.unitStr.match(/\((\d+)\s*mm\)/i);
-                return {
-                    idx,
-                    modelName: slot.modelName,
-                    unitStr: slot.unitStr,
-                    qty: slot.qty || 1,
-                    screwDiameter: screwMatch ? `${screwMatch[1]} mm` : '–',
-                    selectedOptions: slot.selectedOptions,
-                    optionsExpanded: !!slot.optionsExpanded,
-                    slotRef: slot
-                };
-            });
-    }
-
-    // Ścieżka "dane technologiczne" - zawsze dokładnie jedna maszyna.
-    const selectEl = document.getElementById('selected_machine_model');
-    const opt = selectEl ? selectEl.selectedOptions[0] : null;
-    if (!opt || !opt.dataset.model) return [];
-
-    if (!techPathMachine || techPathMachine.modelName !== opt.dataset.model || techPathMachine.unitStr !== opt.dataset.unit) {
-        techPathMachine = { modelName: opt.dataset.model, unitStr: opt.dataset.unit, selectedOptions: [] };
-    }
-    const screwMatch = (opt.dataset.unit || '').match(/\((\d+)\s*mm\)/i);
-    return [{
-        idx: 0,
-        modelName: techPathMachine.modelName,
-        unitStr: techPathMachine.unitStr,
-        qty: 1,
-        screwDiameter: screwMatch ? `${screwMatch[1]} mm` : '–',
-        selectedOptions: techPathMachine.selectedOptions,
-        optionsExpanded: true,
-        slotRef: techPathMachine
-    }];
+    return step2Selections
+        .map((slot, idx) => (slot ? { slot, idx } : null))
+        .filter(Boolean)
+        .map(({ slot, idx }) => {
+            if (!slot.selectedOptions) slot.selectedOptions = [];
+            const screwMatch = slot.unitStr.match(/\((\d+)\s*mm\)/i);
+            return {
+                idx,
+                modelName: slot.modelName,
+                unitStr: slot.unitStr,
+                qty: slot.qty || 1,
+                screwDiameter: screwMatch ? `${screwMatch[1]} mm` : '–',
+                selectedOptions: slot.selectedOptions,
+                optionsExpanded: !!slot.optionsExpanded,
+                techResults: slot.techResults || null,
+                slotRef: slot
+            };
+        });
 }
 
 // -------------------- Krok 3: wyposażenie standardowe i opcje --------------------
@@ -1665,6 +2098,126 @@ function formatNumbered(text) {
     if (!m) return `<span class="opt-text">${text}</span>`;
     return `<span class="opt-num">${m[1]}</span><span class="opt-text">${m[2]}</span>`;
 }
+
+// Atrybuty dopisywane do każdego <li> "Wyposażenia standardowego" (patrz
+// populateStep3 niżej), żeby dymek z tłumaczeniem działał tam identycznie
+// jak dla checkboxów "Opcji dodatkowych" (te mają te same nasłuchiwacze
+// wpięte przez addEventListener - patrz renderStep3OptionsContainer).
+function step3TooltipAttrs() {
+    return ' onmouseenter="showStep3OptionTooltip(this)" onmouseleave="hideStep3OptionTooltip()" onclick="showStep3OptionTooltip(this)"';
+}
+
+// Aktualnie otwarty "wyzwalacz" dymka (wiersz/checkbox, nad którym dymek
+// jest pokazany) - potrzebny, żeby kliknięcie poza nim zamykało dymek
+// (patrz nasłuchiwacz "click" na document niżej), tak samo jak w przypadku
+// wysuwanego menu agregatów w Kroku 2 (closeStep2UnitsFlyout).
+let step3TooltipOpenTrigger = null;
+
+// Pokazuje jeden, wspólny dymek z polskim tłumaczeniem danej pozycji z
+// katalogu - sama lista w Kroku 3 (Wyposażenie standardowe / Opcje
+// dodatkowe) zostaje po angielsku, zgodnie z oryginalnym katalogiem
+// producenta; tłumaczenie pojawia się dopiero po najechaniu/dotknięciu, w
+// jednym dymku stylowanym podobnie do wysuwanego menu agregatów w Kroku 2
+// ("Proszę wybrać z listy", patrz #step2UnitsFlyout w CSS). Działa zarówno
+// dla wierszy Wyposażenia standardowego (<li>), jak i checkboxów Opcji
+// dodatkowych (<label class="checkbox-item">) - obie struktury mają w
+// środku ten sam <span class="opt-text"> z angielskim opisem, który służy
+// tu jako klucz do słownika OPTION_TRANSLATIONS.
+function showStep3OptionTooltip(triggerEl) {
+    const tooltip = document.getElementById('step3OptionTooltip');
+    if (!tooltip || !triggerEl) return;
+
+    const textEl = triggerEl.querySelector('.opt-text');
+    const key = (textEl ? textEl.textContent : triggerEl.textContent).trim();
+    const translation = OPTION_TRANSLATIONS[key];
+    if (!translation) { hideStep3OptionTooltip(); return; }
+
+    renderStep3TooltipText(tooltip, translation);
+    positionStep3OptionTooltip(tooltip, triggerEl);
+    tooltip.classList.add('is-open');
+    step3TooltipOpenTrigger = triggerEl;
+}
+
+// Ukrywa dymek (wywoływane po zjechaniu kursorem, a także po kliknięciu
+// poza aktualnym wyzwalaczem - patrz nasłuchiwacz "click" niżej).
+function hideStep3OptionTooltip() {
+    const tooltip = document.getElementById('step3OptionTooltip');
+    if (tooltip) tooltip.classList.remove('is-open');
+    step3TooltipOpenTrigger = null;
+}
+
+// Ustawia treść dymka: zwykły, pojedynczy ciąg tekstu, chyba że zawiera
+// nawias I tak i tak zawinąłby się do kolejnej linii przy naturalnym
+// zawijaniu na obecnej szerokości dymka - wtedy dopiero wymuszone jest
+// przejście do nowej linii dokładnie przed otwierającym nawiasem, żeby
+// fragment w nawiasie zawsze trafiał w całości pod spód (np. "Automatyczne
+// przedmuchiwanie" / "(czyszczenie ślimaka)"), zamiast zawijać się w
+// dowolnym, przypadkowym miejscu. Gdy cały tekst i tak mieści się w jednej
+// linii, zostaje bez zmian.
+function renderStep3TooltipText(tooltip, text) {
+    const parenIdx = text.indexOf(' (');
+    if (parenIdx === -1) {
+        tooltip.textContent = text;
+        return;
+    }
+
+    // Najpierw renderuje jako pojedynczy, niełamany ciąg znaków, żeby
+    // sprawdzić (poprzez liczbę "prostokątów" tekstu), czy przy obecnej
+    // szerokości dymka i tak zawinąłby się do kolejnej linii.
+    tooltip.innerHTML = '<span class="step3-tooltip-line"></span>';
+    const lineEl = tooltip.querySelector('.step3-tooltip-line');
+    lineEl.textContent = text;
+    const wraps = lineEl.getClientRects().length > 1;
+
+    if (!wraps) {
+        tooltip.textContent = text;
+        return;
+    }
+
+    const mainPart = text.slice(0, parenIdx);
+    const bracketPart = text.slice(parenIdx + 1);
+    tooltip.innerHTML = '';
+    const line1 = document.createElement('span');
+    line1.textContent = mainPart;
+    const line2 = document.createElement('span');
+    line2.textContent = bracketPart;
+    tooltip.appendChild(line1);
+    tooltip.appendChild(document.createElement('br'));
+    tooltip.appendChild(line2);
+}
+
+// Pozycjonuje dymek (position: fixed, więc współrzędne liczone względem
+// okna przeglądarki, niezależnie od przewinięcia strony) tuż nad
+// najechaną/kliknięta pozycją, a jeśli nie ma tam miejsca (blisko górnej
+// krawędzi ekranu) - pod nią; dociśnięty do prawej krawędzi okna, gdyby
+// inaczej wystawał poza widoczny obszar.
+function positionStep3OptionTooltip(tooltip, triggerEl) {
+    const rect = triggerEl.getBoundingClientRect();
+    const tooltipRect = tooltip.getBoundingClientRect();
+    const margin = 8;
+
+    let top = rect.top - tooltipRect.height - margin;
+    if (top < margin) top = rect.bottom + margin;
+
+    let left = rect.left;
+    const maxLeft = window.innerWidth - tooltipRect.width - margin;
+    if (left > maxLeft) left = Math.max(margin, maxLeft);
+
+    tooltip.style.top = top + 'px';
+    tooltip.style.left = left + 'px';
+}
+
+// Zamyka dymek po kliknięciu gdziekolwiek poza pozycją, nad którą był
+// otwarty, i poza samym dymkiem - przydatne głównie na dotyku, gdzie nie ma
+// zjechania kursorem (ten sam mechanizm co zamykanie wysuwanego menu
+// agregatów w Kroku 2 - patrz closeStep2UnitsFlyout).
+document.addEventListener('click', function (e) {
+    const tooltip = document.getElementById('step3OptionTooltip');
+    if (!tooltip || !tooltip.classList.contains('is-open')) return;
+    if (tooltip.contains(e.target)) return;
+    if (step3TooltipOpenTrigger && step3TooltipOpenTrigger.contains(e.target)) return;
+    hideStep3OptionTooltip();
+});
 
 function populateStep3() {
     const machines = getConfiguredMachines();
@@ -1681,9 +2234,9 @@ function populateStep3() {
     }
 
     const data = optionSets[selectedMachineType];
-    document.getElementById('std_injection_unit').innerHTML = data.std.injection.map(i => `<li>${formatNumbered(i)}</li>`).join('');
-    document.getElementById('std_clamping_unit').innerHTML = data.std.clamping.map(i => `<li>${formatNumbered(i)}</li>`).join('');
-    document.getElementById('std_general').innerHTML = data.std.general.map(i => `<li>${formatNumbered(i)}</li>`).join('');
+    document.getElementById('std_injection_unit').innerHTML = data.std.injection.map(i => `<li${step3TooltipAttrs()}>${formatNumbered(i)}</li>`).join('');
+    document.getElementById('std_clamping_unit').innerHTML = data.std.clamping.map(i => `<li${step3TooltipAttrs()}>${formatNumbered(i)}</li>`).join('');
+    document.getElementById('std_general').innerHTML = data.std.general.map(i => `<li${step3TooltipAttrs()}>${formatNumbered(i)}</li>`).join('');
 
     renderStep3OptionsContainer(machines);
 }
@@ -1739,9 +2292,9 @@ function renderStep3OptionsContainer(machines) {
         const colsEl = document.getElementById(`step3OptCols-${m.idx}`);
         if (!colsEl) return;
         colsEl.innerHTML = `
-            <div class="option-col"><h4>Injection Unit</h4><div class="checkbox-grid" data-group="injection"></div></div>
-            <div class="option-col"><h4>Clamping Unit</h4><div class="checkbox-grid" data-group="clamping"></div></div>
-            <div class="option-col"><h4>General</h4><div class="checkbox-grid" data-group="general"></div></div>
+            <div class="option-col"><h4>Wtrysk</h4><div class="checkbox-grid" data-group="injection"></div></div>
+            <div class="option-col"><h4>Zwarcie</h4><div class="checkbox-grid" data-group="clamping"></div></div>
+            <div class="option-col"><h4>Ogólne</h4><div class="checkbox-grid" data-group="general"></div></div>
         `;
         ['injection', 'clamping', 'general'].forEach(group => {
             const groupEl = colsEl.querySelector(`[data-group="${group}"]`);
@@ -1753,11 +2306,20 @@ function renderStep3OptionsContainer(machines) {
                 checkbox.checked = m.selectedOptions.includes(optText);
                 checkbox.addEventListener('change', () => {
                     const pos = m.selectedOptions.indexOf(optText);
-                    if (checkbox.checked && pos === -1) m.selectedOptions.push(optText);
+                    if (checkbox.checked && pos === -1) {
+                        m.selectedOptions.push(optText);
+                        // Wibracja przy DODANIU opcji dodatkowej (patrz
+                        // triggerHapticFeedback na górze pliku) - tylko przy
+                        // zaznaczeniu, nie przy odznaczeniu.
+                        triggerHapticFeedback(15);
+                    }
                     if (!checkbox.checked && pos !== -1) m.selectedOptions.splice(pos, 1);
                 });
                 label.appendChild(checkbox);
                 label.insertAdjacentHTML('beforeend', formatNumbered(optText));
+                label.addEventListener('mouseenter', () => showStep3OptionTooltip(label));
+                label.addEventListener('mouseleave', hideStep3OptionTooltip);
+                label.addEventListener('click', (e) => { if (e.target !== checkbox) showStep3OptionTooltip(label); });
                 groupEl.appendChild(label);
             });
         });
@@ -1789,11 +2351,10 @@ function toggleStep3MachineOptionsPanel(machineIdx) {
 // Licznik sztuk (+/-) i kosz do usunięcia danego typu wtryskarki, po prawej
 // stronie paska z jej nazwą - dokładnie ten sam znacznik/styl co stepper przy
 // liście modeli w Kroku 2 (.step2-qty-stepper/.step2-qty-btn/.step2-remove-btn,
-// patrz renderStep2Specs). Dostępne tylko dla ścieżki "wybierz z listy" -
-// ścieżka "dane technologiczne" zawsze daje dokładnie jedną maszynę bez
-// pojęcia "liczby sztuk".
+// patrz renderStep2Specs). Dostępne dla obu ścieżek Kroku 2 - zarówno
+// "wybierz z listy", jak i "dane technologiczne" (obie mogą teraz dać więcej
+// niż jedną maszynę, patrz step2Selections).
 function buildStep3QtyControlsHtml(m) {
-    if (machineSelectionSource !== 'list') return '';
     return `
         <span class="machine-highlight-item step3-qty-controls">
             <div class="step2-qty-stepper">
@@ -1822,8 +2383,16 @@ function setStep3MachineQty(slotIndex, value) {
     populateStep3();
 }
 
+// Usunięcie w ścieżce "dane technologiczne" musi iść przez
+// removeStep2TechBlock (usuwa też odpowiadające okno kalkulatora i utrzymuje
+// step2TechBlockIds w zgodzie ze step2Selections) - samo removeStep2Model
+// wystarcza tylko w ścieżce "wybierz z listy".
 function removeStep3Machine(slotIndex) {
-    removeStep2Model(slotIndex);
+    if (step2SubView === 'tech') {
+        removeStep2TechBlock(step2TechBlockIds[slotIndex]);
+    } else {
+        removeStep2Model(slotIndex);
+    }
     populateStep3();
 }
 
@@ -1832,7 +2401,7 @@ function removeStep3Machine(slotIndex) {
 // Przycisk "Edytuj" przy danej maszynie w podsumowaniu (Krok 4) - wraca do
 // Kroku 3 i od razu rozwija jej sekcję opcji dodatkowych, gotową do zmiany.
 function editStep3Machine(machineIdx) {
-    if (machineSelectionSource === 'list' && step2Selections[machineIdx]) {
+    if (step2Selections[machineIdx]) {
         step2Selections[machineIdx].optionsExpanded = true;
     }
     nextStep(3);
@@ -1840,30 +2409,27 @@ function editStep3Machine(machineIdx) {
 
 function populateStep4Summary() {
     const machines = getConfiguredMachines();
-    const r = lastCalculationResults;
     const typeData = machineData[selectedMachineType];
 
-    const moldLength = document.getElementById('mold_length').value || '–';
-    const moldWidth = document.getElementById('mold_width').value || '–';
-    const wallThickness = document.getElementById('wall_thickness').value || '–';
-    const materialLabel = document.getElementById('material_select').selectedOptions[0].textContent;
-
-    // Ścieżka "dane technologiczne" (r != null) pokazuje pełne wyliczenia -
-    // dotyczą jednej, jedynej maszyny tej ścieżki. Ścieżka "wybierz z listy"
-    // (r == null) nie zbiera tych danych, więc odpowiedni wiersz jest
-    // pomijany zamiast pokazywać puste/błędne wartości.
-    const techRowsHtml = r ? `
-            <tr><td>Wymiary formy (dł. x szer.)</td><td>${moldLength} x ${moldWidth} mm</td></tr>
+    // Pełne wyliczenia technologiczne pokazujemy tylko wtedy, gdy jest
+    // dokładnie JEDNA skonfigurowana maszyna i pochodzi ona z kalkulatora
+    // (ma własny snapshot techResults - patrz applyTechSelection). W
+    // pozostałych przypadkach (wybór z listy, albo więcej niż jedna maszyna
+    // - niezależnie od ścieżki) pokazywana jest krótka informacja o sposobie
+    // doboru zamiast pustych/mylących danych.
+    const techRowsHtml = (r) => `
+            <tr><td>Wymiary formy (dł. x szer.)</td><td>${r.moldLength} x ${r.moldWidth} mm</td></tr>
             <tr><td>Prześwit między kolumnami</td><td>${r.tieClearance} mm</td></tr>
             ${r.moldHeight > 0 ? `<tr><td>Wysokość formy</td><td>${r.moldHeight} mm</td></tr>` : ''}
             <tr><td>Liczba gniazd</td><td>${r.cavities}</td></tr>
-            <tr><td>Materiał</td><td>${materialLabel}</td></tr>
-            <tr><td>Grubość ścianki</td><td>${wallThickness} mm</td></tr>
+            <tr><td>Materiał</td><td>${r.materialLabel}</td></tr>
+            <tr><td>Grubość ścianki</td><td>${r.wallThickness} mm</td></tr>
             <tr><td>Masa jednej wypraski</td><td>${r.partWeight} g</td></tr>
             <tr><td>Całkowita masa wtrysku</td><td>${r.totalWeight.toFixed(2)} g</td></tr>
             <tr><td>Całkowita objętość wtrysku</td><td>${r.totalVwtr.toFixed(2)} cm³</td></tr>
             <tr><td>Wymagana siła zwarcia</td><td>${r.requiredForceTon.toFixed(1)} ton</td></tr>
-    ` : `
+    `;
+    const noTechRowHtml = `
             <tr><td>Sposób doboru</td><td>Wybór bezpośrednio z listy modeli (bez danych technologicznych)</td></tr>
     `;
 
@@ -1882,7 +2448,7 @@ function populateStep4Summary() {
             <table>
                 <tr><td>Typ wtryskarki</td><td><strong>${typeData ? typeData.label : selectedMachineType}</strong></td></tr>
                 <tr><td>Model i agregat wtryskowy</td><td><strong>${m.modelName} – agregat wtryskowy ${m.unitStr}</strong></td></tr>
-                ${machines.length === 1 ? techRowsHtml : ''}
+                ${machines.length === 1 ? (m.techResults ? techRowsHtml(m.techResults) : noTechRowHtml) : ''}
             </table>
             <h4>Wybrane opcje dodatkowe</h4>
             ${m.selectedOptions.length > 0 ? `<ul>${m.selectedOptions.map(o => `<li>${o}</li>`).join('')}</ul>` : '<p>Brak wybranych opcji dodatkowych.</p>'}
@@ -1930,7 +2496,6 @@ function generatePDF() {
     }
     const { jsPDF } = window.jspdf;
     const doc = new jsPDF({ unit: 'mm', format: 'a4' });
-    const r = lastCalculationResults;
     const typeData = machineData[selectedMachineType];
     const machines = getConfiguredMachines();
 
@@ -1979,6 +2544,7 @@ function generatePDF() {
             ['Agregat wtryskowy', m.unitStr],
             ['Średnica ślimaka', m.screwDiameter]
         ];
+        const r = m.techResults;
         if (r) {
             rows.push(
                 ['Liczba gniazd', String(r.cavities)],
@@ -1987,7 +2553,7 @@ function generatePDF() {
                 ['Całkowita masa wtrysku', `${r.totalWeight.toFixed(2)} g`],
                 ['Całkowita objętość wtrysku', `${r.totalVwtr.toFixed(2)} cm³`],
                 ['Wymagana siła zwarcia', `${r.requiredForceTon.toFixed(1)} ton`],
-                ['Materiał', document.getElementById('material_select').selectedOptions[0].textContent]
+                ['Materiał', r.materialLabel]
             );
         }
         rows.forEach(([label, value]) => {
@@ -2129,11 +2695,12 @@ function buildMachineEmailCardHtml(m) {
 // Buduje fragment HTML z danymi technologicznymi (wymiary formy, materiał,
 // masy, wymagana siła zwarcia itd.) - dokładnie te same informacje, co
 // techRowsHtml w populateStep4Summary() (Krok 4 na stronie). Pokazywane tylko
-// gdy klient korzystał ze ścieżki "Kalkulator" (są wyliczone dane); w
-// przeciwnym razie (wybór bezpośrednio z listy modeli) zwraca krótką
-// informację o sposobie doboru, tak jak w Kroku 4.
-function buildTechDetailsEmailHtml() {
-    const r = lastCalculationResults;
+// gdy jest dokładnie jedna skonfigurowana maszyna i pochodzi ona z
+// kalkulatora (ma snapshot techResults); w przeciwnym razie (wybór z listy
+// albo więcej niż jedna maszyna) zwraca krótką informację o sposobie doboru,
+// tak jak w Kroku 4.
+function buildTechDetailsEmailHtml(machines) {
+    const r = machines.length === 1 ? machines[0].techResults : null;
 
     if (!r) {
         return `
@@ -2145,20 +2712,15 @@ function buildTechDetailsEmailHtml() {
         `;
     }
 
-    const moldLength = getVal('mold_length') || '–';
-    const moldWidth = getVal('mold_width') || '–';
-    const wallThickness = getVal('wall_thickness') || '–';
-    const materialLabel = document.getElementById('material_select').selectedOptions[0].textContent;
-
     const rows = [
-        ['Wymiary formy (dł. x szer.)', `${moldLength} x ${moldWidth} mm`],
+        ['Wymiary formy (dł. x szer.)', `${r.moldLength} x ${r.moldWidth} mm`],
         ['Prześwit między kolumnami', `${r.tieClearance} mm`]
     ];
     if (r.moldHeight > 0) rows.push(['Wysokość formy', `${r.moldHeight} mm`]);
     rows.push(
         ['Liczba gniazd', `${r.cavities}`],
-        ['Materiał', materialLabel],
-        ['Grubość ścianki', `${wallThickness} mm`],
+        ['Materiał', r.materialLabel],
+        ['Grubość ścianki', `${r.wallThickness} mm`],
         ['Masa jednej wypraski', `${r.partWeight} g`],
         ['Całkowita masa wtrysku', `${r.totalWeight.toFixed(2)} g`],
         ['Całkowita objętość wtrysku', `${r.totalVwtr.toFixed(2)} cm³`],
@@ -2235,11 +2797,11 @@ function confirmSendEmail() {
         machines_count: machines.length,
         machines_summary: machinesSummaryText,
         machines_html: machines.map(buildMachineEmailCardHtml).join(''),
-        tech_details_html: buildTechDetailsEmailHtml(),
-        cavities: lastCalculationResults ? lastCalculationResults.cavities : '',
-        required_force: lastCalculationResults ? `${lastCalculationResults.requiredForceTon.toFixed(1)} ton` : '',
-        total_shot_volume: lastCalculationResults ? `${lastCalculationResults.totalVwtr.toFixed(2)} cm3` : '',
-        material: document.getElementById('material_select').selectedOptions[0].textContent,
+        tech_details_html: buildTechDetailsEmailHtml(machines),
+        cavities: (machines.length === 1 && machines[0].techResults) ? machines[0].techResults.cavities : '',
+        required_force: (machines.length === 1 && machines[0].techResults) ? `${machines[0].techResults.requiredForceTon.toFixed(1)} ton` : '',
+        total_shot_volume: (machines.length === 1 && machines[0].techResults) ? `${machines[0].techResults.totalVwtr.toFixed(2)} cm3` : '',
+        material: (machines.length === 1 && machines[0].techResults) ? machines[0].techResults.materialLabel : '',
         options_list: machines[0] ? (machines[0].selectedOptions.join(', ') || 'brak') : 'brak',
         from_name: `${getVal('client_firstname')} ${getVal('client_lastname')}`,
         from_email: getVal('client_email'),
@@ -2331,7 +2893,7 @@ function confirmSendEmail() {
     // w style.css.
     const TYPE_CHANGE_START_SCALE = 1.18;
 
-    // Sekcje podzespołów ("Clamping Unit", "Injection Unit" itd.) oraz opis
+    // Sekcje podzespołów ("Zespół zamykający", "Agregat wtryskowy" itd.) oraz opis
     // maszyny pod nimi są przypisane do konkretnego typu wtryskarki poprzez
     // atrybut data-machine-type w pliku HTML. Przy zmianie typu na liście
     // powyżej pokazujemy tylko te elementy, które pasują do aktualnie
@@ -2423,6 +2985,10 @@ function confirmSendEmail() {
 
     slider.addEventListener('input', () => {
         setFrame(parseInt(slider.value, 10));
+        // Wibracja przy przesuwaniu paska widoku 360° - jedno "kliknięcie"
+        // haptyczne na każdą zmianę klatki (patrz triggerHapticFeedback na
+        // górze pliku).
+        triggerHapticFeedback(8);
     });
 
     // Obracanie przeciąganiem bezpośrednio po widoku (dodatkowo do suwaka)
@@ -2504,8 +3070,8 @@ function confirmSendEmail() {
 
 // =====================================================================
 // EFEKT "WYSUWANIA SIĘ OD SPODU" DLA SEKCJI PODZESPOŁÓW (maszyny.html)
-// Każda sekcja (Clamping Unit / Injection Unit / Hydraulic Unit /
-// Controller...) pojawia się dopiero, gdy użytkownik przewinie stronę do
+// Każda sekcja (Zespół zamykający / Agregat wtryskowy / Układ hydrauliczny /
+// Sterownik...) pojawia się dopiero, gdy użytkownik przewinie stronę do
 // niej - podobnie jak liczniki w sekcji #woojinStats na stronie głównej.
 // =====================================================================
 (function initComponentsReveal() {
@@ -2710,6 +3276,10 @@ function confirmSendEmail() {
     slider.addEventListener('input', () => {
         setFrame(parseInt(slider.value, 10));
         pauseAutoRotate();
+        // Wibracja przy przesuwaniu paska widoku 360° - jedno "kliknięcie"
+        // haptyczne na każdą zmianę klatki (patrz triggerHapticFeedback na
+        // górze pliku).
+        triggerHapticFeedback(8);
     });
 
     // Obracanie przeciąganiem (mysz i dotyk) - identycznie jak na
