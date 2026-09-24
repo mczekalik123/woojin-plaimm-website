@@ -1465,6 +1465,13 @@ main.contact-section {
     .woojin-stat {
         border-left: 0;
         padding: 25px 20px;
+        /* Wyrównanie liczby i podpisu do góry (zamiast wyśrodkowania w
+           pionie) - przy wyśrodkowaniu dłuższy, zawijający się do dwóch
+           linii podpis (np. "Maszyn produkowanych rocznie") przesuwał
+           liczbę wyżej niż w sąsiedniej komórce z krótszym, jednowierszowym
+           podpisem (np. "Lat doświadczenia"), przez co liczby w tym samym
+           rzędzie siatki nie były wyrównane do wspólnej linii. */
+        justify-content: flex-start;
     }
 
     .woojin-stat:nth-child(2) {
@@ -2537,6 +2544,19 @@ main.contact-section {
     .step1-next-or {
         flex: 0 0 auto;
         font-size: 13px;
+    }
+
+    /* Wyśrodkowanie pary przycisków "Kalkulator" / "Wybierz z listy" na
+       stronie - domyślnie .btn-group używa "justify-content: space-between"
+       względem pustego <span></span> umieszczonego przed nimi w znaczniku
+       (patrz konfigurator.html, Krok 1), co na wąskim ekranie przesuwało
+       oba przyciski w stronę prawej krawędzi zamiast na środek. */
+    #step1 .btn-group {
+        justify-content: center;
+    }
+
+    #step1 .btn-group > span:first-child {
+        display: none;
     }
 }
 

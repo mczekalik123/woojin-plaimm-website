@@ -23,9 +23,11 @@ function triggerHapticFeedback(durationMs) {
 // Delegowany nasłuchiwacz na całym dokumencie zamiast podpinania go
 // osobno pod każdy przycisk z osobna - obejmuje automatycznie wszystkie
 // przyciski nawigacji, kroków konfiguratora, pobierania katalogów/PDF,
-// wysyłki formularzy itd. na każdej podstronie serwisu.
+// wysyłki formularzy itd. na każdej podstronie serwisu. ".main-nav a"
+// obejmuje też linki rozwijanego menu (ikonka hamburgera na telefonie):
+// O NAS, MASZYNY, KONFIGURATOR, KARIERA, KONTAKT oraz WOOJIN GLOBAL.
 document.addEventListener('click', function (e) {
-    const target = e.target.closest('button, a.apply-btn, a.catalog-row, a.catalog-dl-btn');
+    const target = e.target.closest('button, a.apply-btn, a.catalog-row, a.catalog-dl-btn, .main-nav a');
     if (target) triggerHapticFeedback(10);
 });
 
@@ -1017,7 +1019,12 @@ function initMachineCardSelection() {
         });
     };
 
-    radios.forEach(r => r.addEventListener('change', updateSelection));
+    radios.forEach(r => r.addEventListener('change', () => {
+        updateSelection();
+        // Wibracja przy wyborze rodzaju wtryskarki w Kroku 1 (patrz
+        // triggerHapticFeedback na górze pliku).
+        triggerHapticFeedback(10);
+    }));
     updateSelection();
 }
 
@@ -3011,7 +3018,15 @@ function confirmSendEmail() {
         const frameDelta = Math.round(deltaX / DRAG_SENSITIVITY);
         let newFrame = (startFrame - frameDelta - 1) % TOTAL_FRAMES;
         if (newFrame < 0) newFrame += TOTAL_FRAMES;
-        setFrame(newFrame + 1);
+        const targetFrame = newFrame + 1;
+        if (targetFrame !== parseInt(slider.value, 10)) {
+            // Wibracja przy przesuwaniu palcem bezpośrednio po widoku 360°
+            // (nie tylko po pasku) - tylko gdy przeciąganie faktycznie
+            // zmienia wyświetlaną klatkę (patrz triggerHapticFeedback na
+            // górze pliku). Na komputerze (mysz) funkcja i tak nic nie robi.
+            triggerHapticFeedback(8);
+        }
+        setFrame(targetFrame);
     }
 
     function handleDragEnd() {
@@ -3308,7 +3323,15 @@ function confirmSendEmail() {
         const frameDelta = Math.round(deltaX / DRAG_SENSITIVITY);
         let newFrame = (startFrame - frameDelta - 1) % TOTAL_FRAMES;
         if (newFrame < 0) newFrame += TOTAL_FRAMES;
-        setFrame(newFrame + 1);
+        const targetFrame = newFrame + 1;
+        if (targetFrame !== parseInt(slider.value, 10)) {
+            // Wibracja przy przesuwaniu palcem bezpośrednio po widoku 360°
+            // (nie tylko po pasku) - tylko gdy przeciąganie faktycznie
+            // zmienia wyświetlaną klatkę (patrz triggerHapticFeedback na
+            // górze pliku). Na komputerze (mysz) funkcja i tak nic nie robi.
+            triggerHapticFeedback(8);
+        }
+        setFrame(targetFrame);
         pauseAutoRotate();
     }
 
