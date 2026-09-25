@@ -346,14 +346,49 @@ button {
     text-align: left;
 }
 
-.hero-selector .disclaimer { 
-    margin-top: 14px; 
-    max-width: 980px; 
-    color: #7f7f7f; 
-    font-size: 11px; 
-    line-height: 1.55; 
-    font-style: italic; 
+.hero-selector .disclaimer {
+    margin-top: 14px;
+    max-width: 980px;
+    color: #7f7f7f;
+    font-size: 11px;
+    line-height: 1.55;
+    font-style: italic;
     text-align: left;
+}
+
+/* Wariant hero dla podstron prawnych (np. Polityka plików cookie) - nagłówek
+   duży i wyśrodkowany zarówno w pionie, jak i w poziomie, w odróżnieniu od
+   standardowego wyrównania do lewej używanego na pozostałych podstronach. */
+.hero-selector.hero-selector--centered {
+    min-height: 56vh;
+    display: flex;
+    align-items: center;
+}
+
+.hero-selector--centered .container {
+    text-align: center;
+}
+
+.hero-selector--centered .eyebrow {
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.hero-selector--centered h1 {
+    text-align: center;
+    font-size: clamp(34px, 6vw, 64px);
+}
+
+.hero-selector--centered p {
+    text-align: center;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.hero-selector--centered .disclaimer {
+    text-align: center;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 /* =====================================================
@@ -1316,6 +1351,195 @@ main.contact-section {
 .footer-links a {
     font-size: 11px;
     color: #666;
+}
+
+/* =====================================================
+   TREŚĆ PODSTRON PRAWNYCH (POLITYKA PRYWATNOŚCI / COOKIE)
+===================================================== */
+
+.legal-section {
+    width: 100%;
+    padding: 70px 0 100px;
+}
+
+.legal-section .container {
+    width: min(920px, calc(100% - 42px));
+    margin: 0 auto;
+}
+
+.legal-updated {
+    margin: 0 0 40px;
+    color: #7f7f7f;
+    font-size: 12px;
+    font-style: italic;
+}
+
+.legal-block {
+    margin-bottom: 38px;
+}
+
+.legal-block h2 {
+    margin: 0 0 14px;
+    font-size: 21px;
+    font-weight: 900;
+    letter-spacing: -.01em;
+    color: #16181c;
+}
+
+.legal-block p {
+    margin: 0 0 12px;
+    color: #4a4f57;
+    font-size: 15px;
+    line-height: 1.7;
+}
+
+.legal-block ul {
+    margin: 0 0 12px;
+    padding-left: 22px;
+    color: #4a4f57;
+    font-size: 15px;
+    line-height: 1.7;
+}
+
+.legal-block li {
+    margin-bottom: 6px;
+}
+
+.legal-block a {
+    color: #0abeb5;
+    font-weight: 700;
+}
+
+.legal-contact-box {
+    margin-top: 10px;
+    padding: 22px 26px;
+    background: #f5f7f8;
+    border-left: 4px solid #0abeb5;
+    border-radius: 4px;
+}
+
+.legal-contact-box p {
+    margin: 0 0 4px;
+}
+
+.legal-contact-box p:last-child {
+    margin-bottom: 0;
+}
+
+@media (max-width: 600px) {
+    .legal-section {
+        padding: 44px 0 60px;
+    }
+
+    .legal-block h2 {
+        font-size: 19px;
+    }
+}
+
+/* =====================================================
+   BANER COOKIE (RODO) - WIDOCZNY PRZY PIERWSZYM WEJŚCIU NA STRONĘ
+===================================================== */
+
+.cookie-consent-banner {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 9999;
+    background:
+        radial-gradient(ellipse 65% 140% at 100% 0%, rgba(10, 190, 181, 0.30) 0%, transparent 70%),
+        linear-gradient(180deg, #111111 0%, #0c0c0c 100%);
+    border-top: 1.5px solid #0abeb5;
+    box-shadow: 0 -10px 30px rgba(0, 0, 0, 0.45);
+    transform: translateY(100%);
+    opacity: 0;
+    transition: transform 0.35s ease, opacity 0.35s ease;
+}
+
+.cookie-consent-banner.is-visible {
+    transform: translateY(0);
+    opacity: 1;
+}
+
+.cookie-consent-inner {
+    width: min(1240px, calc(100% - 42px));
+    margin: 0 auto;
+    padding: 24px 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 30px;
+    flex-wrap: wrap;
+}
+
+.cookie-consent-text {
+    margin: 0;
+    color: #c8c8c8;
+    font-size: 13px;
+    line-height: 1.6;
+    max-width: 780px;
+    flex: 1 1 420px;
+}
+
+.cookie-consent-text a {
+    color: #0abeb5;
+    text-decoration: underline;
+}
+
+.cookie-consent-actions {
+    display: flex;
+    gap: 14px;
+    flex-wrap: wrap;
+    flex: 0 0 auto;
+}
+
+.cookie-consent-btn {
+    padding: 11px 22px;
+    font-size: 13px;
+    font-weight: 700;
+    border-radius: 4px;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+}
+
+.cookie-consent-accept {
+    background-color: #0abeb5;
+    color: #ffffff;
+    border: 1.5px solid #0abeb5;
+}
+
+.cookie-consent-accept:hover {
+    background-color: #089b94;
+    border-color: #089b94;
+}
+
+.cookie-consent-reject {
+    background: transparent;
+    color: #c8c8c8;
+    border: 1.5px solid #444;
+}
+
+.cookie-consent-reject:hover {
+    color: #ffffff;
+    border-color: #888;
+}
+
+@media (max-width: 640px) {
+    .cookie-consent-inner {
+        padding: 18px 0;
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .cookie-consent-actions {
+        justify-content: stretch;
+    }
+
+    .cookie-consent-btn {
+        flex: 1 1 0;
+        text-align: center;
+    }
 }
 
 /* =====================================================

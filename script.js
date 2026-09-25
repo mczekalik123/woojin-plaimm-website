@@ -31,6 +31,73 @@ document.addEventListener('click', function (e) {
     if (target) triggerHapticFeedback(10);
 });
 
+// =====================================================================
+// BANER COOKIE (RODO) - WYŚWIETLANY PRZY PIERWSZYM WEJŚCIU NA STRONĘ
+// Plik jest wspólny dla całego serwisu, więc baner pojawia się identycznie
+// na każdej podstronie. Wybór użytkownika (akceptacja / odrzucenie
+// niewymaganych plików cookie) jest zapisywany w localStorage, dzięki
+// czemu baner pokazuje się tylko przy pierwszej wizycie - do czasu, gdy
+// użytkownik sam wyczyści dane przeglądarki. Szczegóły dotyczące
+// wykorzystywanych plików cookie znajdują się na podstronie cookies.html.
+// =====================================================================
+const COOKIE_CONSENT_STORAGE_KEY = 'woojinCookieConsent';
+
+function initCookieConsentBanner() {
+    let storedConsent = null;
+    try {
+        storedConsent = window.localStorage.getItem(COOKIE_CONSENT_STORAGE_KEY);
+    } catch (e) {
+        // Prywatne okno przeglądarki / zablokowany localStorage - baner
+        // pojawi się przy każdej wizycie, ale strona ma działać bez błędów.
+    }
+    if (storedConsent) return;
+
+    const banner = document.createElement('div');
+    banner.className = 'cookie-consent-banner';
+    banner.setAttribute('role', 'dialog');
+    banner.setAttribute('aria-live', 'polite');
+    banner.setAttribute('aria-label', 'Ustawienia plików cookie');
+    banner.innerHTML =
+        '<div class="cookie-consent-inner">' +
+            '<p class="cookie-consent-text">' +
+                'Korzystamy z plików cookie, aby strona działała prawidłowo oraz aby lepiej dopasować ją do potrzeb odwiedzających. ' +
+                'Możesz zaakceptować wszystkie pliki cookie albo odrzucić te, które nie są niezbędne do działania serwisu. ' +
+                'Więcej informacji znajdziesz w <a href="cookies.html">Polityce plików cookie</a>.' +
+            '</p>' +
+            '<div class="cookie-consent-actions">' +
+                '<button type="button" class="cookie-consent-btn cookie-consent-reject">Odrzuć niewymagane</button>' +
+                '<button type="button" class="cookie-consent-btn cookie-consent-accept">Akceptuj wszystkie</button>' +
+            '</div>' +
+        '</div>';
+
+    document.body.appendChild(banner);
+
+    // Wymuszenie odczytu stylu przed dodaniem klasy "is-visible", aby
+    // przejście (transition) wjazdu banera z dołu ekranu faktycznie się odtworzyło.
+    requestAnimationFrame(function () {
+        banner.classList.add('is-visible');
+    });
+
+    function saveConsentAndHide(value) {
+        try {
+            window.localStorage.setItem(COOKIE_CONSENT_STORAGE_KEY, value);
+        } catch (e) {
+            // Brak dostępu do localStorage - baner po prostu zniknie do końca bieżącej wizyty.
+        }
+        banner.classList.remove('is-visible');
+        window.setTimeout(function () {
+            banner.remove();
+        }, 350);
+    }
+
+    const acceptBtn = banner.querySelector('.cookie-consent-accept');
+    const rejectBtn = banner.querySelector('.cookie-consent-reject');
+    if (acceptBtn) acceptBtn.addEventListener('click', function () { saveConsentAndHide('accepted'); });
+    if (rejectBtn) rejectBtn.addEventListener('click', function () { saveConsentAndHide('rejected'); });
+}
+
+document.addEventListener('DOMContentLoaded', initCookieConsentBanner);
+
 document.addEventListener("DOMContentLoaded", function () {
 
     const section = document.querySelector("#woojinStats");
