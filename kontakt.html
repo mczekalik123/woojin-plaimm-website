@@ -123,6 +123,22 @@
                             <textarea id="contact_message" rows="5" required placeholder="Napisz, w czym możemy pomóc..."></textarea>
                         </div>
 
+                        <!-- Honeypot: pole niewidoczne dla użytkownika (ukryte poza ekranem w CSS)
+                             - proste boty wypełniające automatycznie każde pole formularza
+                             zwykle je wypełnią, dzięki czemu można po cichu odrzucić takie
+                             zgłoszenie (patrz initContactForm w script.js). -->
+                        <div class="hp-field-wrap" aria-hidden="true">
+                            <label for="contact_hp">Zostaw to pole puste</label>
+                            <input type="text" id="contact_hp" name="website" tabindex="-1" autocomplete="off">
+                        </div>
+
+                        <div class="form-group">
+                            <button type="button" class="human-check-btn" id="humanCheckBtnContact" aria-pressed="false">
+                                <span class="human-check-box" aria-hidden="true"></span>
+                                <span class="human-check-label">Potwierdzam, że nie jestem robotem</span>
+                            </button>
+                        </div>
+
                         <div class="action-calc-bar">
                             <button type="submit" class="btn-primary btn-wave" id="contactSendBtn"><span class="btn-wave-label">Wyślij wiadomość</span></button>
                         </div>

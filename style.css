@@ -219,6 +219,49 @@ button {
     box-shadow: 0 0 12px rgba(10, 190, 181, 0.3);
 }
 
+/* -----------------------------------------------------
+   Header nad ciemną sekcją (.cyber-section na index.html)
+   Gdy pasek nawigacji "wjeżdża" na ciemne tło sekcji
+   cyberpunkowej - mimo że strona jest już przewinięta i
+   nav miałby normalnie jasne tło - kolory paska wracają
+   do ciemnej wersji, tak jak na samej górze strony. Logo
+   NIE jest tu zmieniane - o tym decyduje wyłącznie
+   scrollY > 50 w skrypcie na dole strony.
+----------------------------------------------------- */
+
+.site-header.scrolled.on-dark {
+    background: #000000;
+    border-bottom-color: #222222;
+    box-shadow: none;
+}
+
+.site-header.scrolled.on-dark .main-nav a:not(.nav-global) {
+    color: #f8f8f8;
+}
+
+.site-header.scrolled.on-dark .main-nav a:not(.nav-global)::after {
+    background-color: #00fff2;
+}
+
+.site-header.scrolled.on-dark .main-nav a:not(.nav-global):hover {
+    color: #00fff2;
+}
+
+.site-header.scrolled.on-dark .main-nav a.nav-global {
+    color: #00fff2;
+    border-color: #00fff2;
+}
+
+.site-header.scrolled.on-dark .main-nav a.nav-global:hover {
+    background-color: #00fff2;
+    color: #000000;
+    box-shadow: 0 0 12px rgba(0, 255, 242, 0.4);
+}
+
+.site-header.scrolled.on-dark .nav-toggle-bar {
+    background-color: #ffffff;
+}
+
 /* =====================================================
    PRZYCISK MENU (HAMBURGER) - WIDOCZNY TYLKO NA TELEFONIE
    Zastępuje pełną listę linków main-nav, gdy nie mieści się
@@ -354,41 +397,6 @@ button {
     line-height: 1.55;
     font-style: italic;
     text-align: left;
-}
-
-/* Wariant hero dla podstron prawnych (np. Polityka plików cookie) - nagłówek
-   duży i wyśrodkowany zarówno w pionie, jak i w poziomie, w odróżnieniu od
-   standardowego wyrównania do lewej używanego na pozostałych podstronach. */
-.hero-selector.hero-selector--centered {
-    min-height: 56vh;
-    display: flex;
-    align-items: center;
-}
-
-.hero-selector--centered .container {
-    text-align: center;
-}
-
-.hero-selector--centered .eyebrow {
-    margin-left: auto;
-    margin-right: auto;
-}
-
-.hero-selector--centered h1 {
-    text-align: center;
-    font-size: clamp(34px, 6vw, 64px);
-}
-
-.hero-selector--centered p {
-    text-align: center;
-    margin-left: auto;
-    margin-right: auto;
-}
-
-.hero-selector--centered .disclaimer {
-    text-align: center;
-    margin-left: auto;
-    margin-right: auto;
 }
 
 /* =====================================================
@@ -1175,9 +1183,38 @@ main.contact-section {
 /* ================= GLOBAL MANAGEMENT SECTION ================= */
 
 .global-management-section {
+    position: relative;
+    overflow: hidden;
+    isolation: isolate;
     padding: 80px 0;
     background-color: #f9f9f9;
     font-family: 'Lato', sans-serif;
+}
+
+/* Jasna wersja siatki z sekcji cyber - płynne przejście z ciemnego pola powyżej */
+.global-grid-bg {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    background-image:
+        linear-gradient(rgba(10, 190, 181, 0.10) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(10, 190, 181, 0.10) 1px, transparent 1px);
+    background-size: 46px 46px;
+    -webkit-mask-image: linear-gradient(to bottom, #000 0%, #000 45%, transparent 85%);
+    mask-image: linear-gradient(to bottom, #000 0%, #000 45%, transparent 85%);
+}
+
+.global-grid-bg::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to bottom, #08090d 0%, rgba(8, 9, 13, 0) 280px);
+}
+
+.global-management-section .container {
+    position: relative;
+    z-index: 1;
 }
 
 .global-management-header {
@@ -1526,18 +1563,38 @@ main.contact-section {
 }
 
 @media (max-width: 640px) {
+    /* Wysokość okna dopasowana do wysokości tekstu - mniejszy odstęp
+       (gap) między treścią a przyciskami niż na komputerze (tam oba
+       elementy stoją obok siebie w jednym rzędzie, tutaj jeden pod
+       drugim), tak aby okno nie zajmowało więcej miejsca niż to
+       konieczne do wyświetlenia samego komunikatu i przycisków. */
     .cookie-consent-inner {
-        padding: 18px 0;
+        padding: 16px 0;
+        gap: 14px;
         flex-direction: column;
         align-items: stretch;
     }
 
+    .cookie-consent-text {
+        /* Na komputerze flex-basis: 420px ustawia SZEROKOŚĆ (rząd obok
+           siebie) - ale po zmianie na układ kolumnowy powyżej ta sama
+           wartość zaczęłaby wymuszać WYSOKOŚĆ bloku tekstu (420px!),
+           przez co całe okno robiło się dużo wyższe niż wymagał tego
+           sam tekst. Zresetowanie flex-basis na "auto" przywraca
+           naturalną wysokość dopasowaną do treści. */
+        flex: 1 1 auto;
+        font-size: 12.5px;
+        line-height: 1.5;
+    }
+
     .cookie-consent-actions {
         justify-content: stretch;
+        gap: 10px;
     }
 
     .cookie-consent-btn {
         flex: 1 1 0;
+        padding: 10px 16px;
         text-align: center;
     }
 }
@@ -1649,6 +1706,14 @@ main.contact-section {
 
     .site-header.scrolled .main-nav a:not(.nav-global) {
         border-bottom-color: rgba(0, 0, 0, 0.08);
+    }
+
+    .site-header.scrolled.on-dark .main-nav {
+        background: #0c0c0c;
+    }
+
+    .site-header.scrolled.on-dark .main-nav a:not(.nav-global) {
+        border-bottom-color: rgba(255, 255, 255, 0.1);
     }
 
     .hero-selector {
@@ -2746,22 +2811,22 @@ main.contact-section {
 @media (max-width: 600px) {
     /* Przyciski "Kalkulator" / "Wybierz z listy" mają zostać obok siebie
        (w jednym rzędzie) również w widoku mobilnym - zamiast układu w
-       kolumnie jak wcześniej. Żeby oba zmieściły się na wąskim ekranie,
-       dzielą dostępną szerokość po równo (flex: 1 1 0) i mają zmniejszony
-       padding/czcionkę; tekst może się zawinąć do dwóch linii zamiast być
-       ucinany. */
+       kolumnie jak wcześniej. Każdy przycisk zajmuje tylko tyle miejsca,
+       ile potrzebuje jego tekst (flex: 0 1 auto - zamiast sztywnego
+       podziału szerokości po równo), a cały tekst pozostaje w jednej
+       linii (white-space: nowrap) i się nie zawija. */
     .step1-next-choice {
         flex-wrap: nowrap;
         gap: 8px;
     }
 
     .step1-next-choice .btn-next {
-        flex: 1 1 0;
+        flex: 0 1 auto;
         min-width: 0;
-        padding: 10px 8px;
+        padding: 10px 12px;
         font-size: 12.5px;
         line-height: 1.3;
-        white-space: normal;
+        white-space: nowrap;
         text-align: center;
     }
 
@@ -3879,6 +3944,95 @@ main.contact-section {
     color: #d9534f;
 }
 
+/* =====================================================
+   OCHRONA PRZED BOTAMI: PRZYCISK "NIE JESTEM ROBOTEM"
+   Prosty, w pełni client-side sposób weryfikacji, że formularz wysyła
+   człowiek - stosowany na formularzu kontaktowym oraz przy wysyłce
+   konfiguracji z konfiguratora (patrz initHumanCheckButton w script.js).
+   Stylistycznie nawiązuje do istniejącego przełącznika tematu rozmowy
+   (.topic-option) - ten sam turkusowy kolor marki po zaznaczeniu.
+===================================================== */
+
+.human-check-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+    max-width: 320px;
+    padding: 12px 18px;
+    background: #f8fafc;
+    border: 2px solid #e1e8ed;
+    border-radius: 6px;
+    cursor: pointer;
+    text-align: left;
+    transition: border-color 0.2s ease, background-color 0.2s ease;
+}
+
+.human-check-btn:hover {
+    border-color: #b7c2cc;
+}
+
+.human-check-box {
+    position: relative;
+    flex-shrink: 0;
+    width: 22px;
+    height: 22px;
+    border: 2px solid #cbd5e1;
+    border-radius: 4px;
+    background: #ffffff;
+    transition: border-color 0.2s ease, background-color 0.2s ease;
+}
+
+.human-check-box::after {
+    content: '';
+    position: absolute;
+    left: 6px;
+    top: 2px;
+    width: 6px;
+    height: 11px;
+    border: solid #ffffff;
+    border-width: 0 2px 2px 0;
+    transform: rotate(45deg);
+    opacity: 0;
+    transition: opacity 0.15s ease;
+}
+
+.human-check-btn[aria-pressed="true"] {
+    border-color: #0abeb5;
+    background: #e6fcfb;
+}
+
+.human-check-btn[aria-pressed="true"] .human-check-box {
+    border-color: #0abeb5;
+    background-color: #0abeb5;
+}
+
+.human-check-btn[aria-pressed="true"] .human-check-box::after {
+    opacity: 1;
+}
+
+.human-check-label {
+    font-size: 14px;
+    font-weight: 600;
+    color: #444;
+}
+
+.human-check-btn[aria-pressed="true"] .human-check-label {
+    color: #0f4c47;
+}
+
+/* Honeypot - pole całkowicie ukryte poza ekranem (nie display:none, żeby
+   pozostało "widoczne" dla prostych botów przeszukujących DOM po polach
+   formularza), którego wypełnienie zdradza automat, a nie człowieka. */
+.hp-field-wrap {
+    position: absolute;
+    left: -9999px;
+    top: -9999px;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+}
+
 .summary-box h4 {
     color: #0abeb5;
     margin: 16px 0 8px;
@@ -3912,142 +4066,305 @@ main.contact-section {
 }
 
 /* =====================================================
-   KATALOGI - LISTA (STRONA GŁÓWNA)
+   CYBER SECTION - KONFIGURATOR CTA + TECHNOLOGIA (STRONA GŁÓWNA)
 ===================================================== */
 
-.catalog-section {
-    padding: 80px 0 0;
-}
-
-/* Lista rozciągnięta na całą szerokość ekranu (full-bleed breakout),
-   niezależnie od paddingu/max-width rodzica (.container). */
-.catalog-list {
+.cyber-section {
     position: relative;
-    left: 50%;
-    width: 100vw;
-    margin-left: -50vw;
-    margin-top: 40px;
-    padding-bottom: 40px;
-    display: flex;
-    flex-direction: column;
-    gap: 14px;
-}
-
-.catalog-row {
-    display: flex;
-    align-items: stretch;
-    border: 1px solid #ececec;
-    border-radius: 6px;
+    width: 100%;
     overflow: hidden;
-    background-color: #ffffff;
-    color: inherit;
-    text-decoration: none;
-    cursor: pointer;
-    transition: background-color 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+    background: radial-gradient(ellipse 90% 60% at 50% 0%, #131b2e 0%, #0a0b10 55%, #08090d 100%);
+    padding: 100px 0 110px;
+    isolation: isolate;
 }
 
-.catalog-row:hover {
-    background-color: #f4fbfb;
-    border-color: #0abeb5;
-    box-shadow: 0 4px 14px rgba(10, 190, 181, 0.15);
+/* Delikatna, animowana siatka w tle - efekt "cyfrowej płaszczyzny" */
+.cyber-grid-bg {
+    position: absolute;
+    inset: -2px;
+    z-index: 0;
+    background-image:
+        linear-gradient(rgba(0, 255, 242, 0.07) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0, 255, 242, 0.07) 1px, transparent 1px);
+    background-size: 46px 46px;
+    -webkit-mask-image: radial-gradient(ellipse 75% 75% at 50% 20%, #000 0%, transparent 75%);
+    mask-image: radial-gradient(ellipse 75% 75% at 50% 20%, #000 0%, transparent 75%);
+    animation: cyberGridDrift 22s linear infinite;
 }
 
-/* Zdjęcie katalogu - dosunięte do lewej krawędzi, dopasowane do pełnej wysokości opcji */
-.catalog-row-image {
-    flex: 0 0 auto;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background-color: #ffffff;
+@keyframes cyberGridDrift {
+    0% { background-position: 0 0, 0 0; }
+    100% { background-position: 46px 92px, 46px 92px; }
 }
 
-.catalog-row-image img {
-    height: 100%;
-    width: auto;
-    max-width: 240px;
-    object-fit: contain;
-    display: block;
+.cyber-section .container {
+    position: relative;
+    z-index: 1;
 }
 
-.catalog-row-text {
-    flex: 1 1 auto;
-    min-width: 0;
-    display: flex;
-    align-items: center;
-    gap: 28px;
-    padding: 18px 28px;
+/* ---- CTA: zachęta do konfiguratora ---- */
+/* Podniesione z-index (wyżej niż ".cyber-section .container" powyżej,
+   z tą samą specyficznością selektora, więc wygrywa dzięki kolejności w
+   pliku) - dzięki temu cały ten kontener, wraz z napisem neonowym w tle
+   (.cyber-kr-neon), renderuje się NAD drugim kontenerem sekcji (nagłówek
+   "TECHNOLOGIA WOOJIN PLAIMM" + karty ze zdjęciami maszyn). Bez tego napis
+   neonowy - który celowo jest wyższy niż sam blok CTA i "wystaje" w dół,
+   w stronę kart ze zdjęciami - był zasłaniany przez te karty (ich zdjęcia
+   są nieprzezroczyste), mimo ustawienia z-index bezpośrednio na samym
+   .cyber-kr-neon - to nie wystarczało, bo oba kontenery ("cyber-cta-wrap"
+   i kontener z kartami) są oddzielnymi, "równorzędnymi" kontekstami
+   nakładania (stacking context) o tym samym z-index: 1, więc o kolejności
+   malowania między nimi decydował wyłącznie porządek w dokumencie (a
+   cyber-cta-wrap jest pierwszy, więc renderował się pod spodem) -
+   z-index ustawiony głębiej, na samym .cyber-kr-neon, nie mógł tego
+   zmienić, bo nie potrafi "wyjść" poza własny kontekst nadrzędny. */
+.cyber-section .cyber-cta-wrap {
+    position: relative;
+    z-index: 2;
+    margin-bottom: 90px;
 }
 
-.catalog-name {
-    flex: 0 0 150px;
-    font-size: 20px;
-    font-weight: 700;
-    color: #111d35;
+.cyber-cta {
+    position: relative;
+    z-index: 1;
+    max-width: 780px;
+    margin: 0 auto;
+    text-align: center;
 }
 
-.catalog-desc {
-    flex: 1 1 auto;
-    min-width: 0;
-    font-size: 14px;
-    line-height: 1.55;
-    color: #666;
+.cyber-kr-neon {
+    position: absolute;
+    top: 28px;
+    left: 50%;
+    z-index: 1;
+    transform: translateX(-50%);
+    writing-mode: vertical-rl;
+    text-orientation: upright;
+    font-family: 'Lato', Arial, sans-serif;
+    font-weight: 900;
+    font-size: clamp(64px, 8vw, 128px);
+    letter-spacing: 20px;
+    line-height: 1;
+    color: rgba(0, 255, 242, 0.10);
+    text-shadow:
+        0 0 18px rgba(0, 255, 242, 0.5),
+        0 0 46px rgba(0, 255, 242, 0.35),
+        0 0 100px rgba(255, 45, 210, 0.3);
+    white-space: nowrap;
+    pointer-events: none;
+    user-select: none;
+    animation: cyberKrFlicker 6.5s ease-in-out infinite;
 }
 
-.catalog-download-btn {
-    flex: 0 0 auto;
+@keyframes cyberKrFlicker {
+    0%, 89%, 100% { opacity: 1; }
+    90% { opacity: 0.7; }
+    91% { opacity: 1; }
+    94% { opacity: 0.82; }
+    95% { opacity: 1; }
+}
+
+@media (min-width: 1200px) {
+    .cyber-kr-neon {
+        left: auto;
+        right: 3%;
+        transform: none;
+        color: rgba(0, 255, 242, 0.16);
+    }
+}
+
+.cyber-cta-tag {
     display: inline-block;
-    align-self: center;
-    margin-right: 28px;
-    padding: 11px 28px;
-    background-color: #0abeb5;
+    margin-bottom: 22px;
+    font-family: 'Lato', Arial, sans-serif;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 3px;
+    color: #00fff2;
+    text-transform: uppercase;
+    text-shadow: 0 0 12px rgba(0, 255, 242, 0.55);
+}
+
+.cyber-cta-title {
+    font-size: clamp(32px, 4.4vw, 52px);
+    line-height: 1.18;
+    font-weight: 900;
+    letter-spacing: -1px;
+    color: #ffffff;
+    margin-bottom: 24px;
+}
+
+.cyber-glow-text {
+    position: relative;
+    color: #00fff2;
+    text-shadow:
+        0 0 10px rgba(0, 255, 242, 0.85),
+        0 0 26px rgba(0, 255, 242, 0.45),
+        2px 0 rgba(255, 45, 210, 0.55),
+        -2px 0 rgba(10, 190, 181, 0.55);
+    animation: cyberTextFlicker 5s ease-in-out infinite;
+}
+
+@keyframes cyberTextFlicker {
+    0%, 92%, 100% { opacity: 1; }
+    93% { opacity: 0.82; }
+    94% { opacity: 1; }
+    96% { opacity: 0.88; }
+    97% { opacity: 1; }
+}
+
+.cyber-cta-text {
+    font-size: 17px;
+    line-height: 1.8;
+    color: #aeb8c9;
+    margin-bottom: 36px;
+}
+
+.cyber-cta-btn {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    padding: 17px 38px;
+    border-radius: 40px;
+    background: #0a0b10;
     color: #ffffff;
     font-weight: 700;
-    font-size: 13px;
-    letter-spacing: 0.5px;
-    text-align: center;
-    white-space: nowrap;
-    border-radius: 30px;
-    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+    font-size: 14px;
+    letter-spacing: 1px;
+    text-decoration: none;
+    background-clip: padding-box;
+    border: 2px solid transparent;
+    background-image:
+        linear-gradient(#0a0b10, #0a0b10),
+        conic-gradient(from var(--border-angle), #0abeb5 0%, #00fff2 25%, #ff2dd2 50%, #0abeb5 75%, #0abeb5 100%);
+    background-origin: border-box;
+    background-clip: padding-box, border-box;
+    box-shadow: 0 4px 30px rgba(0, 255, 242, 0.18);
+    transition: box-shadow 0.3s ease, transform 0.25s ease;
+    animation: runBorderLight 3.2s linear infinite;
 }
 
-.catalog-row:hover .catalog-download-btn {
-    background-color: #089b94;
-    box-shadow: 0 4px 14px rgba(10, 190, 181, 0.35);
+.cyber-cta-btn:hover {
+    box-shadow: 0 4px 34px rgba(0, 255, 242, 0.4), 0 4px 24px rgba(255, 45, 210, 0.25);
+    transform: translateY(-2px);
 }
 
-@media (max-width: 768px) {
-    .catalog-row {
-        flex-wrap: wrap;
+.cyber-cta-btn svg {
+    transition: transform 0.3s ease;
+}
+
+.cyber-cta-btn:hover svg {
+    transform: translateX(4px);
+}
+
+/* ---- Nagłówek sekcji technologicznej (wariant ciemny .section-heading) ---- */
+.cyber-heading {
+    text-align: left;
+}
+
+.cyber-label {
+    color: #00fff2;
+    text-shadow: 0 0 10px rgba(0, 255, 242, 0.4);
+}
+
+.cyber-heading h2 {
+    color: #ffffff;
+}
+
+.cyber-heading p {
+    color: #97a2b6;
+}
+
+/* ---- Siatka kart technologicznych ze zdjęciami w stylu cyberpunk ---- */
+.cyber-feature-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 24px;
+}
+
+.cyber-feature-card {
+    position: relative;
+    background: linear-gradient(180deg, rgba(19, 27, 46, 0.9), rgba(10, 11, 16, 0.9));
+    border: 1px solid rgba(0, 255, 242, 0.16);
+    border-radius: 10px;
+    overflow: hidden;
+    padding-bottom: 22px;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease;
+}
+
+.cyber-feature-card:hover {
+    border-color: rgba(0, 255, 242, 0.55);
+    box-shadow: 0 10px 34px rgba(0, 255, 242, 0.16), 0 6px 20px rgba(255, 45, 210, 0.1);
+    transform: translateY(-4px);
+}
+
+.cyber-feature-image {
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    overflow: hidden;
+    background: #0a0b10;
+}
+
+.cyber-feature-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.6s ease;
+}
+
+.cyber-feature-card:hover .cyber-feature-image img {
+    transform: scale(1.08);
+}
+
+.cyber-feature-card h3 {
+    margin: 20px 22px 10px;
+    font-size: 17px;
+    font-weight: 700;
+    color: #ffffff;
+    letter-spacing: -0.2px;
+}
+
+.cyber-feature-card p {
+    margin: 0 22px;
+    font-size: 13.5px;
+    line-height: 1.65;
+    color: #92a0b5;
+}
+
+@media (max-width: 1100px) {
+    .cyber-feature-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 640px) {
+    .cyber-section {
+        padding: 70px 0 80px;
     }
 
-    .catalog-row-image {
-        flex: 0 0 auto;
+    .cyber-cta-wrap {
+        margin-bottom: 60px;
+    }
+
+    .cyber-cta-title {
+        letter-spacing: -0.5px;
+    }
+
+    .cyber-kr-neon {
+        font-size: clamp(38px, 15vw, 60px);
+        letter-spacing: 9px;
+        top: 14px;
+    }
+
+    .cyber-cta-btn {
         width: 100%;
-        height: 140px;
+        justify-content: center;
+        padding: 16px 24px;
     }
 
-    .catalog-row-image img {
-        height: 100%;
-        width: 100%;
-    }
-
-    .catalog-row-text {
-        flex: 1 1 100%;
-        flex-wrap: wrap;
-        gap: 6px;
-        padding: 16px 20px 8px;
-    }
-
-    .catalog-name {
-        flex: 1 1 100%;
-    }
-
-    .catalog-desc {
-        flex: 1 1 100%;
-    }
-
-    .catalog-download-btn {
-        margin: 0 20px 16px;
-        align-self: flex-start;
+    .cyber-feature-grid {
+        grid-template-columns: 1fr;
     }
 }

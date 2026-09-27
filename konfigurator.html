@@ -304,6 +304,22 @@
                 <textarea id="client_comment" rows="4" placeholder="Miejsce na dodatkowe uwagi..."></textarea>
             </div>
 
+            <!-- Honeypot: pole niewidoczne dla użytkownika (ukryte poza ekranem w CSS)
+                 - proste boty wypełniające automatycznie każde pole formularza zwykle
+                 je wypełnią, dzięki czemu można po cichu odrzucić taką wysyłkę (patrz
+                 requestSendEmail w script.js). -->
+            <div class="hp-field-wrap" aria-hidden="true">
+                <label for="config_hp">Zostaw to pole puste</label>
+                <input type="text" id="config_hp" name="website" tabindex="-1" autocomplete="off">
+            </div>
+
+            <div class="form-group">
+                <button type="button" class="human-check-btn" id="humanCheckBtnConfig" aria-pressed="false">
+                    <span class="human-check-box" aria-hidden="true"></span>
+                    <span class="human-check-label">Potwierdzam, że nie jestem robotem</span>
+                </button>
+            </div>
+
             <div class="action-calc-bar">
                 <button type="button" class="btn-primary btn-wave btn-accent-eyebrow" onclick="generatePDF()"><span class="btn-wave-label">POBIERZ PDF</span></button>
                 <button type="button" class="btn-primary btn-wave" id="sendBtn" onclick="requestSendEmail()"><span class="btn-wave-label">WYŚLIJ KONFIGURACJĘ</span></button>

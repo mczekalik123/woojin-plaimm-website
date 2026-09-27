@@ -98,6 +98,46 @@ function initCookieConsentBanner() {
 
 document.addEventListener('DOMContentLoaded', initCookieConsentBanner);
 
+// =====================================================================
+// OCHRONA PRZED BOTAMI: PRZYCISK "NIE JESTEM ROBOTEM"
+// Prosta, w pełni client-side weryfikacja antyspamowa używana na
+// formularzu kontaktowym (kontakt.html) oraz przy wysyłce konfiguracji
+// z konfiguratora (konfigurator.html, Krok 4). Przycisk działa jak
+// checkbox: kliknięcie przełącza go w stan "potwierdzony" (aria-pressed
+// + klasa wizualna), a wysyłka jest blokowana, dopóki użytkownik go nie
+// zaznaczy - patrz initContactForm oraz requestSendEmail niżej w tym
+// pliku, które wywołują isHumanCheckVerified() przed wysłaniem.
+// Dodatkowo każdy z dwóch formularzy ma niewidoczne dla człowieka pole
+// "honeypot" (patrz .hp-field-wrap w style.css) - jego wypełnienie
+// zdradza prostego bota wypełniającego automatycznie każde pole
+// formularza, więc taką wysyłkę odrzucamy po cichu (bez informowania
+// bota, że został wykryty).
+// =====================================================================
+
+function initHumanCheckButton(buttonId) {
+    const btn = document.getElementById(buttonId);
+    if (!btn) return;
+    btn.addEventListener('click', function () {
+        const isVerified = btn.getAttribute('aria-pressed') === 'true';
+        btn.setAttribute('aria-pressed', isVerified ? 'false' : 'true');
+    });
+}
+
+function isHumanCheckVerified(buttonId) {
+    const btn = document.getElementById(buttonId);
+    return !!btn && btn.getAttribute('aria-pressed') === 'true';
+}
+
+function isHoneypotFilled(fieldId) {
+    const field = document.getElementById(fieldId);
+    return !!field && field.value.trim() !== '';
+}
+
+document.addEventListener('DOMContentLoaded', function () {
+    initHumanCheckButton('humanCheckBtnContact');
+    initHumanCheckButton('humanCheckBtnConfig');
+});
+
 document.addEventListener("DOMContentLoaded", function () {
 
     const section = document.querySelector("#woojinStats");
@@ -2485,12 +2525,15 @@ function populateStep4Summary() {
     const machines = getConfiguredMachines();
     const typeData = machineData[selectedMachineType];
 
-    // Pełne wyliczenia technologiczne pokazujemy tylko wtedy, gdy jest
-    // dokładnie JEDNA skonfigurowana maszyna i pochodzi ona z kalkulatora
-    // (ma własny snapshot techResults - patrz applyTechSelection). W
-    // pozostałych przypadkach (wybór z listy, albo więcej niż jedna maszyna
-    // - niezależnie od ścieżki) pokazywana jest krótka informacja o sposobie
-    // doboru zamiast pustych/mylących danych.
+    // Pełne wyliczenia technologiczne pokazujemy dla KAŻDEJ skonfigurowanej
+    // maszyny, która pochodzi z kalkulatora (ma własny snapshot techResults -
+    // patrz applyTechSelection) - niezależnie od tego, ile maszyn klient
+    // dodał w Kroku 2. Dla maszyn bez takiego snapshotu (wybór bezpośrednio z
+    // listy modeli) pokazywana jest zamiast tego krótka informacja o sposobie
+    // doboru. Wcześniej dane technologiczne pokazywane były tylko wtedy, gdy
+    // klient skonfigurował dokładnie JEDNĄ maszynę - przy dwóch lub więcej
+    // maszynach z kalkulatora znikały one całkowicie (ani dane, ani nawet
+    // informacja zastępcza), mimo że były prawidłowo policzone i zapisane.
     const techRowsHtml = (r) => `
             <tr><td>Wymiary formy (dł. x szer.)</td><td>${r.moldLength} x ${r.moldWidth} mm</td></tr>
             <tr><td>Prześwit między kolumnami</td><td>${r.tieClearance} mm</td></tr>
@@ -2522,7 +2565,7 @@ function populateStep4Summary() {
             <table>
                 <tr><td>Typ wtryskarki</td><td><strong>${typeData ? typeData.label : selectedMachineType}</strong></td></tr>
                 <tr><td>Model i agregat wtryskowy</td><td><strong>${m.modelName} – agregat wtryskowy ${m.unitStr}</strong></td></tr>
-                ${machines.length === 1 ? (m.techResults ? techRowsHtml(m.techResults) : noTechRowHtml) : ''}
+                ${m.techResults ? techRowsHtml(m.techResults) : noTechRowHtml}
             </table>
             <h4>Wybrane opcje dodatkowe</h4>
             ${m.selectedOptions.length > 0 ? `<ul>${m.selectedOptions.map(o => `<li>${o}</li>`).join('')}</ul>` : '<p>Brak wybranych opcji dodatkowych.</p>'}
@@ -2699,6 +2742,21 @@ function getVal(id) {
 
 function requestSendEmail() {
     if (!validateContactForm()) return;
+
+    // Honeypot wypełniony - najpewniej bot. Odrzucamy po cichu, bez
+    // pokazywania jakiegokolwiek komunikatu o błędzie (żeby nie zdradzić
+    // automatowi, że został wykryty).
+    if (isHoneypotFilled('config_hp')) return;
+
+    if (!isHumanCheckVerified('humanCheckBtnConfig')) {
+        const statusEl = document.getElementById('sendStatus');
+        statusEl.className = 'send-status error';
+        statusEl.textContent = 'Potwierdź, że nie jesteś robotem, zaznaczając pole powyżej, aby wysłać konfigurację.';
+        const humanCheckBtn = document.getElementById('humanCheckBtnConfig');
+        if (humanCheckBtn) humanCheckBtn.focus();
+        return;
+    }
+
     document.getElementById('confirmSendBox').style.display = 'block';
     document.getElementById('sendBtn').disabled = true;
 }
@@ -2768,47 +2826,51 @@ function buildMachineEmailCardHtml(m) {
 
 // Buduje fragment HTML z danymi technologicznymi (wymiary formy, materiał,
 // masy, wymagana siła zwarcia itd.) - dokładnie te same informacje, co
-// techRowsHtml w populateStep4Summary() (Krok 4 na stronie). Pokazywane tylko
-// gdy jest dokładnie jedna skonfigurowana maszyna i pochodzi ona z
-// kalkulatora (ma snapshot techResults); w przeciwnym razie (wybór z listy
-// albo więcej niż jedna maszyna) zwraca krótką informację o sposobie doboru,
-// tak jak w Kroku 4.
+// techRowsHtml w populateStep4Summary() (Krok 4 na stronie). Pokazywane dla
+// KAŻDEJ skonfigurowanej maszyny, która pochodzi z kalkulatora (ma snapshot
+// techResults) - niezależnie od tego, ile maszyn klient dodał w Kroku 2; dla
+// pozostałych (wybór bezpośrednio z listy modeli) pokazywana jest krótka
+// informacja o sposobie doboru, tak jak w Kroku 4. Gdy skonfigurowana jest
+// więcej niż jedna maszyna, każdy blok dostaje etykietę z nazwą modelu, do
+// którego się odnosi - inaczej przy kilku wtryskarkach naraz nie było by
+// wiadomo, których danych dotyczy dany wiersz. Wcześniej dane technologiczne
+// pokazywane były tylko wtedy, gdy klient skonfigurował dokładnie JEDNĄ
+// maszynę - przy dwóch lub więcej maszynach z kalkulatora znikały one
+// całkowicie (ani dane, ani nawet informacja zastępcza), mimo że były
+// prawidłowo policzone i zapisane.
 function buildTechDetailsEmailHtml(machines) {
-    const r = machines.length === 1 ? machines[0].techResults : null;
-
-    if (!r) {
-        return `
+    const buildNoTechRow = () => `
         <tr>
           <td style="padding:0 40px 8px;">
             <span style="display:block;font-size:15px;font-weight:600;color:#111d35;font-family:Arial, Helvetica, sans-serif;">Sposób doboru: Wybór bezpośrednio z listy modeli (bez danych technologicznych)</span>
           </td>
         </tr>
         `;
-    }
 
-    const rows = [
-        ['Wymiary formy (dł. x szer.)', `${r.moldLength} x ${r.moldWidth} mm`],
-        ['Prześwit między kolumnami', `${r.tieClearance} mm`]
-    ];
-    if (r.moldHeight > 0) rows.push(['Wysokość formy', `${r.moldHeight} mm`]);
-    rows.push(
-        ['Liczba gniazd', `${r.cavities}`],
-        ['Materiał', r.materialLabel],
-        ['Grubość ścianki', `${r.wallThickness} mm`],
-        ['Masa jednej wypraski', `${r.partWeight} g`],
-        ['Całkowita masa wtrysku', `${r.totalWeight.toFixed(2)} g`],
-        ['Całkowita objętość wtrysku', `${r.totalVwtr.toFixed(2)} cm³`],
-        ['Wymagana siła zwarcia', `${r.requiredForceTon.toFixed(1)} ton`]
-    );
+    const buildTechGrid = (r) => {
+        const rows = [
+            ['Wymiary formy (dł. x szer.)', `${r.moldLength} x ${r.moldWidth} mm`],
+            ['Prześwit między kolumnami', `${r.tieClearance} mm`]
+        ];
+        if (r.moldHeight > 0) rows.push(['Wysokość formy', `${r.moldHeight} mm`]);
+        rows.push(
+            ['Liczba gniazd', `${r.cavities}`],
+            ['Materiał', r.materialLabel],
+            ['Grubość ścianki', `${r.wallThickness} mm`],
+            ['Masa jednej wypraski', `${r.partWeight} g`],
+            ['Całkowita masa wtrysku', `${r.totalWeight.toFixed(2)} g`],
+            ['Całkowita objętość wtrysku', `${r.totalVwtr.toFixed(2)} cm³`],
+            ['Wymagana siła zwarcia', `${r.requiredForceTon.toFixed(1)} ton`]
+        );
 
-    // Wiersze parami (dwie kolumny), tak jak "Dane kontaktowe klienta" w
-    // istniejącym szablonie - jeśli liczba pól jest nieparzysta, druga
-    // kolumna ostatniego wiersza zostaje po prostu pusta.
-    let gridHtml = '';
-    for (let i = 0; i < rows.length; i += 2) {
-        const [label1, value1] = rows[i];
-        const second = rows[i + 1];
-        gridHtml += `
+        // Wiersze parami (dwie kolumny), tak jak "Dane kontaktowe klienta" w
+        // istniejącym szablonie - jeśli liczba pól jest nieparzysta, druga
+        // kolumna ostatniego wiersza zostaje po prostu pusta.
+        let gridHtml = '';
+        for (let i = 0; i < rows.length; i += 2) {
+            const [label1, value1] = rows[i];
+            const second = rows[i + 1];
+            gridHtml += `
             <tr>
               <td width="50%" style="padding:0 12px 18px 0;vertical-align:top;">
                 <span style="display:block;font-size:11px;font-weight:700;letter-spacing:1px;color:#888888;text-transform:uppercase;padding-bottom:4px;font-family:'Lato', Arial, sans-serif;">${escapeEmailHtml(label1)}</span>
@@ -2820,9 +2882,9 @@ function buildTechDetailsEmailHtml(machines) {
               </td>
             </tr>
         `;
-    }
+        }
 
-    return `
+        return `
         <tr>
           <td style="padding:0 40px 8px;">
             <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
@@ -2830,7 +2892,19 @@ function buildTechDetailsEmailHtml(machines) {
             </table>
           </td>
         </tr>
-    `;
+        `;
+    };
+
+    return machines.map((m, i) => {
+        const label = machines.length > 1 ? `
+        <tr>
+          <td style="padding:${i === 0 ? '0' : '18px'} 40px 6px;">
+            <span style="display:block;font-size:13px;font-weight:700;color:#0abeb5;font-family:'Lato', Arial, sans-serif;">${escapeEmailHtml(m.modelName)}</span>
+          </td>
+        </tr>
+        ` : '';
+        return label + (m.techResults ? buildTechGrid(m.techResults) : buildNoTechRow());
+    }).join('');
 }
 
 function confirmSendEmail() {
@@ -3446,6 +3520,22 @@ function confirmSendEmail() {
 
     form.addEventListener('submit', function (e) {
         e.preventDefault();
+
+        // Honeypot wypełniony - najpewniej bot. Odrzucamy zgłoszenie po
+        // cichu, bez żadnego komunikatu o błędzie (żeby nie zdradzić
+        // automatowi, że został wykryty).
+        if (isHoneypotFilled('contact_hp')) return;
+
+        if (!isHumanCheckVerified('humanCheckBtnContact')) {
+            if (statusEl) {
+                statusEl.textContent = 'Potwierdź, że nie jesteś robotem, zaznaczając pole powyżej, aby wysłać wiadomość.';
+                statusEl.classList.remove('success');
+                statusEl.classList.add('error');
+            }
+            const humanCheckBtn = document.getElementById('humanCheckBtnContact');
+            if (humanCheckBtn) humanCheckBtn.focus();
+            return;
+        }
 
         const topic = (form.querySelector('input[name="contact_topic"]:checked') || {}).value || 'biuro';
         const recipient = RECIPIENTS[topic];
