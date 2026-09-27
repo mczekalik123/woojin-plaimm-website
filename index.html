@@ -495,47 +495,122 @@
 
     </main>
 
-    <!-- ================= GLOBAL MANAGEMENT SECTION ================= -->
+    <!-- ================= INTERAKTYWNY MODEL 3D TE-A5 ================= -->
+    <!-- Model 3D wtryskarki elektrycznej TE-A5 rysowany w WebGL (bez zewnętrznych
+         bibliotek) - patrz initTe3DShowcase() w script.js. Znaczniki (hotspoty),
+         zakładki, panel z opisem i przyciski pod widokiem są generowane/obsługiwane
+         przez ten sam skrypt na podstawie tablicy TE3D_FEATURES. -->
 
-    <section class="global-management-section">
-        <div class="global-grid-bg" aria-hidden="true"></div>
+    <section class="te3d-section" id="te3dSection" aria-labelledby="te3dTitle">
+        <div class="te3d-grid-bg" aria-hidden="true"></div>
+
         <div class="container">
-            <div class="global-management-header">
-                <h2>Globalne zarządzanie zorientowane na technologię</h2>
-                <p>
-                    Dążymy do tego, aby stać się światowym centrum maszyn do formowania wtryskowego. 
-                    Zwiększamy nasz udział w rynku w oparciu o solidną technologię firmy Woojin, 
-                    a aby rozwijać się jako globalny Woojin w erze globalizacji, 
-                    tworzymy biura handlowe na całym świecie i staramy się zdobywać nowe rynki.
+            <div class="te3d-header">
+                <span class="te3d-tag">// TE-A5 · SERIA W PEŁNI ELEKTRYCZNA</span>
+                <h2 class="te3d-title" id="te3dTitle">Poznaj <span class="te3d-glitch" data-text="TE-A5">TE-A5</span> w 3D</h2>
+                <p class="te3d-lead">
+                    Obracaj model, zajrzyj pod obudowę w trybie X-RAY i uruchom symulację cyklu wtrysku.
+                    Kliknij numerowane znaczniki, aby poznać najważniejsze rozwiązania ultra energooszczędnej,
+                    w pełni elektrycznej serii WOOJIN PLAIMM TE-A5 (50–850 t).
                 </p>
             </div>
 
-            <div class="global-cards-grid">
-                <!-- KARTA 1 -->
-                <div class="global-card">
-                    <img src="img/water.jpg" alt="Produkty dostosowane do potrzeb klienta" class="global-card-bg">
-                    <div class="global-card-overlay">
-                        <span class="global-brand">Woojin Plaimm</span>
-                        <span class="global-text">Produkty dostosowane do potrzeb klienta</span>
+            <div class="te3d-layout">
+                <div class="te3d-stage" id="te3dStage">
+                    <canvas class="te3d-canvas" id="te3dCanvas" tabindex="0" aria-label="Interaktywny model 3D wtryskarki TE-A5. Przeciągnij, aby obrócić; strzałki na klawiaturze obracają model, plus i minus przybliżają."></canvas>
+
+                    <div class="te3d-scanline" aria-hidden="true"></div>
+                    <span class="te3d-corner te3d-corner--tl" aria-hidden="true"></span>
+                    <span class="te3d-corner te3d-corner--tr" aria-hidden="true"></span>
+                    <span class="te3d-corner te3d-corner--bl" aria-hidden="true"></span>
+                    <span class="te3d-corner te3d-corner--br" aria-hidden="true"></span>
+
+                    <div class="te3d-hud-top" aria-hidden="true">
+                        <span class="te3d-hud-id"><i class="te3d-dot"></i>WJ-TE-A5 // HOLO-VIEW</span>
+                        <span class="te3d-hud-readout" id="te3dReadout">AZ 000° · EL 00° · ZOOM 1.0×</span>
+                    </div>
+
+                    <div class="te3d-hotspots" id="te3dHotspots"></div>
+
+                    <div class="te3d-cycle-hud" id="te3dCycleHud" hidden>
+                        <span class="te3d-cycle-title">SYMULACJA CYKLU</span>
+                        <ol class="te3d-cycle-list" id="te3dCycleList"></ol>
+                    </div>
+
+                    <div class="te3d-hint" id="te3dHint" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h16M4 12l4-4M4 12l4 4M20 12l-4-4M20 12l-4 4"/></svg>
+                        <span>PRZECIĄGNIJ, ABY OBRACAĆ</span>
+                    </div>
+
+                    <div class="te3d-fallback" id="te3dFallback" hidden>
+                        <img src="img/te-a5/te-a5-przekroj.jpg" alt="Przekrój wtryskarki elektrycznej WOOJIN PLAIMM TE-A5" loading="lazy">
+                        <p>Twoja przeglądarka nie obsługuje grafiki 3D (WebGL) – pokazujemy przekrój maszyny.</p>
+                    </div>
+
+                    <div class="te3d-toolbar" id="te3dToolbar">
+                        <button type="button" class="te3d-btn" data-action="reset" aria-label="Widok ogólny">
+                            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11l9-7 9 7"/><path d="M5 10v10h14V10"/></svg>
+                            <span class="te3d-btn-text">Widok ogólny</span>
+                        </button>
+                        <button type="button" class="te3d-btn" data-action="xray" aria-pressed="false">X-RAY</button>
+                        <button type="button" class="te3d-btn te3d-btn--accent" data-action="cycle" aria-pressed="false">
+                            <svg class="te3d-ico-play" viewBox="0 0 24 24" width="12" height="12" aria-hidden="true"><polygon points="6,4 20,12 6,20" fill="currentColor"/></svg>
+                            <svg class="te3d-ico-stop" viewBox="0 0 24 24" width="12" height="12" aria-hidden="true"><rect x="6" y="6" width="12" height="12" fill="currentColor"/></svg>
+                            <span class="te3d-cycle-label te3d-btn-text">Symulacja cyklu</span>
+                            <span class="te3d-btn-short" aria-hidden="true">Cykl</span>
+                        </button>
+                        <span class="te3d-toolbar-sep" aria-hidden="true"></span>
+                        <button type="button" class="te3d-btn te3d-btn--icon" data-action="zoom-out" aria-label="Oddal">&minus;</button>
+                        <button type="button" class="te3d-btn te3d-btn--icon" data-action="zoom-in" aria-label="Przybliż">+</button>
+                        <button type="button" class="te3d-btn te3d-btn--icon" data-action="rotate" aria-pressed="true" aria-label="Automatyczny obrót" title="Automatyczny obrót">
+                            <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 11a8 8 0 1 0-2.3 5.7"/><polyline points="20 4 20 11 13 11"/></svg>
+                        </button>
                     </div>
                 </div>
 
-                <!-- KARTA 2 -->
-                <div class="global-card">
-                    <img src="img/golf.jpg" alt="Precyzyjne formowanie wtryskowe" class="global-card-bg">
-                    <div class="global-card-overlay">
-                        <span class="global-brand">Woojin Plaimm</span>
-                        <span class="global-text">Precyzyjne formowanie wtryskowe</span>
+                <aside class="te3d-panel" id="te3dPanel" aria-live="polite">
+                    <div class="te3d-panel-inner">
+                        <div class="te3d-panel-head"><span class="te3d-panel-index">00</span><span class="te3d-panel-kicker">WIDOK OGÓLNY</span></div>
+                        <h3 class="te3d-panel-title">TE-A5 — ultra energooszczędna seria elektryczna</h3>
+                        <p class="te3d-panel-lead">W pełni elektryczna wtryskarka z układem kolanowym (50–850 t). Każdy zespół napędzany jest niezależnym serwosilnikiem, co skraca cykl i zapewnia wysoką powtarzalność.</p>
                     </div>
-                </div>
+                </aside>
+            </div>
 
-                <!-- KARTA 3 -->
-                <div class="global-card">
-                    <img src="img/car.jpg" alt="Najwyższa jakość Premium" class="global-card-bg">
-                    <div class="global-card-overlay">
-                        <span class="global-brand">Woojin Plaimm</span>
-                        <span class="global-text">Najwyższa jakość Premium</span>
-                    </div>
+            <div class="te3d-tabs" id="te3dTabs" role="tablist" aria-label="Najważniejsze cechy TE-A5"></div>
+
+            <div class="te3d-stats">
+                <div class="te3d-stat">
+                    <span class="te3d-stat-value">Klasa 10</span>
+                    <span class="te3d-stat-label">zużycia energii wg EUROMAP 60.1 (≤ 0,24 kWh/kg)</span>
+                </div>
+                <div class="te3d-stat">
+                    <span class="te3d-stat-value">&gt;60%</span>
+                    <span class="te3d-stat-label">niższe koszty energii elektrycznej niż w hydraulice*</span>
+                </div>
+                <div class="te3d-stat">
+                    <span class="te3d-stat-value">≈30%</span>
+                    <span class="te3d-stat-label">większe wzmocnienie siły zwarcia (układ End-Cut)</span>
+                </div>
+                <div class="te3d-stat">
+                    <span class="te3d-stat-value">≈15%</span>
+                    <span class="te3d-stat-label">krótszy cykl dzięki równoległej pracy osi*</span>
+                </div>
+                <div class="te3d-stat">
+                    <span class="te3d-stat-value">50–850 t</span>
+                    <span class="te3d-stat-label">zakres siły zwarcia serii</span>
+                </div>
+                <div class="te3d-stat">
+                    <span class="te3d-stat-value">21″</span>
+                    <span class="te3d-stat-label">dotykowy ekran Full HD sterownika B&amp;R</span>
+                </div>
+            </div>
+
+            <div class="te3d-footer">
+                <p class="te3d-note">* Wartości wg katalogu producenta TE-A5 – rzeczywiste wyniki zależą od formy, surowca i warunków przetwórstwa. Model 3D ma charakter poglądowy.</p>
+                <div class="te3d-cta">
+                    <a href="maszyny.html" class="te3d-cta-link">Zobacz TE-A5 w widoku 360°</a>
+                    <a href="konfigurator.html" class="te3d-cta-link te3d-cta-link--solid">Skonfiguruj swoją TE-A5</a>
                 </div>
             </div>
         </div>
