@@ -2,40 +2,68 @@
 <html lang="pl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>WOOJIN PLAIMM – wtryskarki | Przedstawicielstwo w Polsce</title>
+    <meta name="description" content="Oficjalne przedstawicielstwo WOOJIN PLAIMM w Polsce. Wtryskarki hydrauliczne, elektryczne, dwupłytowe, pionowe i dwukolorowe o sile zwarcia 50–4300 t. Konfigurator online, doradztwo i serwis.">
+    <meta name="theme-color" content="#0a0e13">
+    <meta property="og:type" content="website">
+    <meta property="og:locale" content="pl_PL">
+    <meta property="og:title" content="WOOJIN PLAIMM – Przedstawicielstwo w Polsce">
+    <meta property="og:description" content="Wtryskarki klasy światowej: 7 serii maszyn o sile zwarcia 50–4300 t. Skonfiguruj swoją wtryskarkę online.">
+    <meta property="og:image" content="img/opt/hero.jpg">
 
-    <title>WOOJIN PLAIMM - Przedstawicielstwo w Polsce</title>
+    <link rel="icon" type="image/png" sizes="32x32" href="img/opt/favicon-32.png">
+    <link rel="icon" type="image/png" sizes="64x64" href="img/opt/favicon-64.png">
+    <link rel="apple-touch-icon" href="img/opt/apple-touch-icon.png">
 
-    <!-- Google Fonts: Lato -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,300..900&display=swap">
+    <link rel="preload" as="image" href="img/opt/hero.jpg" imagesrcset="img/opt/hero-1100.jpg 1100w, img/opt/hero.jpg 1920w" imagesizes="100vw" fetchpriority="high">
 
     <link rel="stylesheet" href="style.css">
-    <script src="script.js" defer></script>
+    <link rel="stylesheet" href="css/te3d.css">
+
+    <script>document.documentElement.classList.add('js');setTimeout(function(){if(!window.WJ||!window.WJ.ready)document.documentElement.classList.add('no-anim');},3000);</script>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/gsap.min.js" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/ScrollTrigger.min.js" defer></script>
+    <script src="js/main.js" defer></script>
+    <script src="js/home.js" defer></script>
+    <script src="js/te3d.js" defer></script>
 </head>
 
 <body>
+    <a class="skip-link" href="#main">Przejdź do treści</a>
+    <div class="scroll-progress" aria-hidden="true"><span></span></div>
 
-    <!-- ================= HEADER ================= -->
-
+    <!-- ================= NAGŁÓWEK ================= -->
     <header class="site-header">
         <div class="header-inner">
-            <a href="index.html" class="logo">
-                <img src="img/logo-white.png" alt="Woojin Plaimm" class="logo-image">
+            <a href="index.html" class="logo" aria-label="WOOJIN PLAIMM – strona główna">
+                <img src="img/logo-white.png" alt="" class="logo-img logo-img--light" width="500" height="224">
+                <img src="img/logo-black.png" alt="" class="logo-img logo-img--dark" width="500" height="224">
             </a>
 
-            <nav class="main-nav">
-                <a href="index.html" class="active">O NAS</a>
-                <a href="maszyny.html">MASZYNY</a>
-                <a href="konfigurator.html">KONFIGURATOR</a>
-                <a href="kariera.html">KARIERA</a>
-                <a href="kontakt.html">KONTAKT</a>
-                <!-- Nowy przycisk WOOJIN GLOBAL -->
-                <a href="https://woojinplaimm.com/?lang_code=en" target="_blank" class="nav-global">WOOJIN GLOBAL</a>
+            <nav class="main-nav" id="mainNav" aria-label="Nawigacja główna">
+                <ul class="nav-list" role="list">
+                    <li><a href="index.html" class="nav-link" aria-current="page"><span class="nav-num">01</span><span class="nav-text">O nas</span></a></li>
+                    <li><a href="maszyny.html" class="nav-link"><span class="nav-num">02</span><span class="nav-text">Maszyny</span></a></li>
+                    <li><a href="konfigurator.html" class="nav-link"><span class="nav-num">03</span><span class="nav-text">Konfigurator</span></a></li>
+                    <li><a href="kariera.html" class="nav-link"><span class="nav-num">04</span><span class="nav-text">Kariera</span></a></li>
+                    <li><a href="kontakt.html" class="nav-link"><span class="nav-num">05</span><span class="nav-text">Kontakt</span></a></li>
+                </ul>
+                <a href="https://woojinplaimm.com/?lang_code=en" target="_blank" rel="noopener noreferrer" class="nav-global">
+                    Woojin Global
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17L17 7M8 7h9v9"/></svg>
+                </a>
+                <div class="nav-mobile-footer">
+                    <span>ul. Hutnicza 6, 40-241 Katowice</span>
+                    <a href="tel:+48510440661">+48 510 440 661</a>
+                    <a href="mailto:ploffice@wjpim.com">ploffice@wjpim.com</a>
+                </div>
             </nav>
 
-            <button type="button" class="nav-toggle" id="navToggle" aria-label="Otwórz menu" aria-expanded="false">
+            <button type="button" class="nav-toggle" aria-controls="mainNav" aria-label="Otwórz menu" aria-expanded="false">
                 <span class="nav-toggle-bar"></span>
                 <span class="nav-toggle-bar"></span>
                 <span class="nav-toggle-bar"></span>
@@ -43,448 +71,352 @@
         </div>
     </header>
 
-    <!-- ================= MAIN CONTENT ================= -->
+    <main id="main">
 
-    <main>
+        <!-- ================= HERO ================= -->
+        <section class="hero" data-header-theme="dark" aria-labelledby="heroTitle">
+            <div class="hero-media" aria-hidden="true">
+                <img class="hero-img" src="img/opt/hero.jpg" srcset="img/opt/hero-1100.jpg 1100w, img/opt/hero.jpg 1920w" sizes="100vw" alt="" width="1920" height="650" fetchpriority="high">
+            </div>
+            <div class="hero-overlay" aria-hidden="true"></div>
+            <div class="hero-grid" aria-hidden="true"></div>
 
-        <!-- PAGE HERO / STATS -->
-        <section class="woojin-section">
-            <div class="woojin-header">
-                <h1>WOOJIN PLAIMM - Przedstawicielstwo w Polsce</h1>
-                <p>
-                    WOOJIN Plaimm to światowy lider w dziedzinie maszyn do formowania
-                    wtryskowego. Od ponad 30 lat dostarczamy nowoczesne, niezawodne
-                    i precyzyjne rozwiązania dla przemysłu tworzyw sztucznych.
-                    Nasze technologie łączą innowacyjność z wydajnością,
-                    oferując klientom najwyższą jakość i pełne wsparcie na każdym
-                    etapie współpracy.
+            <div class="container hero-inner">
+                <p class="eyebrow eyebrow--light eyebrow--dot fade-up" style="--delay:.15s">WOOJIN PLAIMM · Przedstawicielstwo w Polsce</p>
+                <h1 class="hero-title" id="heroTitle">
+                    <span class="line"><span class="line-inner" style="--i:0">Wtryskarki,</span></span>
+                    <span class="line"><span class="line-inner" style="--i:1">które formują</span></span>
+                    <span class="line"><span class="line-inner" style="--i:2"><em class="text-gradient">przyszłość.</em></span></span>
+                </h1>
+                <p class="hero-lead fade-up" style="--delay:.65s">
+                    WOOJIN PLAIMM to światowy lider w dziedzinie maszyn do formowania wtryskowego.
+                    Od ponad 30 lat dostarczamy nowoczesne, niezawodne i precyzyjne rozwiązania
+                    dla przemysłu tworzyw sztucznych — z pełnym wsparciem na każdym etapie współpracy.
                 </p>
+                <div class="hero-actions fade-up" style="--delay:.8s">
+                    <a href="konfigurator.html" class="btn btn--primary btn--lg" data-magnetic>
+                        Skonfiguruj wtryskarkę
+                        <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+                    </a>
+                    <a href="maszyny.html" class="btn btn--glass btn--lg">Poznaj maszyny</a>
+                </div>
             </div>
 
-            <div class="woojin-grid" id="woojinStats">
-                <div class="woojin-intro">
-                    <div>
-                        <h2>30 Lat Nieprzerwanego Sukcesu</h2>
-                        <p>
-                            Założona w 1985 roku, Woojin Plaimm stała się liderem
-                            w branży formowania wtryskowego, cenionym za innowacyjność,
-                            precyzję i zaangażowanie w jakość. Dzięki ponad trzem
-                            dekadom doświadczenia firma nieustannie przekracza granice
-                            technologii, dostarczając wydajne rozwiązania, które budują
-                            zaufanie klientów na całym świecie.
-                        </p>
-                    </div>
-                </div>
-
-                <div class="woojin-stat">
-                    <span class="woojin-stat-number" data-start="1800" data-end="2000" data-suffix="+">1900+</span>
-                    <span class="woojin-stat-label">Maszyn produkowanych rocznie</span>
-                </div>
-
-                <div class="woojin-stat">
-                    <span class="woojin-stat-number" data-start="15" data-end="30" data-suffix="+">20+</span>
-                    <span class="woojin-stat-label">Lat doświadczenia</span>
-                </div>
-
-                <div class="woojin-stat">
-                    <span class="woojin-stat-number" data-start="20" data-end="40" data-suffix="+">30+</span>
-                    <span class="woojin-stat-label">Lokalizacji na całym świecie</span>
-                </div>
-
-                <div class="woojin-stat">
-                    <span class="woojin-stat-number" data-start="900" data-end="1100" data-suffix="+">1000+</span>
-                    <span class="woojin-stat-label">Pracowników na całym świecie</span>
-                </div>
+            <div class="container hero-bottom fade-up" style="--delay:1s">
+                <dl class="hero-facts">
+                    <div><dt>od 1985</dt><dd>na rynku maszyn wtryskowych</dd></div>
+                    <div><dt>50–4300 t</dt><dd>zakres siły zwarcia</dd></div>
+                    <div><dt>7 serii</dt><dd>wtryskarek w ofercie</dd></div>
+                </dl>
+                <a href="#o-nas" class="scroll-cue">
+                    <span class="scroll-cue-mouse" aria-hidden="true"></span>
+                    Przewiń
+                </a>
             </div>
         </section>
 
-        <!-- ================= CLIENTS ================= -->
+        <!-- ================= O NAS + STATYSTYKI ================= -->
+        <section class="section about" id="o-nas" aria-labelledby="aboutTitle">
+            <div class="container about-grid">
+                <div class="about-copy">
+                    <p class="eyebrow" data-reveal>O nas</p>
+                    <h2 class="section-title" id="aboutTitle" data-reveal>30 lat nieprzerwanego <em>sukcesu</em></h2>
+                    <p class="about-lead" data-scrub-text>
+                        Założona w 1985 roku Woojin Plaimm stała się liderem w branży formowania wtryskowego,
+                        cenionym za innowacyjność, precyzję i zaangażowanie w jakość. Dzięki ponad trzem dekadom
+                        doświadczenia firma nieustannie przekracza granice technologii, dostarczając wydajne
+                        rozwiązania, które budują zaufanie klientów na całym świecie.
+                    </p>
 
-        <section class="clients-section">
-            <div class="clients-title">ZAUFALI NAM:</div>
-
-            <div class="clients-track">
-                <div class="clients-list">
-                    <div class="client-logo">
-                        <a href="https://cobi.pl/" target="_blank" rel="noopener"><img src="img/klienci/cobi.png" alt="Cobi"></a>
-                    </div>
-                    <div class="client-logo">
-                        <a href="https://www.lg.com/pl/" target="_blank" rel="noopener"><img src="img/klienci/LG.png" alt="LG"></a>
-                    </div>
-                    <div class="client-logo">
-                        <a href="https://www.prosperplast.pl/" target="_blank" rel="noopener"><img src="img/klienci/Prosperplast.png" alt="Prosperplast"></a>
-                    </div>
-                    <div class="client-logo">
-                        <a href="https://atplast.pl/" target="_blank" rel="noopener"><img src="img/klienci/atplast.png" alt="Atplast"></a>
-                    </div>
-                    <div class="client-logo">
-                        <a href="https://www.byars.pl/" target="_blank" rel="noopener"><img src="img/klienci/byars.png" alt="Byars"></a>
-                    </div>
-                    <div class="client-logo">
-                        <a href="https://www.bestautotech.pl/" target="_blank" rel="noopener"><img src="img/klienci/bestauto.png" alt="BestAutotech"></a>
-                    </div>
-                    <div class="client-logo">
-                        <a href="https://www.caffaro.pl/" target="_blank" rel="noopener"><img src="img/klienci/Caffaro.png" alt="Caffaro"></a>
-                    </div>    
-                    <div class="client-logo">
-                        <a href="http://www.derkwoo.com/" target="_blank" rel="noopener"><img src="img/klienci/derkwoo.png" alt="Derkwoo"></a>
-                    </div>
-                    <div class="client-logo">
-                        <a href="https://www.ddsp.pl/" target="_blank" rel="noopener"><img src="img/klienci/deadong.png" alt="Deadong"></a>
-                    </div>
-                    <div class="client-logo">
-                        <a href="https://www.dtrvms.it/en/" target="_blank" rel="noopener"><img src="img/klienci/DNAutomotive.png" alt="DNAutomotive"></a>
-                    </div>
-                    <div class="client-logo">
-                        <a href="https://don-plast.pl/" target="_blank" rel="noopener"><img src="img/klienci/donplast.png" alt="Donplast"></a>
-                    </div>
-                    <div class="client-logo">
-                        <a href="https://ekoplast-group.com/pl/" target="_blank" rel="noopener"><img src="img/klienci/Ekoplast.png" alt="Ekoplast"></a>
-                    </div>
-                    <div class="client-logo">
-                        <a href="https://fameks.eu/" target="_blank" rel="noopener"><img src="img/klienci/fameks.png" alt="Fameks"></a>
-                    </div>
-                    <div class="client-logo">
-                        <a href="https://hanplast.com/" target="_blank" rel="noopener"><img src="img/klienci/hanplast.png" alt="Hanplast"></a>
-                    </div>
-                    <div class="client-logo">
-                        <a href="https://hanyangpolska.pl/" target="_blank" rel="noopener"><img src="img/klienci/hanyang.png" alt="Hanyang"></a>
-                    </div>
-                    <div class="client-logo">
-                        <a href="https://www.starion.co.kr/page/en/page44.php" target="_blank" rel="noopener"><img src="img/klienci/starion.png" alt="Starion"></a>
-                    </div>
-                    <div class="client-logo">
-                        <a href="https://intelight.pl/" target="_blank" rel="noopener"><img src="img/klienci/intelight.png" alt="Intelight"></a>
-                    </div>
-                    <div class="client-logo">
-                        <a href="https://www.kwangjin-kr.com/eng/" target="_blank" rel="noopener"><img src="img/klienci/kwangjin.png" alt="Kwangjin"></a>
-                    </div>
-                    <div class="client-logo">
-                        <a href="https://www.kftp.pl/" target="_blank" rel="noopener"><img src="img/klienci/kftp.png" alt="KFTP"></a>
-                    </div>
-                    <div class="client-logo">
-                        <a href="https://kpi-pl.com/pl/home-polski/#top" target="_blank" rel="noopener"><img src="img/klienci/kpi.png" alt="KPI"></a>
-                    </div>
-                    <div class="client-logo">
-                        <a href="https://www.kplast.pl/" target="_blank" rel="noopener"><img src="img/klienci/kplast.png" alt="KPLAST"></a>
-                    </div>
-                    <div class="client-logo">
-                        <a href="https://mdepl.com/" target="_blank" rel="noopener"><img src="img/klienci/MDS.png" alt="Mudeung Electric"></a>
-                    </div>
-                    <div class="client-logo">
-                        <a href="https://www.nifcokorea.pl/pl/index.php" target="_blank" rel="noopener"><img src="img/klienci/nifco.png" alt="Nifco"></a>
-                    </div>
-                    <div class="client-logo">
-                        <a href="http://poland.sekonix.co.kr/" target="_blank" rel="noopener"><img src="img/klienci/sekonix.png" alt="Sekonix"></a>
-                    </div>
-                    <div class="client-logo">
-                        <a href="https://kolpakiolszewski.pl/" target="_blank" rel="noopener"><img src="img/klienci/olszewski.png" alt="Olszewski"></a>
+                    <div class="about-points" data-reveal-stagger=".1">
+                        <div class="about-point" data-reveal>
+                            <span class="about-point-icon" aria-hidden="true">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18h6M10 21h4M12 3a6 6 0 0 0-3.6 10.8c.6.5 1 1.2 1.1 2V16h5v-.2c.1-.8.5-1.5 1.1-2A6 6 0 0 0 12 3z"/></svg>
+                            </span>
+                            <h3>Innowacyjność</h3>
+                            <p>Technologie łączące nowoczesność z wydajnością produkcji.</p>
+                        </div>
+                        <div class="about-point" data-reveal>
+                            <span class="about-point-icon" aria-hidden="true">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.2"/></svg>
+                            </span>
+                            <h3>Precyzja</h3>
+                            <p>Powtarzalna jakość wyprasek w każdej serii produkcyjnej.</p>
+                        </div>
+                        <div class="about-point" data-reveal>
+                            <span class="about-point-icon" aria-hidden="true">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a4 4 0 0 0-5.4 5.4L3 18l3 3 6.3-6.3a4 4 0 0 0 5.4-5.4l-2.5 2.5-2.4-.6-.6-2.4z"/></svg>
+                            </span>
+                            <h3>Pełne wsparcie</h3>
+                            <p>Doradztwo i serwis na każdym etapie współpracy.</p>
+                        </div>
                     </div>
                 </div>
 
-                <!-- DRUGA IDENTYCZNA LISTA -->
-                <div class="clients-list" aria-hidden="true">
-                    <div class="client-logo">
-                        <a href="https://cobi.pl/" target="_blank" tabindex="-1"><img src="img/klienci/cobi.png" alt="Cobi"></a>
-                    </div>
-                    <div class="client-logo">
-                        <a href="https://www.lg.com/pl/" target="_blank" tabindex="-1"><img src="img/klienci/LG.png" alt="LG"></a>
-                    </div>
-                    <div class="client-logo">
-                        <a href="https://www.prosperplast.pl/" target="_blank" tabindex="-1"><img src="img/klienci/Prosperplast.png" alt="Prosperplast"></a>
-                    </div>
-                    <div class="client-logo">
-                        <a href="https://atplast.pl/" target="_blank" tabindex="-1"><img src="img/klienci/atplast.png" alt="Atplast"></a>
-                    </div>
-                    <div class="client-logo">
-                        <a href="https://www.byars.pl/" target="_blank" tabindex="-1"><img src="img/klienci/byars.png" alt="Byars"></a>
-                    </div>
-                    <div class="client-logo">
-                        <a href="https://www.bestautotech.pl/" target="_blank" tabindex="-1"><img src="img/klienci/bestauto.png" alt="BestAutotech"></a>
-                    </div>
-                    <div class="client-logo">
-                        <a href="https://www.caffaro.pl/" target="_blank" tabindex="-1"><img src="img/klienci/Caffaro.png" alt="Caffaro"></a>
-                    </div>    
-                    <div class="client-logo">
-                        <a href="http://www.derkwoo.com/" target="_blank" tabindex="-1"><img src="img/klienci/derkwoo.png" alt="Derkwoo"></a>
-                    </div>
-                    <div class="client-logo">
-                        <a href="https://www.ddsp.pl/" target="_blank" tabindex="-1"><img src="img/klienci/deadong.png" alt="Deadong"></a>
-                    </div>
-                    <div class="client-logo">
-                        <a href="https://www.dtrvms.it/en/" target="_blank" tabindex="-1"><img src="img/klienci/DNAutomotive.png" alt="DNAutomotive"></a>
-                    </div>
-                    <div class="client-logo">
-                        <a href="https://don-plast.pl/" target="_blank" tabindex="-1"><img src="img/klienci/donplast.png" alt="Donplast"></a>
-                    </div>
-                    <div class="client-logo">
-                        <a href="https://ekoplast-group.com/pl/" target="_blank" tabindex="-1"><img src="img/klienci/Ekoplast.png" alt="Ekoplast"></a>
-                    </div>
-                    <div class="client-logo">
-                        <a href="https://fameks.eu/" target="_blank" tabindex="-1"><img src="img/klienci/fameks.png" alt="Fameks"></a>
-                    </div>
-                    <div class="client-logo">
-                        <a href="https://hanplast.com/" target="_blank" tabindex="-1"><img src="img/klienci/hanplast.png" alt="Hanplast"></a>
-                    </div>
-                    <div class="client-logo">
-                        <a href="https://hanyangpolska.pl/" target="_blank" tabindex="-1"><img src="img/klienci/hanyang.png" alt="Hanyang"></a>
-                    </div>
-                    <div class="client-logo">
-                        <a href="https://www.starion.co.kr/page/en/page44.php" target="_blank" tabindex="-1"><img src="img/klienci/starion.png" alt="Starion"></a>
-                    </div>
-                    <div class="client-logo">
-                        <a href="https://intelight.pl/" target="_blank" tabindex="-1"><img src="img/klienci/intelight.png" alt="Intelight"></a>
-                    </div>
-                    <div class="client-logo">
-                        <a href="https://www.kwangjin-kr.com/eng/" target="_blank" tabindex="-1"><img src="img/klienci/kwangjin.png" alt="Kwangjin"></a>
-                    </div>
-                    <div class="client-logo">
-                        <a href="https://www.kftp.pl/" target="_blank" tabindex="-1"><img src="img/klienci/kftp.png" alt="KFTP"></a>
-                    </div>
-                    <div class="client-logo">
-                        <a href="https://kpi-pl.com/pl/home-polski/#top" target="_blank" tabindex="-1"><img src="img/klienci/kpi.png" alt="KPI"></a>
-                    </div>
-                    <div class="client-logo">
-                        <a href="https://www.kplast.pl/" target="_blank" tabindex="-1"><img src="img/klienci/kplast.png" alt="KPLAST"></a>
-                    </div>
-                    <div class="client-logo">
-                        <a href="https://mdepl.com/" target="_blank" tabindex="-1"><img src="img/klienci/MDS.png" alt="Mudeung Electric"></a>
-                    </div>
-                    <div class="client-logo">
-                        <a href="https://www.nifcokorea.pl/pl/index.php" target="_blank" tabindex="-1"><img src="img/klienci/nifco.png" alt="Nifco"></a>
-                    </div>
-                    <div class="client-logo">
-                        <a href="http://poland.sekonix.co.kr/" target="_blank" tabindex="-1"><img src="img/klienci/sekonix.png" alt="Sekonix"></a>
-                    </div>
-                    <div class="client-logo">
-                        <a href="https://kolpakiolszewski.pl/" target="_blank" tabindex="-1"><img src="img/klienci/olszewski.png" alt="Olszewski"></a>
-                    </div>
-                </div>
-            </div>
-
-            <div class="clients-track clients-track--reverse" aria-hidden="true">
-                <div class="clients-list">
-                    <div class="client-logo">
-                        <a href="https://cobi.pl/" target="_blank" tabindex="-1"><img src="img/klienci/cobi.png" alt="Cobi"></a>
-                    </div>
-                    <div class="client-logo">
-                        <a href="https://www.lg.com/pl/" target="_blank" tabindex="-1"><img src="img/klienci/LG.png" alt="LG"></a>
-                    </div>
-                    <div class="client-logo">
-                        <a href="https://www.prosperplast.pl/" target="_blank" tabindex="-1"><img src="img/klienci/Prosperplast.png" alt="Prosperplast"></a>
-                    </div>
-                    <div class="client-logo">
-                        <a href="https://atplast.pl/" target="_blank" tabindex="-1"><img src="img/klienci/atplast.png" alt="Atplast"></a>
-                    </div>
-                    <div class="client-logo">
-                        <a href="https://www.byars.pl/" target="_blank" tabindex="-1"><img src="img/klienci/byars.png" alt="Byars"></a>
-                    </div>
-                    <div class="client-logo">
-                        <a href="https://www.bestautotech.pl/" target="_blank" tabindex="-1"><img src="img/klienci/bestauto.png" alt="BestAutotech"></a>
-                    </div>
-                    <div class="client-logo">
-                        <a href="https://www.caffaro.pl/" target="_blank" tabindex="-1"><img src="img/klienci/Caffaro.png" alt="Caffaro"></a>
-                    </div>    
-                    <div class="client-logo">
-                        <a href="http://www.derkwoo.com/" target="_blank" tabindex="-1"><img src="img/klienci/derkwoo.png" alt="Derkwoo"></a>
-                    </div>
-                    <div class="client-logo">
-                        <a href="https://www.ddsp.pl/" target="_blank" tabindex="-1"><img src="img/klienci/deadong.png" alt="Deadong"></a>
-                    </div>
-                    <div class="client-logo">
-                        <a href="https://www.dtrvms.it/en/" target="_blank" tabindex="-1"><img src="img/klienci/DNAutomotive.png" alt="DNAutomotive"></a>
-                    </div>
-                    <div class="client-logo">
-                        <a href="https://don-plast.pl/" target="_blank" tabindex="-1"><img src="img/klienci/donplast.png" alt="Donplast"></a>
-                    </div>
-                    <div class="client-logo">
-                        <a href="https://ekoplast-group.com/pl/" target="_blank" tabindex="-1"><img src="img/klienci/Ekoplast.png" alt="Ekoplast"></a>
-                    </div>
-                    <div class="client-logo">
-                        <a href="https://fameks.eu/" target="_blank" tabindex="-1"><img src="img/klienci/fameks.png" alt="Fameks"></a>
-                    </div>
-                    <div class="client-logo">
-                        <a href="https://hanplast.com/" target="_blank" tabindex="-1"><img src="img/klienci/hanplast.png" alt="Hanplast"></a>
-                    </div>
-                    <div class="client-logo">
-                        <a href="https://hanyangpolska.pl/" target="_blank" tabindex="-1"><img src="img/klienci/hanyang.png" alt="Hanyang"></a>
-                    </div>
-                    <div class="client-logo">
-                        <a href="https://www.starion.co.kr/page/en/page44.php" target="_blank" tabindex="-1"><img src="img/klienci/starion.png" alt="Starion"></a>
-                    </div>
-                    <div class="client-logo">
-                        <a href="https://intelight.pl/" target="_blank" tabindex="-1"><img src="img/klienci/intelight.png" alt="Intelight"></a>
-                    </div>
-                    <div class="client-logo">
-                        <a href="https://www.kwangjin-kr.com/eng/" target="_blank" tabindex="-1"><img src="img/klienci/kwangjin.png" alt="Kwangjin"></a>
-                    </div>
-                    <div class="client-logo">
-                        <a href="https://www.kftp.pl/" target="_blank" tabindex="-1"><img src="img/klienci/kftp.png" alt="KFTP"></a>
-                    </div>
-                    <div class="client-logo">
-                        <a href="https://kpi-pl.com/pl/home-polski/#top" target="_blank" tabindex="-1"><img src="img/klienci/kpi.png" alt="KPI"></a>
-                    </div>
-                    <div class="client-logo">
-                        <a href="https://www.kplast.pl/" target="_blank" tabindex="-1"><img src="img/klienci/kplast.png" alt="KPLAST"></a>
-                    </div>
-                    <div class="client-logo">
-                        <a href="https://mdepl.com/" target="_blank" tabindex="-1"><img src="img/klienci/MDS.png" alt="Mudeung Electric"></a>
-                    </div>
-                    <div class="client-logo">
-                        <a href="https://www.nifcokorea.pl/pl/index.php" target="_blank" tabindex="-1"><img src="img/klienci/nifco.png" alt="Nifco"></a>
-                    </div>
-                    <div class="client-logo">
-                        <a href="http://poland.sekonix.co.kr/" target="_blank" tabindex="-1"><img src="img/klienci/sekonix.png" alt="Sekonix"></a>
-                    </div>
-                    <div class="client-logo">
-                        <a href="https://kolpakiolszewski.pl/" target="_blank" tabindex="-1"><img src="img/klienci/olszewski.png" alt="Olszewski"></a>
-                    </div>
-                                </div>
-
-                <div class="clients-list" aria-hidden="true">
-                    <div class="client-logo">
-                        <a href="https://cobi.pl/" target="_blank" tabindex="-1"><img src="img/klienci/cobi.png" alt="Cobi"></a>
-                    </div>
-                    <div class="client-logo">
-                        <a href="https://www.lg.com/pl/" target="_blank" tabindex="-1"><img src="img/klienci/LG.png" alt="LG"></a>
-                    </div>
-                    <div class="client-logo">
-                        <a href="https://www.prosperplast.pl/" target="_blank" tabindex="-1"><img src="img/klienci/Prosperplast.png" alt="Prosperplast"></a>
-                    </div>
-                    <div class="client-logo">
-                        <a href="https://atplast.pl/" target="_blank" tabindex="-1"><img src="img/klienci/atplast.png" alt="Atplast"></a>
-                    </div>
-                    <div class="client-logo">
-                        <a href="https://www.byars.pl/" target="_blank" tabindex="-1"><img src="img/klienci/byars.png" alt="Byars"></a>
-                    </div>
-                    <div class="client-logo">
-                        <a href="https://www.bestautotech.pl/" target="_blank" tabindex="-1"><img src="img/klienci/bestauto.png" alt="BestAutotech"></a>
-                    </div>
-                    <div class="client-logo">
-                        <a href="https://www.caffaro.pl/" target="_blank" tabindex="-1"><img src="img/klienci/Caffaro.png" alt="Caffaro"></a>
-                    </div>    
-                    <div class="client-logo">
-                        <a href="http://www.derkwoo.com/" target="_blank" tabindex="-1"><img src="img/klienci/derkwoo.png" alt="Derkwoo"></a>
-                    </div>
-                    <div class="client-logo">
-                        <a href="https://www.ddsp.pl/" target="_blank" tabindex="-1"><img src="img/klienci/deadong.png" alt="Deadong"></a>
-                    </div>
-                    <div class="client-logo">
-                        <a href="https://www.dtrvms.it/en/" target="_blank" tabindex="-1"><img src="img/klienci/DNAutomotive.png" alt="DNAutomotive"></a>
-                    </div>
-                    <div class="client-logo">
-                        <a href="https://don-plast.pl/" target="_blank" tabindex="-1"><img src="img/klienci/donplast.png" alt="Donplast"></a>
-                    </div>
-                    <div class="client-logo">
-                        <a href="https://ekoplast-group.com/pl/" target="_blank" tabindex="-1"><img src="img/klienci/Ekoplast.png" alt="Ekoplast"></a>
-                    </div>
-                    <div class="client-logo">
-                        <a href="https://fameks.eu/" target="_blank" tabindex="-1"><img src="img/klienci/fameks.png" alt="Fameks"></a>
-                    </div>
-                    <div class="client-logo">
-                        <a href="https://hanplast.com/" target="_blank" tabindex="-1"><img src="img/klienci/hanplast.png" alt="Hanplast"></a>
-                    </div>
-                    <div class="client-logo">
-                        <a href="https://hanyangpolska.pl/" target="_blank" tabindex="-1"><img src="img/klienci/hanyang.png" alt="Hanyang"></a>
-                    </div>
-                    <div class="client-logo">
-                        <a href="https://www.starion.co.kr/page/en/page44.php" target="_blank" tabindex="-1"><img src="img/klienci/starion.png" alt="Starion"></a>
-                    </div>
-                    <div class="client-logo">
-                        <a href="https://intelight.pl/" target="_blank" tabindex="-1"><img src="img/klienci/intelight.png" alt="Intelight"></a>
-                    </div>
-                    <div class="client-logo">
-                        <a href="https://www.kwangjin-kr.com/eng/" target="_blank" tabindex="-1"><img src="img/klienci/kwangjin.png" alt="Kwangjin"></a>
-                    </div>
-                    <div class="client-logo">
-                        <a href="https://www.kftp.pl/" target="_blank" tabindex="-1"><img src="img/klienci/kftp.png" alt="KFTP"></a>
-                    </div>
-                    <div class="client-logo">
-                        <a href="https://kpi-pl.com/pl/home-polski/#top" target="_blank" tabindex="-1"><img src="img/klienci/kpi.png" alt="KPI"></a>
-                    </div>
-                    <div class="client-logo">
-                        <a href="https://www.kplast.pl/" target="_blank" tabindex="-1"><img src="img/klienci/kplast.png" alt="KPLAST"></a>
-                    </div>
-                    <div class="client-logo">
-                        <a href="https://mdepl.com/" target="_blank" tabindex="-1"><img src="img/klienci/MDS.png" alt="Mudeung Electric"></a>
-                    </div>
-                    <div class="client-logo">
-                        <a href="https://www.nifcokorea.pl/pl/index.php" target="_blank" tabindex="-1"><img src="img/klienci/nifco.png" alt="Nifco"></a>
-                    </div>
-                    <div class="client-logo">
-                        <a href="http://poland.sekonix.co.kr/" target="_blank" tabindex="-1"><img src="img/klienci/sekonix.png" alt="Sekonix"></a>
-                    </div>
-                    <div class="client-logo">
-                        <a href="https://kolpakiolszewski.pl/" target="_blank" tabindex="-1"><img src="img/klienci/olszewski.png" alt="Olszewski"></a>
+                <div class="stats-grid" id="woojinStats" data-reveal-stagger=".12">
+                    <div class="stat-card stat-card--dark" data-reveal>
+                        <span class="stat-number" data-count-from="1800" data-count-to="2000" data-suffix="+">2000+</span>
+                        <span class="stat-label">maszyn produkowanych rocznie</span>
+                    </div>
+                    <div class="stat-card" data-reveal>
+                        <span class="stat-number" data-count-from="15" data-count-to="30" data-suffix="+" data-count-delay="150">30+</span>
+                        <span class="stat-label">lat doświadczenia</span>
+                    </div>
+                    <div class="stat-card" data-reveal>
+                        <span class="stat-number" data-count-from="20" data-count-to="40" data-suffix="+" data-count-delay="300">40+</span>
+                        <span class="stat-label">lokalizacji na całym świecie</span>
+                    </div>
+                    <div class="stat-card" data-reveal>
+                        <span class="stat-number" data-count-from="900" data-count-to="1100" data-suffix="+" data-count-delay="450">1100+</span>
+                        <span class="stat-label">pracowników na całym świecie</span>
                     </div>
                 </div>
             </div>
         </section>
 
-        <!-- ================= CYBER / KONFIGURATOR + TECHNOLOGIA ================= -->
+        <!-- ================= SERIE MASZYN ================= -->
+        <section class="section series" id="serie" aria-labelledby="seriesTitle">
+            <div class="container series-head">
+                <div class="section-head">
+                    <p class="eyebrow" data-reveal>Oferta</p>
+                    <h2 class="section-title" id="seriesTitle" data-reveal>Siedem serii. <em>Jeden standard</em> jakości.</h2>
+                    <p class="section-lead" data-reveal>Od kompaktowych wtryskarek elektrycznych po wielkogabarytowe maszyny dwupłytowe o sile zwarcia do 4300 ton. Wybierz serię, aby obejrzeć ją w widoku 360°.</p>
+                </div>
+                <div class="series-controls" data-reveal>
+                    <span class="series-counter" aria-hidden="true"><b>01</b> / 07</span>
+                    <button type="button" class="icon-btn" data-series-prev aria-label="Poprzednia seria">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>
+                    </button>
+                    <button type="button" class="icon-btn" data-series-next aria-label="Następna seria">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+                    </button>
+                </div>
+            </div>
 
-        <section class="cyber-section">
+            <div class="series-viewport">
+                <ul class="series-track" role="list">
+                    <li class="series-card">
+                        <a class="series-link" href="maszyny.html#DL-A5" aria-label="Seria DL-A5 – zobacz szczegóły"></a>
+                        <div class="series-media">
+                            <span class="series-index">01</span>
+                            <img src="img/opt/series-dl.jpg" alt="Wtryskarka dwupłytowa WOOJIN PLAIMM DL-A5" width="932" height="351" loading="lazy" decoding="async">
+                        </div>
+                        <div class="series-body">
+                            <span class="series-type">Dwupłytowa · Dual Lock</span>
+                            <h3>DL-A5</h3>
+                            <p>Premium, energooszczędna wtryskarka z systemem podwójnego ryglowania — do dużych, precyzyjnych wyprasek wymagających wysokiej siły zwarcia.</p>
+                            <div class="series-foot">
+                                <span class="series-range"><span>Siła zwarcia</span>450–4300 t</span>
+                                <span class="series-arrow" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+                            </div>
+                        </div>
+                    </li>
+                    <li class="series-card">
+                        <a class="series-link" href="maszyny.html#TH-A5" aria-label="Seria TH-A5 – zobacz szczegóły"></a>
+                        <div class="series-media">
+                            <span class="series-index">02</span>
+                            <img src="img/opt/series-th.jpg" alt="Wtryskarka hydrauliczna WOOJIN PLAIMM TH-A5" width="932" height="351" loading="lazy" decoding="async">
+                        </div>
+                        <div class="series-body">
+                            <span class="series-type">Hydrauliczna</span>
+                            <h3>TH-A5</h3>
+                            <p>Energooszczędna wtryskarka hydrauliczna o dużej sztywności konstrukcji i wysokiej powtarzalności procesu wtrysku.</p>
+                            <div class="series-foot">
+                                <span class="series-range"><span>Siła zwarcia</span>130–480 t</span>
+                                <span class="series-arrow" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+                            </div>
+                        </div>
+                    </li>
+                    <li class="series-card">
+                        <a class="series-link" href="maszyny.html#TE-A5" aria-label="Seria TE-A5 – zobacz szczegóły"></a>
+                        <div class="series-media">
+                            <span class="series-index">03</span>
+                            <span class="series-badge">Model 3D</span>
+                            <img src="img/opt/series-te.jpg" alt="Wtryskarka elektryczna WOOJIN PLAIMM TE-A5" width="932" height="351" loading="lazy" decoding="async">
+                        </div>
+                        <div class="series-body">
+                            <span class="series-type">W pełni elektryczna</span>
+                            <h3>TE-A5</h3>
+                            <p>Najwyższa precyzja i powtarzalność wagi wypraski przy najniższym możliwym zużyciu energii.</p>
+                            <div class="series-foot">
+                                <span class="series-range"><span>Siła zwarcia</span>50–850 t</span>
+                                <span class="series-arrow" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+                            </div>
+                        </div>
+                    </li>
+                    <li class="series-card">
+                        <a class="series-link" href="maszyny.html#TL-A5" aria-label="Seria TL-A5 – zobacz szczegóły"></a>
+                        <div class="series-media">
+                            <span class="series-index">04</span>
+                            <img src="img/opt/series-tl.jpg" alt="Wtryskarka bezkolumnowa WOOJIN PLAIMM TL-A5" width="454" height="218" loading="lazy" decoding="async">
+                        </div>
+                        <div class="series-body">
+                            <span class="series-type">Bezkolumnowa</span>
+                            <h3>TL-A5</h3>
+                            <p>Wtryskarka bez kolumn (tie-bar-less), dająca pełną swobodę doboru wielkości formy, wielogniazdowości i automatyzacji.</p>
+                            <div class="series-foot">
+                                <span class="series-range"><span>Siła zwarcia</span>220–400 t</span>
+                                <span class="series-arrow" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+                            </div>
+                        </div>
+                    </li>
+                    <li class="series-card">
+                        <a class="series-link" href="maszyny.html#VHA-RS" aria-label="Seria VHA-RS – zobacz szczegóły"></a>
+                        <div class="series-media">
+                            <span class="series-index">05</span>
+                            <img src="img/opt/series-vh.jpg" alt="Pionowa wtryskarka WOOJIN PLAIMM VHA-RS" width="932" height="351" loading="lazy" decoding="async">
+                        </div>
+                        <div class="series-body">
+                            <span class="series-type">Pionowa</span>
+                            <h3>VHA-RS</h3>
+                            <p>Pionowa wtryskarka hydrauliczna ze stołem obrotowym, przeznaczona do formowania z insertami.</p>
+                            <div class="series-foot">
+                                <span class="series-range"><span>Siła zwarcia</span>50–200 t</span>
+                                <span class="series-arrow" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+                            </div>
+                        </div>
+                    </li>
+                    <li class="series-card">
+                        <a class="series-link" href="maszyny.html#MULTI" aria-label="Seria MULTI – zobacz szczegóły"></a>
+                        <div class="series-media">
+                            <span class="series-index">06</span>
+                            <img src="img/opt/series-multi.jpg" alt="Dwukolorowa wtryskarka WOOJIN PLAIMM MULTI (NC-G5)" width="932" height="351" loading="lazy" decoding="async">
+                        </div>
+                        <div class="series-body">
+                            <span class="series-type">Dwukolorowa · 2K</span>
+                            <h3>MULTI</h3>
+                            <p>Formowanie dwóch różnych tworzyw lub kolorów w jednym cyklu produkcyjnym (ONE-CYCLE).</p>
+                            <div class="series-foot">
+                                <span class="series-range"><span>Siła zwarcia</span>130–220 t</span>
+                                <span class="series-arrow" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+                            </div>
+                        </div>
+                    </li>
+                    <li class="series-card">
+                        <a class="series-link" href="maszyny.html#Super-Foam" aria-label="Seria Super-Foam – zobacz szczegóły"></a>
+                        <div class="series-media">
+                            <span class="series-index">07</span>
+                            <img src="img/opt/series-sf.jpg" alt="Wtryskarka WOOJIN PLAIMM DL-A5 Super-Foam" width="932" height="351" loading="lazy" decoding="async">
+                        </div>
+                        <div class="series-body">
+                            <span class="series-type">Super spienianie</span>
+                            <h3>Super-Foam</h3>
+                            <p>Dwupłytowa wtryskarka z technologią super spieniania do produkcji dużych, lekkich elementów, w tym palet.</p>
+                            <div class="series-foot">
+                                <span class="series-range"><span>Siła zwarcia</span>1800–3300 t</span>
+                                <span class="series-arrow" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+            <div class="series-progress" aria-hidden="true"><span></span></div>
+        </section>
+
+        <!-- ================= KLIENCI ================= -->
+        <section class="clients" aria-labelledby="clientsTitle">
+            <div class="container clients-head">
+                <p class="eyebrow" id="clientsTitle">Zaufali nam</p>
+                <p>Wybrani klienci korzystający z maszyn WOOJIN PLAIMM</p>
+            </div>
+
+            <div class="marquee" id="clientsMarquee" data-marquee>
+                <ul class="marquee-track" role="list">
+                    <li class="client-logo"><a href="https://cobi.pl/" target="_blank" rel="noopener noreferrer"><img src="img/klienci/min/cobi.png" alt="Cobi" loading="lazy" decoding="async"></a></li>
+                    <li class="client-logo"><a href="https://www.lg.com/pl/" target="_blank" rel="noopener noreferrer"><img src="img/klienci/min/LG.png" alt="LG" loading="lazy" decoding="async"></a></li>
+                    <li class="client-logo"><a href="https://www.prosperplast.pl/" target="_blank" rel="noopener noreferrer"><img src="img/klienci/min/Prosperplast.png" alt="Prosperplast" loading="lazy" decoding="async"></a></li>
+                    <li class="client-logo"><a href="https://atplast.pl/" target="_blank" rel="noopener noreferrer"><img src="img/klienci/min/atplast.png" alt="Atplast" loading="lazy" decoding="async"></a></li>
+                    <li class="client-logo"><a href="https://www.byars.pl/" target="_blank" rel="noopener noreferrer"><img src="img/klienci/min/byars.png" alt="Byars" loading="lazy" decoding="async"></a></li>
+                    <li class="client-logo"><a href="https://www.bestautotech.pl/" target="_blank" rel="noopener noreferrer"><img src="img/klienci/min/bestauto.png" alt="BestAutotech" loading="lazy" decoding="async"></a></li>
+                    <li class="client-logo"><a href="https://www.caffaro.pl/" target="_blank" rel="noopener noreferrer"><img src="img/klienci/min/Caffaro.png" alt="Caffaro" loading="lazy" decoding="async"></a></li>
+                    <li class="client-logo"><a href="http://www.derkwoo.com/" target="_blank" rel="noopener noreferrer"><img src="img/klienci/min/derkwoo.png" alt="Derkwoo" loading="lazy" decoding="async"></a></li>
+                    <li class="client-logo"><a href="https://www.ddsp.pl/" target="_blank" rel="noopener noreferrer"><img src="img/klienci/min/deadong.png" alt="Daedong" loading="lazy" decoding="async"></a></li>
+                    <li class="client-logo"><a href="https://www.dtrvms.it/en/" target="_blank" rel="noopener noreferrer"><img src="img/klienci/min/DNAutomotive.png" alt="DN Automotive" loading="lazy" decoding="async"></a></li>
+                    <li class="client-logo"><a href="https://don-plast.pl/" target="_blank" rel="noopener noreferrer"><img src="img/klienci/min/donplast.png" alt="Donplast" loading="lazy" decoding="async"></a></li>
+                    <li class="client-logo"><a href="https://ekoplast-group.com/pl/" target="_blank" rel="noopener noreferrer"><img src="img/klienci/min/Ekoplast.png" alt="Ekoplast" loading="lazy" decoding="async"></a></li>
+                    <li class="client-logo"><a href="https://fameks.eu/" target="_blank" rel="noopener noreferrer"><img src="img/klienci/min/fameks.png" alt="Fameks" loading="lazy" decoding="async"></a></li>
+                    <li class="client-logo"><a href="https://hanplast.com/" target="_blank" rel="noopener noreferrer"><img src="img/klienci/min/hanplast.png" alt="Hanplast" loading="lazy" decoding="async"></a></li>
+                    <li class="client-logo"><a href="https://hanyangpolska.pl/" target="_blank" rel="noopener noreferrer"><img src="img/klienci/min/hanyang.png" alt="Hanyang" loading="lazy" decoding="async"></a></li>
+                    <li class="client-logo"><a href="https://www.starion.co.kr/page/en/page44.php" target="_blank" rel="noopener noreferrer"><img src="img/klienci/min/starion.png" alt="Starion" loading="lazy" decoding="async"></a></li>
+                    <li class="client-logo"><a href="https://intelight.pl/" target="_blank" rel="noopener noreferrer"><img src="img/klienci/min/intelight.png" alt="Intelight" loading="lazy" decoding="async"></a></li>
+                    <li class="client-logo"><a href="https://www.kwangjin-kr.com/eng/" target="_blank" rel="noopener noreferrer"><img src="img/klienci/min/kwangjin.png" alt="Kwangjin" loading="lazy" decoding="async"></a></li>
+                    <li class="client-logo"><a href="https://www.kftp.pl/" target="_blank" rel="noopener noreferrer"><img src="img/klienci/min/kftp.png" alt="KFTP" loading="lazy" decoding="async"></a></li>
+                    <li class="client-logo"><a href="https://kpi-pl.com/pl/home-polski/#top" target="_blank" rel="noopener noreferrer"><img src="img/klienci/min/kpi.png" alt="KPI" loading="lazy" decoding="async"></a></li>
+                    <li class="client-logo"><a href="https://www.kplast.pl/" target="_blank" rel="noopener noreferrer"><img src="img/klienci/min/kplast.png" alt="KPLAST" loading="lazy" decoding="async"></a></li>
+                    <li class="client-logo"><a href="https://mdepl.com/" target="_blank" rel="noopener noreferrer"><img src="img/klienci/min/MDS.png" alt="Mudeung Electric" loading="lazy" decoding="async"></a></li>
+                    <li class="client-logo"><a href="https://www.nifcokorea.pl/pl/index.php" target="_blank" rel="noopener noreferrer"><img src="img/klienci/min/nifco.png" alt="Nifco" loading="lazy" decoding="async"></a></li>
+                    <li class="client-logo"><a href="http://poland.sekonix.co.kr/" target="_blank" rel="noopener noreferrer"><img src="img/klienci/min/sekonix.png" alt="Sekonix" loading="lazy" decoding="async"></a></li>
+                    <li class="client-logo"><a href="https://kolpakiolszewski.pl/" target="_blank" rel="noopener noreferrer"><img src="img/klienci/min/olszewski.png" alt="Olszewski" loading="lazy" decoding="async"></a></li>
+                </ul>
+            </div>
+            <!-- Drugi rząd (w przeciwnym kierunku) generowany w js/main.js -->
+            <div class="marquee marquee--reverse" data-marquee-mirror="clientsMarquee" aria-hidden="true"></div>
+        </section>
+
+        <!-- ================= KONFIGURATOR CTA + TECHNOLOGIA ================= -->
+        <section class="cyber-section" data-header-theme="dark" aria-labelledby="cyberTitle">
             <div class="cyber-grid-bg" aria-hidden="true"></div>
 
             <div class="container cyber-cta-wrap">
                 <span class="cyber-kr-neon" aria-hidden="true">사출 성형기</span>
 
                 <div class="cyber-cta">
-                    <span class="cyber-cta-tag">// PRZYSZŁOŚĆ FORMOWANIA WTRYSKOWEGO</span>
-                    <h2 class="cyber-cta-title">Skonfiguruj swoją <span class="cyber-glow-text">wtryskarkę</span><br>w kilka minut</h2>
-                    <p class="cyber-cta-text">
+                    <span class="cyber-cta-tag" data-reveal>// Przyszłość formowania wtryskowego</span>
+                    <h2 class="cyber-cta-title" id="cyberTitle" data-reveal>Skonfiguruj swoją <span class="cyber-glow-text">wtryskarkę</span> w kilka minut</h2>
+                    <p class="cyber-cta-text" data-reveal>
                         Wybierz typ maszyny, podaj dane techniczne swojego procesu produkcyjnego
                         i od razu zobacz dopasowaną konfigurację — w pełni online.
                         Nasz przedstawiciel skontaktuje się z Tobą w ciągu 15 minut.
                     </p>
-                    <a href="konfigurator.html" class="cyber-cta-btn">
-                        <span>PRZEJDŹ DO KONFIGURATORA</span>
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-                            <path d="M5 12H19M19 12L13 6M19 12L13 18" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                        </svg>
-                    </a>
+                    <div data-reveal>
+                        <a href="konfigurator.html" class="cyber-cta-btn" data-magnetic>
+                            <span>Przejdź do konfiguratora</span>
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12H19M19 12L13 6M19 12L13 18" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                        </a>
+                    </div>
                 </div>
             </div>
 
             <div class="container">
-                <div class="section-heading cyber-heading">
-                    <span class="section-label cyber-label">TECHNOLOGIA WOOJIN PLAIMM</span>
-                    <h2>Moc, precyzja i pełna automatyzacja</h2>
-                    <p>
+                <div class="section-head cyber-heading">
+                    <p class="eyebrow eyebrow--light" data-reveal>Technologia WOOJIN PLAIMM</p>
+                    <h2 class="section-title" data-reveal>Moc, precyzja i pełna automatyzacja</h2>
+                    <p class="section-lead" data-reveal>
                         Nasze wtryskarki napędzają nowoczesną produkcję tworzyw sztucznych — od w pełni
                         elektrycznych maszyn TE-A5, przez uniwersalne konstrukcje TH-A5 i TL-A5, po
                         wielkogabarytowe wtryskarki dwupłytowe serii DL-A5.
                     </p>
                 </div>
 
-                <div class="cyber-feature-grid">
-                    <article class="cyber-feature-card">
+                <div class="cyber-feature-grid" data-reveal-stagger=".1">
+                    <article class="cyber-feature-card" data-reveal data-spotlight data-tilt>
                         <div class="cyber-feature-image">
-                            <img src="img/cyberpunk/machine-01.jpg" alt="Wtryskarka dwupłytowa WOOJIN PLAIMM DL-A5" loading="lazy">
+                            <span class="cyber-feature-num">01</span>
+                            <img src="img/cyberpunk/machine-01.jpg" alt="Wtryskarka dwupłytowa WOOJIN PLAIMM DL-A5" width="1100" height="414" loading="lazy" decoding="async">
                         </div>
                         <h3>Siła zwarcia bez kompromisów</h3>
                         <p>System podwójnego ryglowania (Dual Lock) w maszynach serii DL-A5 zapewnia wysoką sztywność konstrukcji nawet przy największych formach.</p>
                     </article>
-
-                    <article class="cyber-feature-card">
+                    <article class="cyber-feature-card" data-reveal data-spotlight data-tilt>
                         <div class="cyber-feature-image">
-                            <img src="img/cyberpunk/machine-02.jpg" alt="Wtryskarka hydrauliczna WOOJIN PLAIMM" loading="lazy">
+                            <span class="cyber-feature-num">02</span>
+                            <img src="img/cyberpunk/machine-02.jpg" alt="Wtryskarka hydrauliczna WOOJIN PLAIMM" width="1100" height="414" loading="lazy" decoding="async">
                         </div>
                         <h3>Energooszczędna wydajność</h3>
                         <p>Zoptymalizowane układy hydrauliczne i napędy serwo ograniczają zużycie energii, nie tracąc nic z powtarzalności procesu wtrysku.</p>
                     </article>
-
-                    <article class="cyber-feature-card">
+                    <article class="cyber-feature-card" data-reveal data-spotlight data-tilt>
                         <div class="cyber-feature-image">
-                            <img src="img/cyberpunk/machine-03.jpg" alt="Układ wtrysku WOOJIN PLAIMM od wewnątrz" loading="lazy">
+                            <span class="cyber-feature-num">03</span>
+                            <img src="img/cyberpunk/machine-03.jpg" alt="Układ wtrysku WOOJIN PLAIMM od wewnątrz" width="1100" height="648" loading="lazy" decoding="async">
                         </div>
                         <h3>Inteligentne sterowanie</h3>
                         <p>Zaawansowany panel sterowania i czujniki procesowe dają pełną kontrolę nad każdym cyklem wtrysku, w czasie rzeczywistym.</p>
                     </article>
-
-                    <article class="cyber-feature-card">
+                    <article class="cyber-feature-card" data-reveal data-spotlight data-tilt>
                         <div class="cyber-feature-image">
-                            <img src="img/cyberpunk/machine-04.jpg" alt="Zespół uplastyczniający WOOJIN PLAIMM" loading="lazy">
+                            <span class="cyber-feature-num">04</span>
+                            <img src="img/cyberpunk/machine-04.jpg" alt="Zespół uplastyczniający WOOJIN PLAIMM" width="1100" height="648" loading="lazy" decoding="async">
                         </div>
                         <h3>Precyzja liczona w mikronach</h3>
                         <p>Precyzyjne ślimaki i jednostki wtryskowe gwarantują powtarzalność wagi i wymiarów wypraski w każdej serii produkcyjnej.</p>
@@ -493,210 +425,190 @@
             </div>
         </section>
 
+        <!-- ================= INTERAKTYWNY MODEL 3D TE-A5 ================= -->
+        <!-- Model rysowany w WebGL bez zewnętrznych bibliotek - patrz js/te3d.js.
+             Znaczniki, zakładki i panel opisu generuje ten sam skrypt
+             na podstawie tablicy TE3D_FEATURES. -->
+        <section class="te3d-section" id="te3dSection" aria-labelledby="te3dTitle">
+            <div class="te3d-grid-bg" aria-hidden="true"></div>
+
+            <div class="container">
+                <div class="te3d-header">
+                    <span class="te3d-tag" data-reveal>// TE-A5 · Seria w pełni elektryczna</span>
+                    <h2 class="te3d-title" id="te3dTitle" data-reveal>Poznaj <span class="te3d-glitch" data-text="TE-A5">TE-A5</span> w 3D</h2>
+                    <p class="te3d-lead" data-reveal>
+                        Obracaj model, zajrzyj pod obudowę w trybie X-RAY i uruchom symulację cyklu wtrysku.
+                        Kliknij numerowane znaczniki, aby poznać najważniejsze rozwiązania ultra energooszczędnej,
+                        w pełni elektrycznej serii WOOJIN PLAIMM TE-A5 (50–850 t).
+                    </p>
+                </div>
+
+                <div class="te3d-layout" data-reveal>
+                    <div class="te3d-stage" id="te3dStage">
+                        <canvas class="te3d-canvas" id="te3dCanvas" tabindex="0" aria-label="Interaktywny model 3D wtryskarki TE-A5. Przeciągnij, aby obrócić; strzałki na klawiaturze obracają model, plus i minus przybliżają."></canvas>
+
+                        <div class="te3d-scanline" aria-hidden="true"></div>
+                        <span class="te3d-corner te3d-corner--tl" aria-hidden="true"></span>
+                        <span class="te3d-corner te3d-corner--tr" aria-hidden="true"></span>
+                        <span class="te3d-corner te3d-corner--bl" aria-hidden="true"></span>
+                        <span class="te3d-corner te3d-corner--br" aria-hidden="true"></span>
+
+                        <div class="te3d-hud-top" aria-hidden="true">
+                            <span class="te3d-hud-id"><i class="te3d-dot"></i>WJ-TE-A5 // HOLO-VIEW</span>
+                            <span class="te3d-hud-readout" id="te3dReadout">AZ 000° · EL 00° · ZOOM 1.0×</span>
+                        </div>
+
+                        <div class="te3d-hotspots" id="te3dHotspots"></div>
+
+                        <div class="te3d-cycle-hud" id="te3dCycleHud" hidden>
+                            <span class="te3d-cycle-title">SYMULACJA CYKLU</span>
+                            <ol class="te3d-cycle-list" id="te3dCycleList"></ol>
+                        </div>
+
+                        <div class="te3d-hint" id="te3dHint" aria-hidden="true">
+                            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h16M4 12l4-4M4 12l4 4M20 12l-4-4M20 12l-4 4"/></svg>
+                            <span>PRZECIĄGNIJ, ABY OBRACAĆ</span>
+                        </div>
+
+                        <div class="te3d-fallback" id="te3dFallback" hidden>
+                            <img src="img/opt/series-te.jpg" alt="Wtryskarka elektryczna WOOJIN PLAIMM TE-A5" width="932" height="351" loading="lazy">
+                            <p>Twoja przeglądarka nie obsługuje grafiki 3D (WebGL) – pokazujemy zdjęcie maszyny.</p>
+                        </div>
+
+                        <div class="te3d-toolbar" id="te3dToolbar">
+                            <button type="button" class="te3d-btn" data-action="reset" aria-label="Widok ogólny">
+                                <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11l9-7 9 7"/><path d="M5 10v10h14V10"/></svg>
+                                <span class="te3d-btn-text">Widok ogólny</span>
+                            </button>
+                            <button type="button" class="te3d-btn" data-action="xray" aria-pressed="false">X-RAY</button>
+                            <button type="button" class="te3d-btn te3d-btn--accent" data-action="cycle" aria-pressed="false">
+                                <svg class="te3d-ico-play" viewBox="0 0 24 24" width="12" height="12" aria-hidden="true"><polygon points="6,4 20,12 6,20" fill="currentColor"/></svg>
+                                <svg class="te3d-ico-stop" viewBox="0 0 24 24" width="12" height="12" aria-hidden="true"><rect x="6" y="6" width="12" height="12" fill="currentColor"/></svg>
+                                <span class="te3d-cycle-label te3d-btn-text">Symulacja cyklu</span>
+                                <span class="te3d-btn-short" aria-hidden="true">Cykl</span>
+                            </button>
+                            <span class="te3d-toolbar-sep" aria-hidden="true"></span>
+                            <button type="button" class="te3d-btn te3d-btn--icon" data-action="zoom-out" aria-label="Oddal">&minus;</button>
+                            <button type="button" class="te3d-btn te3d-btn--icon" data-action="zoom-in" aria-label="Przybliż">+</button>
+                            <button type="button" class="te3d-btn te3d-btn--icon" data-action="rotate" aria-pressed="true" aria-label="Automatyczny obrót" title="Automatyczny obrót">
+                                <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 11a8 8 0 1 0-2.3 5.7"/><polyline points="20 4 20 11 13 11"/></svg>
+                            </button>
+                        </div>
+                    </div>
+
+                    <aside class="te3d-panel" id="te3dPanel" aria-live="polite">
+                        <div class="te3d-panel-inner">
+                            <div class="te3d-panel-head"><span class="te3d-panel-index">00</span><span class="te3d-panel-kicker">WIDOK OGÓLNY</span></div>
+                            <h3 class="te3d-panel-title">TE-A5 — ultra energooszczędna seria elektryczna</h3>
+                            <p class="te3d-panel-lead">W pełni elektryczna wtryskarka z układem kolanowym (50–850 t). Każdy zespół napędzany jest niezależnym serwosilnikiem, co skraca cykl i zapewnia wysoką powtarzalność.</p>
+                        </div>
+                    </aside>
+                </div>
+
+                <div class="te3d-tabs" id="te3dTabs" role="tablist" aria-label="Najważniejsze cechy TE-A5"></div>
+
+                <div class="te3d-stats" data-reveal-stagger=".06">
+                    <div class="te3d-stat" data-reveal>
+                        <span class="te3d-stat-value">Klasa 10</span>
+                        <span class="te3d-stat-label">zużycia energii wg EUROMAP 60.1 (≤ 0,24 kWh/kg)</span>
+                    </div>
+                    <div class="te3d-stat" data-reveal>
+                        <span class="te3d-stat-value">&gt;60%</span>
+                        <span class="te3d-stat-label">niższe koszty energii elektrycznej niż w hydraulice*</span>
+                    </div>
+                    <div class="te3d-stat" data-reveal>
+                        <span class="te3d-stat-value">≈30%</span>
+                        <span class="te3d-stat-label">większe wzmocnienie siły zwarcia (układ End-Cut)</span>
+                    </div>
+                    <div class="te3d-stat" data-reveal>
+                        <span class="te3d-stat-value">≈15%</span>
+                        <span class="te3d-stat-label">krótszy cykl dzięki równoległej pracy osi*</span>
+                    </div>
+                    <div class="te3d-stat" data-reveal>
+                        <span class="te3d-stat-value">50–850 t</span>
+                        <span class="te3d-stat-label">zakres siły zwarcia serii</span>
+                    </div>
+                    <div class="te3d-stat" data-reveal>
+                        <span class="te3d-stat-value">21″</span>
+                        <span class="te3d-stat-label">dotykowy ekran Full HD sterownika B&amp;R</span>
+                    </div>
+                </div>
+
+                <div class="te3d-footer">
+                    <p class="te3d-note">* Wartości wg katalogu producenta TE-A5 – rzeczywiste wyniki zależą od formy, surowca i warunków przetwórstwa. Model 3D ma charakter poglądowy.</p>
+                    <div class="te3d-cta">
+                        <a href="maszyny.html#TE-A5" class="btn btn--outline">Zobacz TE-A5 w widoku 360°</a>
+                        <a href="konfigurator.html" class="btn btn--dark">
+                            Skonfiguruj swoją TE-A5
+                            <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= CTA ================= -->
+        <section class="cta-band" data-header-theme="dark" aria-labelledby="ctaTitle">
+            <div class="container cta-band-inner">
+                <div>
+                    <p class="eyebrow eyebrow--light" data-reveal>Kontakt</p>
+                    <h2 id="ctaTitle" data-reveal>Porozmawiajmy o&nbsp;Twojej produkcji.</h2>
+                    <p data-reveal>Pomożemy dobrać wtryskarkę do Twojego procesu — skontaktuj się z naszym przedstawicielem lub skorzystaj z konfiguratora online.</p>
+                </div>
+                <div class="cta-band-actions" data-reveal>
+                    <a href="kontakt.html" class="btn btn--primary btn--lg" data-magnetic>
+                        Skontaktuj się
+                        <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+                    </a>
+                    <a href="tel:+48510440661" class="btn btn--glass btn--lg">+48 510 440 661</a>
+                </div>
+            </div>
+        </section>
     </main>
 
-    <!-- ================= INTERAKTYWNY MODEL 3D TE-A5 ================= -->
-    <!-- Model 3D wtryskarki elektrycznej TE-A5 rysowany w WebGL (bez zewnętrznych
-         bibliotek) - patrz initTe3DShowcase() w script.js. Znaczniki (hotspoty),
-         zakładki, panel z opisem i przyciski pod widokiem są generowane/obsługiwane
-         przez ten sam skrypt na podstawie tablicy TE3D_FEATURES. -->
-
-    <section class="te3d-section" id="te3dSection" aria-labelledby="te3dTitle">
-        <div class="te3d-grid-bg" aria-hidden="true"></div>
-
+    <!-- ================= STOPKA ================= -->
+    <footer class="site-footer" data-header-theme="dark">
         <div class="container">
-            <div class="te3d-header">
-                <span class="te3d-tag">// TE-A5 · SERIA W PEŁNI ELEKTRYCZNA</span>
-                <h2 class="te3d-title" id="te3dTitle">Poznaj <span class="te3d-glitch" data-text="TE-A5">TE-A5</span> w 3D</h2>
-                <p class="te3d-lead">
-                    Obracaj model, zajrzyj pod obudowę w trybie X-RAY i uruchom symulację cyklu wtrysku.
-                    Kliknij numerowane znaczniki, aby poznać najważniejsze rozwiązania ultra energooszczędnej,
-                    w pełni elektrycznej serii WOOJIN PLAIMM TE-A5 (50–850 t).
-                </p>
-            </div>
-
-            <div class="te3d-layout">
-                <div class="te3d-stage" id="te3dStage">
-                    <canvas class="te3d-canvas" id="te3dCanvas" tabindex="0" aria-label="Interaktywny model 3D wtryskarki TE-A5. Przeciągnij, aby obrócić; strzałki na klawiaturze obracają model, plus i minus przybliżają."></canvas>
-
-                    <div class="te3d-scanline" aria-hidden="true"></div>
-                    <span class="te3d-corner te3d-corner--tl" aria-hidden="true"></span>
-                    <span class="te3d-corner te3d-corner--tr" aria-hidden="true"></span>
-                    <span class="te3d-corner te3d-corner--bl" aria-hidden="true"></span>
-                    <span class="te3d-corner te3d-corner--br" aria-hidden="true"></span>
-
-                    <div class="te3d-hud-top" aria-hidden="true">
-                        <span class="te3d-hud-id"><i class="te3d-dot"></i>WJ-TE-A5 // HOLO-VIEW</span>
-                        <span class="te3d-hud-readout" id="te3dReadout">AZ 000° · EL 00° · ZOOM 1.0×</span>
-                    </div>
-
-                    <div class="te3d-hotspots" id="te3dHotspots"></div>
-
-                    <div class="te3d-cycle-hud" id="te3dCycleHud" hidden>
-                        <span class="te3d-cycle-title">SYMULACJA CYKLU</span>
-                        <ol class="te3d-cycle-list" id="te3dCycleList"></ol>
-                    </div>
-
-                    <div class="te3d-hint" id="te3dHint" aria-hidden="true">
-                        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h16M4 12l4-4M4 12l4 4M20 12l-4-4M20 12l-4 4"/></svg>
-                        <span>PRZECIĄGNIJ, ABY OBRACAĆ</span>
-                    </div>
-
-                    <div class="te3d-fallback" id="te3dFallback" hidden>
-                        <img src="img/te-a5/te-a5-przekroj.jpg" alt="Przekrój wtryskarki elektrycznej WOOJIN PLAIMM TE-A5" loading="lazy">
-                        <p>Twoja przeglądarka nie obsługuje grafiki 3D (WebGL) – pokazujemy przekrój maszyny.</p>
-                    </div>
-
-                    <div class="te3d-toolbar" id="te3dToolbar">
-                        <button type="button" class="te3d-btn" data-action="reset" aria-label="Widok ogólny">
-                            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11l9-7 9 7"/><path d="M5 10v10h14V10"/></svg>
-                            <span class="te3d-btn-text">Widok ogólny</span>
-                        </button>
-                        <button type="button" class="te3d-btn" data-action="xray" aria-pressed="false">X-RAY</button>
-                        <button type="button" class="te3d-btn te3d-btn--accent" data-action="cycle" aria-pressed="false">
-                            <svg class="te3d-ico-play" viewBox="0 0 24 24" width="12" height="12" aria-hidden="true"><polygon points="6,4 20,12 6,20" fill="currentColor"/></svg>
-                            <svg class="te3d-ico-stop" viewBox="0 0 24 24" width="12" height="12" aria-hidden="true"><rect x="6" y="6" width="12" height="12" fill="currentColor"/></svg>
-                            <span class="te3d-cycle-label te3d-btn-text">Symulacja cyklu</span>
-                            <span class="te3d-btn-short" aria-hidden="true">Cykl</span>
-                        </button>
-                        <span class="te3d-toolbar-sep" aria-hidden="true"></span>
-                        <button type="button" class="te3d-btn te3d-btn--icon" data-action="zoom-out" aria-label="Oddal">&minus;</button>
-                        <button type="button" class="te3d-btn te3d-btn--icon" data-action="zoom-in" aria-label="Przybliż">+</button>
-                        <button type="button" class="te3d-btn te3d-btn--icon" data-action="rotate" aria-pressed="true" aria-label="Automatyczny obrót" title="Automatyczny obrót">
-                            <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 11a8 8 0 1 0-2.3 5.7"/><polyline points="20 4 20 11 13 11"/></svg>
-                        </button>
-                    </div>
+            <div class="footer-top">
+                <div class="footer-brand">
+                    <img src="img/logo-white.png" alt="WOOJIN PLAIMM" class="footer-logo-image" width="500" height="224" loading="lazy">
+                    <p class="footer-about">Przedstawicielstwo WOOJIN PLAIMM w Polsce — sprzedaż, doradztwo techniczne i serwis wtryskarek do tworzyw sztucznych.</p>
                 </div>
-
-                <aside class="te3d-panel" id="te3dPanel" aria-live="polite">
-                    <div class="te3d-panel-inner">
-                        <div class="te3d-panel-head"><span class="te3d-panel-index">00</span><span class="te3d-panel-kicker">WIDOK OGÓLNY</span></div>
-                        <h3 class="te3d-panel-title">TE-A5 — ultra energooszczędna seria elektryczna</h3>
-                        <p class="te3d-panel-lead">W pełni elektryczna wtryskarka z układem kolanowym (50–850 t). Każdy zespół napędzany jest niezależnym serwosilnikiem, co skraca cykl i zapewnia wysoką powtarzalność.</p>
-                    </div>
-                </aside>
-            </div>
-
-            <div class="te3d-tabs" id="te3dTabs" role="tablist" aria-label="Najważniejsze cechy TE-A5"></div>
-
-            <div class="te3d-stats">
-                <div class="te3d-stat">
-                    <span class="te3d-stat-value">Klasa 10</span>
-                    <span class="te3d-stat-label">zużycia energii wg EUROMAP 60.1 (≤ 0,24 kWh/kg)</span>
+                <div class="footer-column">
+                    <h4>Firma</h4>
+                    <ul role="list">
+                        <li><a href="index.html">O nas</a></li>
+                        <li><a href="kariera.html">Kariera</a></li>
+                        <li><a href="https://woojinplaimm.com/?lang_code=en" target="_blank" rel="noopener noreferrer">Woojin Global ↗</a></li>
+                    </ul>
                 </div>
-                <div class="te3d-stat">
-                    <span class="te3d-stat-value">&gt;60%</span>
-                    <span class="te3d-stat-label">niższe koszty energii elektrycznej niż w hydraulice*</span>
+                <div class="footer-column">
+                    <h4>Produkty</h4>
+                    <ul role="list">
+                        <li><a href="maszyny.html">Maszyny</a></li>
+                        <li><a href="konfigurator.html">Konfigurator</a></li>
+                        <li><a href="index.html#te3dSection">TE-A5 w 3D</a></li>
+                    </ul>
                 </div>
-                <div class="te3d-stat">
-                    <span class="te3d-stat-value">≈30%</span>
-                    <span class="te3d-stat-label">większe wzmocnienie siły zwarcia (układ End-Cut)</span>
-                </div>
-                <div class="te3d-stat">
-                    <span class="te3d-stat-value">≈15%</span>
-                    <span class="te3d-stat-label">krótszy cykl dzięki równoległej pracy osi*</span>
-                </div>
-                <div class="te3d-stat">
-                    <span class="te3d-stat-value">50–850 t</span>
-                    <span class="te3d-stat-label">zakres siły zwarcia serii</span>
-                </div>
-                <div class="te3d-stat">
-                    <span class="te3d-stat-value">21″</span>
-                    <span class="te3d-stat-label">dotykowy ekran Full HD sterownika B&amp;R</span>
+                <div class="footer-column footer-contact">
+                    <h4>Kontakt</h4>
+                    <ul role="list">
+                        <li><strong>Adres</strong>ul. Hutnicza 6, 40-241 Katowice</li>
+                        <li><strong>Telefon</strong><a href="tel:+48510440661">+48 510 440 661</a></li>
+                        <li><strong>E-mail</strong><a href="mailto:ploffice@wjpim.com">ploffice@wjpim.com</a></li>
+                        <li><a href="kontakt.html#serwis">Serwis →</a></li>
+                    </ul>
                 </div>
             </div>
-
-            <div class="te3d-footer">
-                <p class="te3d-note">* Wartości wg katalogu producenta TE-A5 – rzeczywiste wyniki zależą od formy, surowca i warunków przetwórstwa. Model 3D ma charakter poglądowy.</p>
-                <div class="te3d-cta">
-                    <a href="maszyny.html" class="te3d-cta-link">Zobacz TE-A5 w widoku 360°</a>
-                    <a href="konfigurator.html" class="te3d-cta-link te3d-cta-link--solid">Skonfiguruj swoją TE-A5</a>
+            <div class="footer-bottom">
+                <p>© <span data-year>2026</span> WOOJIN PLAIMM Co., Ltd.</p>
+                <div class="footer-links">
+                    <a href="privacy.html">Polityka prywatności</a>
+                    <a href="cookies.html">Polityka cookie</a>
                 </div>
             </div>
         </div>
-    </section>
-
-    <!-- ================= FOOTER ================= -->
-<footer class="site-footer">
-    <div class="container">
-        <div class="footer-top">
-            <div class="footer-logo">
-                <img src="img/logo-white.png" alt="Woojin Plaimm" class="footer-logo-image">
-            </div>
-
-            <div class="footer-column">
-                <h4>Firma</h4>
-                <a href="index.html">O nas</a>
-                <a href="kariera.html">Kariera</a>
-            </div>
-
-            <div class="footer-column">
-                <h4>Produkty</h4>
-                <a href="maszyny.html">Maszyny</a>
-                <a href="konfigurator.html">Konfigurator</a>
-            </div>
-
-            <div class="footer-column">
-                <h4>Obsługa klienta</h4>
-                <a href="kontakt.html">Kontakt</a>
-                <a href="kontakt.html">Serwis</a>
-            </div>
-        </div>
-
-        <div class="footer-bottom">
-            <p>© 2026 WOOJIN PLAIMM Co., Ltd.</p>
-            <div class="footer-links">
-                <a href="privacy.html">Polityka prywatności</a>
-                <a href="cookies.html">Polityka cookie</a>
-            </div>
-        </div>
-    </div>
-</footer>
-
-    <!-- ================= SCRIPTS ================= -->
-
-    <script>
-        const header = document.querySelector('.site-header');
-        const logo = document.querySelector('.logo-image');
-        const navToggle = document.querySelector('.nav-toggle');
-        const mainNav = document.querySelector('.main-nav');
-        const darkSection = document.querySelector('.cyber-section');
-
-        function isOverDarkSection() {
-            if (!darkSection) return false;
-            const rect = darkSection.getBoundingClientRect();
-            const headerHeight = header.offsetHeight;
-            return rect.top <= headerHeight && rect.bottom >= headerHeight;
-        }
-
-        function updateHeaderState() {
-            const isScrolled = window.scrollY > 50;
-            const overDark = isOverDarkSection();
-
-            header.classList.toggle('scrolled', isScrolled);
-            header.classList.toggle('on-dark', overDark);
-
-            logo.src = (!isScrolled || overDark) ? 'img/logo-white.png' : 'img/logo-black.png';
-        }
-
-        window.addEventListener('scroll', updateHeaderState);
-        window.addEventListener('resize', updateHeaderState);
-        updateHeaderState();
-
-        if (navToggle && mainNav) {
-            navToggle.addEventListener('click', function () {
-                const isOpen = mainNav.classList.toggle('is-open');
-                navToggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
-            });
-
-            mainNav.querySelectorAll('a').forEach(function (link) {
-                link.addEventListener('click', function () {
-                    mainNav.classList.remove('is-open');
-                    navToggle.setAttribute('aria-expanded', 'false');
-                });
-            });
-        }
-    </script>
-
+        <span class="footer-watermark" aria-hidden="true">WOOJIN</span>
+    </footer>
 </body>
 </html>

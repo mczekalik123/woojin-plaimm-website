@@ -2,41 +2,61 @@
 <html lang="pl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Wtryskarki WOOJIN PLAIMM – widok 360° i podzespoły | Maszyny</title>
+    <meta name="description" content="Poznaj serie wtryskarek WOOJIN PLAIMM: DL-A5, TH-A5, TE-A5, TL-A5, VHA-RS, MULTI i Super-Foam. Obracaj maszyny w widoku 360°, poznaj podzespoły i pobierz katalogi.">
+    <meta name="theme-color" content="#0a0e13">
+    <meta property="og:type" content="website">
+    <meta property="og:locale" content="pl_PL">
+    <meta property="og:title" content="Wtryskarki WOOJIN PLAIMM – widok 360°">
+    <meta property="og:image" content="img/opt/series-dl.jpg">
 
-    <title>WOOJIN PLAIMM - Przedstawicielstwo w Polsce</title>
+    <link rel="icon" type="image/png" sizes="32x32" href="img/opt/favicon-32.png">
+    <link rel="icon" type="image/png" sizes="64x64" href="img/opt/favicon-64.png">
+    <link rel="apple-touch-icon" href="img/opt/apple-touch-icon.png">
 
-    <!-- Google Fonts: Lato -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700;900&display=swap" rel="stylesheet">
-
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,300..900&display=swap">
     <link rel="stylesheet" href="style.css">
-    <script src="script.js" defer></script>
+
+    <script>document.documentElement.classList.add('js');setTimeout(function(){if(!window.WJ||!window.WJ.ready)document.documentElement.classList.add('no-anim');},3000);</script>
+    <script src="js/main.js" defer></script>
+    <script src="js/machines.js" defer></script>
 </head>
 
 <body>
+    <a class="skip-link" href="#main">Przejdź do treści</a>
+    <div class="scroll-progress" aria-hidden="true"><span></span></div>
 
-    <!-- ================= HEADER ================= -->
-
+    <!-- ================= NAGŁÓWEK ================= -->
     <header class="site-header">
         <div class="header-inner">
-            <a href="index.html" class="logo">
-                <img src="img/logo-white.png" alt="Woojin Plaimm" class="logo-image">
+            <a href="index.html" class="logo" aria-label="WOOJIN PLAIMM – strona główna">
+                <img src="img/logo-white.png" alt="" class="logo-img logo-img--light" width="500" height="224">
+                <img src="img/logo-black.png" alt="" class="logo-img logo-img--dark" width="500" height="224">
             </a>
 
-            <nav class="main-nav">
-                <a href="index.html" class="active">O NAS</a>
-                <a href="maszyny.html">MASZYNY</a>
-                <a href="konfigurator.html">KONFIGURATOR</a>
-                <a href="kariera.html">KARIERA</a>
-                <a href="kontakt.html">KONTAKT</a>
-                <!-- Nowy przycisk WOOJIN GLOBAL -->
-    <a href="https://woojinplaimm.com/?lang_code=en" target="_blank" class="nav-global">WOOJIN GLOBAL</a>
-</nav>
+            <nav class="main-nav" id="mainNav" aria-label="Nawigacja główna">
+                <ul class="nav-list" role="list">
+                    <li><a href="index.html" class="nav-link"><span class="nav-num">01</span><span class="nav-text">O nas</span></a></li>
+                    <li><a href="maszyny.html" class="nav-link" aria-current="page"><span class="nav-num">02</span><span class="nav-text">Maszyny</span></a></li>
+                    <li><a href="konfigurator.html" class="nav-link"><span class="nav-num">03</span><span class="nav-text">Konfigurator</span></a></li>
+                    <li><a href="kariera.html" class="nav-link"><span class="nav-num">04</span><span class="nav-text">Kariera</span></a></li>
+                    <li><a href="kontakt.html" class="nav-link"><span class="nav-num">05</span><span class="nav-text">Kontakt</span></a></li>
+                </ul>
+                <a href="https://woojinplaimm.com/?lang_code=en" target="_blank" rel="noopener noreferrer" class="nav-global">
+                    Woojin Global
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17L17 7M8 7h9v9"/></svg>
+                </a>
+                <div class="nav-mobile-footer">
+                    <span>ul. Hutnicza 6, 40-241 Katowice</span>
+                    <a href="tel:+48510440661">+48 510 440 661</a>
+                    <a href="mailto:ploffice@wjpim.com">ploffice@wjpim.com</a>
+                </div>
             </nav>
 
-            <button type="button" class="nav-toggle" id="navToggle" aria-label="Otwórz menu" aria-expanded="false">
+            <button type="button" class="nav-toggle" aria-controls="mainNav" aria-label="Otwórz menu" aria-expanded="false">
                 <span class="nav-toggle-bar"></span>
                 <span class="nav-toggle-bar"></span>
                 <span class="nav-toggle-bar"></span>
@@ -44,90 +64,87 @@
         </div>
     </header>
 
-    <!-- ================= MAIN CONTENT ================= -->
-<div class="hero-wrapper">
-    <section class="hero-selector">
-        <div class="container">
-            <span class="eyebrow">WTRYSKARKI· WOOJIN PLAIMM</span>
-            <h1>Poznaj ofertę naszych wtryskarek</h1>
-            <p class="disclaimer" style="visibility: hidden;">* Poznaj ofertę</p>
-            <p class="disclaimer" style="visibility: hidden;">* Poznaj ofertę</p>
-            <p class="disclaimer" style="visibility: hidden;">* Poznaj ofertę</p>
-        </div>
-    </section>
-</div>
+    <main id="main">
 
-<!-- ================= WIDOK 360° ================= -->
-<section class="viewer360-section">
-    <div class="container">
-
-        <div class="viewer360-wrapper" id="viewer360Wrapper">
-
-            <!-- Lista typów wtryskarek - wycentrowana, powiększona -->
-            <div class="machine-type-list" id="machineTypeList">
-                <button type="button" class="machine-type-item" data-index="0">DL-A5</button>
-                <button type="button" class="machine-type-item" data-index="1">TH-A5</button>
-                <button type="button" class="machine-type-item" data-index="2">TE-A5</button>
-                <button type="button" class="machine-type-item" data-index="3">TL-A5</button>
-                <button type="button" class="machine-type-item" data-index="4">VHA-RS</button>
-                <button type="button" class="machine-type-item" data-index="5">MULTI</button>
-                <button type="button" class="machine-type-item" data-index="6">Super-Foam</button>
+        <!-- ================= HERO ================= -->
+        <section class="page-hero" data-header-theme="dark">
+            <div class="page-hero-bg" aria-hidden="true"><span class="orb orb--1"></span><span class="orb orb--2"></span></div>
+            <div class="container page-hero-inner">
+                <nav class="breadcrumbs fade-up" style="--delay:.05s" aria-label="Ścieżka nawigacji">
+                    <a href="index.html">Strona główna</a><span aria-hidden="true">/</span><span aria-current="page">Maszyny</span>
+                </nav>
+                <p class="eyebrow eyebrow--light fade-up" style="--delay:.12s">Wtryskarki · WOOJIN PLAIMM</p>
+                <h1 class="page-title"><span class="line"><span class="line-inner" style="--i:0">Poznaj ofertę</span></span><span class="line"><span class="line-inner" style="--i:1">naszych wtryskarek</span></span></h1>
+                <p class="page-lead fade-up" style="--delay:.5s">Siedem serii maszyn — od kompaktowych wtryskarek elektrycznych po wielkogabarytowe maszyny dwupłytowe. Obracaj modele w widoku 360°, poznaj kluczowe podzespoły i pobierz katalog wybranej serii.</p>
             </div>
+        </section>
 
-            <!-- Model i krótki opis aktualnie wybranej wtryskarki -->
-            <div class="machine-meta" id="machineMeta">
-                <h2 class="machine-meta-model" id="machineMetaModel">DL-A5</h2>
-                <p class="machine-meta-desc" id="machineMetaDesc">Wysokiej klasy, dwupłytowa seria z systemem bezpośredniego ryglowania</p>
-            </div>
+        <!-- ================= WIDOK 360° ================= -->
+        <section class="viewer360-section" id="widok-360" aria-label="Widok 360° wtryskarek">
+            <div class="container">
+                <div class="viewer360-wrapper" id="viewer360Wrapper">
 
-            <div class="viewer360-carousel">
-                <button type="button" class="viewer360-arrow viewer360-arrow--left" id="viewer360Prev" aria-label="Poprzedni typ wtryskarki">
-                    <img src="img/Arrow-Back-Ios--Streamline-Sharp-Material-Symbols.png" alt="">
-                </button>
+                    <div class="type-tabs-wrap" data-reveal>
+                        <div class="machine-type-list" id="machineTypeList" role="tablist" aria-label="Seria wtryskarki">
+                            <span class="type-indicator" aria-hidden="true"></span>
+                            <button type="button" role="tab" class="machine-type-item" data-index="0">DL-A5</button>
+                            <button type="button" role="tab" class="machine-type-item" data-index="1">TH-A5</button>
+                            <button type="button" role="tab" class="machine-type-item" data-index="2">TE-A5</button>
+                            <button type="button" role="tab" class="machine-type-item" data-index="3">TL-A5</button>
+                            <button type="button" role="tab" class="machine-type-item" data-index="4">VHA-RS</button>
+                            <button type="button" role="tab" class="machine-type-item" data-index="5">MULTI</button>
+                            <button type="button" role="tab" class="machine-type-item" data-index="6">Super-Foam</button>
+                        </div>
+                    </div>
 
-                <div class="viewer360-stage" id="viewer360Stage">
-                    <img id="viewer360Image" src="img/360-DL/1.png" alt="Widok 360° wtryskarki WOOJIN PLAIMM" draggable="false">
-                    <div class="viewer360-magnifier" id="viewer360Magnifier"></div>
-                    <div class="viewer360-unavailable" id="viewer360Unavailable">Widok 360° dla tego typu będzie dostępny wkrótce</div>
+                    <div class="machine-meta" id="machineMeta" aria-live="polite">
+                        <h2 class="machine-meta-model" id="machineMetaModel">DL-A5</h2>
+                        <p class="machine-meta-desc" id="machineMetaDesc">Wysokiej klasy dwupłytowa seria z systemem bezpośredniego ryglowania (Dual Lock)</p>
+                    </div>
+
+                    <div class="viewer360-carousel">
+                        <button type="button" class="icon-btn viewer360-arrow viewer360-arrow--left" id="viewer360Prev" aria-label="Poprzednia seria wtryskarek">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg>
+                        </button>
+
+                        <div class="viewer360-stage" id="viewer360Stage" tabindex="0" aria-label="Widok 360° – przeciągnij lub użyj strzałek, aby obrócić maszynę">
+                            <img id="viewer360Image" src="img/360-DL/1.jpg" alt="Widok 360° wtryskarki WOOJIN PLAIMM" width="932" height="351" draggable="false" fetchpriority="high">
+                            <div class="viewer360-magnifier" id="viewer360Magnifier" aria-hidden="true"></div>
+                            <div class="viewer360-unavailable" id="viewer360Unavailable">
+                                <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+                                Widok 360° dla tej serii będzie dostępny wkrótce
+                            </div>
+                        </div>
+
+                        <button type="button" class="icon-btn viewer360-arrow viewer360-arrow--right" id="viewer360Next" aria-label="Następna seria wtryskarek">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18l6-6-6-6"/></svg>
+                        </button>
+                    </div>
+
+                    <div class="viewer360-slider-row">
+                        <input type="range" class="viewer360-slider" id="viewer360Slider" min="1" max="37" step="1" value="1" aria-label="Przesuń, aby obrócić widok 360°">
+                    </div>
+
+                    <p class="viewer360-hint">
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 4 0 0 0 18 0"/><path d="M21 12a9 4 0 0 0-14-3.3"/><path d="M9 6.5L7 8.7l2.5 1.3"/></svg>
+                        Przeciągnij, aby obrócić
+                    </p>
                 </div>
-
-                <button type="button" class="viewer360-arrow viewer360-arrow--right" id="viewer360Next" aria-label="Następny typ wtryskarki">
-                    <img src="img/Arrow-Forward-Ios--Streamline-Sharp-Material-Symbols.png" alt="">
-                </button>
             </div>
+        </section>
 
-            <div class="viewer360-slider-row">
-                <input type="range" class="viewer360-slider" id="viewer360Slider" min="1" max="37" step="1" value="1" aria-label="Przesuń, aby obrócić widok 360°">
-            </div>
-
-            <div class="viewer360-hint">
-                <img src="img/360.png" alt="Widok 360°">
-            </div>
-
-        </div>
-
-    </div>
-</section>
-
-<!-- ================= PODZESPOŁY MASZYNY ================= -->
-<section class="components-section" id="componentsSection">
-    <div class="container">
-
-        <!-- Opis maszyny - zależny od wybranego typu wtryskarki na liście powyżej.
-             Na razie uzupełniony tylko dla DL-A5, pozostałe typy do dodania później. -->
-        <div class="machine-description" id="machineDescription">
+        <!-- ================= OPIS SERII + PODZESPOŁY ================= -->
+        <section class="components-section" id="componentsSection" aria-labelledby="componentsTitle">
+            <div class="container">
+                <div class="machine-description" id="machineDescription" data-reveal>
             <div class="machine-description-panel" data-machine-type="DL-A5">
                 <div class="machine-description-text">
                     <h3>DL-A5</h3>
                     <p>Wtryskarka DL-A5 to wysokiej klasy, dwupłytowa seria z systemem bezpośredniego ryglowania (Dual Lock), zaprojektowana z myślą o produkcji dużych i precyzyjnych elementów wymagających wysokiej siły zwarcia. Zwarta konstrukcja oraz energooszczędny napęd hydrauliczny pozwalają uzyskać powtarzalność procesu przy jednoczesnym ograniczeniu zużycia energii, a intuicyjny sterownik ułatwia codzienną obsługę maszyny.</p>
                 </div>
-                <a class="catalog-dl-btn" href="katalogi/DL-A5+Catalog_EN_Vol2_Ver2.pdf" download>
-                    <span class="catalog-dl-btn-label"><span class="catalog-dl-btn-label-text">Pobierz Katalog</span></span>
-                    <span class="catalog-dl-btn-icon">
-                        <svg viewBox="0 0 10 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M1 1L8 8L1 15" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                        </svg>
-                    </span>
+                <a class="btn btn--primary btn--lg catalog-dl-btn" href="katalogi/DL-A5+Catalog_EN_Vol2_Ver2.pdf" download>
+                    Pobierz katalog (PDF)
+                    <svg class="btn-icon btn-icon--down" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v12M6 10l6 6 6-6M5 20h14"/></svg>
                 </a>
             </div>
 
@@ -136,13 +153,9 @@
                     <h3>TH-A5</h3>
                     <p>Wtryskarka TH-A5 to seria premium z energooszczędnym napędem hydraulicznym, zaprojektowana z myślą o osiągnięciu najwyższej efektywności produkcji. Ergonomiczna konstrukcja uwzględnia szybką i stabilną pracę maszyny oraz wygodę codziennej obsługi przez operatora.</p>
                 </div>
-                <a class="catalog-dl-btn" href="katalogi/TH-A5+Catalogue_EN.pdf" download>
-                    <span class="catalog-dl-btn-label"><span class="catalog-dl-btn-label-text">Pobierz Katalog</span></span>
-                    <span class="catalog-dl-btn-icon">
-                        <svg viewBox="0 0 10 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M1 1L8 8L1 15" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                        </svg>
-                    </span>
+                <a class="btn btn--primary btn--lg catalog-dl-btn" href="katalogi/TH-A5+Catalogue_EN.pdf" download>
+                    Pobierz katalog (PDF)
+                    <svg class="btn-icon btn-icon--down" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v12M6 10l6 6 6-6M5 20h14"/></svg>
                 </a>
             </div>
 
@@ -151,13 +164,20 @@
                     <h3>TE-A5</h3>
                     <p>Wtryskarka TE-A5 to nowa, w pełni elektryczna seria z układem kolankowym, zapewniająca najwyższą precyzję i powtarzalność wagi wypraski przy najniższym możliwym zużyciu energii. Elektryczny napęd oraz zoptymalizowana konstrukcja mechanizmu zamykania gwarantują stabilną, czystą i energooszczędną pracę maszyny.</p>
                 </div>
-                <a class="catalog-dl-btn" href="katalogi/TE-A5+Catalogue_EN.pdf" download>
-                    <span class="catalog-dl-btn-label"><span class="catalog-dl-btn-label-text">Pobierz Katalog</span></span>
-                    <span class="catalog-dl-btn-icon">
-                        <svg viewBox="0 0 10 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M1 1L8 8L1 15" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                        </svg>
-                    </span>
+                <a class="btn btn--primary btn--lg catalog-dl-btn" href="katalogi/TE-A5+Catalogue_EN.pdf" download>
+                    Pobierz katalog (PDF)
+                    <svg class="btn-icon btn-icon--down" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v12M6 10l6 6 6-6M5 20h14"/></svg>
+                </a>
+            </div>
+
+            <div class="machine-description-panel" data-machine-type="TL-A5">
+                <div class="machine-description-text">
+                    <h3>TL-A5</h3>
+                    <p>Wtryskarka TL-A5 to konstrukcja bezkolumnowa (tie-bar-less) o sile zwarcia od 220 do 400 ton. Brak kolumn daje pełną swobodę doboru wielkości formy, wielogniazdowości i automatyzacji odbioru wyprasek. Widok 360° i opis podzespołów tej serii przygotowujemy — szczegółowe dane znajdziesz w katalogu.</p>
+                </div>
+                <a class="btn btn--primary btn--lg catalog-dl-btn" href="katalogi/TL-A5+Catalogue_EN.pdf" download>
+                    Pobierz katalog (PDF)
+                    <svg class="btn-icon btn-icon--down" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v12M6 10l6 6 6-6M5 20h14"/></svg>
                 </a>
             </div>
 
@@ -166,13 +186,9 @@
                     <h3>VHA-RS</h3>
                     <p>Wtryskarka VHA-RS to wysokiej klasy, pionowa, energooszczędna seria hydrauliczna, zaprojektowana z myślą o zastosowaniach wymagających formowania z insertami oraz pionowego układu wtrysku. Obrotowy stół (turntable) z napędem serwo zapewnia precyzyjne i powtarzalne pozycjonowanie, a bezpośredni docisk układu zwarcia oraz możliwość zastosowania różnych agregatów wtryskowych gwarantują wysoką jakość produkcji i elastyczność dostosowania do różnych wyprasek.</p>
                 </div>
-                <a class="catalog-dl-btn" href="katalogi/VH+Catalogue_EN.pdf" download>
-                    <span class="catalog-dl-btn-label"><span class="catalog-dl-btn-label-text">Pobierz Katalog</span></span>
-                    <span class="catalog-dl-btn-icon">
-                        <svg viewBox="0 0 10 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M1 1L8 8L1 15" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                        </svg>
-                    </span>
+                <a class="btn btn--primary btn--lg catalog-dl-btn" href="katalogi/VH+Catalogue_EN.pdf" download>
+                    Pobierz katalog (PDF)
+                    <svg class="btn-icon btn-icon--down" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v12M6 10l6 6 6-6M5 20h14"/></svg>
                 </a>
             </div>
 
@@ -181,78 +197,70 @@
                     <h3>NC-G5</h3>
                     <p>Wtryskarka NC-G5 to nowoczesna, pozioma, energooszczędna, dwukolorowa seria hydrauliczna, zaprojektowana z myślą o formowaniu dwóch różnych tworzyw lub kolorów w jednym cyklu produkcyjnym (ONE-CYCLE), co pozwala ograniczyć liczbę etapów montażu i obróbki końcowej przy produkcji elementów złożonych. Obrotowy stół z dedykowanym napędem serwo zapewnia precyzyjne pozycjonowanie formy, a zastosowanie dwóch niezależnie sterowanych agregatów wtryskowych gwarantuje wysoką jakość i powtarzalność produkcji.</p>
                 </div>
-                <a class="catalog-dl-btn" href="katalogi/Multi(2K)+Catalogue_EN.pdf" download>
-                    <span class="catalog-dl-btn-label"><span class="catalog-dl-btn-label-text">Pobierz Katalog</span></span>
-                    <span class="catalog-dl-btn-icon">
-                        <svg viewBox="0 0 10 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M1 1L8 8L1 15" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                        </svg>
-                    </span>
+                <a class="btn btn--primary btn--lg catalog-dl-btn" href="katalogi/Multi(2K)+Catalogue_EN.pdf" download>
+                    Pobierz katalog (PDF)
+                    <svg class="btn-icon btn-icon--down" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v12M6 10l6 6 6-6M5 20h14"/></svg>
                 </a>
             </div>
 
             <div class="machine-description-panel" data-machine-type="Super-Foam">
                 <div class="machine-description-text">
-                    <h3>DL-A5(super-foam)</h3>
+                    <h3>DL-A5 (Super-Foam)</h3>
                     <p>Wtryskarka DL-A5 (Super-Foam) to wysokiej klasy, dwupłytowa seria z systemem bezpośredniego ryglowania (Dual Lock), dedykowana produkcji dużych, lekkich elementów - w tym palet - z wykorzystaniem technologii super spieniania. Dostępna w czterech wariantach siły zwarcia od 1800 do 3300 ton, łączy praktyczną, zwartą konstrukcję z doskonałym wykorzystaniem przestrzeni, zapewniając szybką, precyzyjną i energooszczędną pracę.</p>
                 </div>
-                <a class="catalog-dl-btn" href="katalogi/Super-Foam+Catalogue_EN.pdf" download>
-                    <span class="catalog-dl-btn-label"><span class="catalog-dl-btn-label-text">Pobierz Katalog</span></span>
-                    <span class="catalog-dl-btn-icon">
-                        <svg viewBox="0 0 10 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M1 1L8 8L1 15" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                        </svg>
-                    </span>
+                <a class="btn btn--primary btn--lg catalog-dl-btn" href="katalogi/Super-Foam+Catalogue_EN.pdf" download>
+                    Pobierz katalog (PDF)
+                    <svg class="btn-icon btn-icon--down" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v12M6 10l6 6 6-6M5 20h14"/></svg>
                 </a>
             </div>
         </div>
+                <div class="section-head components-head" id="componentsHead">
+                    <div>
+                        <p class="eyebrow" data-reveal>Budowa wtryskarki · <span id="componentsSeries">DL-A5</span></p>
+                        <h2 class="section-title" id="componentsTitle" data-reveal>Poznaj kluczowe podzespoły</h2>
+                    </div>
+                </div>
 
-        <div class="section-heading">
-            <span class="section-label">BUDOWA WTRYSKARKI</span>
-            <h2>Poznaj kluczowe podzespoły</h2>
-        </div>
-
-        <div class="components-list" id="componentsList">
-
+                <div class="components-list" id="componentsList">
             <article class="component-item" data-machine-type="DL-A5">
                 <div class="component-photo">
-                    <img src="img/DLA5/clampingunit.png" alt="Zespół zamykający - DL-A5" loading="lazy">
+                    <img src="img/DLA5/clampingunit.jpg" alt="Zespół zamykający - DL-A5" width="1100" height="648" loading="lazy" decoding="async">
                 </div>
                 <div class="component-text">
                     <h3>Zespół zamykający</h3>
                     <div class="component-feature-list">
                         <div class="component-feature">
-                            <p class="component-feature-title">01. Konstrukcja płyt</p>
+                            <p class="component-feature-title"><span class="feat-num">01</span>Konstrukcja płyt</p>
                             <ul class="component-feature-points">
                                 <li>Analiza metodą elementów skończonych (FEA) zwiększa dopuszczalną wagę montowanej formy dzięki minimalizacji ugięcia płyty, uzyskanej dzięki zoptymalizowanej konstrukcji (wer. 2).</li>
                             </ul>
                         </div>
                         <div class="component-feature">
-                            <p class="component-feature-title">02. Maksymalne wykorzystanie przestrzeni</p>
+                            <p class="component-feature-title"><span class="feat-num">02</span>Maksymalne wykorzystanie przestrzeni</p>
                             <ul class="component-feature-points">
                                 <li>Maksymalne wykorzystanie przestrzeni dzięki łatwemu montażowi dużych form w pomieszczeniach o niskich sufitach i w ograniczonej przestrzeni (wer. 2).</li>
                             </ul>
                         </div>
                         <div class="component-feature">
-                            <p class="component-feature-title">03. Zwiększona trwałość</p>
+                            <p class="component-feature-title"><span class="feat-num">03</span>Zwiększona trwałość</p>
                             <ul class="component-feature-points">
                                 <li>Zastosowanie śrub w kształcie litery U oraz kolumn (tie bars) zwiększa trwałość dzięki efektowi rozpraszania naprężeń.</li>
                             </ul>
                         </div>
                         <div class="component-feature">
-                            <p class="component-feature-title">04. Skrócenie czasu cyklu</p>
+                            <p class="component-feature-title"><span class="feat-num">04</span>Skrócenie czasu cyklu</p>
                             <ul class="component-feature-points">
                                 <li>Zsynchronizowany system sterowania ryglowaniem półnakrętkowym (half-nut) skraca czas cyklu.</li>
                             </ul>
                         </div>
                         <div class="component-feature">
-                            <p class="component-feature-title">05. Precyzja pozycjonowania</p>
+                            <p class="component-feature-title"><span class="feat-num">05</span>Precyzja pozycjonowania</p>
                             <ul class="component-feature-points">
                                 <li>Szybkoreagujący zawór proporcjonalny zamontowany na module przesuwu zwiększa precyzję pozycjonowania.</li>
                             </ul>
                         </div>
                         <div class="component-feature">
-                            <p class="component-feature-title">06. Niezawodne działanie przełączania</p>
+                            <p class="component-feature-title"><span class="feat-num">06</span>Niezawodne działanie przełączania</p>
                             <ul class="component-feature-points">
                                 <li>Elastyczna konfiguracja cylindrów otwierania/zamykania (lewy/prawy) zapewnia stabilną pracę przy otwieraniu i zamykaniu.</li>
                             </ul>
@@ -260,40 +268,39 @@
                     </div>
                 </div>
             </article>
-
             <article class="component-item" data-machine-type="DL-A5">
                 <div class="component-photo">
-                    <img src="img/DLA5/dla5injectionunit.png" alt="Agregat wtryskowy - DL-A5" loading="lazy">
+                    <img src="img/DLA5/dla5injectionunit.jpg" alt="Agregat wtryskowy - DL-A5" width="1100" height="648" loading="lazy" decoding="async">
                 </div>
                 <div class="component-text">
                     <h3>Agregat wtryskowy</h3>
                     <div class="component-feature-list">
                         <div class="component-feature">
-                            <p class="component-feature-title">01. Regulacja ciśnienia wstecznego wtrysku w pętli zamkniętej</p>
+                            <p class="component-feature-title"><span class="feat-num">01</span>Regulacja ciśnienia wstecznego wtrysku w pętli zamkniętej</p>
                             <ul class="component-feature-points">
                                 <li>Ustawione przez użytkownika ciśnienie wsteczne pozostaje stałe dzięki regulacji w pętli zamkniętej.</li>
                             </ul>
                         </div>
                         <div class="component-feature">
-                            <p class="component-feature-title">02. Zwiększona precyzja formowania</p>
+                            <p class="component-feature-title"><span class="feat-num">02</span>Zwiększona precyzja formowania</p>
                             <ul class="component-feature-points">
                                 <li>Zapobiega problemom z równowagą płyty spowodowanym powtarzalnym dotykiem dyszy, poprawiając precyzję formowania.</li>
                             </ul>
                         </div>
                         <div class="component-feature">
-                            <p class="component-feature-title">03. Łatwa obsługa ślimaków i cylindrów</p>
+                            <p class="component-feature-title"><span class="feat-num">03</span>Łatwa obsługa ślimaków i cylindrów</p>
                             <ul class="component-feature-points">
                                 <li>Łatwa wymiana i obsługa ślimaków oraz cylindrów (dla maszyn poniżej 1300 ton).</li>
                             </ul>
                         </div>
                         <div class="component-feature">
-                            <p class="component-feature-title">04. Lepsze wykorzystanie przestrzeni</p>
+                            <p class="component-feature-title"><span class="feat-num">04</span>Lepsze wykorzystanie przestrzeni</p>
                             <ul class="component-feature-points">
                                 <li>Zunifikowane skrzynki napędów serwo maksymalizują wykorzystanie dostępnej przestrzeni.</li>
                             </ul>
                         </div>
                         <div class="component-feature">
-                            <p class="component-feature-title">05. Oszczędność energii</p>
+                            <p class="component-feature-title"><span class="feat-num">05</span>Oszczędność energii</p>
                             <ul class="component-feature-points">
                                 <li>Oszczędność energii dzięki zachowaniu równoległości i redukcji tarcia poprzez zastosowanie prowadnic LM w łożu wtryskowym i elementach dozujących.</li>
                             </ul>
@@ -301,35 +308,34 @@
                     </div>
                 </div>
             </article>
-
             <article class="component-item" data-machine-type="DL-A5">
                 <div class="component-photo">
-                    <img src="img/DLA5/dla5hydraulicunit.png" alt="Układ hydrauliczny - DL-A5" loading="lazy">
+                    <img src="img/DLA5/dla5hydraulicunit.jpg" alt="Układ hydrauliczny - DL-A5" width="1100" height="648" loading="lazy" decoding="async">
                 </div>
                 <div class="component-text">
                     <h3>Układ hydrauliczny</h3>
                     <div class="component-feature-list">
                         <div class="component-feature">
-                            <p class="component-feature-title">01. Specjalna powłoka zbiornika oleju</p>
+                            <p class="component-feature-title"><span class="feat-num">01</span>Specjalna powłoka zbiornika oleju</p>
                             <ul class="component-feature-points">
                                 <li>Zwiększona czystość wewnętrzna dzięki specjalnej powłoce wewnątrz i na zewnątrz bloku hydraulicznego.</li>
                                 <li>Specjalnie powlekany zbiornik oleju zapobiega korozji spowodowanej wilgocią i parami oleju.</li>
                             </ul>
                         </div>
                         <div class="component-feature">
-                            <p class="component-feature-title">02. Niezależny obieg oleju roboczego</p>
+                            <p class="component-feature-title"><span class="feat-num">02</span>Niezależny obieg oleju roboczego</p>
                             <ul class="component-feature-points">
                                 <li>Utrzymanie stałej czystości i temperatury dzięki niezależnemu obiegowi oleju roboczego (wydłuża żywotność oleju hydraulicznego i poprawia trwałość podzespołów hydraulicznych).</li>
                             </ul>
                         </div>
                         <div class="component-feature">
-                            <p class="component-feature-title">03. Zapobieganie wyciekom przewodów hydraulicznych</p>
+                            <p class="component-feature-title"><span class="feat-num">03</span>Zapobieganie wyciekom przewodów hydraulicznych</p>
                             <ul class="component-feature-points">
                                 <li>Bezszwowe rury, przewody rozprężne oraz połączenia EO2FORM są odporne na wysokie ciśnienie i wibracje, zapobiegając wyciekom i uszkodzeniom.</li>
                             </ul>
                         </div>
                         <div class="component-feature">
-                            <p class="component-feature-title">04. Zmniejszone zużycie energii i wody chłodzącej</p>
+                            <p class="component-feature-title"><span class="feat-num">04</span>Zmniejszone zużycie energii i wody chłodzącej</p>
                             <ul class="component-feature-points">
                                 <li>System pompy serwo redukuje wewnętrzne straty, zmniejszając zużycie energii i wody chłodzącej.</li>
                             </ul>
@@ -337,16 +343,15 @@
                     </div>
                 </div>
             </article>
-
             <article class="component-item" data-machine-type="DL-A5">
                 <div class="component-photo">
-                    <img src="img/DLA5/dla5imc500.png" alt="Sterownik IMC 500/501 - DL-A5" loading="lazy">
+                    <img src="img/DLA5/dla5imc500.jpg" alt="Sterownik IMC 500/501 - DL-A5" width="1100" height="648" loading="lazy" decoding="async">
                 </div>
                 <div class="component-text">
                     <h3>Sterownik (IMC 500/501)</h3>
                     <div class="component-feature-list">
                         <div class="component-feature">
-                            <p class="component-feature-title">01. Kompatybilność</p>
+                            <p class="component-feature-title"><span class="feat-num">01</span>Kompatybilność</p>
                             <ul class="component-feature-points">
                                 <li>Windows7 Embedded</li>
                                 <li>OPC-UA (Euromap77)</li>
@@ -355,7 +360,7 @@
                             </ul>
                         </div>
                         <div class="component-feature">
-                            <p class="component-feature-title">02. Specyfikacja</p>
+                            <p class="component-feature-title"><span class="feat-num">02</span>Specyfikacja</p>
                             <ul class="component-feature-points">
                                 <li>Wyświetlacz: 18,5" / 24"</li>
                                 <li>Rozdzielczość: 768 x 1366 / 1080 x 1920</li>
@@ -371,16 +376,15 @@
                     </div>
                 </div>
             </article>
-
             <article class="component-item" data-machine-type="DL-A5">
                 <div class="component-photo">
-                    <img src="img/DLA5/imc400.png" alt="Sterownik IMC 400 - DL-A5" loading="lazy">
+                    <img src="img/DLA5/imc400.jpg" alt="Sterownik IMC 400 - DL-A5" width="1100" height="648" loading="lazy" decoding="async">
                 </div>
                 <div class="component-text">
                     <h3>Sterownik (IMC 400)</h3>
                     <div class="component-feature-list">
                         <div class="component-feature">
-                            <p class="component-feature-title">01. Kompatybilność</p>
+                            <p class="component-feature-title"><span class="feat-num">01</span>Kompatybilność</p>
                             <ul class="component-feature-points">
                                 <li>System czasu rzeczywistego VxWorks</li>
                                 <li>OPC-UA (Euromap77)</li>
@@ -389,7 +393,7 @@
                             </ul>
                         </div>
                         <div class="component-feature">
-                            <p class="component-feature-title">02. Specyfikacja</p>
+                            <p class="component-feature-title"><span class="feat-num">02</span>Specyfikacja</p>
                             <ul class="component-feature-points">
                                 <li>Wyświetlacz: 15"</li>
                                 <li>Rozdzielczość: 768 x 1024</li>
@@ -405,41 +409,40 @@
                     </div>
                 </div>
             </article>
-
             <article class="component-item" data-machine-type="TH-A5">
                 <div class="component-photo">
-                    <img src="img/THA5/thclamping.png" alt="Zespół zamykający - TH-A5" loading="lazy">
+                    <img src="img/THA5/thclamping.jpg" alt="Zespół zamykający - TH-A5" width="1100" height="648" loading="lazy" decoding="async">
                 </div>
                 <div class="component-text">
                     <h3>Zespół zamykający</h3>
                     <div class="component-feature-list">
                         <div class="component-feature">
-                            <p class="component-feature-title">01. Zwiększona trwałość</p>
+                            <p class="component-feature-title"><span class="feat-num">01</span>Zwiększona trwałość</p>
                             <ul class="component-feature-points">
                                 <li>Wzmocniona konstrukcja płyt i kolumn (tie bars) zwiększa trwałość i odporność zespołu zamykającego na długotrwałą eksploatację.</li>
                             </ul>
                         </div>
                         <div class="component-feature">
-                            <p class="component-feature-title">02. Poprawiona precyzja regulacji grubości formy</p>
+                            <p class="component-feature-title"><span class="feat-num">02</span>Poprawiona precyzja regulacji grubości formy</p>
                             <ul class="component-feature-points">
                                 <li>Wysokoprecyzyjny system regulacji grubości formy zapewnia dokładne dopasowanie i stabilną pracę przy różnych rozmiarach form.</li>
                             </ul>
                         </div>
                         <div class="component-feature">
-                            <p class="component-feature-title">03. Utrzymanie równoległości płyt</p>
+                            <p class="component-feature-title"><span class="feat-num">03</span>Utrzymanie równoległości płyt</p>
                             <ul class="component-feature-points">
                                 <li>Zoptymalizowana konstrukcja prowadnic utrzymuje równoległość płyt podczas całego cyklu zamykania.</li>
                                 <li>Stabilna praca ogranicza zużycie form i wydłuża ich żywotność.</li>
                             </ul>
                         </div>
                         <div class="component-feature">
-                            <p class="component-feature-title">04. Przenoszenie wysokiej siły zwarcia</p>
+                            <p class="component-feature-title"><span class="feat-num">04</span>Przenoszenie wysokiej siły zwarcia</p>
                             <ul class="component-feature-points">
                                 <li>Zespół zamykający efektywnie przenosi wysoką siłę zwarcia, zapewniając stabilność procesu przy produkcji dużych elementów.</li>
                             </ul>
                         </div>
                         <div class="component-feature">
-                            <p class="component-feature-title">05. Szeroki rozstaw kolumn (tie bars)</p>
+                            <p class="component-feature-title"><span class="feat-num">05</span>Szeroki rozstaw kolumn (tie bars)</p>
                             <ul class="component-feature-points">
                                 <li>Szeroki rozstaw kolumn ułatwia montaż dużych form i zwiększa elastyczność produkcyjną.</li>
                             </ul>
@@ -447,47 +450,46 @@
                     </div>
                 </div>
             </article>
-
             <article class="component-item" data-machine-type="TH-A5">
                 <div class="component-photo">
-                    <img src="img/THA5/thinjection.png" alt="Agregat wtryskowy - TH-A5" loading="lazy">
+                    <img src="img/THA5/thinjection.jpg" alt="Agregat wtryskowy - TH-A5" width="1100" height="648" loading="lazy" decoding="async">
                 </div>
                 <div class="component-text">
                     <h3>Agregat wtryskowy</h3>
                     <div class="component-feature-list">
                         <div class="component-feature">
-                            <p class="component-feature-title">01. Precyzyjna kontrola temperatury</p>
+                            <p class="component-feature-title"><span class="feat-num">01</span>Precyzyjna kontrola temperatury</p>
                             <ul class="component-feature-points">
                                 <li>Zaawansowany system grzewczy zapewnia precyzyjną i stabilną kontrolę temperatury stopionego tworzywa.</li>
                             </ul>
                         </div>
                         <div class="component-feature">
-                            <p class="component-feature-title">02. Zapewnienie stabilności pracy</p>
+                            <p class="component-feature-title"><span class="feat-num">02</span>Zapewnienie stabilności pracy</p>
                             <ul class="component-feature-points">
                                 <li>Solidna konstrukcja zespołu wtryskowego zapewnia stabilną pracę nawet przy wysokich prędkościach wtrysku.</li>
                             </ul>
                         </div>
                         <div class="component-feature">
-                            <p class="component-feature-title">03. Regulacja ciśnienia wstecznego wtrysku w pętli zamkniętej</p>
+                            <p class="component-feature-title"><span class="feat-num">03</span>Regulacja ciśnienia wstecznego wtrysku w pętli zamkniętej</p>
                             <ul class="component-feature-points">
                                 <li>Ustawione przez użytkownika ciśnienie wsteczne pozostaje stałe dzięki regulacji w pętli zamkniętej, zapewniając powtarzalność procesu.</li>
                             </ul>
                         </div>
                         <div class="component-feature">
-                            <p class="component-feature-title">04. Redukcja hałasu przepływu oleju i zapobieganie wyciekom</p>
+                            <p class="component-feature-title"><span class="feat-num">04</span>Redukcja hałasu przepływu oleju i zapobieganie wyciekom</p>
                             <ul class="component-feature-points">
                                 <li>Zoptymalizowany układ hydrauliczny ogranicza hałas generowany przez przepływ oleju.</li>
                                 <li>Uszczelnienia wysokiej jakości skutecznie zapobiegają wyciekom oleju.</li>
                             </ul>
                         </div>
                         <div class="component-feature">
-                            <p class="component-feature-title">05. Zwiększona responsywność i możliwości sterowania</p>
+                            <p class="component-feature-title"><span class="feat-num">05</span>Zwiększona responsywność i możliwości sterowania</p>
                             <ul class="component-feature-points">
                                 <li>Szybkoreagujące zawory proporcjonalne zwiększają responsywność oraz precyzję sterowania procesem wtrysku.</li>
                             </ul>
                         </div>
                         <div class="component-feature">
-                            <p class="component-feature-title">06. Zastosowanie prowadnic LM</p>
+                            <p class="component-feature-title"><span class="feat-num">06</span>Zastosowanie prowadnic LM</p>
                             <ul class="component-feature-points">
                                 <li>Prowadnice liniowe (LM Guide) redukują tarcie i zwiększają płynność ruchu zespołu wtryskowego.</li>
                             </ul>
@@ -495,40 +497,39 @@
                     </div>
                 </div>
             </article>
-
             <article class="component-item" data-machine-type="TH-A5">
                 <div class="component-photo">
-                    <img src="img/THA5/hydraulic.png" alt="Układ hydrauliczny - TH-A5" loading="lazy">
+                    <img src="img/THA5/hydraulic.jpg" alt="Układ hydrauliczny - TH-A5" width="1100" height="648" loading="lazy" decoding="async">
                 </div>
                 <div class="component-text">
                     <h3>Układ hydrauliczny</h3>
                     <div class="component-feature-list">
                         <div class="component-feature">
-                            <p class="component-feature-title">01. Redukcja hałasu i lepsze wykorzystanie przestrzeni</p>
+                            <p class="component-feature-title"><span class="feat-num">01</span>Redukcja hałasu i lepsze wykorzystanie przestrzeni</p>
                             <ul class="component-feature-points">
                                 <li>Zwarta konstrukcja bloku hydraulicznego ogranicza poziom hałasu oraz optymalizuje wykorzystanie dostępnej przestrzeni.</li>
                             </ul>
                         </div>
                         <div class="component-feature">
-                            <p class="component-feature-title">02. Niezależny obieg oleju roboczego</p>
+                            <p class="component-feature-title"><span class="feat-num">02</span>Niezależny obieg oleju roboczego</p>
                             <ul class="component-feature-points">
                                 <li>Niezależny obieg oleju roboczego utrzymuje stałą czystość i temperaturę, wydłużając żywotność oleju hydraulicznego.</li>
                             </ul>
                         </div>
                         <div class="component-feature">
-                            <p class="component-feature-title">03. Zwiększona czystość wewnętrzna</p>
+                            <p class="component-feature-title"><span class="feat-num">03</span>Zwiększona czystość wewnętrzna</p>
                             <ul class="component-feature-points">
                                 <li>Specjalna powłoka wewnętrzna zbiornika oleju zapobiega zanieczyszczeniom i korozji, zwiększając czystość układu.</li>
                             </ul>
                         </div>
                         <div class="component-feature">
-                            <p class="component-feature-title">04. Zmniejszone zużycie energii i oleju roboczego</p>
+                            <p class="component-feature-title"><span class="feat-num">04</span>Zmniejszone zużycie energii i oleju roboczego</p>
                             <ul class="component-feature-points">
                                 <li>System pompy serwo redukuje straty energii oraz zużycie oleju roboczego podczas pracy maszyny.</li>
                             </ul>
                         </div>
                         <div class="component-feature">
-                            <p class="component-feature-title">05. Zastosowanie modułowego bloku hydraulicznego</p>
+                            <p class="component-feature-title"><span class="feat-num">05</span>Zastosowanie modułowego bloku hydraulicznego</p>
                             <ul class="component-feature-points">
                                 <li>Modułowa konstrukcja bloku hydraulicznego ułatwia serwisowanie oraz zwiększa niezawodność układu.</li>
                             </ul>
@@ -536,16 +537,15 @@
                     </div>
                 </div>
             </article>
-
             <article class="component-item" data-machine-type="TH-A5">
                 <div class="component-photo">
-                    <img src="img/THA5/thimc500.png" alt="Sterownik IMC 500/501 - TH-A5" loading="lazy">
+                    <img src="img/THA5/thimc500.jpg" alt="Sterownik IMC 500/501 - TH-A5" width="1100" height="648" loading="lazy" decoding="async">
                 </div>
                 <div class="component-text">
                     <h3>Sterownik (IMC 500/501)</h3>
                     <div class="component-feature-list">
                         <div class="component-feature">
-                            <p class="component-feature-title">01. Kompatybilność</p>
+                            <p class="component-feature-title"><span class="feat-num">01</span>Kompatybilność</p>
                             <ul class="component-feature-points">
                                 <li>Windows7 Embedded</li>
                                 <li>OPC-UA (Euromap77)</li>
@@ -554,7 +554,7 @@
                             </ul>
                         </div>
                         <div class="component-feature">
-                            <p class="component-feature-title">02. Specyfikacja</p>
+                            <p class="component-feature-title"><span class="feat-num">02</span>Specyfikacja</p>
                             <ul class="component-feature-points">
                                 <li>Wyświetlacz: 18,5" / 24"</li>
                                 <li>Rozdzielczość: 768 x 1366 / 1080 x 1920</li>
@@ -570,16 +570,15 @@
                     </div>
                 </div>
             </article>
-
             <article class="component-item" data-machine-type="TH-A5">
                 <div class="component-photo">
-                    <img src="img/THA5/thimc400.png" alt="Sterownik IMC 400 - TH-A5" loading="lazy">
+                    <img src="img/THA5/thimc400.jpg" alt="Sterownik IMC 400 - TH-A5" width="1100" height="648" loading="lazy" decoding="async">
                 </div>
                 <div class="component-text">
                     <h3>Sterownik (IMC 400)</h3>
                     <div class="component-feature-list">
                         <div class="component-feature">
-                            <p class="component-feature-title">01. Kompatybilność</p>
+                            <p class="component-feature-title"><span class="feat-num">01</span>Kompatybilność</p>
                             <ul class="component-feature-points">
                                 <li>System czasu rzeczywistego VxWorks</li>
                                 <li>OPC-UA (Euromap77)</li>
@@ -588,7 +587,7 @@
                             </ul>
                         </div>
                         <div class="component-feature">
-                            <p class="component-feature-title">02. Specyfikacja</p>
+                            <p class="component-feature-title"><span class="feat-num">02</span>Specyfikacja</p>
                             <ul class="component-feature-points">
                                 <li>Wyświetlacz: 15"</li>
                                 <li>Rozdzielczość: 768 x 1024</li>
@@ -604,40 +603,39 @@
                     </div>
                 </div>
             </article>
-
             <article class="component-item" data-machine-type="TE-A5">
                 <div class="component-photo">
-                    <img src="img/TEA5/teclapmping.png" alt="Zespół zamykający - TE-A5" loading="lazy">
+                    <img src="img/TEA5/teclapmping.jpg" alt="Zespół zamykający - TE-A5" width="1100" height="648" loading="lazy" decoding="async">
                 </div>
                 <div class="component-text">
                     <h3>Zespół zamykający</h3>
                     <div class="component-feature-list">
                         <div class="component-feature">
-                            <p class="component-feature-title">01. Nowy mechanizm kolankowy</p>
+                            <p class="component-feature-title"><span class="feat-num">01</span>Nowy mechanizm kolankowy</p>
                             <ul class="component-feature-points">
                                 <li>Zastosowanie nowego mechanizmu kolankowego (toggle) zapewnia szybkie otwieranie i zamykanie, a mocowanie sworznia kolankowego typu zaciskowego zwiększa trwałość.</li>
                             </ul>
                         </div>
                         <div class="component-feature">
-                            <p class="component-feature-title">02. Automatyczna kalibracja siły zwarcia</p>
+                            <p class="component-feature-title"><span class="feat-num">02</span>Automatyczna kalibracja siły zwarcia</p>
                             <ul class="component-feature-points">
                                 <li>Automatyczna korekta siły zwarcia dzięki wykrywaniu zmian objętości w czasie rzeczywistym.</li>
                             </ul>
                         </div>
                         <div class="component-feature">
-                            <p class="component-feature-title">03. Wysoka efektywność energetyczna</p>
+                            <p class="component-feature-title"><span class="feat-num">03</span>Wysoka efektywność energetyczna</p>
                             <ul class="component-feature-points">
                                 <li>Wysoka efektywność energetyczna dzięki szybkiemu działaniu otwierania i zamykania, przy zachowaniu stałej równoległości płyt i minimalnym tarciu ruchomych elementów.</li>
                             </ul>
                         </div>
                         <div class="component-feature">
-                            <p class="component-feature-title">04. Metoda docisku centralnego</p>
+                            <p class="component-feature-title"><span class="feat-num">04</span>Metoda docisku centralnego</p>
                             <ul class="component-feature-points">
                                 <li>Metoda docisku centralnego zapewnia doskonałe rozłożenie siły zwarcia w formie oraz jednorodność wysokiego nacisku powierzchniowego.</li>
                             </ul>
                         </div>
                         <div class="component-feature">
-                            <p class="component-feature-title">05. Szeroki rozstaw kolumn (tie bars)</p>
+                            <p class="component-feature-title"><span class="feat-num">05</span>Szeroki rozstaw kolumn (tie bars)</p>
                             <ul class="component-feature-points">
                                 <li>Wyposażona w szeroki zakres form dzięki zwiększonemu rozstawowi kolumn i większym prześwitom w porównaniu do maszyn tej samej klasy.</li>
                             </ul>
@@ -645,28 +643,27 @@
                     </div>
                 </div>
             </article>
-
             <article class="component-item" data-machine-type="TE-A5">
                 <div class="component-photo">
-                    <img src="img/TEA5/teinjection.png" alt="Agregat wtryskowy - TE-A5" loading="lazy">
+                    <img src="img/TEA5/teinjection.jpg" alt="Agregat wtryskowy - TE-A5" width="1100" height="648" loading="lazy" decoding="async">
                 </div>
                 <div class="component-text">
                     <h3>Agregat wtryskowy</h3>
                     <div class="component-feature-list">
                         <div class="component-feature">
-                            <p class="component-feature-title">01. Zwiększona zdolność plastyfikacji</p>
+                            <p class="component-feature-title"><span class="feat-num">01</span>Zwiększona zdolność plastyfikacji</p>
                             <ul class="component-feature-points">
                                 <li>Usprawniona plastyfikacja zapewnia szybkie i równomierne topienie tworzywa.</li>
                             </ul>
                         </div>
                         <div class="component-feature">
-                            <p class="component-feature-title">02. Zwiększona precyzja formowania</p>
+                            <p class="component-feature-title"><span class="feat-num">02</span>Zwiększona precyzja formowania</p>
                             <ul class="component-feature-points">
                                 <li>Zapobiega problemom z równowagą płyty spowodowanym powtarzalnym dotykiem dyszy, poprawiając precyzję formowania.</li>
                             </ul>
                         </div>
                         <div class="component-feature">
-                            <p class="component-feature-title">03. Lepsze wykorzystanie przestrzeni</p>
+                            <p class="component-feature-title"><span class="feat-num">03</span>Lepsze wykorzystanie przestrzeni</p>
                             <ul class="component-feature-points">
                                 <li>Lepsze wykorzystanie przestrzeni dzięki zunifikowanym skrzynkom napędów serwo.</li>
                             </ul>
@@ -674,16 +671,15 @@
                     </div>
                 </div>
             </article>
-
             <article class="component-item" data-machine-type="TE-A5">
                 <div class="component-photo">
-                    <img src="img/TEA5/teimc500.png" alt="Sterownik IMC 500/501 - TE-A5" loading="lazy">
+                    <img src="img/TEA5/teimc500.jpg" alt="Sterownik IMC 500/501 - TE-A5" width="1100" height="648" loading="lazy" decoding="async">
                 </div>
                 <div class="component-text">
                     <h3>Sterownik (IMC 500/501)</h3>
                     <div class="component-feature-list">
                         <div class="component-feature">
-                            <p class="component-feature-title">01. Kompatybilność</p>
+                            <p class="component-feature-title"><span class="feat-num">01</span>Kompatybilność</p>
                             <ul class="component-feature-points">
                                 <li>Windows7 Embedded</li>
                                 <li>OPC-UA (Euromap77)</li>
@@ -692,7 +688,7 @@
                             </ul>
                         </div>
                         <div class="component-feature">
-                            <p class="component-feature-title">02. Specyfikacja</p>
+                            <p class="component-feature-title"><span class="feat-num">02</span>Specyfikacja</p>
                             <ul class="component-feature-points">
                                 <li>Wyświetlacz: 18,5" / 24"</li>
                                 <li>Rozdzielczość: 768 x 1366 / 1080 x 1920</li>
@@ -708,16 +704,15 @@
                     </div>
                 </div>
             </article>
-
             <article class="component-item" data-machine-type="VHA-RS">
                 <div class="component-photo">
-                    <img src="img/VHA-RS/vaintroduction.png" alt="Wprowadzenie do produktu - VHA-RS" loading="lazy">
+                    <img src="img/VHA-RS/vaintroduction.jpg" alt="Wprowadzenie do produktu - VHA-RS" width="1100" height="648" loading="lazy" decoding="async">
                 </div>
                 <div class="component-text">
                     <h3>Wprowadzenie do produktu</h3>
                     <div class="component-feature-list">
                         <div class="component-feature">
-                            <p class="component-feature-title">01. Bezpośredni docisk układu zwarcia</p>
+                            <p class="component-feature-title"><span class="feat-num">01</span>Bezpośredni docisk układu zwarcia</p>
                             <ul class="component-feature-points">
                                 <li>Siła zwarcia generowana przez centralnie umieszczony, zwiększony cylinder ramowy o bezpośrednim docisku.</li>
                                 <li>Precyzyjne ustawienie siły zwarcia poprzez konfigurację ciśnienia.</li>
@@ -725,7 +720,7 @@
                             </ul>
                         </div>
                         <div class="component-feature">
-                            <p class="component-feature-title">02. Stół obrotowy (turntable)</p>
+                            <p class="component-feature-title"><span class="feat-num">02</span>Stół obrotowy (turntable)</p>
                             <ul class="component-feature-points">
                                 <li>System obrotu napędzany silnikiem serwo ze sterowaniem impulsowym (cyfrowym).</li>
                                 <li>Precyzyjna kontrola obrotu i łatwa regulacja prędkości.</li>
@@ -733,20 +728,20 @@
                             </ul>
                         </div>
                         <div class="component-feature">
-                            <p class="component-feature-title">03. Zastosowanie różnych agregatów wtryskowych</p>
+                            <p class="component-feature-title"><span class="feat-num">03</span>Zastosowanie różnych agregatów wtryskowych</p>
                             <ul class="component-feature-points">
                                 <li>Szeroki zakres agregatów wtryskowych możliwych do zastosowania.</li>
                                 <li>Prosta konstrukcja, łatwa konserwacja, niska wysokość agregatu wtryskowego.</li>
                             </ul>
                         </div>
                         <div class="component-feature">
-                            <p class="component-feature-title">04. Pionowy ślimak w linii</p>
+                            <p class="component-feature-title"><span class="feat-num">04</span>Pionowy ślimak w linii</p>
                         </div>
                         <div class="component-feature">
-                            <p class="component-feature-title">05. Wtrysk, sterowanie wielostopniowe oraz zdalna regulacja ciśnienia wstecznego</p>
+                            <p class="component-feature-title"><span class="feat-num">05</span>Wtrysk, sterowanie wielostopniowe oraz zdalna regulacja ciśnienia wstecznego</p>
                         </div>
                         <div class="component-feature">
-                            <p class="component-feature-title">06. Układ hydrauliczny wypychacza / chłodzenie oleju</p>
+                            <p class="component-feature-title"><span class="feat-num">06</span>Układ hydrauliczny wypychacza / chłodzenie oleju</p>
                             <ul class="component-feature-points">
                                 <li>Wielostopniowa regulacja prędkości i ciśnienia wypychacza (podstawowo 2-stopniowa).</li>
                                 <li>Pompa wypychacza zapewnia obieg oleju w celu jego chłodzenia i filtracji.</li>
@@ -755,16 +750,15 @@
                     </div>
                 </div>
             </article>
-
             <article class="component-item" data-machine-type="VHA-RS">
                 <div class="component-photo">
-                    <img src="img/VHA-RS/vaimc400.png" alt="Sterownik IMC 400 - VHA-RS" loading="lazy">
+                    <img src="img/VHA-RS/vaimc400.jpg" alt="Sterownik IMC 400 - VHA-RS" width="1100" height="648" loading="lazy" decoding="async">
                 </div>
                 <div class="component-text">
                     <h3>Sterownik (IMC 400)</h3>
                     <div class="component-feature-list">
                         <div class="component-feature">
-                            <p class="component-feature-title">01. Kompatybilność</p>
+                            <p class="component-feature-title"><span class="feat-num">01</span>Kompatybilność</p>
                             <ul class="component-feature-points">
                                 <li>System czasu rzeczywistego VxWorks</li>
                                 <li>OPC-UA (Euromap77)</li>
@@ -773,7 +767,7 @@
                             </ul>
                         </div>
                         <div class="component-feature">
-                            <p class="component-feature-title">02. Specyfikacja</p>
+                            <p class="component-feature-title"><span class="feat-num">02</span>Specyfikacja</p>
                             <ul class="component-feature-points">
                                 <li>Wyświetlacz: 15"</li>
                                 <li>Rozdzielczość: 768 x 1024</li>
@@ -789,40 +783,39 @@
                     </div>
                 </div>
             </article>
-
             <article class="component-item" data-machine-type="MULTI">
                 <div class="component-photo">
-                    <img src="img/MULTI/clampingmulti.png" alt="Zespół zamykający - MULTI" loading="lazy">
+                    <img src="img/Multi/clampingmulti.jpg" alt="Zespół zamykający - MULTI" width="1100" height="648" loading="lazy" decoding="async">
                 </div>
                 <div class="component-text">
                     <h3>Zespół zamykający</h3>
                     <div class="component-feature-list">
                         <div class="component-feature">
-                            <p class="component-feature-title">01. Szeroki rozstaw kolumn (tie bars)</p>
+                            <p class="component-feature-title"><span class="feat-num">01</span>Szeroki rozstaw kolumn (tie bars)</p>
                             <ul class="component-feature-points">
                                 <li>Konstrukcja dwóch cylindrów wzmacniających zwiększa rozstaw kolumn, umożliwiając zastosowanie szerokiego wyboru form.</li>
                             </ul>
                         </div>
                         <div class="component-feature">
-                            <p class="component-feature-title">02. Montaż cylindra ryglującego i czujnika zbliżeniowego</p>
+                            <p class="component-feature-title"><span class="feat-num">02</span>Montaż cylindra ryglującego i czujnika zbliżeniowego</p>
                             <ul class="component-feature-points">
                                 <li>Poprawiona kontrola pozycji obrotu dzięki zamontowaniu cylindra ryglującego oraz czujnika zbliżeniowego na obrotowej części stołu.</li>
                             </ul>
                         </div>
                         <div class="component-feature">
-                            <p class="component-feature-title">03. Zastosowanie 2 cylindrów wzmacniających</p>
+                            <p class="component-feature-title"><span class="feat-num">03</span>Zastosowanie 2 cylindrów wzmacniających</p>
                             <ul class="component-feature-points">
                                 <li>Konstrukcja docisku bezpośredniego z wykorzystaniem dwóch cylindrów wzmacniających, umieszczonych centralnie pomiędzy dwiema formami, dzięki czemu precyzja wyrobu jest mniej narażona na różnice średniego ciśnienia (powierzchni rzutu) przy formowaniu różnych produktów.</li>
                             </ul>
                         </div>
                         <div class="component-feature">
-                            <p class="component-feature-title">04. Możliwość formowania różnych materiałów</p>
+                            <p class="component-feature-title"><span class="feat-num">04</span>Możliwość formowania różnych materiałów</p>
                             <ul class="component-feature-points">
                                 <li>Możliwość montażu różnych form oraz formowania różnych kolorów i materiałów.</li>
                             </ul>
                         </div>
                         <div class="component-feature">
-                            <p class="component-feature-title">05. Silnik serwo dedykowany wyłącznie do obrotu formy</p>
+                            <p class="component-feature-title"><span class="feat-num">05</span>Silnik serwo dedykowany wyłącznie do obrotu formy</p>
                             <ul class="component-feature-points">
                                 <li>Dedykowany silnik serwo do obrotu formy zwiększa produktywność oraz precyzję formowania dzięki szybkiej prędkości obrotu i dokładnej kontroli pozycji, a zastosowanie pompy serwo poprawia powtarzalność procesu i oszczędność energii.</li>
                             </ul>
@@ -830,28 +823,27 @@
                     </div>
                 </div>
             </article>
-
             <article class="component-item" data-machine-type="MULTI">
                 <div class="component-photo">
-                    <img src="img/MULTI/injectionmulti.png" alt="Agregat wtryskowy - MULTI" loading="lazy">
+                    <img src="img/Multi/injectionmulti.jpg" alt="Agregat wtryskowy - MULTI" width="1100" height="648" loading="lazy" decoding="async">
                 </div>
                 <div class="component-text">
                     <h3>Agregat wtryskowy</h3>
                     <div class="component-feature-list">
                         <div class="component-feature">
-                            <p class="component-feature-title">01. Dwa poziome agregaty wtryskowe</p>
+                            <p class="component-feature-title"><span class="feat-num">01</span>Dwa poziome agregaty wtryskowe</p>
                             <ul class="component-feature-points">
                                 <li>Składa się z dwóch poziomych agregatów wtryskowych, dobranych odpowiednio do charakterystyki i koloru tworzywa.</li>
                             </ul>
                         </div>
                         <div class="component-feature">
-                            <p class="component-feature-title">02. Stabilizowana plastyfikacja</p>
+                            <p class="component-feature-title"><span class="feat-num">02</span>Stabilizowana plastyfikacja</p>
                             <ul class="component-feature-points">
                                 <li>Stabilna plastyfikacja dzięki proporcjonalnej regulacji ciśnienia wstecznego.</li>
                             </ul>
                         </div>
                         <div class="component-feature">
-                            <p class="component-feature-title">03. Łatwa, precyzyjna kontrola</p>
+                            <p class="component-feature-title"><span class="feat-num">03</span>Łatwa, precyzyjna kontrola</p>
                             <ul class="component-feature-points">
                                 <li>Niezależna regulacja pierwszej i drugiej strony ułatwia precyzyjną kontrolę dostosowaną do charakterystyki wyrobu.</li>
                             </ul>
@@ -859,34 +851,33 @@
                     </div>
                 </div>
             </article>
-
             <article class="component-item" data-machine-type="MULTI">
                 <div class="component-photo">
-                    <img src="img/MULTI/hydraulicmulti.png" alt="Układ hydrauliczny - MULTI" loading="lazy">
+                    <img src="img/Multi/hydraulicmulti.jpg" alt="Układ hydrauliczny - MULTI" width="1100" height="648" loading="lazy" decoding="async">
                 </div>
                 <div class="component-text">
                     <h3>Układ hydrauliczny</h3>
                     <div class="component-feature-list">
                         <div class="component-feature">
-                            <p class="component-feature-title">01. Oszczędność energii i zużycia wody chłodzącej</p>
+                            <p class="component-feature-title"><span class="feat-num">01</span>Oszczędność energii i zużycia wody chłodzącej</p>
                             <ul class="component-feature-points">
                                 <li>System pompy serwo redukuje wewnętrzne straty, ograniczając zużycie energii oraz wody chłodzącej.</li>
                             </ul>
                         </div>
                         <div class="component-feature">
-                            <p class="component-feature-title">02. Utrzymanie stałej czystości i temperatury</p>
+                            <p class="component-feature-title"><span class="feat-num">02</span>Utrzymanie stałej czystości i temperatury</p>
                             <ul class="component-feature-points">
                                 <li>Niezależny obieg oleju roboczego utrzymuje stałą czystość i temperaturę (wydłuża żywotność oleju hydraulicznego i poprawia trwałość podzespołów hydraulicznych).</li>
                             </ul>
                         </div>
                         <div class="component-feature">
-                            <p class="component-feature-title">03. Odporność na korozję</p>
+                            <p class="component-feature-title"><span class="feat-num">03</span>Odporność na korozję</p>
                             <ul class="component-feature-points">
                                 <li>Specjalnie powlekany zbiornik oleju zapobiega korozji spowodowanej wilgocią i parami oleju.</li>
                             </ul>
                         </div>
                         <div class="component-feature">
-                            <p class="component-feature-title">04. Zwiększona odporność na korozję</p>
+                            <p class="component-feature-title"><span class="feat-num">04</span>Zwiększona odporność na korozję</p>
                             <ul class="component-feature-points">
                                 <li>Zwiększona czystość wewnętrzna oraz wysoka odporność na korozję dzięki specjalnej powłoce wewnątrz i na zewnątrz bloku hydraulicznego.</li>
                             </ul>
@@ -894,16 +885,15 @@
                     </div>
                 </div>
             </article>
-
             <article class="component-item" data-machine-type="MULTI">
                 <div class="component-photo">
-                    <img src="img/MULTI/imcmulti.png" alt="Sterownik IMC 700 - MULTI" loading="lazy">
+                    <img src="img/Multi/imcmulti.jpg" alt="Sterownik IMC 700 - MULTI" width="1100" height="648" loading="lazy" decoding="async">
                 </div>
                 <div class="component-text">
                     <h3>Sterownik (IMC 700)</h3>
                     <div class="component-feature-list">
                         <div class="component-feature">
-                            <p class="component-feature-title">01. Kompatybilność</p>
+                            <p class="component-feature-title"><span class="feat-num">01</span>Kompatybilność</p>
                             <ul class="component-feature-points">
                                 <li>System operacyjny Embedded Linux</li>
                                 <li>Ethernet 10/100 Mbps</li>
@@ -911,7 +901,7 @@
                             </ul>
                         </div>
                         <div class="component-feature">
-                            <p class="component-feature-title">02. Specyfikacja</p>
+                            <p class="component-feature-title"><span class="feat-num">02</span>Specyfikacja</p>
                             <ul class="component-feature-points">
                                 <li>Wyświetlacz: 15"</li>
                                 <li>Rozdzielczość: 768 x 1024</li>
@@ -927,46 +917,45 @@
                     </div>
                 </div>
             </article>
-
             <article class="component-item" data-machine-type="Super-Foam">
                 <div class="component-photo">
-                    <img src="img/Super Foam/sfclamping.png" alt="Zespół zamykający - Super-Foam" loading="lazy">
+                    <img src="img/Super Foam/sfclamping.jpg" alt="Zespół zamykający - Super-Foam" width="1100" height="648" loading="lazy" decoding="async">
                 </div>
                 <div class="component-text">
                     <h3>Zespół zamykający</h3>
                     <div class="component-feature-list">
                         <div class="component-feature">
-                            <p class="component-feature-title">01. Konstrukcja płyty mocującej</p>
+                            <p class="component-feature-title"><span class="feat-num">01</span>Konstrukcja płyty mocującej</p>
                             <ul class="component-feature-points">
                                 <li>Analiza MES (FEA) minimalizująca ugięcie płyty dzięki projektowi drugiej generacji (ver.2), zwiększająca dopuszczalny ciężar montowanej formy.</li>
                             </ul>
                         </div>
                         <div class="component-feature">
-                            <p class="component-feature-title">02. Maksymalne wykorzystanie przestrzeni</p>
+                            <p class="component-feature-title"><span class="feat-num">02</span>Maksymalne wykorzystanie przestrzeni</p>
                             <ul class="component-feature-points">
                                 <li>Maksymalne wykorzystanie przestrzeni dzięki łatwemu montażowi dużych form w niskich pomieszczeniach i wąskich przestrzeniach (ver.2).</li>
                             </ul>
                         </div>
                         <div class="component-feature">
-                            <p class="component-feature-title">03. Zwiększona trwałość</p>
+                            <p class="component-feature-title"><span class="feat-num">03</span>Zwiększona trwałość</p>
                             <ul class="component-feature-points">
                                 <li>Zastosowanie kolumn (tie bars) oraz śrub w kształcie litery U zwiększa trwałość dzięki rozproszeniu naprężeń.</li>
                             </ul>
                         </div>
                         <div class="component-feature">
-                            <p class="component-feature-title">04. Skrócenie czasu cyklu</p>
+                            <p class="component-feature-title"><span class="feat-num">04</span>Skrócenie czasu cyklu</p>
                             <ul class="component-feature-points">
                                 <li>Zsynchronizowany system sterowania ryglowaniem półnakrętkowym (half-nut) skracający czas cyklu.</li>
                             </ul>
                         </div>
                         <div class="component-feature">
-                            <p class="component-feature-title">05. Precyzja pozycjonowania</p>
+                            <p class="component-feature-title"><span class="feat-num">05</span>Precyzja pozycjonowania</p>
                             <ul class="component-feature-points">
                                 <li>Zastosowanie szybkoreagującego zaworu proporcjonalnego w części przeniesienia objętościowego zwiększające precyzję pozycjonowania.</li>
                             </ul>
                         </div>
                         <div class="component-feature">
-                            <p class="component-feature-title">06. Niezawodne działanie przełączania</p>
+                            <p class="component-feature-title"><span class="feat-num">06</span>Niezawodne działanie przełączania</p>
                             <ul class="component-feature-points">
                                 <li>Elastyczna konfiguracja cylindrów otwierania i zamykania (lewy/prawy) zapewniająca stabilne działanie otwierania i zamykania.</li>
                             </ul>
@@ -974,34 +963,33 @@
                     </div>
                 </div>
             </article>
-
             <article class="component-item" data-machine-type="Super-Foam">
                 <div class="component-photo">
-                    <img src="img/Super Foam/sfinjection.png" alt="Agregat wtryskowy - Super-Foam" loading="lazy">
+                    <img src="img/Super Foam/sfinjection.jpg" alt="Agregat wtryskowy - Super-Foam" width="1100" height="648" loading="lazy" decoding="async">
                 </div>
                 <div class="component-text">
                     <h3>Agregat wtryskowy</h3>
                     <div class="component-feature-list">
                         <div class="component-feature">
-                            <p class="component-feature-title">01. Regulacja ciśnienia wstecznego w pętli zamkniętej</p>
+                            <p class="component-feature-title"><span class="feat-num">01</span>Regulacja ciśnienia wstecznego w pętli zamkniętej</p>
                             <ul class="component-feature-points">
                                 <li>Ustawione przez użytkownika ciśnienie wsteczne pozostaje stałe dzięki regulacji w pętli zamkniętej (closed-loop).</li>
                             </ul>
                         </div>
                         <div class="component-feature">
-                            <p class="component-feature-title">02. Poprawiona precyzja formowania</p>
+                            <p class="component-feature-title"><span class="feat-num">02</span>Poprawiona precyzja formowania</p>
                             <ul class="component-feature-points">
                                 <li>Zapobiega problemom równowagi płyty spowodowanym powtarzalnym dotykiem dyszy (nozzle touch), poprawiając precyzję formowania.</li>
                             </ul>
                         </div>
                         <div class="component-feature">
-                            <p class="component-feature-title">03. Łatwe zarządzanie ślimakiem i cylindrem</p>
+                            <p class="component-feature-title"><span class="feat-num">03</span>Łatwe zarządzanie ślimakiem i cylindrem</p>
                             <ul class="component-feature-points">
                                 <li>Łatwa wymiana i zarządzanie ślimakiem oraz cylindrem (dla maszyn poniżej 1300 ton).</li>
                             </ul>
                         </div>
                         <div class="component-feature">
-                            <p class="component-feature-title">04. Oszczędność energii</p>
+                            <p class="component-feature-title"><span class="feat-num">04</span>Oszczędność energii</p>
                             <ul class="component-feature-points">
                                 <li>Oszczędność energii dzięki utrzymaniu równoległości i redukcji tarcia poprzez zastosowanie prowadnic liniowych (LM guides) w łożu wtrysku oraz elementach dozujących.</li>
                             </ul>
@@ -1009,35 +997,34 @@
                     </div>
                 </div>
             </article>
-
             <article class="component-item" data-machine-type="Super-Foam">
                 <div class="component-photo">
-                    <img src="img/Super Foam/sfhydraulic.png" alt="Układ hydrauliczny - Super-Foam" loading="lazy">
+                    <img src="img/Super Foam/sfhydraulic.jpg" alt="Układ hydrauliczny - Super-Foam" width="1100" height="648" loading="lazy" decoding="async">
                 </div>
                 <div class="component-text">
                     <h3>Układ hydrauliczny</h3>
                     <div class="component-feature-list">
                         <div class="component-feature">
-                            <p class="component-feature-title">01. Specjalna powłoka zbiornika oleju</p>
+                            <p class="component-feature-title"><span class="feat-num">01</span>Specjalna powłoka zbiornika oleju</p>
                             <ul class="component-feature-points">
                                 <li>Poprawiona czystość wewnętrzna dzięki specjalnej powłoce wewnątrz i na zewnątrz bloku hydraulicznego.</li>
                                 <li>Specjalnie powlekany zbiornik oleju zapobiega korozji spowodowanej wilgocią i powstawaniem par oleju.</li>
                             </ul>
                         </div>
                         <div class="component-feature">
-                            <p class="component-feature-title">02. Niezależny obieg oleju roboczego</p>
+                            <p class="component-feature-title"><span class="feat-num">02</span>Niezależny obieg oleju roboczego</p>
                             <ul class="component-feature-points">
                                 <li>Utrzymanie stałej czystości i temperatury dzięki niezależnemu obiegowi oleju roboczego (wydłuża żywotność oleju hydraulicznego i poprawia trwałość podzespołów hydraulicznych).</li>
                             </ul>
                         </div>
                         <div class="component-feature">
-                            <p class="component-feature-title">03. Zapobieganie wyciekom przewodów hydraulicznych</p>
+                            <p class="component-feature-title"><span class="feat-num">03</span>Zapobieganie wyciekom przewodów hydraulicznych</p>
                             <ul class="component-feature-points">
                                 <li>Bezszwowe przewody, rury rozprężne oraz połączenia EO2FORM odporne na wysokie ciśnienie i wibracje, zapobiegające wyciekom i uszkodzeniom.</li>
                             </ul>
                         </div>
                         <div class="component-feature">
-                            <p class="component-feature-title">04. Redukcja zużycia energii i wody chłodzącej</p>
+                            <p class="component-feature-title"><span class="feat-num">04</span>Redukcja zużycia energii i wody chłodzącej</p>
                             <ul class="component-feature-points">
                                 <li>System pompy serwo redukuje wewnętrzne straty, ograniczając zużycie energii oraz wody chłodzącej.</li>
                             </ul>
@@ -1045,82 +1032,72 @@
                     </div>
                 </div>
             </article>
-
         </div>
-
-    </div>
-</section>
-
-
-<!-- ================= FOOTER ================= -->
-<footer class="site-footer">
-    <div class="container">
-        <div class="footer-top">
-            <div class="footer-logo">
-                <img src="img/logo-white.png" alt="Woojin Plaimm" class="footer-logo-image">
             </div>
+        </section>
 
-            <div class="footer-column">
-                <h4>Firma</h4>
-                <a href="index.html">O nas</a>
-                <a href="kariera.html">Kariera</a>
+        <!-- ================= CTA ================= -->
+        <section class="cta-band" data-header-theme="dark" aria-labelledby="ctaTitle">
+            <div class="container cta-band-inner">
+                <div>
+                    <p class="eyebrow eyebrow--light" data-reveal>Dobór maszyny</p>
+                    <h2 id="ctaTitle" data-reveal>Nie wiesz, którą serię wybrać?</h2>
+                    <p data-reveal>Skorzystaj z konfiguratora online — na podstawie danych formy i wypraski dobierzemy odpowiedni model i agregat wtryskowy.</p>
+                </div>
+                <div class="cta-band-actions" data-reveal>
+                    <a href="konfigurator.html" class="btn btn--primary btn--lg" data-magnetic>
+                        Otwórz konfigurator
+                        <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+                    </a>
+                    <a href="kontakt.html" class="btn btn--glass btn--lg">Porozmawiaj z doradcą</a>
+                </div>
             </div>
+        </section>
+    </main>
 
-            <div class="footer-column">
-                <h4>Produkty</h4>
-                <a href="maszyny.html">Maszyny</a>
-                <a href="konfigurator.html">Konfigurator</a>
+    <!-- ================= STOPKA ================= -->
+    <footer class="site-footer" data-header-theme="dark">
+        <div class="container">
+            <div class="footer-top">
+                <div class="footer-brand">
+                    <img src="img/logo-white.png" alt="WOOJIN PLAIMM" class="footer-logo-image" width="500" height="224" loading="lazy">
+                    <p class="footer-about">Przedstawicielstwo WOOJIN PLAIMM w Polsce — sprzedaż, doradztwo techniczne i serwis wtryskarek do tworzyw sztucznych.</p>
+                </div>
+                <div class="footer-column">
+                    <h4>Firma</h4>
+                    <ul role="list">
+                        <li><a href="index.html">O nas</a></li>
+                        <li><a href="kariera.html">Kariera</a></li>
+                        <li><a href="https://woojinplaimm.com/?lang_code=en" target="_blank" rel="noopener noreferrer">Woojin Global ↗</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h4>Produkty</h4>
+                    <ul role="list">
+                        <li><a href="maszyny.html">Maszyny</a></li>
+                        <li><a href="konfigurator.html">Konfigurator</a></li>
+                        <li><a href="index.html#te3dSection">TE-A5 w 3D</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column footer-contact">
+                    <h4>Kontakt</h4>
+                    <ul role="list">
+                        <li><strong>Adres</strong>ul. Hutnicza 6, 40-241 Katowice</li>
+                        <li><strong>Telefon</strong><a href="tel:+48510440661">+48 510 440 661</a></li>
+                        <li><strong>E-mail</strong><a href="mailto:ploffice@wjpim.com">ploffice@wjpim.com</a></li>
+                        <li><a href="kontakt.html#serwis">Serwis →</a></li>
+                    </ul>
+                </div>
             </div>
-
-            <div class="footer-column">
-                <h4>Obsługa klienta</h4>
-                <a href="kontakt.html">Kontakt</a>
-                <a href="kontakt.html">Serwis</a>
+            <div class="footer-bottom">
+                <p>© <span data-year>2026</span> WOOJIN PLAIMM Co., Ltd.</p>
+                <div class="footer-links">
+                    <a href="privacy.html">Polityka prywatności</a>
+                    <a href="cookies.html">Polityka cookie</a>
+                </div>
             </div>
         </div>
-
-        <div class="footer-bottom">
-            <p>© 2026 WOOJIN PLAIMM Co., Ltd.</p>
-            <div class="footer-links">
-                <a href="privacy.html">Polityka prywatności</a>
-                <a href="cookies.html">Polityka cookie</a>
-            </div>
-        </div>
-    </div>
-</footer>
-
-    <!-- ================= SCRIPTS ================= -->
-
-    <script>
-        const header = document.querySelector('.site-header');
-        const logo = document.querySelector('.logo-image');
-        const navToggle = document.querySelector('.nav-toggle');
-        const mainNav = document.querySelector('.main-nav');
-
-        window.addEventListener('scroll', function () {
-            if (window.scrollY > 50) {
-                header.classList.add('scrolled');
-                logo.src = 'img/logo-black.png';
-            } else {
-                header.classList.remove('scrolled');
-                logo.src = 'img/logo-white.png';
-            }
-        });
-
-        if (navToggle && mainNav) {
-            navToggle.addEventListener('click', function () {
-                const isOpen = mainNav.classList.toggle('is-open');
-                navToggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
-            });
-
-            mainNav.querySelectorAll('a').forEach(function (link) {
-                link.addEventListener('click', function () {
-                    mainNav.classList.remove('is-open');
-                    navToggle.setAttribute('aria-expanded', 'false');
-                });
-            });
-        }
-    </script>
-
+        <span class="footer-watermark" aria-hidden="true">WOOJIN</span>
+    </footer>
 </body>
 </html>

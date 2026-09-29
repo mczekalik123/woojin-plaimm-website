@@ -2,46 +2,65 @@
 <html lang="pl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Konfigurator wtryskarki online | WOOJIN PLAIMM Polska</title>
+    <meta name="description" content="Dobierz wtryskarkę WOOJIN PLAIMM online: podaj dane formy i wypraski lub wybierz model z listy, skonfiguruj wyposażenie, pobierz PDF i wyślij zapytanie.">
+    <meta name="theme-color" content="#0a0e13">
+    <meta property="og:type" content="website">
+    <meta property="og:locale" content="pl_PL">
+    <meta property="og:title" content="Konfigurator wtryskarki – WOOJIN PLAIMM">
+    <meta property="og:image" content="img/opt/series-te.jpg">
 
-    <title>WOOJIN PLAIMM - Przedstawicielstwo w Polsce</title>
+    <link rel="icon" type="image/png" sizes="32x32" href="img/opt/favicon-32.png">
+    <link rel="icon" type="image/png" sizes="64x64" href="img/opt/favicon-64.png">
+    <link rel="apple-touch-icon" href="img/opt/apple-touch-icon.png">
 
-    <!-- Google Fonts: Lato -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700;900&display=swap" rel="stylesheet">
-
+    <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,300..900&display=swap">
     <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="css/configurator.css">
 
-    <!-- Biblioteki konfiguratora: generowanie PDF oraz wysyłka e-mail bez pośrednictwa klienta pocztowego -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
-
-    <script src="script.js" defer></script>
+    <script>document.documentElement.classList.add('js');setTimeout(function(){if(!window.WJ||!window.WJ.ready)document.documentElement.classList.add('no-anim');},3000);</script>
+    <!-- Wysyłka e-mail bez klienta pocztowego (EmailJS). Biblioteka PDF (jsPDF)
+         wczytywana jest dopiero po kliknięciu "Pobierz PDF" - patrz js/configurator.js -->
+    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js" defer></script>
+    <script src="js/main.js" defer></script>
+    <script src="js/configurator.js" defer></script>
 </head>
 
 <body>
-
-    <!-- ================= HEADER ================= -->
+    <a class="skip-link" href="#main">Przejdź do treści</a>
+    <div class="scroll-progress" aria-hidden="true"><span></span></div>
 
     <header class="site-header">
         <div class="header-inner">
-            <a href="index.html" class="logo">
-                <img src="img/logo-white.png" alt="Woojin Plaimm" class="logo-image">
+            <a href="index.html" class="logo" aria-label="WOOJIN PLAIMM – strona główna">
+                <img src="img/logo-white.png" alt="" class="logo-img logo-img--light" width="500" height="224">
+                <img src="img/logo-black.png" alt="" class="logo-img logo-img--dark" width="500" height="224">
             </a>
 
-            <nav class="main-nav">
-                <a href="index.html" class="active">O NAS</a>
-                <a href="maszyny.html">MASZYNY</a>
-                <a href="konfigurator.html">KONFIGURATOR</a>
-                <a href="kariera.html">KARIERA</a>
-                <a href="kontakt.html">KONTAKT</a>
-                <!-- Nowy przycisk WOOJIN GLOBAL -->
-    <a href="https://woojinplaimm.com/?lang_code=en" target="_blank" class="nav-global">WOOJIN GLOBAL</a>
-</nav>
+            <nav class="main-nav" id="mainNav" aria-label="Nawigacja główna">
+                <ul class="nav-list" role="list">
+                    <li><a href="index.html" class="nav-link"><span class="nav-num">01</span><span class="nav-text">O nas</span></a></li>
+                    <li><a href="maszyny.html" class="nav-link"><span class="nav-num">02</span><span class="nav-text">Maszyny</span></a></li>
+                    <li><a href="konfigurator.html" class="nav-link" aria-current="page"><span class="nav-num">03</span><span class="nav-text">Konfigurator</span></a></li>
+                    <li><a href="kariera.html" class="nav-link"><span class="nav-num">04</span><span class="nav-text">Kariera</span></a></li>
+                    <li><a href="kontakt.html" class="nav-link"><span class="nav-num">05</span><span class="nav-text">Kontakt</span></a></li>
+                </ul>
+                <a href="https://woojinplaimm.com/?lang_code=en" target="_blank" rel="noopener noreferrer" class="nav-global">
+                    Woojin Global
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17L17 7M8 7h9v9"/></svg>
+                </a>
+                <div class="nav-mobile-footer">
+                    <span>ul. Hutnicza 6, 40-241 Katowice</span>
+                    <a href="tel:+48510440661">+48 510 440 661</a>
+                    <a href="mailto:ploffice@wjpim.com">ploffice@wjpim.com</a>
+                </div>
             </nav>
 
-            <button type="button" class="nav-toggle" id="navToggle" aria-label="Otwórz menu" aria-expanded="false">
+            <button type="button" class="nav-toggle" aria-controls="mainNav" aria-label="Otwórz menu" aria-expanded="false">
                 <span class="nav-toggle-bar"></span>
                 <span class="nav-toggle-bar"></span>
                 <span class="nav-toggle-bar"></span>
@@ -49,371 +68,345 @@
         </div>
     </header>
 
-    <!-- ================= MAIN CONTENT ================= -->
 
-   <main class="machine-selector">
-    <div class="hero-wrapper">
-        <section class="hero-selector">
-            <div class="container">
-                <span class="eyebrow">WOOJIN PLAIMM · A5 SERIES</span>
-                <h1>Dobór wtryskarki</h1>
-                <p>Wprowadź najważniejsze dane technologiczne, aby otrzymać rekomendowane konfiguracje wtryskarek zgodnych z katalogiem.</p>
-                <p class="disclaimer">* Niniejszy konfigurator ma charakter wyłącznie poglądowy, nie stanowi oferty handlowej i nie może stanowić podstawy do jakichkolwiek roszczeń kupującego.</p>
+
+    <main id="main" class="machine-selector">
+
+        <!-- ================= HERO ================= -->
+        <section class="page-hero" data-header-theme="dark">
+            <div class="page-hero-bg" aria-hidden="true"><span class="orb orb--1"></span><span class="orb orb--2"></span></div>
+            <div class="container page-hero-inner">
+                <nav class="breadcrumbs fade-up" style="--delay:.05s" aria-label="Ścieżka nawigacji">
+                    <a href="index.html">Strona główna</a><span aria-hidden="true">/</span><span aria-current="page">Konfigurator</span>
+                </nav>
+                <p class="eyebrow eyebrow--light fade-up" style="--delay:.12s">WOOJIN PLAIMM · A5 Series</p>
+                <h1 class="page-title"><span class="line"><span class="line-inner" style="--i:0">Dobór wtryskarki</span></span></h1>
+                <p class="page-lead fade-up" style="--delay:.45s">Wprowadź najważniejsze dane technologiczne lub wybierz model z listy, aby otrzymać rekomendowaną konfigurację wtryskarki zgodną z katalogiem.</p>
+                <p class="disclaimer fade-up" style="--delay:.6s">* Niniejszy konfigurator ma charakter wyłącznie poglądowy, nie stanowi oferty handlowej i nie może stanowić podstawy do jakichkolwiek roszczeń kupującego.</p>
             </div>
         </section>
-    </div>
 
-    <div class="configurator-container">
+        <section class="cfg-section" aria-label="Konfigurator">
+            <div class="configurator-container" id="configurator">
 
-        <div class="progress-bar-container">
-            <div class="progress-bar" id="progressBar"></div>
-        </div>
-
-        <!-- ============ KROK 1: WYBÓR MASZYNY ============ -->
-        <div class="step-content active" id="step1">
-            <h2>Krok 1: Wybór rodzaju wtryskarki</h2>
-            <div class="step1-layout" id="step1Layout">
-
-                <div class="machine-cards-list">
-
-                    <label class="machine-card">
-                        <input type="radio" name="machine_type" value="DL-A5" checked>
-                        <div class="card-body">
-                            <h3>DL-A5 <span style="color:#111; font-weight:400;">(450~4300 ton)</span></h3>
-                            <span class="sub">System Dual Lock</span>
-                        </div>
-                    </label>
-
-                    <label class="machine-card">
-                        <input type="radio" name="machine_type" value="TH-A5">
-                        <div class="card-body">
-                            <h3>TH-A5 <span style="color:#111; font-weight:400;">(130~480 ton)</span></h3>
-                            <span class="sub">Maszyna hydrauliczna</span>
-                        </div>
-                    </label>
-
-                    <label class="machine-card">
-                        <input type="radio" name="machine_type" value="TE-A5">
-                        <div class="card-body">
-                            <h3>TE-A5 <span style="color:#111; font-weight:400;">(50~850 ton)</span></h3>
-                            <span class="sub">Maszyna elektryczna</span>
-                        </div>
-                    </label>
-
-                    <label class="machine-card">
-                        <input type="radio" name="machine_type" value="TL-A5">
-                        <div class="card-body">
-                            <h3>TL-A5 <span style="color:#111; font-weight:400;">(220~400 ton)</span></h3>
-                            <span class="sub">Bezkolumnowy układ zwarcia</span>
-                        </div>
-                    </label>
-
-                    <label class="machine-card">
-                        <input type="radio" name="machine_type" value="VHA-RS">
-                        <div class="card-body">
-                            <h3>VHA-RS <span style="color:#111; font-weight:400;">(50~200 ton)</span></h3>
-                            <span class="sub">Wtryskarka pionowa</span>
-                        </div>
-                    </label>
-
-                    <label class="machine-card">
-                        <input type="radio" name="machine_type" value="MULTI">
-                        <div class="card-body">
-                            <h3>MULTI <span style="color:#111; font-weight:400;">(130~220 ton)</span></h3>
-                            <span class="sub">Maszyna dwukolorowa</span>
-                        </div>
-                    </label>
-
-                    <label class="machine-card">
-                        <input type="radio" name="machine_type" value="Super-Foam">
-                        <div class="card-body">
-                            <h3>Super-Foam <span style="color:#111; font-weight:400;">(1800~3300 ton)</span></h3>
-                            <span class="sub">Technologia super spieniania</span>
-                        </div>
-                    </label>
-
+                <!-- Wskaźnik kroków (aktualizowany w js/configurator.js - updateCfgStepper) -->
+                <ol class="cfg-stepper" id="cfgStepper" role="list" aria-label="Postęp konfiguracji">
+                    <li class="is-active" data-step="1"><span class="cfg-step-dot">1</span><span class="cfg-step-label">Typ maszyny</span></li>
+                    <li data-step="2"><span class="cfg-step-dot">2</span><span class="cfg-step-label">Dobór modelu</span></li>
+                    <li data-step="3"><span class="cfg-step-dot">3</span><span class="cfg-step-label">Wyposażenie</span></li>
+                    <li data-step="4"><span class="cfg-step-dot">4</span><span class="cfg-step-label">Podsumowanie</span></li>
+                </ol>
+                <div class="progress-bar-container" aria-hidden="true">
+                    <div class="progress-bar" id="progressBar"></div>
                 </div>
 
-                <!-- Podgląd widoku 360° wybranego typu wtryskarki - nad widokiem
-                     nazwa modelu (duża czcionka) oraz opis przeniesiony z kafelka
-                     po lewej. Ten sam mechanizm obracania (przeciąganie/suwak)
-                     oraz efekt lupy na komputerach, co na podstronie "Maszyny". -->
-                <div class="step1-viewer" id="step1Viewer">
-                    <h3 class="step1-viewer-name" id="step1ViewerName">DL-A5</h3>
-                    <p class="step1-viewer-desc" id="step1ViewerDesc">Premium, energooszczędna wtryskarka dwupłytowa z systemem podwójnego ryglowania (Dual Lock) — do dużych, precyzyjnych wyprasek wymagających wysokiej siły zwarcia.</p>
+                <!-- ============ KROK 1: WYBÓR MASZYNY ============ -->
+                <div class="step-content active" id="step1">
+                    <h2>Krok 1: Wybór rodzaju wtryskarki</h2>
+                    <div class="step1-layout" id="step1Layout">
 
-                    <div class="viewer360-stage" id="cfgViewer360Stage">
-                        <img id="cfgViewer360Image" src="img/360-DL/1.png" alt="Widok 360° wtryskarki WOOJIN PLAIMM" draggable="false">
-                        <div class="cfg-viewer360-hand" id="cfgViewer360Hand" aria-hidden="true">
-                            <span class="cfg-viewer360-hand-open">🖐️</span>
-                            <span class="cfg-viewer360-hand-fist">✊</span>
+                        <fieldset class="machine-cards-list">
+                            <legend class="visually-hidden">Rodzaj wtryskarki</legend>
+
+                            <label class="machine-card">
+                                <input type="radio" name="machine_type" value="DL-A5" checked>
+                                <span class="card-body">
+                                    <span class="card-title">DL-A5 <span class="card-range">450–4300 t</span></span>
+                                    <span class="sub">System Dual Lock</span>
+                                </span>
+                            </label>
+
+                            <label class="machine-card">
+                                <input type="radio" name="machine_type" value="TH-A5">
+                                <span class="card-body">
+                                    <span class="card-title">TH-A5 <span class="card-range">130–480 t</span></span>
+                                    <span class="sub">Maszyna hydrauliczna</span>
+                                </span>
+                            </label>
+
+                            <label class="machine-card">
+                                <input type="radio" name="machine_type" value="TE-A5">
+                                <span class="card-body">
+                                    <span class="card-title">TE-A5 <span class="card-range">50–850 t</span></span>
+                                    <span class="sub">Maszyna elektryczna</span>
+                                </span>
+                            </label>
+
+                            <label class="machine-card">
+                                <input type="radio" name="machine_type" value="TL-A5">
+                                <span class="card-body">
+                                    <span class="card-title">TL-A5 <span class="card-range">220–400 t</span></span>
+                                    <span class="sub">Bezkolumnowy układ zwarcia</span>
+                                </span>
+                            </label>
+
+                            <label class="machine-card">
+                                <input type="radio" name="machine_type" value="VHA-RS">
+                                <span class="card-body">
+                                    <span class="card-title">VHA-RS <span class="card-range">50–200 t</span></span>
+                                    <span class="sub">Wtryskarka pionowa</span>
+                                </span>
+                            </label>
+
+                            <label class="machine-card">
+                                <input type="radio" name="machine_type" value="MULTI">
+                                <span class="card-body">
+                                    <span class="card-title">MULTI <span class="card-range">130–220 t</span></span>
+                                    <span class="sub">Maszyna dwukolorowa</span>
+                                </span>
+                            </label>
+
+                            <label class="machine-card">
+                                <input type="radio" name="machine_type" value="Super-Foam">
+                                <span class="card-body">
+                                    <span class="card-title">Super-Foam <span class="card-range">1800–3300 t</span></span>
+                                    <span class="sub">Technologia super spieniania</span>
+                                </span>
+                            </label>
+                        </fieldset>
+
+                        <!-- Podgląd 360° wybranego typu (js/configurator.js - initConfiguratorViewer360) -->
+                        <div class="step1-viewer" id="step1Viewer">
+                            <h3 class="step1-viewer-name" id="step1ViewerName">DL-A5</h3>
+                            <p class="step1-viewer-desc" id="step1ViewerDesc">Premium, energooszczędna wtryskarka dwupłytowa z systemem podwójnego ryglowania (Dual Lock) — do dużych, precyzyjnych wyprasek wymagających wysokiej siły zwarcia.</p>
+
+                            <div class="viewer360-stage" id="cfgViewer360Stage">
+                                <img id="cfgViewer360Image" src="img/360-DL/1.jpg" alt="Widok 360° wtryskarki WOOJIN PLAIMM" width="932" height="351" draggable="false">
+                                <div class="cfg-viewer360-hand" id="cfgViewer360Hand" aria-hidden="true">
+                                    <span class="cfg-viewer360-hand-open">🖐️</span>
+                                    <span class="cfg-viewer360-hand-fist">✊</span>
+                                </div>
+                                <div class="viewer360-unavailable" id="cfgViewer360Unavailable">Widok 360° dla tego typu będzie dostępny wkrótce</div>
+                            </div>
+
+                            <div class="viewer360-slider-row">
+                                <input type="range" class="viewer360-slider" id="cfgViewer360Slider" min="1" max="37" step="1" value="1" aria-label="Przesuń, aby obrócić widok 360°">
+                            </div>
                         </div>
-                                    <div class="viewer360-unavailable" id="cfgViewer360Unavailable">Widok 360° dla tego typu będzie dostępny wkrótce</div>
                     </div>
 
-                    <div class="viewer360-slider-row">
-                        <input type="range" class="viewer360-slider" id="cfgViewer360Slider" min="1" max="37" step="1" value="1" aria-label="Przesuń, aby obrócić widok 360°">
+                    <!-- Informacja dla serii bez doboru online (VHA-RS, MULTI, Super-Foam) -->
+                    <div class="cfg-notice" id="step1Notice" role="status" aria-live="polite" hidden></div>
+
+                    <div class="btn-group">
+                        <span></span>
+                        <div class="step1-next-choice">
+                            <button type="button" class="btn-next" onclick="nextStep(2, 'tech')">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="3" width="14" height="18" rx="2"/><path d="M8 7h8M8 11h2M12 11h2M16 11h0M8 15h2M12 15h2M8 18h2M12 18h4"/></svg>
+                                Kalkulator
+                            </button>
+                            <span class="step1-next-or">lub</span>
+                            <button type="button" class="btn-next" onclick="nextStep(2, 'list')">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/></svg>
+                                Wybierz z listy
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ============ KROK 2: SPOSÓB DOBORU WTRYSKARKI ============ -->
+                <div class="step-content" id="step2">
+
+                    <!-- Ścieżka A: dane technologiczne - okna kalkulatora budowane w js
+                         (buildStep2TechPath / addStep2TechBlock / renderStep2TechInlineSpec) -->
+                    <div id="step2TechPath" class="step2-subview" style="display:none;">
+                        <h2>Krok 2: Najważniejsze dane technologiczne</h2>
+
+                        <div class="step2-tech-layout">
+                            <div class="step2-tech-blocks" id="step2TechBlocks"></div>
+                        </div>
+
+                        <div id="step2TechNavError" class="calc-error" style="display:none;"></div>
+
+                        <div class="btn-group">
+                            <button type="button" class="btn-prev" onclick="nextStep(1)">← Wstecz</button>
+                            <button type="button" class="btn-next" onclick="nextStep(3)">Dalej →</button>
+                        </div>
+                    </div>
+
+                    <!-- Ścieżka B: wybór z listy -->
+                    <div id="step2ListPath" class="step2-subview" style="display:none;">
+                        <h2>Krok 2: Proszę wybrać z listy</h2>
+
+                        <div class="step2-list-layout">
+                            <div class="step2-list-items" id="step2ListItems"></div>
+                            <div class="step2-list-specs" id="step2ListSpecs">
+                                <p class="step2-list-specs-placeholder">Wybierz wtryskarkę z listy<span class="step2-desktop-only-text"> po lewej</span>, aby zobaczyć jej najważniejsze dane.</p>
+                            </div>
+                            <div class="step2-units-flyout" id="step2UnitsFlyout"></div>
+                        </div>
+
+                        <div id="step2ListError" class="calc-error" style="display:none;"></div>
+
+                        <div class="btn-group">
+                            <button type="button" class="btn-prev" onclick="nextStep(1)">← Wstecz</button>
+                            <button type="button" class="btn-next" onclick="nextStep(3)">Dalej →</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ============ KROK 3: WYPOSAŻENIE I OPCJE ============ -->
+                <div class="step-content" id="step3">
+                    <h2>Krok 3: Wyposażenie standardowe i opcje dodatkowe</h2>
+
+                    <h3>Wyposażenie standardowe: <span class="step3-std-machines-list" id="step3StdMachinesList"></span></h3>
+                    <p class="cfg-hint">Najedź kursorem (lub dotknij) pozycji, aby zobaczyć jej polskie tłumaczenie.</p>
+                    <div class="options-columns-grid">
+                        <div class="option-col">
+                            <h4>Wtrysk</h4>
+                            <ul id="std_injection_unit"></ul>
+                        </div>
+                        <div class="option-col">
+                            <h4>Zwarcie</h4>
+                            <ul id="std_clamping_unit"></ul>
+                        </div>
+                        <div class="option-col">
+                            <h4>Ogólne</h4>
+                            <ul id="std_general"></ul>
+                        </div>
+                    </div>
+
+                    <hr class="divider">
+
+                    <h3>Opcje dodatkowe (do wyboru):</h3>
+                    <!-- Jeden blok na każdą wybraną wtryskarkę (renderStep3OptionsContainer) -->
+                    <div id="step3OptionsContainer"></div>
+
+                    <!-- Wspólny dymek z polskim tłumaczeniem pozycji (showStep3OptionTooltip) -->
+                    <div class="step3-option-tooltip" id="step3OptionTooltip" role="tooltip"></div>
+
+                    <div class="btn-group">
+                        <button type="button" class="btn-prev" onclick="nextStep(2)">← Wstecz</button>
+                        <button type="button" class="btn-next" onclick="nextStep(4)">Dalej →</button>
+                    </div>
+                </div>
+
+                <!-- ============ KROK 4: PODSUMOWANIE I WYSYŁKA ============ -->
+                <div class="step-content" id="step4">
+                    <h2>Krok 4: Podsumowanie konfiguracji</h2>
+
+                    <!-- Wypełniane w populateStep4Summary -->
+                    <div class="summary-box" id="summaryView"></div>
+
+                    <h3>Dane kontaktowe</h3>
+                    <div class="form-grid-2col">
+                        <div class="form-group">
+                            <label for="client_firstname">Imię <span class="required-star">*</span></label>
+                            <input type="text" id="client_firstname" autocomplete="given-name">
+                        </div>
+                        <div class="form-group">
+                            <label for="client_lastname">Nazwisko <span class="required-star">*</span></label>
+                            <input type="text" id="client_lastname" autocomplete="family-name">
+                        </div>
+                        <div class="form-group">
+                            <label for="client_email">Adres e-mail <span class="required-star">*</span></label>
+                            <input type="email" id="client_email" autocomplete="email">
+                        </div>
+                        <div class="form-group">
+                            <label for="client_phone">Nr telefonu</label>
+                            <input type="tel" id="client_phone" autocomplete="tel">
+                        </div>
+                        <div class="form-group">
+                            <label for="client_company">Nazwa firmy</label>
+                            <input type="text" id="client_company" autocomplete="organization">
+                        </div>
+                        <div class="form-group">
+                            <label for="client_address">Adres</label>
+                            <input type="text" id="client_address" autocomplete="street-address">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="client_comment">Dodatkowy komentarz</label>
+                        <textarea id="client_comment" rows="4" placeholder="Miejsce na dodatkowe uwagi…"></textarea>
+                    </div>
+
+                    <!-- Honeypot: pole ukryte poza ekranem - wypełniają je tylko boty -->
+                    <div class="hp-field-wrap" aria-hidden="true">
+                        <label for="config_hp">Zostaw to pole puste</label>
+                        <input type="text" id="config_hp" name="website" tabindex="-1" autocomplete="off">
+                    </div>
+
+                    <div class="form-group">
+                        <button type="button" class="human-check-btn" id="humanCheckBtnConfig" aria-pressed="false">
+                            <span class="human-check-box" aria-hidden="true"></span>
+                            <span class="human-check-label">Potwierdzam, że nie jestem robotem</span>
+                        </button>
+                    </div>
+
+                    <div class="action-calc-bar cfg-actions">
+                        <button type="button" class="btn btn--red btn--lg" id="pdfBtn" onclick="generatePDF()">
+                            <svg class="btn-icon btn-icon--down" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v12M6 10l6 6 6-6M5 20h14"/></svg>
+                            <span class="btn-label">Pobierz PDF</span>
+                        </button>
+                        <button type="button" class="btn btn--primary btn--lg" id="sendBtn" onclick="requestSendEmail()">
+                            Wyślij konfigurację
+                            <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12l16-8-6 16-2.5-6.5z"/></svg>
+                        </button>
+                    </div>
+
+                    <div class="confirm-box" id="confirmSendBox" style="display:none;">
+                        <p>Czy na pewno chcesz wysłać tę konfigurację? Możesz jeszcze poprawić dane w formularzu powyżej.</p>
+                        <div class="btn-group confirm-actions">
+                            <button type="button" class="btn btn--outline btn--sm" onclick="cancelSendEmail()">Popraw dane</button>
+                            <button type="button" class="btn btn--primary btn--sm" onclick="confirmSendEmail()">Tak, wyślij</button>
+                        </div>
+                    </div>
+
+                    <div id="sendStatus" class="send-status" role="status" aria-live="polite"></div>
+
+                    <div class="btn-group">
+                        <button type="button" class="btn-prev" onclick="nextStep(3)">← Wstecz</button>
+                        <span></span>
                     </div>
                 </div>
 
             </div>
+        </section>
+    </main>
 
-            <div class="btn-group">
-                <span></span>
-                <div class="step1-next-choice">
-                    <button type="button" class="btn-next" onclick="nextStep(2, 'tech')">Kalkulator</button>
-                    <span class="step1-next-or">lub</span>
-                    <button type="button" class="btn-next" onclick="nextStep(2, 'list')">Wybierz z listy</button>
+    <!-- ================= STOPKA ================= -->
+    <footer class="site-footer" data-header-theme="dark">
+        <div class="container">
+            <div class="footer-top">
+                <div class="footer-brand">
+                    <img src="img/logo-white.png" alt="WOOJIN PLAIMM" class="footer-logo-image" width="500" height="224" loading="lazy">
+                    <p class="footer-about">Przedstawicielstwo WOOJIN PLAIMM w Polsce — sprzedaż, doradztwo techniczne i serwis wtryskarek do tworzyw sztucznych.</p>
+                </div>
+                <div class="footer-column">
+                    <h4>Firma</h4>
+                    <ul role="list">
+                        <li><a href="index.html">O nas</a></li>
+                        <li><a href="kariera.html">Kariera</a></li>
+                        <li><a href="https://woojinplaimm.com/?lang_code=en" target="_blank" rel="noopener noreferrer">Woojin Global ↗</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h4>Produkty</h4>
+                    <ul role="list">
+                        <li><a href="maszyny.html">Maszyny</a></li>
+                        <li><a href="konfigurator.html">Konfigurator</a></li>
+                        <li><a href="index.html#te3dSection">TE-A5 w 3D</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column footer-contact">
+                    <h4>Kontakt</h4>
+                    <ul role="list">
+                        <li><strong>Adres</strong>ul. Hutnicza 6, 40-241 Katowice</li>
+                        <li><strong>Telefon</strong><a href="tel:+48510440661">+48 510 440 661</a></li>
+                        <li><strong>E-mail</strong><a href="mailto:ploffice@wjpim.com">ploffice@wjpim.com</a></li>
+                        <li><a href="kontakt.html#serwis">Serwis →</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>© <span data-year>2026</span> WOOJIN PLAIMM Co., Ltd.</p>
+                <div class="footer-links">
+                    <a href="privacy.html">Polityka prywatności</a>
+                    <a href="cookies.html">Polityka cookie</a>
                 </div>
             </div>
         </div>
-
-        <!-- ============ KROK 2: SPOSÓB DOBORU WTRYSKARKI ============ -->
-        <div class="step-content" id="step2">
-
-            <!-- ============ ŚCIEŻKA A: DANE TECHNOLOGICZNE ============ -->
-            <!-- Zawartość (jedno lub więcej "okien kalkulatora" po lewej, panel
-                 najważniejszych danych po prawej) jest w całości budowana w
-                 script.js (patrz buildStep2TechPath/addStep2TechBlock) -
-                 dokładnie tak samo jak ścieżka "wybierz z listy" niżej. Karta z
-                 danymi każdej maszyny (nazwa modelu, licznik sztuk, najważniejsze
-                 parametry) jest renderowana bezpośrednio w jej oknie kalkulatora,
-                 obok wyników - patrz renderStep2TechInlineSpec w script.js -
-                 więc nie ma tu już osobnego panelu po prawej stronie. -->
-            <div id="step2TechPath" class="step2-subview" style="display:none;">
-                <h2>Krok 2: Najważniejsze dane technologiczne</h2>
-
-                <div class="step2-tech-layout">
-                    <div class="step2-tech-blocks" id="step2TechBlocks"></div>
-                </div>
-
-                <div id="step2TechNavError" class="calc-error" style="display:none;"></div>
-
-                <div class="btn-group">
-                    <button type="button" class="btn-prev" onclick="nextStep(1)">← Wstecz</button>
-                    <button type="button" class="btn-next" onclick="nextStep(3)">Dalej →</button>
-                </div>
-            </div>
-
-            <!-- ============ ŚCIEŻKA B: WYBÓR Z LISTY ============ -->
-            <div id="step2ListPath" class="step2-subview" style="display:none;">
-                <h2>Krok 2: Proszę wybrać z listy</h2>
-
-                <div class="step2-list-layout">
-                    <div class="step2-list-items" id="step2ListItems"></div>
-                    <div class="step2-list-specs" id="step2ListSpecs">
-                        <p class="step2-list-specs-placeholder">Wybierz wtryskarkę z listy<span class="step2-desktop-only-text"> po lewej</span>, aby zobaczyć jej najważniejsze dane.</p>
-                    </div>
-                    <div class="step2-units-flyout" id="step2UnitsFlyout"></div>
-                </div>
-
-                <div id="step2ListError" class="calc-error" style="display:none;"></div>
-
-                <div class="btn-group">
-                    <button type="button" class="btn-prev" onclick="nextStep(1)">← Wstecz</button>
-                    <button type="button" class="btn-next" onclick="nextStep(3)">Dalej →</button>
-                </div>
-            </div>
-
-        </div>
-
-        <!-- ============ KROK 3: WYPOSAŻENIE I OPCJE ============ -->
-        <div class="step-content" id="step3">
-            <h2>Krok 3: Wyposażenie standardowe i opcje dodatkowe</h2>
-
-            <!-- Nazwy wybranych wtryskarek (z ich średnicą ślimaka) wypisywane wprost
-                 w nagłówku, zamiast wyróżnionego paska - patrz populateStep3() w
-                 script.js (kilka maszyn naraz oddzielonych znakiem "//"). -->
-            <h3>Wyposażenie standardowe: <span class="step3-std-machines-list" id="step3StdMachinesList"></span></h3>
-            <div class="options-columns-grid">
-                <div class="option-col">
-                    <h4>Wtrysk</h4>
-                    <ul id="std_injection_unit"></ul>
-                </div>
-                <div class="option-col">
-                    <h4>Zwarcie</h4>
-                    <ul id="std_clamping_unit"></ul>
-                </div>
-                <div class="option-col">
-                    <h4>Ogólne</h4>
-                    <ul id="std_general"></ul>
-                </div>
-            </div>
-
-            <hr class="divider">
-
-            <h3>Opcje dodatkowe (do wyboru):</h3>
-            <!-- Wypełniane w script.js (renderStep3OptionsContainer) - jeden blok na
-                 każdą wybraną wtryskarkę: pierwsza ma opcje zawsze widoczne, kolejne
-                 (jeśli klient wybrał więcej niż jeden model w Kroku 2) - domyślnie
-                 zwinięte, rozwijane tym samym pulsującym trójkątem co "Pokaż pełną
-                 specyfikację techniczną" w Kroku 2. -->
-            <div id="step3OptionsContainer"></div>
-
-            <!-- Wspólny dymek z polskim tłumaczeniem pozycji z listy - nazwy wyposażenia
-                 standardowego i opcji dodatkowych zostają po angielsku (zgodnie z
-                 oryginalnym katalogiem), a tłumaczenie pojawia się dopiero po najechaniu/
-                 dotknięciu danej pozycji - patrz showStep3OptionTooltip w script.js.
-                 Stylowany podobnie do wysuwanego menu agregatów w Kroku 2 (#step2UnitsFlyout). -->
-            <div class="step3-option-tooltip" id="step3OptionTooltip"></div>
-
-            <div class="btn-group">
-                <button type="button" class="btn-prev" onclick="nextStep(2)">← Wstecz</button>
-                <button type="button" class="btn-next" onclick="nextStep(4)">Dalej →</button>
-            </div>
-        </div>
-
-        <!-- ============ KROK 4: PODSUMOWANIE I WYSYŁKA ============ -->
-        <div class="step-content" id="step4">
-            <h2>Krok 4: Podsumowanie konfiguracji</h2>
-
-            <!-- Wypełniane w script.js (populateStep4Summary) - podsumowanie z
-                 podziałem na każdą wybraną wtryskarkę osobno, z możliwością
-                 edycji jej opcji dodatkowych (przycisk "Edytuj" wraca do Kroku 3). -->
-            <div class="summary-box" id="summaryView"></div>
-
-            <h3>Dane kontaktowe</h3>
-            <div class="form-grid-2col">
-                <div class="form-group">
-                    <label>Imię <span class="required-star">*</span></label>
-                    <input type="text" id="client_firstname">
-                </div>
-                <div class="form-group">
-                    <label>Nazwisko <span class="required-star">*</span></label>
-                    <input type="text" id="client_lastname">
-                </div>
-                <div class="form-group">
-                    <label>Adres e-mail <span class="required-star">*</span></label>
-                    <input type="email" id="client_email">
-                </div>
-                <div class="form-group">
-                    <label>Nr telefonu</label>
-                    <input type="tel" id="client_phone">
-                </div>
-                <div class="form-group">
-                    <label>Nazwa firmy</label>
-                    <input type="text" id="client_company">
-                </div>
-                <div class="form-group">
-                    <label>Adres</label>
-                    <input type="text" id="client_address">
-                </div>
-            </div>
-            <div class="form-group">
-                <label>Dodatkowy komentarz</label>
-                <textarea id="client_comment" rows="4" placeholder="Miejsce na dodatkowe uwagi..."></textarea>
-            </div>
-
-            <!-- Honeypot: pole niewidoczne dla użytkownika (ukryte poza ekranem w CSS)
-                 - proste boty wypełniające automatycznie każde pole formularza zwykle
-                 je wypełnią, dzięki czemu można po cichu odrzucić taką wysyłkę (patrz
-                 requestSendEmail w script.js). -->
-            <div class="hp-field-wrap" aria-hidden="true">
-                <label for="config_hp">Zostaw to pole puste</label>
-                <input type="text" id="config_hp" name="website" tabindex="-1" autocomplete="off">
-            </div>
-
-            <div class="form-group">
-                <button type="button" class="human-check-btn" id="humanCheckBtnConfig" aria-pressed="false">
-                    <span class="human-check-box" aria-hidden="true"></span>
-                    <span class="human-check-label">Potwierdzam, że nie jestem robotem</span>
-                </button>
-            </div>
-
-            <div class="action-calc-bar">
-                <button type="button" class="btn-primary btn-wave btn-accent-eyebrow" onclick="generatePDF()"><span class="btn-wave-label">POBIERZ PDF</span></button>
-                <button type="button" class="btn-primary btn-wave" id="sendBtn" onclick="requestSendEmail()"><span class="btn-wave-label">WYŚLIJ KONFIGURACJĘ</span></button>
-            </div>
-
-            <div class="confirm-box" id="confirmSendBox" style="display:none;">
-                <p>Czy na pewno chcesz wysłać tę konfigurację? Możesz jeszcze poprawić dane w formularzu powyżej.</p>
-                <div class="btn-group confirm-actions">
-                    <button type="button" class="btn-secondary" onclick="cancelSendEmail()">Popraw dane</button>
-                    <button type="button" class="btn-primary" onclick="confirmSendEmail()">Tak, wyślij</button>
-                </div>
-            </div>
-
-            <div id="sendStatus" class="send-status"></div>
-
-            <div class="btn-group">
-                <button type="button" class="btn-prev" onclick="nextStep(3)">← Wstecz</button>
-                <span></span>
-            </div>
-        </div>
-
-    </div>
-
-</main>
-
-<!-- ================= FOOTER ================= -->
-<footer class="site-footer">
-    <div class="container">
-        <div class="footer-top">
-            <div class="footer-logo">
-                <img src="img/logo-white.png" alt="Woojin Plaimm" class="footer-logo-image">
-            </div>
-
-            <div class="footer-column">
-                <h4>Firma</h4>
-                <a href="index.html">O nas</a>
-                <a href="kariera.html">Kariera</a>
-            </div>
-
-            <div class="footer-column">
-                <h4>Produkty</h4>
-                <a href="maszyny.html">Maszyny</a>
-                <a href="konfigurator.html">Konfigurator</a>
-            </div>
-
-            <div class="footer-column">
-                <h4>Obsługa klienta</h4>
-                <a href="kontakt.html">Kontakt</a>
-                <a href="kontakt.html">Serwis</a>
-            </div>
-        </div>
-
-        <div class="footer-bottom">
-            <p>© 2026 WOOJIN PLAIMM Co., Ltd.</p>
-            <div class="footer-links">
-                <a href="privacy.html">Polityka prywatności</a>
-                <a href="cookies.html">Polityka cookie</a>
-            </div>
-        </div>
-    </div>
-</footer>
-
-    <!-- ================= SCRIPTS ================= -->
-
-    <script>
-        const header = document.querySelector('.site-header');
-        const logo = document.querySelector('.logo-image');
-        const navToggle = document.querySelector('.nav-toggle');
-        const mainNav = document.querySelector('.main-nav');
-
-        window.addEventListener('scroll', function () {
-            if (window.scrollY > 50) {
-                header.classList.add('scrolled');
-                logo.src = 'img/logo-black.png';
-            } else {
-                header.classList.remove('scrolled');
-                logo.src = 'img/logo-white.png';
-            }
-        });
-
-        if (navToggle && mainNav) {
-            navToggle.addEventListener('click', function () {
-                const isOpen = mainNav.classList.toggle('is-open');
-                navToggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
-            });
-
-            mainNav.querySelectorAll('a').forEach(function (link) {
-                link.addEventListener('click', function () {
-                    mainNav.classList.remove('is-open');
-                    navToggle.setAttribute('aria-expanded', 'false');
-                });
-            });
-        }
-    </script>
-
+        <span class="footer-watermark" aria-hidden="true">WOOJIN</span>
+    </footer>
 </body>
 </html>

@@ -2,30 +2,61 @@
 <html lang="pl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WOOJIN PLAIMM - Przedstawicielstwo w Polsce</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Kontakt – biuro, handlowiec, serwis | WOOJIN PLAIMM Polska</title>
+    <meta name="description" content="Skontaktuj się z przedstawicielstwem WOOJIN PLAIMM w Polsce: biuro, przedstawiciel handlowy i serwis wtryskarek. ul. Hutnicza 6, 40-241 Katowice, tel. +48 510 440 661.">
+    <meta name="theme-color" content="#0a0e13">
+    <meta property="og:type" content="website">
+    <meta property="og:locale" content="pl_PL">
+    <meta property="og:title" content="Kontakt – WOOJIN PLAIMM Polska">
+    <meta property="og:image" content="img/opt/hero.jpg">
+
+    <link rel="icon" type="image/png" sizes="32x32" href="img/opt/favicon-32.png">
+    <link rel="icon" type="image/png" sizes="64x64" href="img/opt/favicon-64.png">
+    <link rel="apple-touch-icon" href="img/opt/apple-touch-icon.png">
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,300..900&display=swap">
     <link rel="stylesheet" href="style.css">
-    <script src="script.js" defer></script>
+
+    <script>document.documentElement.classList.add('js');setTimeout(function(){if(!window.WJ||!window.WJ.ready)document.documentElement.classList.add('no-anim');},3000);</script>
+    <script src="js/main.js" defer></script>
+    <script src="js/contact.js" defer></script>
 </head>
+
 <body>
+    <a class="skip-link" href="#main">Przejdź do treści</a>
+    <div class="scroll-progress" aria-hidden="true"><span></span></div>
+
+    <!-- ================= NAGŁÓWEK ================= -->
     <header class="site-header">
         <div class="header-inner">
-            <a href="index.html" class="logo">
-                <img src="img/logo-white.png" alt="Woojin Plaimm" class="logo-image">
+            <a href="index.html" class="logo" aria-label="WOOJIN PLAIMM – strona główna">
+                <img src="img/logo-white.png" alt="" class="logo-img logo-img--light" width="500" height="224">
+                <img src="img/logo-black.png" alt="" class="logo-img logo-img--dark" width="500" height="224">
             </a>
-            <nav class="main-nav">
-                <a href="index.html" class="active">O NAS</a>
-                <a href="maszyny.html">MASZYNY</a>
-                <a href="konfigurator.html">KONFIGURATOR</a>
-                <a href="kariera.html">KARIERA</a>
-                <a href="kontakt.html">KONTAKT</a>
-                <a href="https://woojinplaimm.com/?lang_code=en" target="_blank" class="nav-global">WOOJIN GLOBAL</a>
+
+            <nav class="main-nav" id="mainNav" aria-label="Nawigacja główna">
+                <ul class="nav-list" role="list">
+                    <li><a href="index.html" class="nav-link"><span class="nav-num">01</span><span class="nav-text">O nas</span></a></li>
+                    <li><a href="maszyny.html" class="nav-link"><span class="nav-num">02</span><span class="nav-text">Maszyny</span></a></li>
+                    <li><a href="konfigurator.html" class="nav-link"><span class="nav-num">03</span><span class="nav-text">Konfigurator</span></a></li>
+                    <li><a href="kariera.html" class="nav-link"><span class="nav-num">04</span><span class="nav-text">Kariera</span></a></li>
+                    <li><a href="kontakt.html" class="nav-link" aria-current="page"><span class="nav-num">05</span><span class="nav-text">Kontakt</span></a></li>
+                </ul>
+                <a href="https://woojinplaimm.com/?lang_code=en" target="_blank" rel="noopener noreferrer" class="nav-global">
+                    Woojin Global
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17L17 7M8 7h9v9"/></svg>
+                </a>
+                <div class="nav-mobile-footer">
+                    <span>ul. Hutnicza 6, 40-241 Katowice</span>
+                    <a href="tel:+48510440661">+48 510 440 661</a>
+                    <a href="mailto:ploffice@wjpim.com">ploffice@wjpim.com</a>
+                </div>
             </nav>
 
-            <button type="button" class="nav-toggle" id="navToggle" aria-label="Otwórz menu" aria-expanded="false">
+            <button type="button" class="nav-toggle" aria-controls="mainNav" aria-label="Otwórz menu" aria-expanded="false">
                 <span class="nav-toggle-bar"></span>
                 <span class="nav-toggle-bar"></span>
                 <span class="nav-toggle-bar"></span>
@@ -33,203 +64,211 @@
         </div>
     </header>
 
-<div class="hero-wrapper">
-    <section class="hero-selector">
-        <div class="container">
-            <span class="eyebrow">KONTAKT· WOOJIN PLAIMM</span>
-            <h1>Skontaktuj się z nami</h1>
-            <p class="disclaimer" style="visibility: hidden;">* Poznaj ofertę</p>
-            <p class="disclaimer" style="visibility: hidden;">* Poznaj ofertę</p>
-            <p class="disclaimer" style="visibility: hidden;">* Poznaj ofertę</p>
-        </div>
-    </section>
-</div>
+    <main id="main">
 
+        <!-- ================= HERO ================= -->
+        <section class="page-hero" data-header-theme="dark">
+            <div class="page-hero-bg" aria-hidden="true"><span class="orb orb--1"></span><span class="orb orb--2"></span></div>
+            <div class="container page-hero-inner">
+                <nav class="breadcrumbs fade-up" style="--delay:.05s" aria-label="Ścieżka nawigacji">
+                    <a href="index.html">Strona główna</a><span aria-hidden="true">/</span><span aria-current="page">Kontakt</span>
+                </nav>
+                <p class="eyebrow eyebrow--light fade-up" style="--delay:.12s">Kontakt · WOOJIN PLAIMM</p>
+                <h1 class="page-title"><span class="line"><span class="line-inner" style="--i:0">Skontaktuj się</span></span><span class="line"><span class="line-inner" style="--i:1">z nami</span></span></h1>
+                <p class="page-lead fade-up" style="--delay:.5s">Masz pytanie o maszynę, ofertę lub serwis? Wybierz dział i napisz — odpowiemy najszybciej, jak to możliwe.</p>
+            </div>
+        </section>
 
+        <!-- ================= DANE + FORMULARZ ================= -->
+        <section class="contact-section" aria-label="Dane kontaktowe i formularz">
+            <div class="container">
+                <div class="contact-layout">
 
-    <main class="contact-section">
-        <div class="container">
-            
+                    <div class="contact-info-list" data-reveal-stagger=".1">
+                        <div class="contact-card" data-reveal data-spotlight>
+                            <span class="contact-card-icon" aria-hidden="true">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18M5 21V7l7-4 7 4v14M9 21v-6h6v6M9 10h.01M15 10h.01"/></svg>
+                            </span>
+                            <h2 class="contact-info-role">Kontakt z biurem</h2>
+                            <div class="contact-details">
+                                <a href="tel:+48510440661" class="contact-link phone">+48 510 440 661</a>
+                                <span class="contact-email-row">
+                                    <a href="mailto:ploffice@wjpim.com" class="contact-link email">ploffice@wjpim.com</a>
+                                    <button type="button" class="copy-btn" data-copy="ploffice@wjpim.com" aria-label="Kopiuj adres e-mail biura">
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h8"/></svg>
+                                    </button>
+                                </span>
+                            </div>
+                        </div>
 
-            <div class="contact-layout">
-                <!-- Lewa strona: dane kontaktowe (bez zdjęć i efektów hover) -->
-                <div class="contact-info-list">
-                    <div class="contact-info-item">
-                        <h2 class="contact-info-role">KONTAKT Z BIUREM</h2>
-                        <div class="contact-details">
-                            <a href="tel:+48510440661" class="contact-link phone">+48 510 440 661</a>
-                            <a href="mailto:ploffice@wjpim.com" class="contact-link email">ploffice@wjpim.com</a>
+                        <div class="contact-card" data-reveal data-spotlight>
+                            <span class="contact-card-icon" aria-hidden="true">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg>
+                            </span>
+                            <h2 class="contact-info-role">Przedstawiciel handlowy</h2>
+                            <div class="contact-details">
+                                <a href="tel:+48573288069" class="contact-link phone">+48 573 288 069</a>
+                                <span class="contact-email-row">
+                                    <a href="mailto:mczekalik@wjpim.com" class="contact-link email">mczekalik@wjpim.com</a>
+                                    <button type="button" class="copy-btn" data-copy="mczekalik@wjpim.com" aria-label="Kopiuj adres e-mail przedstawiciela handlowego">
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h8"/></svg>
+                                    </button>
+                                </span>
+                            </div>
+                        </div>
+
+                        <div class="contact-card" id="serwis" data-reveal data-spotlight>
+                            <span class="contact-card-icon" aria-hidden="true">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a4 4 0 0 0-5.4 5.4L3 18l3 3 6.3-6.3a4 4 0 0 0 5.4-5.4l-2.5 2.5-2.4-.6-.6-2.4z"/></svg>
+                            </span>
+                            <h2 class="contact-info-role">Serwis</h2>
+                            <div class="contact-details">
+                                <span class="contact-email-row">
+                                    <a href="mailto:woojin.choi@wjpim.com" class="contact-link email">woojin.choi@wjpim.com</a>
+                                    <button type="button" class="copy-btn" data-copy="woojin.choi@wjpim.com" aria-label="Kopiuj adres e-mail serwisu">
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h8"/></svg>
+                                    </button>
+                                </span>
+                            </div>
                         </div>
                     </div>
 
-                    <div class="contact-info-item">
-                        <h2 class="contact-info-role">PRZEDSTAWICIEL HANDLOWY</h2>
-                        <div class="contact-details">
-                            <a href="tel:+48573288069" class="contact-link phone">+48 573 288 069</a>
-                            <a href="mailto:mczekalik@wjpim.com" class="contact-link email">mczekalik@wjpim.com</a>
-                        </div>
-                    </div>
+                    <div class="contact-form-wrapper" data-reveal="right">
+                        <h2 class="contact-form-title">Napisz do nas</h2>
+                        <p class="contact-form-subtitle">Wybierz temat rozmowy i wyślij wiadomość — odpowiemy najszybciej, jak to możliwe.</p>
 
-                    <div class="contact-info-item">
-                        <h2 class="contact-info-role">SERWIS</h2>
-                        <div class="contact-details">
-                            <a href="mailto:woojin.choi@wjpim.com" class="contact-link email">woojin.choi@wjpim.com</a>
-                        </div>
+                        <form class="contact-form" id="contactForm" novalidate>
+                            <fieldset>
+                                <legend>Do kogo piszesz? <span class="required-star">*</span></legend>
+                                <div class="contact-topic-choice">
+                                    <label class="topic-option">
+                                        <input type="radio" name="contact_topic" value="biuro" checked>
+                                        <span>Biuro</span>
+                                    </label>
+                                    <label class="topic-option">
+                                        <input type="radio" name="contact_topic" value="handlowiec">
+                                        <span>Przedstawiciel handlowy</span>
+                                    </label>
+                                    <label class="topic-option">
+                                        <input type="radio" name="contact_topic" value="serwis">
+                                        <span>Serwis</span>
+                                    </label>
+                                </div>
+                            </fieldset>
+
+                            <div class="form-grid-2col">
+                                <div class="form-group">
+                                    <label for="contact_name">Imię i nazwisko <span class="required-star">*</span></label>
+                                    <input type="text" id="contact_name" name="name" autocomplete="name" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="contact_email">Adres e-mail <span class="required-star">*</span></label>
+                                    <input type="email" id="contact_email" name="email" autocomplete="email" required>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="contact_phone">Nr telefonu <span class="opt-label">(opcjonalnie)</span></label>
+                                <input type="tel" id="contact_phone" name="phone" autocomplete="tel">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="contact_message">Wiadomość <span class="required-star">*</span></label>
+                                <textarea id="contact_message" name="message" rows="5" required placeholder="Napisz, w czym możemy pomóc…"></textarea>
+                            </div>
+
+                            <!-- Honeypot: pole ukryte poza ekranem - wypełniają je tylko boty -->
+                            <div class="hp-field-wrap" aria-hidden="true">
+                                <label for="contact_hp">Zostaw to pole puste</label>
+                                <input type="text" id="contact_hp" name="website" tabindex="-1" autocomplete="off">
+                            </div>
+
+                            <div class="form-group">
+                                <button type="button" class="human-check-btn" id="humanCheckBtnContact" aria-pressed="false">
+                                    <span class="human-check-box" aria-hidden="true"></span>
+                                    <span class="human-check-label">Potwierdzam, że nie jestem robotem</span>
+                                </button>
+                            </div>
+
+                            <div class="action-calc-bar">
+                                <button type="submit" class="btn btn--primary btn--lg" id="contactSendBtn">
+                                    Wyślij wiadomość
+                                    <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12l16-8-6 16-2.5-6.5z"/></svg>
+                                </button>
+                            </div>
+                            <p class="form-note">Wiadomość zostanie przygotowana w Twoim programie pocztowym. Szczegóły w <a href="privacy.html">Polityce prywatności</a>.</p>
+
+                            <div id="contactFormStatus" class="send-status" role="status" aria-live="polite"></div>
+                        </form>
                     </div>
                 </div>
+            </div>
+        </section>
 
-                <!-- Prawa strona: formularz kontaktowy z wyborem adresata -->
-                <div class="contact-form-wrapper">
-                    <h2 class="contact-form-title">Napisz do nas</h2>
-                    <p class="contact-form-subtitle">Wybierz temat rozmowy i wyślij wiadomość — odpowiemy najszybciej, jak to możliwe.</p>
-
-                    <form class="contact-form" id="contactForm">
-                        <div class="form-group">
-                            <label>Do kogo piszesz? <span class="required-star">*</span></label>
-                            <div class="contact-topic-choice">
-                                <label class="topic-option">
-                                    <input type="radio" name="contact_topic" value="biuro" checked>
-                                    <span>Biuro</span>
-                                </label>
-                                <label class="topic-option">
-                                    <input type="radio" name="contact_topic" value="handlowiec">
-                                    <span>Przedstawiciel handlowy</span>
-                                </label>
-                                <label class="topic-option">
-                                    <input type="radio" name="contact_topic" value="serwis">
-                                    <span>Serwis</span>
-                                </label>
-                            </div>
-                        </div>
-
-                        <div class="form-grid-2col">
-                            <div class="form-group">
-                                <label>Imię i nazwisko <span class="required-star">*</span></label>
-                                <input type="text" id="contact_name" required>
-                            </div>
-                            <div class="form-group">
-                                <label>Adres e-mail <span class="required-star">*</span></label>
-                                <input type="email" id="contact_email" required>
-                            </div>
-                        </div>
-
-                        <div class="form-group">
-                            <label>Nr telefonu <span class="opt-label">(opcjonalnie)</span></label>
-                            <input type="tel" id="contact_phone">
-                        </div>
-
-                        <div class="form-group">
-                            <label>Wiadomość <span class="required-star">*</span></label>
-                            <textarea id="contact_message" rows="5" required placeholder="Napisz, w czym możemy pomóc..."></textarea>
-                        </div>
-
-                        <!-- Honeypot: pole niewidoczne dla użytkownika (ukryte poza ekranem w CSS)
-                             - proste boty wypełniające automatycznie każde pole formularza
-                             zwykle je wypełnią, dzięki czemu można po cichu odrzucić takie
-                             zgłoszenie (patrz initContactForm w script.js). -->
-                        <div class="hp-field-wrap" aria-hidden="true">
-                            <label for="contact_hp">Zostaw to pole puste</label>
-                            <input type="text" id="contact_hp" name="website" tabindex="-1" autocomplete="off">
-                        </div>
-
-                        <div class="form-group">
-                            <button type="button" class="human-check-btn" id="humanCheckBtnContact" aria-pressed="false">
-                                <span class="human-check-box" aria-hidden="true"></span>
-                                <span class="human-check-label">Potwierdzam, że nie jestem robotem</span>
-                            </button>
-                        </div>
-
-                        <div class="action-calc-bar">
-                            <button type="submit" class="btn-primary btn-wave" id="contactSendBtn"><span class="btn-wave-label">Wyślij wiadomość</span></button>
-                        </div>
-
-                        <div id="contactFormStatus" class="send-status"></div>
-                    </form>
+        <!-- ================= LOKALIZACJA ================= -->
+        <section class="location" aria-labelledby="locationTitle">
+            <div class="container">
+                <div class="map-card" id="mapCard" data-reveal="clip">
+                    <div class="map-placeholder" id="mapPlaceholder">
+                        <span class="map-pin" aria-hidden="true">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg>
+                        </span>
+                        <button type="button" class="btn btn--glass" id="loadMapBtn">Pokaż mapę Google</button>
+                        <p>Mapa jest dostarczana przez Google i może zapisywać własne pliki cookie – wczytujemy ją dopiero po Twojej zgodzie.</p>
+                    </div>
+                    <div class="location-card">
+                        <h2 id="locationTitle">Nasza lokalizacja</h2>
+                        <p><strong>WOOJIN PLAIMM – Przedstawicielstwo w Polsce</strong>ul. Hutnicza 6, 40-241 Katowice</p>
+                        <a class="link-underline" href="https://www.google.com/maps/dir/?api=1&amp;destination=Hutnicza+6,+40-241+Katowice" target="_blank" rel="noopener noreferrer">Wyznacz trasę ↗</a>
+                    </div>
                 </div>
             </div>
-
-            <div class="location-info">
-                <h2>NASZA LOKALIZACJA</h2>
-                <p><strong>Woojin Plaimm Przedstawicielstwo w Polsce</strong></p>
-                <p>ul. Hutnicza 6, 40-241 Katowice</p>
-            </div>
-        </div>
-
-        <div class="map-wrapper-full">
-            <iframe
-                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2551.0423086786854!2d19.056086776899723!3d50.25375820202931!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x4716ce48b0a7249b%3A0x6b4fbbf55776c7c0!2sHutnicza%206%2C%2040-241%20Katowice!5e0!3m2!1spl!2spl!4v1700000000000!5m2!1spl!2spl"
-                width="100%"
-                height="450"
-                style="border:0;"
-                allowfullscreen=""
-                loading="lazy"
-                referrerpolicy="no-referrer-when-downgrade">
-            </iframe>
-        </div>
+        </section>
     </main>
-<!-- ================= FOOTER ================= -->
-<footer class="site-footer">
-    <div class="container">
-        <div class="footer-top">
-            <div class="footer-logo">
-                <img src="img/logo-white.png" alt="Woojin Plaimm" class="footer-logo-image">
-            </div>
 
-            <div class="footer-column">
-                <h4>Firma</h4>
-                <a href="index.html">O nas</a>
-                <a href="kariera.html">Kariera</a>
+    <!-- ================= STOPKA ================= -->
+    <footer class="site-footer" data-header-theme="dark">
+        <div class="container">
+            <div class="footer-top">
+                <div class="footer-brand">
+                    <img src="img/logo-white.png" alt="WOOJIN PLAIMM" class="footer-logo-image" width="500" height="224" loading="lazy">
+                    <p class="footer-about">Przedstawicielstwo WOOJIN PLAIMM w Polsce — sprzedaż, doradztwo techniczne i serwis wtryskarek do tworzyw sztucznych.</p>
+                </div>
+                <div class="footer-column">
+                    <h4>Firma</h4>
+                    <ul role="list">
+                        <li><a href="index.html">O nas</a></li>
+                        <li><a href="kariera.html">Kariera</a></li>
+                        <li><a href="https://woojinplaimm.com/?lang_code=en" target="_blank" rel="noopener noreferrer">Woojin Global ↗</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h4>Produkty</h4>
+                    <ul role="list">
+                        <li><a href="maszyny.html">Maszyny</a></li>
+                        <li><a href="konfigurator.html">Konfigurator</a></li>
+                        <li><a href="index.html#te3dSection">TE-A5 w 3D</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column footer-contact">
+                    <h4>Kontakt</h4>
+                    <ul role="list">
+                        <li><strong>Adres</strong>ul. Hutnicza 6, 40-241 Katowice</li>
+                        <li><strong>Telefon</strong><a href="tel:+48510440661">+48 510 440 661</a></li>
+                        <li><strong>E-mail</strong><a href="mailto:ploffice@wjpim.com">ploffice@wjpim.com</a></li>
+                        <li><a href="kontakt.html#serwis">Serwis →</a></li>
+                    </ul>
+                </div>
             </div>
-
-            <div class="footer-column">
-                <h4>Produkty</h4>
-                <a href="maszyny.html">Maszyny</a>
-                <a href="konfigurator.html">Konfigurator</a>
-            </div>
-
-            <div class="footer-column">
-                <h4>Obsługa klienta</h4>
-                <a href="kontakt.html">Kontakt</a>
-                <a href="kontakt.html">Serwis</a>
+            <div class="footer-bottom">
+                <p>© <span data-year>2026</span> WOOJIN PLAIMM Co., Ltd.</p>
+                <div class="footer-links">
+                    <a href="privacy.html">Polityka prywatności</a>
+                    <a href="cookies.html">Polityka cookie</a>
+                </div>
             </div>
         </div>
-
-        <div class="footer-bottom">
-            <p>© 2026 WOOJIN PLAIMM Co., Ltd.</p>
-            <div class="footer-links">
-                <a href="privacy.html">Polityka prywatności</a>
-                <a href="cookies.html">Polityka cookie</a>
-            </div>
-        </div>
-    </div>
-</footer>
-
-    <script>
-        const header = document.querySelector('.site-header');
-        const logo = document.querySelector('.logo-image');
-        const navToggle = document.querySelector('.nav-toggle');
-        const mainNav = document.querySelector('.main-nav');
-        window.addEventListener('scroll', function () {
-            if (window.scrollY > 50) {
-                header.classList.add('scrolled');
-                logo.src = 'img/logo-black.png';
-            } else {
-                header.classList.remove('scrolled');
-                logo.src = 'img/logo-white.png';
-            }
-        });
-        if (navToggle && mainNav) {
-            navToggle.addEventListener('click', function () {
-                const isOpen = mainNav.classList.toggle('is-open');
-                navToggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
-            });
-            mainNav.querySelectorAll('a').forEach(function (link) {
-                link.addEventListener('click', function () {
-                    mainNav.classList.remove('is-open');
-                    navToggle.setAttribute('aria-expanded', 'false');
-                });
-            });
-        }
-    </script>
+        <span class="footer-watermark" aria-hidden="true">WOOJIN</span>
+    </footer>
 </body>
 </html>
