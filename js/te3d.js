@@ -1,10 +1,11 @@
 // =====================================================================
 // INTERAKTYWNY MODEL 3D WTRYSKARKI TE-A5 (index.html, sekcja #te3dSection)
-// Model wtryskarki w pełni elektrycznej TE-A5 zbudowany z prostych brył
-// (prostopadłościany, walce, torusy) na podstawie zdjęć z widoku 360°,
-// renderu przekroju oraz katalogu TE-A5. Rysowany bezpośrednio w WebGL -
-// bez zewnętrznych bibliotek (np. three.js), więc nie trzeba dogrywać
-// żadnych dodatkowych plików ani polegać na zewnętrznym CDN.
+// Model wtryskarki w pełni elektrycznej TE-A5 (TE220A5) zbudowany z brył
+// (prostopadłościany, walce, stożki, koła zębate, torusy). Proporcje wg
+// widoku z boku z klatek 360°, budowa zespołów i ich ruchy wg animacji
+// producenta "TE-A5 Overview" oraz katalogu TE-A5. Rysowany bezpośrednio
+// w WebGL - bez zewnętrznych bibliotek (np. three.js), więc nie trzeba
+// dogrywać żadnych dodatkowych plików ani polegać na zewnętrznym CDN.
 //
 // Co potrafi:
 //  - obracanie przeciąganiem (mysz / palec - na telefonie tylko w poziomie,
@@ -14,10 +15,16 @@
 //    kliknięcie przenosi kamerę do danego zespołu, podświetla go neonowo i
 //    wyświetla opis w panelu po prawej (treści: tablica TE3D_FEATURES),
 //  - tryb X-RAY: obudowy stają się półprzezroczyste ("hologram" z
-//    neonowymi krawędziami), odsłaniając układ kolanowy, płyty, kolumny,
-//    ślimak, śruby kulowe, serwosilniki i napędy w szafie,
-//  - symulację cyklu wtrysku (zamykanie formy -> dosunięcie dyszy ->
-//    wtrysk -> docisk -> chłodzenie + dozowanie -> otwieranie -> wypychanie),
+//    neonowymi krawędziami), odsłaniając m.in. 5-punktowy układ kolanowy
+//    z krzyżulcem i śrubą kulową, napęd zwarcia (serwosilnik, pas, koło
+//    pasowe), wieniec zębaty regulacji wysokości formy, płytę Center-Press
+//    na prowadnicach L/M z napędem wypychacza, ślimak z zaworem zwrotnym,
+//    4 cylindry docisku dyszy, śruby kulowe wtrysku, czujnik siły,
+//    skrzynkę serwonapędów agregatu i napędy w szafie,
+//  - symulację cyklu wtrysku (zamykanie i ryglowanie formy -> dosunięcie
+//    dyszy -> wtrysk -> docisk -> dozowanie + chłodzenie -> odsunięcie
+//    dyszy -> otwieranie -> wypychanie); obracają się śruby i koła pasowe,
+//    gniazdo formy wypełnia się stopionym tworzywem, które stygnie,
 //  - automatyczny, powolny obrót w widoku ogólnym.
 // Pętla renderowania działa tylko wtedy, gdy sekcja jest widoczna na
 // ekranie (IntersectionObserver), żeby nie obciążać komputera/telefonu.
@@ -78,8 +85,8 @@ function initTe3DShowcase() {
                 'Monitoring energii dla każdego etapu cyklu wtrysku'
             ],
             media: { type: 'energy' },
-            anchor: [0.62, 0.5, 0.6], normal: [0, 0, 1],
-            view: { target: [0.55, 0.62, 0.1], r: 3.9, theta: 0.3, phi: 1.28 },
+            anchor: [1.0, 0.52, 0.51], normal: [0, 0, 1],
+            view: { target: [1.2, 0.55, 0.1], r: 3.9, theta: 0.3, phi: 1.28 },
             xray: true
         },
         {
@@ -93,8 +100,8 @@ function initTe3DShowcase() {
                 'Zaciskowe mocowanie sworzni zwiększa trwałość mechanizmu'
             ],
             media: { type: 'img', src: 'img/TEA5/teclapmping.jpg', alt: 'Zespół zamykający TE-A5 z układem kolanowym', caption: 'Zespół zamykający · układ kolanowy' },
-            anchor: [-1.72, 1.78, 0.25], normal: [0, 0.2, 1],
-            view: { target: [-1.75, 1.42, 0], r: 3.6, theta: -0.5, phi: 1.08 },
+            anchor: [-1.85, 1.86, 0.25], normal: [0, 0.3, 1],
+            view: { target: [-1.85, 1.38, 0], r: 3.6, theta: -0.5, phi: 1.1 },
             xray: true
         },
         {
@@ -108,8 +115,8 @@ function initTe3DShowcase() {
                 'Monitoring wypływek (Flash Monitoring) na podstawie czujnika siły zwarcia'
             ],
             media: null,
-            anchor: [-3.0, 1.62, 0.3], normal: [-0.75, 0.15, 0.65],
-            view: { target: [-2.75, 1.38, 0], r: 3.3, theta: -1.15, phi: 1.2 },
+            anchor: [-2.86, 1.66, 0.36], normal: [-0.75, 0.15, 0.65],
+            view: { target: [-2.65, 1.38, 0], r: 3.3, theta: -1.15, phi: 1.2 },
             xray: true
         },
         {
@@ -123,8 +130,8 @@ function initTe3DShowcase() {
                 'Większy prześwit między kolumnami, np. TE220A5: 625 × 625 mm'
             ],
             media: null,
-            anchor: [-0.9, 0.95, 0.55], normal: [0, 0, 1],
-            view: { target: [-0.95, 1.2, 0], r: 3.4, theta: -0.22, phi: 1.2 },
+            anchor: [-1.05, 0.98, 0.5], normal: [0, 0, 1],
+            view: { target: [-0.95, 1.15, 0], r: 3.4, theta: -0.22, phi: 1.2 },
             xray: true
         },
         {
@@ -139,8 +146,8 @@ function initTe3DShowcase() {
                 'Prędkość wtrysku do 350 mm/s (opcjonalnie do 700 mm/s)'
             ],
             media: { type: 'img', src: 'img/TEA5/teinjection.jpg', alt: 'Agregat wtryskowy wtryskarki TE-A5', caption: 'Agregat wtryskowy' },
-            anchor: [1.95, 1.74, 0.3], normal: [0, 0.55, 0.85],
-            view: { target: [1.95, 1.3, 0], r: 4.1, theta: 0.78, phi: 1.08 },
+            anchor: [1.9, 1.8, 0.3], normal: [0, 0.55, 0.85],
+            view: { target: [1.6, 1.3, 0], r: 4.2, theta: 0.78, phi: 1.08 },
             xray: true
         },
         {
@@ -154,8 +161,8 @@ function initTe3DShowcase() {
                 'OPC-UA (EUROMAP 77), eksport danych SQL/CSV, zdalne wsparcie serwisowe'
             ],
             media: null,
-            anchor: [0.3, 1.9, 0.8], normal: [0, 0, 1],
-            view: { target: [0.3, 1.55, 0.72], r: 2.1, theta: 0.18, phi: 1.42 },
+            anchor: [0.2, 1.72, 0.8], normal: [0, 0, 1],
+            view: { target: [0.2, 1.4, 0.75], r: 2.1, theta: 0.18, phi: 1.42 },
             xray: false
         }
     ];
@@ -163,15 +170,17 @@ function initTe3DShowcase() {
     // Etapy symulacji cyklu (czasy w sekundach, pętla).
     const CYCLE_PHASES = [
         { name: 'Zamykanie formy', t0: 0.0, t1: 1.0 },
-        { name: 'Dosunięcie dyszy', t0: 1.0, t1: 1.4 },
-        { name: 'Wtrysk', t0: 1.4, t1: 2.2 },
-        { name: 'Docisk', t0: 2.2, t1: 3.0 },
-        { name: 'Chłodzenie + dozowanie', t0: 3.0, t1: 4.8, parallel: true },
-        { name: 'Otwieranie formy', t0: 4.8, t1: 5.8 },
-        { name: 'Wypychanie', t0: 5.8, t1: 6.8 }
+        { name: 'Ryglowanie – siła zwarcia', t0: 1.0, t1: 1.35 },
+        { name: 'Dosunięcie dyszy', t0: 1.35, t1: 1.75 },
+        { name: 'Wtrysk', t0: 1.75, t1: 2.45 },
+        { name: 'Docisk', t0: 2.45, t1: 3.15 },
+        { name: 'Dozowanie + chłodzenie', t0: 3.15, t1: 5.0, parallel: true },
+        { name: 'Odsunięcie dyszy', t0: 5.0, t1: 5.35 },
+        { name: 'Otwieranie formy', t0: 5.35, t1: 6.35 },
+        { name: 'Wypychanie wypraski', t0: 6.35, t1: 7.25 }
     ];
-    const CYCLE_LENGTH = 7.3;
-    const CYCLE_VIEW = { target: [-0.2, 1.3, 0], r: 7.4, theta: -0.1, phi: 1.3 };
+    const CYCLE_LENGTH = 7.7;
+    const CYCLE_VIEW = { target: [-0.6, 1.25, 0], r: 7.8, theta: -0.12, phi: 1.3 };
 
     let activeFeature = 0;
     let userXray = false;
@@ -441,7 +450,7 @@ function initTe3DShowcase() {
             float r = length(p * vec2(0.62, 1.0));
             float ring = exp(-abs(r - mod(uTime * 1.1, 7.0)) * 10.0) * 0.5;
             float gridA = (minor * 0.22 + major * 0.3 + ring * 0.35) * fade;
-            float s = boxSdf(p - vec2(-0.08, 0.0), vec2(2.95, 0.58));
+            float s = boxSdf(p - vec2(-0.02, 0.0), vec2(3.0, 0.56));
             float sh = (1.0 - smoothstep(-0.35, 0.65, s)) * 0.26 + (1.0 - smoothstep(-0.04, 0.1, s)) * 0.1;
             float a = clamp(gridA + sh, 0.0, 1.0);
             vec3 c = mix(vec3(0.05, 0.07, 0.1), vec3(0.0, 0.78, 0.74), gridA / (gridA + sh + 0.0001));
@@ -630,6 +639,112 @@ function initTe3DShowcase() {
         return geoCache[key];
     }
 
+    // Stożek ścięty wzdłuż osi: promień r0 na początku osi, r1 na końcu (dysza, końcówka ślimaka)
+    function geoFrustum(axis, r0, r1, len, seg) {
+        seg = seg || 24;
+        const key = `f${axis}${r0.toFixed(4)}_${r1.toFixed(4)}_${len.toFixed(4)}_${seg}`;
+        if (geoCache[key]) return geoCache[key];
+        const g = { pos: [], nrm: [], uv: [], idx: [], edges: [] };
+        const push = (p, n, u, v) => {
+            const pp = axisMap(axis, p[0], p[1], p[2]);
+            const nn = axisMap(axis, n[0], n[1], n[2]);
+            g.pos.push(pp[0], pp[1], pp[2]);
+            g.nrm.push(nn[0], nn[1], nn[2]);
+            g.uv.push(u, v);
+        };
+        const h = len / 2, slope = (r0 - r1) / len, nl = Math.hypot(1, slope);
+        for (let i = 0; i <= seg; i++) {
+            const a = (i / seg) * Math.PI * 2, c = Math.cos(a), s = Math.sin(a);
+            push([c * r0, -h, s * r0], [c / nl, slope / nl, s / nl], i / seg, 0);
+            push([c * r1, h, s * r1], [c / nl, slope / nl, s / nl], i / seg, 1);
+        }
+        for (let i = 0; i < seg; i++) {
+            const b = i * 2;
+            g.idx.push(b, b + 1, b + 3, b, b + 3, b + 2);
+            g.edges.push(b, b + 2, b + 1, b + 3);
+        }
+        [[-1, r0], [1, r1]].forEach(([sg, r]) => {
+            const center = g.pos.length / 3;
+            push([0, sg * h, 0], [0, sg, 0], 0.5, 0.5);
+            for (let i = 0; i <= seg; i++) {
+                const a = (i / seg) * Math.PI * 2;
+                push([Math.cos(a) * r, sg * h, Math.sin(a) * r], [0, sg, 0], 0.5, 0.5);
+            }
+            for (let i = 0; i < seg; i++) g.idx.push(center, center + 1 + i, center + 2 + i);
+        });
+        geoCache[key] = uploadGeo(g);
+        return geoCache[key];
+    }
+
+    // Profil (lista [kąt, promień]) wyciągnięty wzdłuż osi; rIn > 0 = otwór w środku
+    function extrudeProfile(axis, prof, len, rIn) {
+        const g = { pos: [], nrm: [], uv: [], idx: [], edges: [] };
+        const h = len / 2, N = prof.length;
+        const P = prof.map(([a, r]) => [Math.cos(a) * r, Math.sin(a) * r]);
+        const I = prof.map(([a]) => [Math.cos(a) * rIn, Math.sin(a) * rIn]);
+        const v = (x, y, z, nx, ny, nz) => {
+            const pp = axisMap(axis, x, y, z), nn = axisMap(axis, nx, ny, nz);
+            g.pos.push(pp[0], pp[1], pp[2]);
+            g.nrm.push(nn[0], nn[1], nn[2]);
+            g.uv.push(0, 0);
+            return g.pos.length / 3 - 1;
+        };
+        const wall = (A, B, inward) => {
+            for (let i = 0; i < N; i++) {
+                const a = A[i], b = A[(i + 1) % N];
+                let nx = b[1] - a[1], nz = -(b[0] - a[0]);
+                const l = Math.hypot(nx, nz) || 1;
+                nx /= l; nz /= l;
+                if (inward) { nx = -nx; nz = -nz; }
+                const i0 = v(a[0], -h, a[1], nx, 0, nz), i1 = v(a[0], h, a[1], nx, 0, nz);
+                const i2 = v(b[0], h, b[1], nx, 0, nz), i3 = v(b[0], -h, b[1], nx, 0, nz);
+                g.idx.push(i0, i1, i2, i0, i2, i3);
+                if (!inward) g.edges.push(i0, i3, i1, i2);
+            }
+        };
+        wall(P, false);
+        if (rIn > 0) wall(I, true);
+        [-1, 1].forEach(sg => {
+            if (rIn > 0) {
+                for (let i = 0; i < N; i++) {
+                    const j = (i + 1) % N;
+                    const q0 = v(I[i][0], sg * h, I[i][1], 0, sg, 0), q1 = v(P[i][0], sg * h, P[i][1], 0, sg, 0);
+                    const q2 = v(P[j][0], sg * h, P[j][1], 0, sg, 0), q3 = v(I[j][0], sg * h, I[j][1], 0, sg, 0);
+                    g.idx.push(q0, q1, q2, q0, q2, q3);
+                }
+            } else {
+                const c = v(0, sg * h, 0, 0, sg, 0);
+                const first = g.pos.length / 3;
+                P.forEach(p => v(p[0], sg * h, p[1], 0, sg, 0));
+                for (let i = 0; i < N; i++) g.idx.push(c, first + i, first + (i + 1) % N);
+            }
+        });
+        return g;
+    }
+
+    function gearProfile(rRoot, rTip, teeth) {
+        const prof = [], st = Math.PI * 2 / teeth;
+        for (let i = 0; i < teeth; i++) {
+            const a = i * st;
+            prof.push([a - 0.3 * st, rRoot], [a - 0.13 * st, rTip], [a + 0.13 * st, rTip], [a + 0.3 * st, rRoot]);
+        }
+        return prof;
+    }
+
+    // Koło zębate (koła na nakrętkach kolumn, zębnik silnika regulacji)
+    function geoGear(axis, rRoot, rTip, teeth, len) {
+        const key = `g${axis}${rRoot}_${rTip}_${teeth}_${len}`;
+        if (!geoCache[key]) geoCache[key] = uploadGeo(extrudeProfile(axis, gearProfile(rRoot, rTip, teeth), len, 0));
+        return geoCache[key];
+    }
+
+    // Wieniec zębaty z otworem (regulacja wysokości formy)
+    function geoRingGear(axis, rIn, rRoot, rTip, teeth, len) {
+        const key = `rg${axis}${rIn}_${rRoot}_${rTip}_${teeth}_${len}`;
+        if (!geoCache[key]) geoCache[key] = uploadGeo(extrudeProfile(axis, gearProfile(rRoot, rTip, teeth), len, rIn));
+        return geoCache[key];
+    }
+
     // ---------- Tekstury (rysowane na <canvas>) ----------
     gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
 
@@ -696,13 +811,21 @@ function initTe3DShowcase() {
             x.font = 'bold 30px Arial';
             x.fillText('P L A I M M', 80, 108);
         }),
-        // tabliczka modelu
+        // oznaczenie modelu na osłonie (jak na maszynie: TE220A5)
         plate: makeTexture(256, 64, (x, w, h) => {
-            x.fillStyle = '#22282f'; x.fillRect(0, 0, w, h);
-            x.fillStyle = '#ffffff'; x.font = 'bold 34px Arial'; x.fillText('TE', 22, 45);
-            x.fillStyle = '#00e1d6'; x.fillText('-A5', 66, 45);
-            x.fillStyle = '#8f9aa6'; x.font = '14px Arial'; x.fillText('SERIES', 150, 44);
+            x.clearRect(0, 0, w, h);
+            x.font = 'bold 40px Arial';
+            x.fillStyle = '#2b3b45'; x.fillText('TE220', 8, 48);
+            x.fillStyle = '#3f8f84'; x.fillText('A5', 128, 48);
         }),
+        // ciemna, perforowana płyta górna szafy (powtarzalna)
+        perfDark: makeTexture(64, 64, (x, w, h) => {
+            x.fillStyle = '#4a525b'; x.fillRect(0, 0, w, h);
+            x.fillStyle = '#262c33';
+            for (let i = 0; i < 4; i++) for (let j = 0; j < 4; j++) {
+                x.beginPath(); x.arc(8 + i * 16 + (j % 2) * 8, 8 + j * 16, 2.6, 0, Math.PI * 2); x.fill();
+            }
+        }, true),
         // perforowana osłona cylindra (powtarzalna)
         perf: makeTexture(64, 64, (x, w, h) => {
             x.fillStyle = '#d3d8dd'; x.fillRect(0, 0, w, h);
@@ -731,6 +854,14 @@ function initTe3DShowcase() {
         steelMid: mat('#535c67', { spec: 0.25, shin: 30 }),
         steelDark: mat('#22282f', { spec: 0.2 }),
         frame: mat('#2b323a', { spec: 0.2 }),
+        frameDark: mat('#20262d', { spec: 0.15 }),
+        cast: mat('#46505c', { spec: 0.22, shin: 28 }),
+        gearSteel: mat('#5d6773', { spec: 0.45, shin: 40 }),
+        motor: mat('#cfd5da', { spec: 0.5, shin: 50 }),
+        motorBlack: mat('#1e2329', { spec: 0.3 }),
+        belt: mat('#111418', { spec: 0.1 }),
+        gray: mat('#8e969e', { spec: 0.2 }),
+        blue: mat('#1f6fd1', { spec: 0.3 }),
         silver: mat('#a9b1b9', { spec: 0.3, shin: 40 }),
         light: mat('#d4d9de', { spec: 0.25 }),
         white: mat('#e7ebee', { spec: 0.35, shin: 40 }),
@@ -755,9 +886,10 @@ function initTe3DShowcase() {
         melt: mat('#ff2dd2', { em: [0.85, 0.12, 0.7], opacity: 0.0 }),
         part: mat('#00fff2', { em: [0.0, 0.6, 0.58], opacity: 0.9 }),
         perf: mat('#d3d8dd', { tex: TEX.perf }),
+        perfDark: mat('#4a525b', { tex: TEX.perfDark }),
         vent: mat('#8c949d', { tex: TEX.vent }),
         logo: mat('#5dc6b5', { tex: TEX.logo }),
-        plate: mat('#22282f', { tex: TEX.plate }),
+        plate: mat('#5dc6b5', { tex: TEX.plate }),
         screen: mat('#000000', { tex: TEX.screen, texEm: 0.42, spec: 0.5, shin: 90 })
     };
     const XRAY_TINT = [0.62, 0.93, 0.91];
@@ -806,241 +938,358 @@ function initTe3DShowcase() {
         return add(geoCyl(axis, r, Math.abs(a1 - a0), o.seg), material, o);
     }
 
-    const YC = 1.40;   // oś zespołu zamykającego / wtrysku
-    const PL = 0.48;   // połowa wymiaru płyt
-    const M_CLOSED = -0.85;
-    const STROKE = 0.2;
-    const PIV = 0.12;  // odsunięcie osi dźwigni od osi maszyny
+    // Stożek ścięty: promień r0 przy a0, r1 przy a1 (a0 < a1)
+    function F(axis, r0, r1, a0, a1, c1, c2, material, o) {
+        o = o || {};
+        const mid = (a0 + a1) / 2;
+        if (axis === 'x') o.pos = [mid, c1, c2];
+        else if (axis === 'y') o.pos = [c1, mid, c2];
+        else o.pos = [c1, c2, mid];
+        return add(geoFrustum(axis, r0, r1, Math.abs(a1 - a0), o.seg), material, o);
+    }
+
+    // ---------- Wymiary (jednostki sceny; 1 j. ≈ 0,9 m) ----------
+    // Proporcje zmierzone na widoku z boku TE220A5 (klatki 360°), układ
+    // zespołów i ruchy - wg animacji producenta "TE-A5 Overview".
+    const YC = 1.33;                  // oś zespołu zamykającego i agregatu wtryskowego
+    const TB = 0.31;                  // połowa rozstawu kolumn (w pionie i poziomie)
+    const PL = 0.5;                   // połowa wymiaru płyt
+    const RP0 = -2.76, RP1 = -2.46;   // płyta tylna (x: od - do)
+    const SP0 = -0.11, SP1 = 0.10;    // płyta stała
+    const MOLD = 0.25;                // grubość połówki formy
+    const M_CLOSED = SP0 - 2 * MOLD;  // czoło płyty ruchomej przy zamkniętej formie
+    const STROKE = 0.4;               // skok otwarcia formy
+    const PIV = 0.1;                  // odsunięcie osi przegubów dźwigni od osi maszyny
+    const XR = RP1 + 0.12;            // przeguby dźwigni na płycie tylnej
+    const FPIV = 0.30;                // przeguby na płycie ruchomej (za jej czołem)
+    const LINK = ((M_CLOSED - FPIV) - XR) / 2;  // dźwignie wyprostowane przy zamkniętej formie
+    const CX_OPEN = XR + 0.25, CX_CLOSED = XR + 0.75;  // położenia krzyżulca
+    const CAR_BACK = 0.12;            // odsunięcie agregatu (dysza odsunięta od formy)
+    const SHOT = 0.22;                // skok wtrysku ślimaka
+    const TIP0 = 0.17 + SHOT;         // czubek ślimaka po dozowaniu (wtrysk kończy się przy 0.17)
+
+    // Koło pasowe z otworami (żeby było widać obrót) - zwraca węzeł obracany wokół osi x
+    function pulley(pos, x0, x1, r, material, holes, f, parent) {
+        const n = node(pos.slice(), parent || null);
+        C('x', r, x0, x1, 0, 0, material, { parent: n, f, seg: 32 });
+        C('x', r * 0.32, x0 - 0.004, x1 + 0.004, 0, 0, M.steelMid, { parent: n, edges: false, seg: 16 });
+        for (let k = 0; k < holes; k++) {
+            const a = (k / holes) * Math.PI * 2;
+            C('x', r * 0.17, x0 - 0.003, x1 + 0.003, Math.cos(a) * r * 0.62, Math.sin(a) * r * 0.62, M.black, { parent: n, edges: false, seg: 12 });
+        }
+        return n;
+    }
+
+    // Odcinek pasa zębatego między dwoma punktami w płaszczyźnie YZ (stałe x)
+    function beltSeg(x, y1, z1, y2, z2, width, parent) {
+        const dy = y2 - y1, dz = z2 - z1, len = Math.hypot(dy, dz);
+        return add(geoBox(width, len, 0.014), M.belt, {
+            parent: parent || null, pos: [x, (y1 + y2) / 2, (z1 + z2) / 2],
+            rot: [Math.atan2(dz, dy), 0, 0], edges: false
+        });
+    }
+
+    // Pas opasujący dwa koła (dwa styczne odcinki + opasanie kół)
+    function belt(x, a, ra, b, rb, width, f, parent) {
+        const dy = b[0] - a[0], dz = b[1] - a[1], l = Math.hypot(dy, dz);
+        const py = -dz / l, pz = dy / l;
+        [1, -1].forEach(s => beltSeg(x, a[0] + py * ra * s, a[1] + pz * ra * s, b[0] + py * rb * s, b[1] + pz * rb * s, width, parent));
+        add(geoTorus('x', ra + 0.006, 0.008, 32, 6), M.belt, { parent: parent || null, pos: [x, a[0], a[1]], edges: false, f });
+        add(geoTorus('x', rb + 0.006, 0.008, 32, 6), M.belt, { parent: parent || null, pos: [x, b[0], b[1]], edges: false, f });
+    }
 
     function buildMachine() {
-        // ===== RAMA / PODSTAWA =====
-        R(-3.08, 2.95, 0.78, 0.86, -0.62, 0.62, M.steel);
-        [-0.56, 0.56].forEach(z => {
-            R(-3.08, -1.0, 0.12, 0.22, z - 0.05, z + 0.05, M.steel);
-            R(-3.08, -1.0, 0.62, 0.7, z - 0.05, z + 0.05, M.steel);
-            [-3.0, -2.08, -1.1].forEach(x => R(x - 0.06, x + 0.06, 0.12, 0.78, z - 0.06, z + 0.06, M.steel));
+        // ===== RAMA / PODSTAWA (otwarta rama pod zespołem zamykającym) =====
+        [-0.48, 0.48].forEach(z => {
+            R(-2.62, 2.74, 0.06, 0.2, z - 0.05, z + 0.05, M.frame);              // dolne płozy
+            R(-2.78, 0.18, 0.62, 0.78, z - 0.05, z + 0.05, M.frame);             // górne belki
+            [-2.38, -1.83, -1.27, -0.04].forEach(x => R(x - 0.05, x + 0.05, 0.2, 0.62, z - 0.05, z + 0.05, M.frame));
         });
-        R(-3.0, -1.1, 0.14, 0.22, -0.12, 0.12, M.steelMid);
-        [-2.54, -1.6].forEach(x => R(x - 0.04, x + 0.04, 0.14, 0.22, -0.56, 0.56, M.steelMid));
-
-        // szafa elektryczna pod agregatem
-        R(-1.0, 2.85, 0.06, 0.14, -0.5, 0.5, M.steel);
-        R(-0.96, 2.79, 0.14, 0.78, -0.31, -0.29, M.steelDark);
-        R(-1.02, -0.96, 0.14, 0.78, -0.58, 0.58, M.steel, { cover: true });
-        R(2.79, 2.85, 0.14, 0.78, -0.58, 0.58, M.steel, { cover: true });
-        const doors = 6, dx0 = -0.94, dx1 = 2.77, gap = 0.028;
-        const dw = (dx1 - dx0 - gap * (doors - 1)) / doors;
-        for (let i = 0; i < doors; i++) {
-            const x0 = dx0 + i * (dw + gap), x1 = x0 + dw;
-            [1, -1].forEach(s => {
-                const z = s * 0.575;
-                R(x0, x1, 0.18, 0.74, z - 0.01, z + 0.01, M.tealDoor, { cover: true, f: 'energy' });
-                if (i === 1 || i === 3 || i === 4) {
-                    R(x0 + 0.1, x0 + 0.22, 0.52, 0.64, z + s * 0.011 - 0.003, z + s * 0.011 + 0.003, M.black, { cover: true, xo: 0, edges: false });
-                }
-                if (i === 3) {
-                    R(x0 + 0.2, x0 + 0.32, 0.26, 0.38, z + s * 0.011 - 0.003, z + s * 0.011 + 0.003, M.black, { cover: true, xo: 0, edges: false });
-                }
-                R(x1 - 0.08, x1 - 0.055, 0.43, 0.47, z + s * 0.013 - 0.004, z + s * 0.013 + 0.004, M.light, { cover: true, xo: 0, edges: false });
-            });
-        }
-        // napędy KEBA w szafie (widoczne w X-RAY)
-        [[-0.78, -0.46], [-0.36, -0.04], [0.06, 0.38], [0.52, 0.9], [1.02, 1.4], [1.55, 1.95]].forEach(([x0, x1], i) => {
-            R(x0, x1, 0.2, i % 2 ? 0.66 : 0.7, -0.26, 0.34, M.drive, { f: 'energy' });
-            R(x0 + 0.04, x1 - 0.04, 0.6, 0.625, 0.34, 0.352, M.led, { f: 'energy', edges: false });
-            R(x0 + 0.04, x0 + 0.1, 0.28, 0.5, 0.34, 0.352, M.steelMid, { edges: false });
+        [-2.72, -1.83, -1.27, -0.04].forEach(x => R(x - 0.05, x + 0.05, 0.66, 0.76, -0.43, 0.43, M.frame));
+        [-2.56, -0.9, 0.24, 1.4, 2.66].forEach(x => R(x - 0.05, x + 0.05, 0.08, 0.18, -0.43, 0.43, M.frame));
+        R(-2.25, -1.4, 0.39, 0.61, -0.32, 0.32, M.frameDark);                    // belka nośna
+        R(-2.3, -0.1, 0.2, 0.235, -0.44, 0.44, M.light, { edges: false });       // taca / zsyp wyprasek
+        R(-2.8, 0.18, 0.76, 0.79, -0.5, 0.5, M.frame);                           // płyta górna ramy
+        // uchwyty transportowe z otworami na końcu ramy
+        [-0.535, 0.535].forEach(z => {
+            R(-2.76, -2.5, 0.48, 0.74, z - 0.012, z + 0.012, M.frame);
+            C('z', 0.035, z - 0.016, z + 0.016, -2.63, 0.66, M.black, { edges: false, seg: 16 });
         });
-
         // stopki poziomujące
-        [-3.0, -2.08, -1.1, -0.92, 0.95, 2.78].forEach(x => [-0.56, 0.56].forEach(z => {
-            C('y', 0.075, 0.0, 0.05, x, z, M.steel, { edges: false });
-            C('y', 0.02, 0.05, 0.13, x, z, M.chrome, { edges: false });
+        [-2.55, -1.12, 0.0, 1.48, 2.64].forEach(x => [-0.48, 0.48].forEach(z => {
+            C('y', 0.075, 0.0, 0.04, x, z, M.steel, { edges: false });
+            C('y', 0.022, 0.04, 0.07, x, z, M.chrome, { edges: false });
         }));
 
-        // prowadnice L/M pod płytą ruchomą + szyny sań wtrysku
-        [-0.42, 0.42].forEach(z => {
-            R(-2.6, -0.16, 0.86, 0.89, z - 0.03, z + 0.03, M.chrome, { f: 'platen' });
-        });
-        [-0.34, 0.34].forEach(z => R(0.32, 2.95, 0.86, 0.9, z - 0.04, z + 0.04, M.steelMid));
-
-        // ===== ZESPÓŁ ZAMYKAJĄCY (wnętrze) =====
-        // płyta tylna + podparcie
-        R(-2.95, -2.62, YC - PL, YC + PL, -PL, PL, M.steel, { f: 'clampcomp' });
-        R(-2.95, -2.62, 0.86, YC - PL, -0.4, 0.4, M.steel);
-        // ucha dźwigni na płycie tylnej
-        [-1, 1].forEach(sy => [-0.2, 0.2].forEach(z => {
-            R(-2.62, -2.26, YC + sy * PIV - 0.05, YC + sy * PIV + 0.05, z - 0.035, z + 0.035, M.steelMid, { f: 'toggle' });
-        }));
-        // wieniec zębaty regulacji wysokości formy + koła na kolumnach
-        add(geoTorus('x', 0.44, 0.032, 48, 8), M.steelMid, { pos: [-2.985, YC, 0], f: 'clampcomp' });
-        add(geoTorus('x', 0.44, 0.02, 48, 6), M.chrome, { pos: [-3.0, YC, 0], f: 'clampcomp', edges: false });
-        [-1, 1].forEach(sy => [-1, 1].forEach(sz => {
-            C('x', 0.105, -3.02, -2.955, YC + sy * 0.32, sz * 0.32, M.steelMid, { f: 'clampcomp' });
-            C('x', 0.06, -3.05, -3.02, YC + sy * 0.32, sz * 0.32, M.chrome, { f: 'clampcomp', edges: false });
-        }));
-        // silnik regulacji + czujnik siły zwarcia
-        C('x', 0.055, -3.07, -2.96, YC - 0.42, -0.28, M.white, { f: 'clampcomp' });
-        R(-2.9, -2.7, YC + PL, YC + PL + 0.04, 0.24, 0.36, M.sensor, { f: 'clampcomp' });
-        // serwosilnik zwarcia + koło pasowe + pas
-        C('x', 0.2, -3.08, -3.03, YC, 0, M.steelDark, { f: 'toggle' });
-        C('x', 0.06, -3.1, -3.03, YC, 0, M.chrome, { f: 'toggle', edges: false });
-        C('x', 0.085, -2.6, -2.2, YC - 0.36, 0.3, M.white, { f: 'toggle' });
-        C('x', 0.07, -3.08, -3.03, YC - 0.36, 0.3, M.steelDark, { f: 'toggle' });
-        (function belt() {
-            const ay = YC - 0.36, az = 0.3, by = YC, bz = 0;
-            const dy = by - ay, dz = bz - az, len = Math.hypot(dy, dz), ang = Math.atan2(dz, dy);
-            const py = -dz / len, pz = dy / len;
-            [0.075, -0.075].forEach(off => {
-                add(geoBox(0.045, len, 0.012), M.black, {
-                    pos: [-3.055, (ay + by) / 2 + py * off * 1.8, (az + bz) / 2 + pz * off * 1.8],
-                    rot: [ang, 0, 0], edges: false, f: 'toggle'
-                });
+        // ===== SZAFA ELEKTRYCZNA POD AGREGATEM =====
+        R(0.18, 2.6, 0.2, 0.74, -0.47, 0.47, M.steelDark);
+        R(2.6, 2.74, 0.2, 0.815, -0.5, 0.5, M.frame, { cover: true });
+        R(0.14, 0.18, 0.2, 0.74, -0.5, 0.5, M.frame, { cover: true });
+        R(0.14, 2.74, 0.74, 0.815, -0.52, 0.52, M.perfDark, { cover: true, xo: 0.25, uv: [26, 5] });
+        // wyłącznik główny na czole ramy
+        R(2.74, 2.78, 0.42, 0.64, 0.12, 0.34, M.steelMid, { edges: false });
+        R(2.78, 2.795, 0.5, 0.58, 0.19, 0.27, M.red, { edges: false });
+        const doorsX = [[0.182, 0.532], [0.547, 0.896], [0.912, 1.261], [1.277, 1.618], [1.634, 1.789], [1.804, 2.177], [2.192, 2.565]];
+        doorsX.forEach(([x0, x1], i) => {
+            [1, -1].forEach(s => {
+                const z = s * 0.5;
+                R(x0, x1, 0.21, 0.73, z - 0.006, z + 0.006, M.tealDoor, { cover: true, f: 'energy' });
+                const zf = z + s * 0.008;
+                const deco = (xx0, xx1, y0, y1, m) => R(xx0, xx1, y0, y1, zf - 0.003, zf + 0.003, m, { cover: true, xo: 0, edges: false });
+                if (i === 1 || i === 3 || i === 6) deco((x0 + x1) / 2 - 0.05, (x0 + x1) / 2 + 0.05, 0.52, 0.62, M.black);
+                if (i === 2) deco((x0 + x1) / 2 - 0.05, (x0 + x1) / 2 + 0.05, 0.24, 0.34, M.black);
+                if (i === 5 || i === 6) deco(x1 - 0.12, x1 - 0.07, 0.4, 0.45, M.yellow);
+                if (i !== 4) deco(x1 - 0.035, x1 - 0.02, 0.43, 0.49, M.light);
+                if (i === 0) {
+                    C('z', 0.022, zf - 0.003, zf + 0.003, x0 + 0.06, 0.67, M.blue, { cover: true, xo: 0, edges: false, seg: 14 });
+                    C('z', 0.022, zf - 0.003, zf + 0.003, x0 + 0.12, 0.67, M.blue, { cover: true, xo: 0, edges: false, seg: 14 });
+                }
             });
-        })();
+        });
+        // serwonapędy w szafie (widoczne w X-RAY)
+        [[0.26, 0.6], [0.66, 1.0], [1.06, 1.4], [1.46, 1.8], [1.86, 2.2], [2.26, 2.52]].forEach(([x0, x1], i) => {
+            R(x0, x1, 0.24, i % 2 ? 0.64 : 0.68, -0.26, 0.3, M.drive, { f: 'energy' });
+            R(x0 + 0.04, x1 - 0.04, 0.58, 0.6, 0.3, 0.312, M.led, { f: 'energy', edges: false });
+            R(x0 + 0.04, x0 + 0.1, 0.3, 0.5, 0.3, 0.312, M.steelMid, { edges: false });
+        });
 
-        // kolumny (tie-bar)
+        // ===== ZESPÓŁ ZAMYKAJĄCY =====
+        // prowadnice liniowe L/M płyty ruchomej
+        [-0.42, 0.42].forEach(z => R(-2.3, -0.16, 0.79, 0.815, z - 0.028, z + 0.028, M.chrome, { f: 'platen' }));
+        // płyta tylna (odlew) + podpora
+        R(RP0, RP1, YC - PL, YC + PL, -PL, PL, M.cast, { f: 'clampcomp' });
+        R(RP0 + 0.04, RP1 - 0.04, 0.79, YC - PL, -0.42, 0.42, M.cast);
+        [-1, 1].forEach(sy => [-0.2, 0.2].forEach(z => {
+            R(RP1, XR + 0.07, YC + sy * PIV - 0.075, YC + sy * PIV + 0.075, z - 0.045, z + 0.045, M.cast, { f: 'toggle' });
+        }));
+        // regulacja wysokości formy: wieniec zębaty + koła na nakrętkach kolumn + silnik
+        add(geoRingGear('x', 0.24, 0.31, 0.335, 72, 0.05), M.gearSteel, { pos: [-2.8, YC, 0], f: 'clampcomp' });
         [-1, 1].forEach(sy => [-1, 1].forEach(sz => {
-            C('x', 0.045, -2.99, 0.27, YC + sy * 0.32, sz * 0.32, M.chrome, { f: 'platen', seg: 20 });
-            C('x', 0.075, 0.2, 0.31, YC + sy * 0.32, sz * 0.32, M.steelMid, { edges: false });
+            add(geoGear('x', 0.095, 0.115, 22, 0.08), M.gearSteel, { pos: [-2.81, YC + sy * TB, sz * TB], f: 'clampcomp' });
+            C('x', 0.07, -2.9, -2.85, YC + sy * TB, sz * TB, M.cast, { f: 'clampcomp', edges: false });
+        }));
+        R(-2.92, -2.78, YC + 0.36, YC + 0.48, -0.42, -0.24, M.motorBlack, { f: 'clampcomp' });
+        add(geoGear('x', 0.04, 0.052, 12, 0.05), M.gearSteel, { pos: [-2.8, YC + 0.36, -0.25], f: 'clampcomp' });
+        // czujnik siły zwarcia na kolumnie
+        R(-2.44, -2.34, YC + TB + 0.045, YC + TB + 0.085, TB - 0.03, TB + 0.03, M.sensor, { f: 'clampcomp' });
+
+        // kolumny + nakrętki od strony agregatu
+        [-1, 1].forEach(sy => [-1, 1].forEach(sz => {
+            C('x', 0.05, -2.9, SP1 + 0.14, YC + sy * TB, sz * TB, M.chrome, { f: 'platen', seg: 20 });
+            C('x', 0.085, SP1, SP1 + 0.14, YC + sy * TB, sz * TB, M.cast, { edges: false });
         }));
 
-        // płyta stała + płyta czołowa z rowkami teowymi
-        R(-0.1, 0.2, YC - 0.52, YC + 0.52, -0.52, 0.52, M.steel);
-        R(-0.1, 0.2, 0.86, YC - 0.52, -0.45, 0.45, M.steel);
-        R(-0.125, -0.1, YC - 0.5, YC + 0.5, -0.5, 0.5, M.light);
-        [-0.36, -0.18, 0.18, 0.36].forEach(dy => [[-0.47, -0.28], [0.28, 0.47]].forEach(([z0, z1]) => {
-            R(-0.129, -0.124, YC + dy - 0.012, YC + dy + 0.012, z0, z1, M.steelDark, { edges: false });
-        }));
-        R(-0.36, -0.125, YC - 0.27, YC + 0.27, -0.25, 0.25, M.mold);
-        R(-0.364, -0.36, YC - 0.12, YC + 0.12, -0.15, 0.15, M.moldCore, { edges: false });
+        // napęd zwarcia: serwosilnik -> pas zębaty -> koło pasowe na śrubie kulowej
+        const MOT_Y = YC - 0.42;
+        C('x', 0.1, -2.97, -2.83, MOT_Y, 0, M.motor, { f: 'toggle' });
+        R(-2.86, -2.78, MOT_Y - 0.1, MOT_Y + 0.1, -0.1, 0.1, M.cast, { f: 'toggle' });
+        const nClampPulley = pulley([0, YC, 0], -3.04, -2.98, 0.19, M.gearSteel, 5, 'toggle');
+        const nClampMotorPulley = pulley([0, MOT_Y, 0], -3.04, -2.98, 0.07, M.gearSteel, 3, 'toggle');
+        belt(-3.01, [YC, 0], 0.19, [MOT_Y, 0], 0.07, 0.05, 'toggle');
+        C('x', 0.09, -2.98, RP0, YC, 0, M.cast, { f: 'toggle' });    // łożyskowanie śruby
+        // śruba kulowa (obraca się) z prowadnicami krzyżulca
+        const nBS = node([0, YC, 0]);
+        C('x', 0.045, -2.98, -1.45, 0, 0, M.chrome, { parent: nBS, f: 'toggle', seg: 18 });
+        R(-2.4, -1.5, 0.038, 0.05, -0.008, 0.008, M.stripe, { parent: nBS, edges: false });
+        [-0.26, 0.26].forEach(z => C('x', 0.022, RP1, -1.47, YC, z, M.chrome, { f: 'toggle', seg: 12 }));
 
-        // płyta ruchoma (węzeł animowany)
+        // krzyżulec (nakrętka śruby kulowej) - pozycja liczona w updateToggle
+        const nCH = node([CX_OPEN, YC, 0]);
+        R(-0.07, 0.07, -0.15, 0.15, -0.09, 0.09, M.cast, { parent: nCH, f: 'toggle' });
+        C('x', 0.08, -0.15, -0.07, 0, 0, M.steelMid, { parent: nCH, f: 'toggle' });
+        [-0.26, 0.26].forEach(z => R(-0.06, 0.06, -0.045, 0.045, z - 0.03, z + 0.03, M.cast, { parent: nCH, f: 'toggle' }));
+        [-1, 1].forEach(sy => C('z', 0.03, -0.3, 0.3, 0, sy * 0.12, M.chrome, { parent: nCH, edges: false, seg: 12 }));
+
+        // płyta ruchoma Center-Press (węzeł animowany = jej czoło)
         const nMP = node([M_CLOSED - STROKE, 0, 0]);
-        R(0, 0.25, YC - PL, YC + PL, -PL, PL, M.steel, { parent: nMP, f: 'platen' });
-        R(-0.08, 0, YC - 0.24, YC + 0.24, -0.24, 0.24, M.steelMid, { parent: nMP, f: 'platen' });
-        [-1, 1].forEach(sy => [-0.13, 0.13].forEach(z => {
-            R(-0.14, -0.08, YC + sy * PIV - 0.05, YC + sy * PIV + 0.05, z - 0.03, z + 0.03, M.steelMid, { parent: nMP, f: 'toggle' });
+        R(-0.12, 0, YC - PL, YC + PL, -PL, PL, M.cast, { parent: nMP, f: 'platen' });
+        R(-0.24, -0.12, YC - 0.3, YC + 0.3, -0.3, 0.3, M.cast, { parent: nMP, f: 'platen' });
+        [-1, 1].forEach(sy => [-0.07, 0.07].forEach(z => {
+            R(-FPIV - 0.06, -0.22, YC + sy * PIV - 0.065, YC + sy * PIV + 0.065, z - 0.035, z + 0.035, M.cast, { parent: nMP, f: 'toggle' });
         }));
         [-0.42, 0.42].forEach(z => {
-            R(0.02, 0.23, 0.885, 0.93, z - 0.06, z + 0.06, M.red, { parent: nMP, f: 'platen' });
+            R(-0.11, -0.01, 0.815, 0.85, z - 0.06, z + 0.06, M.steelMid, { parent: nMP, f: 'platen' });   // wózki L/M
         });
-        R(0.25, 0.49, YC - 0.27, YC + 0.27, -0.25, 0.25, M.mold, { parent: nMP });
-        R(0.49, 0.494, YC - 0.12, YC + 0.12, -0.15, 0.15, M.moldCore, { parent: nMP, edges: false });
+        // napęd wypychacza: serwosilnik + pas + koło śruby wypychacza
+        const EJ_Z = 0.4;
+        C('x', 0.065, -0.46, -0.24, YC - 0.2, EJ_Z, M.motor, { parent: nMP, f: 'platen' });
+        R(-0.26, -0.12, YC - 0.08, YC + 0.2, EJ_Z - 0.07, EJ_Z + 0.07, M.cast, { parent: nMP });
+        const nEjPulley = pulley([0, YC + 0.08, EJ_Z], -0.5, -0.46, 0.075, M.gearSteel, 4, 'platen', nMP);
+        const nEjMotorPulley = pulley([0, YC - 0.2, EJ_Z], -0.5, -0.46, 0.04, M.gearSteel, 3, 'platen', nMP);
+        belt(-0.48, [YC + 0.08, EJ_Z], 0.075, [YC - 0.2, EJ_Z], 0.04, 0.035, 'platen', nMP);
+        // połówka ruchoma formy (półprzezroczysta w X-RAY - widać wypełnianie gniazda)
+        R(0, MOLD, YC - 0.3, YC + 0.3, -0.28, 0.28, M.mold, { parent: nMP, cover: true, xo: 0.2 });
+        [-0.18, -0.06, 0.06, 0.18].forEach(dy => R(0.02, MOLD - 0.02, YC + dy - 0.006, YC + dy + 0.006, 0.28, 0.284, M.steelDark, { parent: nMP, cover: true, xo: 0, edges: false }));
+        [-1, 1].forEach(sy => [-1, 1].forEach(sz => C('x', 0.022, MOLD, MOLD + 0.11, YC + sy * 0.22, sz * 0.2, M.chrome, { parent: nMP, edges: false, seg: 12 })));
+        // wypychacz: płyta + kołki (wysuwają się przy wypychaniu)
         const nEj = node([0, 0, 0], nMP);
-        C('x', 0.03, -0.36, -0.08, YC, 0, M.chrome, { parent: nEj });
-        C('x', 0.06, -0.4, -0.36, YC, 0, M.steelMid, { parent: nEj, edges: false });
+        R(0.04, 0.07, YC - 0.2, YC + 0.2, -0.2, 0.2, M.steelMid, { parent: nEj, edges: false });
+        C('x', 0.03, -0.3, 0.04, YC, 0, M.chrome, { parent: nEj, edges: false });
+        [[-0.08, -0.1], [-0.08, 0.1], [0.08, -0.1], [0.08, 0.1]].forEach(([dy, dz]) => C('x', 0.012, 0.07, MOLD - 0.012, YC + dy, dz, M.chrome, { parent: nEj, edges: false, seg: 10 }));
 
-        // mechanizm kolanowy (pozycje liczone co klatkę - updateToggle)
-        const unitBox = geoBox(1, 0.085, 0.045);
-        const toggle = { linksA: [], linksB: [], small: [], pinsJ: [] };
+        // płyta stała z otworem na dyszę + podpora
+        R(SP0, SP1, YC + 0.12, YC + PL, -PL, PL, M.cast, { f: 'platen' });
+        R(SP0, SP1, YC - PL, YC - 0.12, -PL, PL, M.cast, { f: 'platen' });
+        R(SP0, SP1, YC - 0.12, YC + 0.12, 0.12, PL, M.cast, { edges: false });
+        R(SP0, SP1, YC - 0.12, YC + 0.12, -PL, -0.12, M.cast, { edges: false });
+        R(SP0 + 0.02, SP1 - 0.02, 0.79, YC - PL, -0.44, 0.44, M.cast);
+        // połówka stała formy + tuleja wlewowa + tuleje prowadzące
+        R(SP0 - MOLD, SP0, YC - 0.3, YC + 0.3, -0.28, 0.28, M.mold, { cover: true, xo: 0.2 });
+        [-0.18, -0.06, 0.06, 0.18].forEach(dy => R(SP0 - MOLD + 0.02, SP0 - 0.02, YC + dy - 0.006, YC + dy + 0.006, 0.28, 0.284, M.steelDark, { cover: true, xo: 0, edges: false }));
+        C('x', 0.035, SP0 - MOLD + 0.03, SP0, YC, 0, M.chrome, { edges: false, seg: 14 });
+        C('x', 0.09, SP0 - 0.012, SP0, YC, 0, M.steelMid, { edges: false });
+
+        // mechanizm kolanowy - 5-punktowy, podwójny (pozycje w updateToggle)
+        const linkA = geoBox(1, 0.13, 0.05), linkB = geoBox(1, 0.11, 0.05), linkS = geoBox(1, 0.06, 0.035);
+        const toggle = [];
         [-1, 1].forEach(sy => {
-            [-0.2, 0.2].forEach(z => toggle.linksA.push({ sy, z, m: add(unitBox, M.steelMid, { f: 'toggle' }) }));
-            [-0.13, 0.13].forEach(z => toggle.linksB.push({ sy, z, m: add(unitBox, M.steelMid, { f: 'toggle' }) }));
-            [-0.26, 0.26].forEach(z => toggle.small.push({ sy, z, m: add(geoBox(1, 0.06, 0.035), M.steel, { f: 'toggle' }) }));
-            toggle.pinsJ.push({ sy, m: add(geoCyl('z', 0.04, 0.58, 16), M.chrome, { f: 'toggle' }) });
+            const t = { sy, a: [], b: [], s: [] };
+            [-0.2, 0.2].forEach(z => t.a.push({ z, m: add(linkA, M.cast, { f: 'toggle' }) }));
+            [-0.12, 0.12].forEach(z => t.b.push({ z, m: add(linkB, M.cast, { f: 'toggle' }) }));
+            [-0.27, 0.27].forEach(z => t.s.push({ z, m: add(linkS, M.steelMid, { f: 'toggle' }) }));
+            t.pinR = C('z', 0.045, -0.26, 0.26, XR, YC + sy * PIV, M.chrome, { f: 'toggle', seg: 16 });
+            t.pinJ = add(geoCyl('z', 0.05, 0.5, 16), M.chrome, { f: 'toggle' });
+            t.pinF = add(geoCyl('z', 0.04, 0.32, 16), M.chrome, { f: 'toggle' });
+            t.pinK = add(geoCyl('z', 0.03, 0.6, 12), M.chrome, { f: 'toggle', edges: false });
+            toggle.push(t);
         });
-        toggle.cross = add(geoBox(0.12, 0.22, 0.44), M.steelMid, { f: 'toggle' });
-        toggle.screw = add(geoCyl('x', 0.03, 1, 16), M.chrome, { f: 'toggle' });
 
-        // ===== OSŁONY ZESPOŁU ZAMYKAJĄCEGO (obudowa - półprzezroczysta w X-RAY) =====
-        R(-3.1, -1.02, 0.86, 1.98, 0.645, 0.665, M.teal, { cover: true });
-        R(-3.1, -1.02, 0.86, 1.98, -0.665, -0.645, M.teal, { cover: true });
-        R(-3.1, -1.02, 1.96, 1.98, -0.665, 0.665, M.teal, { cover: true });
-        R(-3.12, -3.1, 0.86, 1.98, -0.665, 0.665, M.teal, { cover: true });
+        // ===== OSŁONY ZESPOŁU ZAMYKAJĄCEGO (półprzezroczyste w X-RAY) =====
+        const CZ = 0.7;
+        R(-3.1, -1.34, 0.76, 1.98, CZ - 0.02, CZ, M.teal, { cover: true });
+        R(-3.1, -1.34, 0.76, 1.98, -CZ, -CZ + 0.02, M.teal, { cover: true });
+        R(-3.1, -1.34, 1.96, 1.98, -CZ, CZ, M.teal, { cover: true });
+        R(-3.12, -3.1, 0.76, 1.98, -CZ, CZ, M.teal, { cover: true });
         [1, -1].forEach(s => {
-            const z = s * 0.667;
-            R(-3.06, -1.08, 1.33, 1.336, z - 0.002, z + 0.002, M.seam, { cover: true, xo: 0, edges: false });
-            R(-3.06, -1.08, 1.66, 1.666, z - 0.002, z + 0.002, M.seam, { cover: true, xo: 0, edges: false });
-            R(-2.063, -2.057, 0.9, 1.94, z - 0.002, z + 0.002, M.seam, { cover: true, xo: 0, edges: false });
+            const z = s * (CZ + 0.002);
+            const seam = (x0, x1, y0, y1) => R(x0, x1, y0, y1, z - 0.002, z + 0.002, M.seam, { cover: true, xo: 0, edges: false });
+            seam(-2.563, -2.557, 0.8, 1.94);
+            seam(-1.943, -1.937, 0.8, 1.94);
+            [1.5, 1.15].forEach(y => { seam(-2.45, -2.05, y - 0.003, y + 0.003); seam(-1.84, -1.44, y - 0.003, y + 0.003); });
+            seam(-2.5, -1.4, 0.875, 0.888);
         });
-        add(geoPlane(0.64, 0.16), M.logo, { pos: [-2.66, 1.82, 0.667], cover: true, xo: 0, edges: false });
-        add(geoPlane(0.4, 0.1), M.plate, { pos: [-1.4, 1.05, 0.667], cover: true, xo: 0, edges: false });
+        add(geoPlane(0.4, 0.11), M.logo, { pos: [-2.86, 1.88, CZ + 0.003], cover: true, xo: 0, edges: false });
+        add(geoPlane(0.38, 0.075), M.plate, { pos: [-2.82, 1.0, CZ + 0.003], cover: true, xo: 0, edges: false });
+        R(-1.46, -1.4, 0.94, 1.0, CZ + 0.001, CZ + 0.004, M.yellow, { cover: true, xo: 0, edges: false });
 
         // sygnalizator świetlny
-        C('y', 0.012, 1.98, 2.05, -2.98, -0.5, M.steelDark, { edges: false });
+        C('y', 0.014, 1.98, 2.1, -3.0, 0.52, M.steelDark, { edges: false });
         const lamps = {
-            g: C('y', 0.034, 2.05, 2.11, -2.98, -0.5, M.lampG, { seg: 16 }),
-            y: C('y', 0.034, 2.11, 2.17, -2.98, -0.5, M.lampY, { seg: 16 }),
-            r: C('y', 0.034, 2.17, 2.23, -2.98, -0.5, M.lampR, { seg: 16 })
+            g: C('y', 0.034, 2.1, 2.16, -3.0, 0.52, M.lampG, { seg: 16 }),
+            y: C('y', 0.034, 2.16, 2.22, -3.0, 0.52, M.lampY, { seg: 16 }),
+            r: C('y', 0.034, 2.22, 2.28, -3.0, 0.52, M.lampR, { seg: 16 })
         };
-        C('y', 0.03, 2.23, 2.25, -2.98, -0.5, M.white, { seg: 16, edges: false });
+        C('y', 0.03, 2.28, 2.31, -3.0, 0.52, M.white, { seg: 16, edges: false });
 
         // ===== DRZWI OCHRONNE STREFY FORMY =====
         [1, -1].forEach(s => {
-            const z = s * 0.7;
-            R(-1.02, 0.02, 1.92, 1.98, z - 0.02, z + 0.02, M.frame, { cover: true });
-            R(-1.02, 0.02, 0.86, 0.92, z - 0.02, z + 0.02, M.frame, { cover: true });
-            R(-1.02, -0.96, 0.92, 1.92, z - 0.02, z + 0.02, M.frame, { cover: true });
-            R(-0.04, 0.02, 0.92, 1.92, z - 0.02, z + 0.02, M.frame, { cover: true });
-            R(-0.96, -0.04, 0.92, 1.92, z - 0.004, z + 0.004, M.glass, { glass: true, edges: false });
+            const z = s * CZ;
+            R(-1.34, -0.11, 1.92, 1.98, z - 0.02, z + 0.02, M.frame, { cover: true });
+            R(-1.34, -0.11, 0.79, 0.86, z - 0.02, z + 0.02, M.frame, { cover: true });
+            R(-1.34, -1.28, 0.86, 1.92, z - 0.02, z + 0.02, M.frame, { cover: true });
+            R(-1.09, -1.05, 0.86, 1.92, z - 0.015, z + 0.015, M.frame, { cover: true });
+            R(-1.28, -1.09, 0.86, 1.92, z - 0.004, z + 0.004, M.glass, { glass: true, edges: false });
+            R(-1.05, -0.11, 0.86, 1.92, z - 0.004, z + 0.004, M.glass, { glass: true, edges: false });
         });
-        R(-1.02, 0.02, 1.965, 1.975, -0.7, 0.7, M.glass, { glass: true, edges: false });
-        C('y', 0.016, 1.26, 1.62, -0.14, 0.745, M.chrome, { cover: true, xo: 0, edges: false });
+        R(-1.34, -0.11, 1.965, 1.975, -CZ, CZ, M.glass, { glass: true, edges: false });
+        C('y', 0.016, 1.22, 1.6, -0.24, CZ + 0.045, M.chrome, { cover: true, xo: 0, edges: false });
 
-        // ===== KOLUMNA PANELU + STEROWNIK =====
-        R(0.02, 0.28, 0.86, 2.02, -0.68, 0.68, M.silver, { cover: true, xo: 0.1 });
-        R(0.28, 0.36, 1.5, 1.58, 0.6, 0.72, M.steelDark, { f: 'controller' });
-        R(0.1, 0.5, 1.2, 1.92, 0.72, 0.79, M.black, { f: 'controller' });
-        R(0.13, 0.47, 1.25, 1.87, 0.79, 0.795, M.screen, { f: 'controller', edges: false });
-        R(0.03, 0.09, 1.0, 1.12, 0.68, 0.7, M.yellow, { cover: true, xo: 0, edges: false });
-        C('z', 0.03, 0.7, 0.74, 0.06, 1.06, M.red, { f: 'controller', seg: 16 });
-        [1.2, 1.28, 1.36, 1.44].forEach(y => C('z', 0.014, 0.68, 0.7, 0.06, y, M.light, { cover: true, xo: 0, edges: false, seg: 12 }));
+        // ===== SŁUPKI OSŁONY + STEROWNIK (pionowy ekran na wsporniku) =====
+        [1, -1].forEach(s => R(-0.11, 0.02, 0.79, 1.98, s * 0.62, s * 0.72, M.silver, { cover: true, xo: 0.1 }));
+        R(0.02, 0.1, 1.36, 1.44, 0.66, 0.75, M.steelDark, { f: 'controller' });
+        R(0.03, 0.38, 1.13, 1.67, 0.75, 0.8, M.black, { f: 'controller' });
+        R(0.055, 0.355, 1.16, 1.64, 0.8, 0.805, M.screen, { f: 'controller', edges: false });
+        R(-0.1, -0.035, 0.81, 0.9, 0.72, 0.73, M.yellow, { cover: true, xo: 0, edges: false });
+        C('z', 0.026, 0.73, 0.76, -0.068, 0.855, M.red, { f: 'controller', seg: 16 });
+        [1.2, 1.28, 1.36].forEach(y => C('z', 0.012, 0.72, 0.73, -0.045, y, M.light, { cover: true, xo: 0, edges: false, seg: 12 }));
 
         // ===== AGREGAT WTRYSKOWY (węzeł sań - dosunięcie dyszy) =====
-        const nCar = node([0.06, 0, 0]);
-        C('x', 0.028, -0.06, 0.3, YC, 0, M.chrome, { parent: nCar, f: 'injection', seg: 16 });
-        C('x', 0.075, 0.3, 1.42, YC, 0, M.barrel, { parent: nCar, cover: true, xo: 0.28, f: 'injection' });
-        const heaters = [0.45, 0.66, 0.87, 1.08, 1.29].map(x =>
-            C('x', 0.092, x - 0.07, x + 0.07, YC, 0, M.heater, { parent: nCar, cover: true, xo: 0.32 }));
-        const melt = C('x', 0.05, 0.28, 0.72, YC, 0, M.melt, { parent: nCar, edges: false });
-        R(1.22, 1.4, YC + 0.07, YC + 0.24, -0.1, 0.1, M.steelMid, { parent: nCar });
-        R(0.34, 1.4, YC - 0.19, YC + 0.17, -0.2, 0.2, M.perf, { parent: nCar, cover: true, uv: [10, 3], f: 'injection' });
-        [-0.3, 0.3].forEach(z => {
-            C('x', 0.055, 1.3, 1.62, YC - 0.1, z, M.steelDark, { parent: nCar, f: 'injection' });
-            C('x', 0.025, 0.2, 1.45, YC - 0.1, z, M.chrome, { f: 'injection', seg: 12 });
+        // szyny sań na płycie szafy
+        [-0.3, 0.3].forEach(z => R(0.3, 3.0, 0.815, 0.845, z - 0.035, z + 0.035, M.steelMid));
+        // cylindry docisku dyszy (4, symetryczne): tłoczyska w płycie stałej, korpusy na saniach
+        const nozzleRods = [[0.21, 0.11], [0.21, -0.11], [-0.21, 0.11], [-0.21, -0.11]];
+        nozzleRods.forEach(([dy, dz]) => {
+            C('x', 0.02, SP1, 1.2, YC + dy, dz, M.chrome, { f: 'injection', seg: 12 });
+            R(SP1, SP1 + 0.05, YC + dy - 0.04, YC + dy + 0.04, dz - 0.04, dz + 0.04, M.cast, { edges: false });
         });
-        R(1.4, 2.9, 0.9, 1.0, -0.4, 0.4, M.steel, { parent: nCar });
-        R(1.0, 1.42, 0.9, 1.02, 0.42, 0.5, M.black, { parent: nCar, edges: false });
-        // obudowa agregatu
-        R(1.42, 2.95, 1.0, 1.66, -0.44, 0.44, M.teal, { parent: nCar, cover: true, f: 'injection' });
-        R(1.62, 2.78, 1.66, 1.78, -0.36, 0.36, M.vent, { parent: nCar, cover: true, uv: [3, 1] });
-        add(geoPlane(0.6, 0.15), M.logo, { parent: nCar, pos: [2.6, 1.54, 0.442], cover: true, xo: 0, edges: false });
-        R(1.95, 2.07, 1.3, 1.42, 0.441, 0.445, M.yellow, { parent: nCar, cover: true, xo: 0, edges: false });
-        R(2.1, 2.2, 1.3, 1.42, 0.441, 0.445, M.white, { parent: nCar, cover: true, xo: 0, edges: false });
-        // wnętrze agregatu
-        R(1.46, 1.74, 1.06, 1.62, -0.36, 0.36, M.steelDark, { parent: nCar, f: 'injection' });
-        R(2.62, 2.72, 1.06, 1.62, -0.36, 0.36, M.steelDark, { parent: nCar });
-        [-0.22, 0.22].forEach(z => {
-            C('x', 0.035, 1.74, 2.62, YC, z, M.chrome, { parent: nCar, f: 'injection', seg: 14 });
-            C('x', 0.13, 2.74, 2.8, YC, z, M.steelDark, { parent: nCar, seg: 28 });
-            C('x', 0.11, 2.22, 2.6, 1.2, z, M.white, { parent: nCar, f: 'injection' });
-            C('x', 0.07, 2.74, 2.8, 1.2, z, M.steelDark, { parent: nCar, edges: false, seg: 18 });
-        });
-        // ślimak (obraca się podczas dozowania, przesuwa przy wtrysku)
-        const nScrew = node([0, YC, 0], nCar);
-        C('x', 0.045, 0.32, 1.94, 0, 0, M.screw, { parent: nScrew, seg: 16 });
-        for (let x = 0.38; x < 1.36; x += 0.075) {
-            C('x', 0.066, x, x + 0.012, 0, 0, M.screw, { parent: nScrew, edges: false, seg: 18 });
-        }
-        R(0.36, 1.36, 0.042, 0.054, -0.007, 0.007, M.stripe, { parent: nScrew, edges: false });
-        // płyta dociskowa + czujnik siły (load cell) + silnik dozowania
-        const nPush = node([0, 0, 0], nCar);
-        R(1.94, 2.04, 1.1, 1.6, -0.34, 0.34, M.steelMid, { parent: nPush });
-        C('x', 0.1, 1.9, 1.94, YC, 0, M.loadcell, { parent: nPush, f: 'injection', seg: 20 });
-        C('x', 0.09, 2.04, 2.3, YC, 0, M.white, { parent: nPush, f: 'injection' });
-        [-0.22, 0.22].forEach(z => C('x', 0.062, 1.9, 2.06, YC, z, M.steelMid, { parent: nPush, edges: false, seg: 16 }));
 
-        // wypraska (pojawia się przy wypychaniu)
-        const part = R(-0.02, 0.02, -0.12, 0.12, -0.16, 0.16, M.part, { edges: true });
+        const nCar = node([CAR_BACK, 0, 0]);
+        nozzleRods.forEach(([dy, dz]) => C('x', 0.045, 0.82, 1.09, YC + dy, dz, M.cast, { parent: nCar, f: 'injection' }));
+        R(1.1, 3.0, 0.845, 0.885, -0.36, 0.36, M.frame, { parent: nCar });
+        [1.42, 1.56, 2.5, 2.64].forEach(x => [-0.3, 0.3].forEach(z => R(x - 0.04, x + 0.04, 0.885, 1.07, z - 0.04, z + 0.04, M.frame, { parent: nCar })));
+        // płyta czołowa - zintegrowany odlew obudowy wtrysku
+        R(1.09, 1.31, 1.05, 1.61, -0.32, 0.32, M.cast, { parent: nCar, f: 'injection' });
+        // cylinder z grzałkami, dysza, gardziel zasypowa, osłona perforowana
+        C('x', 0.065, 0.16, 1.09, YC, 0, M.barrel, { parent: nCar, cover: true, xo: 0.2, f: 'injection' });
+        const heaters = [0.3, 0.46, 0.62, 0.78, 0.94].map(x =>
+            C('x', 0.082, x - 0.06, x + 0.06, YC, 0, M.heater, { parent: nCar, cover: true, xo: 0.3 }));
+        F('x', 0.022, 0.05, -0.1, 0.16, YC, 0, M.chrome, { parent: nCar, f: 'injection' });
+        R(1.12, 1.28, YC + 0.065, YC + 0.24, -0.09, 0.09, M.steelMid, { parent: nCar });
+        R(0.37, 1.09, YC - 0.1, YC + 0.09, -0.12, 0.12, M.perf, { parent: nCar, cover: true, uv: [9, 2], xo: 0.12, f: 'injection' });
+        // obudowa agregatu
+        R(1.31, 3.07, 1.07, 1.61, -0.36, 0.36, M.teal, { parent: nCar, cover: true, f: 'injection' });
+        add(geoPlane(0.28, 0.075), M.logo, { parent: nCar, pos: [2.86, 1.51, 0.362], cover: true, xo: 0, edges: false });
+        add(geoPlane(0.13, 0.17), M.vent, { parent: nCar, pos: [2.93, 1.31, 0.362], cover: true, xo: 0, edges: false, uv: [2, 1] });
+        R(2.14, 2.26, 1.16, 1.34, 0.36, 0.364, M.white, { parent: nCar, cover: true, xo: 0, edges: false });
+        R(2.27, 2.36, 1.2, 1.3, 0.36, 0.364, M.yellow, { parent: nCar, cover: true, xo: 0, edges: false });
+        R(1.66, 1.76, 1.44, 1.48, 0.36, 0.364, M.black, { parent: nCar, cover: true, xo: 0, edges: false });
+        // skrzynka serwonapędów w osi agregatu (szara pokrywa) + radiator
+        R(1.38, 2.42, 1.61, 1.79, -0.3, 0.3, M.gray, { parent: nCar, cover: true });
+        add(geoBox(0.24, 0.2, 0.6), M.gray, { parent: nCar, pos: [2.42, 1.64, 0], rot: [0, 0, -0.75], cover: true });
+        add(geoPlane(0.3, 0.06), M.vent, { parent: nCar, pos: [1.62, 1.7, 0.302], cover: true, xo: 0, edges: false, uv: [4, 1] });
+        R(1.46, 2.34, 1.62, 1.65, -0.24, 0.24, M.drive, { parent: nCar, f: 'injection' });
+        for (let x = 1.5; x < 2.32; x += 0.07) R(x, x + 0.012, 1.65, 1.76, -0.22, 0.22, M.steelMid, { parent: nCar, edges: false });
+        R(1.5, 1.9, 1.62, 1.64, 0.24, 0.252, M.led, { parent: nCar, edges: false });
+
+        // wnętrze: dwie śruby kulowe wtrysku z kołami pasowymi, serwosilnik wtrysku
+        R(2.66, 2.78, 1.1, 1.58, -0.32, 0.32, M.cast, { parent: nCar });
+        const injScrews = [-0.2, 0.2].map(z => {
+            const n = node([0, YC, z], nCar);
+            C('x', 0.035, 1.31, 2.7, 0, 0, M.chrome, { parent: n, f: 'injection', seg: 16 });
+            R(1.4, 2.6, 0.03, 0.04, -0.007, 0.007, M.stripe, { parent: n, edges: false });
+            return n;
+        });
+        const injPulleys = [-0.2, 0.2].map(z => pulley([0, YC, z], 2.8, 2.86, 0.12, M.gearSteel, 4, 'injection', nCar));
+        const IM_Y = YC - 0.14;
+        C('x', 0.1, 2.3, 2.78, IM_Y, 0, M.motor, { parent: nCar, f: 'injection' });
+        const injMotorPulley = pulley([0, IM_Y, 0], 2.8, 2.86, 0.06, M.gearSteel, 3, 'injection', nCar);
+        belt(2.83, [IM_Y, 0], 0.06, [YC, -0.2], 0.12, 0.05, 'injection', nCar);
+        belt(2.83, [IM_Y, 0], 0.06, [YC, 0.2], 0.12, 0.05, 'injection', nCar);
+
+        // ślimak: końcówka z zaworem zwrotnym, zwoje (obraca się przy dozowaniu, przesuwa przy wtrysku)
+        const nScrew = node([0, YC, 0], nCar);
+        F('x', 0.012, 0.045, TIP0, TIP0 + 0.06, 0, 0, M.screw, { parent: nScrew, f: 'injection', seg: 16 });
+        C('x', 0.058, TIP0 + 0.06, TIP0 + 0.1, 0, 0, M.chrome, { parent: nScrew, f: 'injection', seg: 18 });
+        C('x', 0.04, TIP0 + 0.1, 1.86, 0, 0, M.screw, { parent: nScrew, seg: 16 });
+        for (let x = TIP0 + 0.13; x < 1.06; x += 0.055) {
+            C('x', 0.06, x, x + 0.012, 0, 0, M.screw, { parent: nScrew, edges: false, seg: 18 });
+        }
+        R(TIP0 + 0.12, 1.06, 0.04, 0.052, -0.007, 0.007, M.stripe, { parent: nScrew, edges: false });
+        // stopiony materiał przed ślimakiem (długość = objętość dozy)
+        const melt = add(geoCyl('x', 0.05, 1, 16), M.melt, { parent: nCar, pos: [0.3, YC, 0], edges: false });
+        // płyta dociskowa + czujnik siły (load cell) + silnik dozowania (przesuwają się ze ślimakiem)
+        const nPush = node([0, 0, 0], nCar);
+        R(1.86, 1.96, 1.14, 1.54, -0.3, 0.3, M.cast, { parent: nPush, f: 'injection' });
+        [-0.2, 0.2].forEach(z => C('x', 0.06, 1.8, 1.98, YC, z, M.steelMid, { parent: nPush, edges: false, seg: 16 }));
+        C('x', 0.09, 1.82, 1.86, YC, 0, M.loadcell, { parent: nPush, f: 'injection', seg: 20 });
+        C('x', 0.1, 1.96, 2.26, YC, 0, M.motor, { parent: nPush, f: 'injection' });
+        const nPlastCap = node([0, YC, 0], nPush);
+        C('x', 0.07, 2.26, 2.29, 0, 0, M.steelMid, { parent: nPlastCap, edges: false });
+        R(2.29, 2.295, -0.06, 0.06, -0.012, 0.012, M.stripe, { parent: nPlastCap, edges: false });
+
+        // wypraska (pojawia się w gnieździe przy wtrysku, wypychana i spada)
+        const part = add(geoBox(0.024, 0.22, 0.28), M.part, { edges: true });
         part.visible = false;
 
-        return { nMP, nEj, nCar, nScrew, nPush, toggle, lamps, heaters, melt, part };
+        return {
+            nMP, nEj, nCH, nBS, nCar, nScrew, nPush, nPlastCap, toggle, lamps, heaters, melt, part,
+            nClampPulley, nClampMotorPulley, nEjPulley, nEjMotorPulley, injScrews, injPulleys, injMotorPulley
+        };
     }
 
     const rig = buildMachine();
 
-    // Kinematyka układu kolanowego dla danej pozycji płyty ruchomej
-    const RX = -2.26, LINK = 0.66;
+    // Kinematyka układu kolanowego dla danego otwarcia formy (0 = zamknięta, 1 = otwarta)
     function setLink(m, x1, y1, x2, y2, z) {
         const dx = x2 - x1, dy = y2 - y1;
         m.pos = [(x1 + x2) / 2, (y1 + y2) / 2, z];
@@ -1049,22 +1298,25 @@ function initTe3DShowcase() {
     }
 
     function updateToggle(open) {
-        const Mx = M_CLOSED - STROKE * open;
-        rig.nMP.pos[0] = Mx;
-        const px = Mx - 0.11;
-        const d = px - RX;
-        const off = Math.sqrt(Math.max(LINK * LINK - (d / 2) * (d / 2), 0));
-        const jx = (RX + px) / 2;
-        const cx = -1.58 - 0.45 * open;
-        rig.toggle.linksA.forEach(l => setLink(l.m, RX, YC + l.sy * PIV, jx, YC + l.sy * (PIV + off), l.z));
-        rig.toggle.linksB.forEach(l => setLink(l.m, jx, YC + l.sy * (PIV + off), px, YC + l.sy * PIV, l.z));
-        rig.toggle.pinsJ.forEach(p => { p.m.pos = [jx, YC + p.sy * (PIV + off), 0]; });
-        const kx = RX + 0.7 * (jx - RX);
-        rig.toggle.small.forEach(l => setLink(l.m, cx, YC + l.sy * 0.08, kx, YC + l.sy * (PIV + 0.7 * off), l.z));
-        rig.toggle.cross.pos = [cx, YC, 0];
-        const s0 = -2.62, s1 = cx - 0.06;
-        rig.toggle.screw.pos = [(s0 + s1) / 2, YC, 0];
-        rig.toggle.screw.scl = [Math.max(0.01, s1 - s0), 1, 1];
+        const face = M_CLOSED - STROKE * open;
+        rig.nMP.pos[0] = face;
+        const xf = face - FPIV;
+        const half = (xf - XR) / 2;
+        const off = Math.sqrt(Math.max(LINK * LINK - half * half, 0));
+        const jx = XR + half;
+        const cx = CX_OPEN + (CX_CLOSED - CX_OPEN) * (1 - open);
+        rig.nCH.pos[0] = cx;
+        rig.toggle.forEach(t => {
+            const yR = YC + t.sy * PIV, yJ = YC + t.sy * (PIV + off);
+            t.a.forEach(l => setLink(l.m, XR, yR, jx, yJ, l.z));
+            t.b.forEach(l => setLink(l.m, jx, yJ, xf, yR, l.z));
+            t.pinJ.pos = [jx, yJ, 0];
+            t.pinF.pos = [xf, yR, 0];
+            const kx = XR + 0.62 * (jx - XR), ky = yR + 0.62 * (yJ - yR);
+            t.s.forEach(l => setLink(l.m, cx, YC + t.sy * 0.12, kx, ky, l.z));
+            t.pinK.pos = [kx, ky, 0];
+        });
+        return cx;
     }
 
     // ---------- Stan kamery ----------
@@ -1115,9 +1367,10 @@ function initTe3DShowcase() {
     let time = 0;
     let lastInteraction = -10;
     let cycleT = 0;
-    const anim = { open: 1, car: 0.06, screwX: 0, screwRot: 0, eject: 0, heat: 0, melt: 0 };
+    const anim = { open: 1, car: CAR_BACK, screwX: 0, screwRot: 0, eject: 0, heat: 0, fill: 0, cool: 0 };
 
     function ease(t) { t = Math.min(1, Math.max(0, t)); return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2; }
+    function easeOut(t) { t = Math.min(1, Math.max(0, t)); return 1 - Math.pow(1 - t, 3); }
     function seg(t, a, b) { return ease((t - a) / (b - a)); }
 
     function cyclePhaseIndex(t) {
@@ -1125,69 +1378,102 @@ function initTe3DShowcase() {
         return -1;
     }
 
+    // Kolory wypraski: stopiony materiał (róż) -> zastygnięta wypraska (cyjan)
+    const PART_HOT = [1.0, 0.18, 0.82], PART_COLD = [0.0, 1.0, 0.95];
+
     function updateCycle(dt) {
         const k = 1 - Math.exp(-dt * 5);
+        const p = rig.part;
         if (cycleRunning) {
             cycleT = (cycleT + dt) % CYCLE_LENGTH;
             const t = cycleT;
+            // forma: szybkie zamykanie, potem ryglowanie (dźwignie prostują się do końca)
             let open;
-            if (t < 1.0) open = 1 - seg(t, 0, 1.0);
-            else if (t < 4.8) open = 0;
-            else open = seg(t, 4.8, 5.8);
+            if (t < 1.0) open = 1 - 0.96 * seg(t, 0, 1.0);
+            else if (t < 1.35) open = 0.04 * (1 - seg(t, 1.0, 1.35));
+            else if (t < 5.35) open = 0;
+            else if (t < 6.35) open = seg(t, 5.35, 6.35);
+            else open = 1;
+            // agregat: dosunięcie dyszy przed wtryskiem, odsunięcie po dozowaniu
             let car;
-            if (t < 1.0) car = 0.06;
-            else if (t < 1.4) car = 0.06 * (1 - seg(t, 1.0, 1.4));
-            else if (t < 4.8) car = 0;
-            else car = 0.06 * seg(t, 4.8, 5.6);
+            if (t < 1.35) car = CAR_BACK;
+            else if (t < 1.75) car = CAR_BACK * (1 - seg(t, 1.35, 1.75));
+            else if (t < 5.0) car = 0;
+            else if (t < 5.35) car = CAR_BACK * seg(t, 5.0, 5.35);
+            else car = CAR_BACK;
+            // ślimak: wtrysk (szybko do przodu) -> docisk -> dozowanie (obrót + cofanie)
             let sx;
-            if (t < 1.4) sx = 0;
-            else if (t < 2.2) sx = -0.18 * seg(t, 1.4, 2.2);
-            else if (t < 3.0) sx = -0.18 - 0.012 * seg(t, 2.2, 3.0);
-            else if (t < 4.8) sx = -0.192 * (1 - seg(t, 3.0, 4.8));
+            if (t < 1.75) sx = 0;
+            else if (t < 2.45) sx = -SHOT * easeOut((t - 1.75) / 0.7);
+            else if (t < 3.15) sx = -SHOT - 0.012 * seg(t, 2.45, 3.15);
+            else if (t < 4.75) sx = -(SHOT + 0.012) * (1 - (t - 3.15) / 1.6);
             else sx = 0;
+            if (t >= 3.15 && t < 4.75) anim.screwRot += dt * 16;
             anim.open = open;
             anim.car = car;
             anim.screwX = sx;
-            if (t >= 3.0 && t < 4.8) anim.screwRot += dt * 9;
-            anim.eject = (t >= 5.8 && t < 6.8) ? Math.sin(Math.PI * (t - 5.8) / 1.0) : 0;
+            anim.eject = (t >= 6.35 && t < 7.25) ? Math.sin(Math.PI * (t - 6.35) / 0.9) : 0;
             anim.heat += (1 - anim.heat) * k;
-            const meltTarget = t >= 1.4 && t < 2.2 ? 0.85 : (t >= 2.2 && t < 3.0 ? 0.6 : (t >= 3.0 && t < 4.8 ? 0.35 + 0.35 * seg(t, 3.0, 4.8) : 0.5));
-            anim.melt += (meltTarget - anim.melt) * Math.min(1, dt * 8);
+            anim.fill = t < 1.75 ? 0 : easeOut((t - 1.75) / 0.7);
+            anim.cool = seg(t, 2.45, 5.35);
 
-            // wypraska: pojawia się przy wypychaniu, spada i znika
-            const p = rig.part;
-            if (t >= 5.8 && t < 7.1) {
+            // wypraska: wypełnianie gniazda przy wtrysku, stygnięcie, wypchnięcie i upadek
+            if (t >= 1.75 && t < 7.65) {
                 p.visible = true;
-                const faceX = M_CLOSED - STROKE + 0.515;
-                const push = 0.06 * seg(t, 5.8, 6.15);
-                const fall = t > 6.15 ? (t - 6.15) : 0;
-                p.pos = [faceX + push, YC - 4.9 * fall * fall, 0];
-                p.rot = [0, 0, -fall * 2.4];
-                p.alphaOverride = 0.9 * (1 - seg(t, 6.6, 7.05));
+                const face = M_CLOSED - STROKE * open;
+                const push = 0.07 * seg(t, 6.35, 6.7);
+                const fall = t > 6.75 ? t - 6.75 : 0;
+                const s = 0.25 + 0.75 * anim.fill;
+                p.pos = [face + MOLD - 0.014 + push, YC - 4.9 * fall * fall, 0];
+                p.rot = [0, 0, -fall * 2.2];
+                p.scl = [1, s, s];
+                const c = anim.cool;
+                p.colorOverride = [PART_HOT[0] + (PART_COLD[0] - PART_HOT[0]) * c, PART_HOT[1] + (PART_COLD[1] - PART_HOT[1]) * c, PART_HOT[2] + (PART_COLD[2] - PART_HOT[2]) * c];
+                p.emOverride = [1.0 * (1 - c), 0.16 * (1 - c) + 0.7 * c, 0.85 * (1 - c) + 0.68 * c];
+                p.alphaOverride = 0.92 * (t > 7.1 ? 1 - seg(t, 7.1, 7.6) : 1);
             } else {
                 p.visible = false;
             }
         } else {
             anim.open += (1 - anim.open) * k;
-            anim.car += (0.06 - anim.car) * k;
+            anim.car += (CAR_BACK - anim.car) * k;
             anim.screwX += (0 - anim.screwX) * k;
             anim.eject += (0 - anim.eject) * k;
             anim.heat += (0 - anim.heat) * k;
-            anim.melt += (0 - anim.melt) * k;
-            rig.part.visible = false;
+            p.visible = false;
         }
 
-        updateToggle(anim.open);
+        // zespół zamykający: dźwignie, krzyżulec, obrót śruby kulowej i kół pasowych
+        const cx = updateToggle(anim.open);
+        const bs = (cx - CX_OPEN) * 46;
+        rig.nBS.rot[0] = bs;
+        rig.nClampPulley.rot[0] = bs;
+        rig.nClampMotorPulley.rot[0] = bs * (0.19 / 0.07);
+        // wypychacz (napęd pasowy na płycie ruchomej)
+        rig.nEj.pos[0] = 0.06 * anim.eject;
+        const ej = anim.eject * 9;
+        rig.nEjPulley.rot[0] = ej;
+        rig.nEjMotorPulley.rot[0] = ej * (0.075 / 0.04);
+        // agregat: sanie, ślimak, płyta dociskowa, śruby kulowe wtrysku z kołami
         rig.nCar.pos[0] = anim.car;
         rig.nScrew.pos[0] = anim.screwX;
         rig.nScrew.rot[0] = anim.screwRot;
         rig.nPush.pos[0] = anim.screwX;
-        rig.nEj.pos[0] = 0.07 * anim.eject;
+        rig.nPlastCap.rot[0] = anim.screwRot;
+        const is = -anim.screwX * 70;
+        rig.injScrews.forEach(n => { n.rot[0] = is; });
+        rig.injPulleys.forEach(n => { n.rot[0] = is; });
+        rig.injMotorPulley.rot[0] = is * 2;
+
+        // stopiony materiał przed ślimakiem (ilość = przygotowana dawka)
+        const len = Math.max(0.001, TIP0 + anim.screwX - 0.16);
+        rig.melt.pos[0] = 0.16 + len / 2;
+        rig.melt.scl = [len, 1, 1];
+        rig.melt.alphaOverride = anim.heat * (0.35 + 0.55 * xrayMix);
+        rig.melt.visible = anim.heat > 0.05 && len > 0.004;
 
         const pulse = 0.75 + 0.25 * Math.sin(time * 6);
         rig.heaters.forEach(h => { h.emOverride = [0.5 * anim.heat * pulse, 0.04 * anim.heat, 0.42 * anim.heat * pulse]; });
-        rig.melt.alphaOverride = anim.melt * xrayMix;
-        rig.melt.visible = anim.melt * xrayMix > 0.02;
         rig.lamps.g.emOverride = cycleRunning ? [0.1, 0.55, 0.22] : [0, 0, 0];
         rig.lamps.y.emOverride = !cycleRunning ? [0.35, 0.26, 0.02] : [0, 0, 0];
 
@@ -1276,7 +1562,8 @@ function initTe3DShowcase() {
     function drawMesh(m) {
         const u = P_MAIN.u, mt = m.mat;
         const x = m.cover || m.glass ? xrayMix : 0;
-        let r = mt.color[0], g = mt.color[1], b = mt.color[2];
+        const base = m.colorOverride || mt.color;
+        let r = base[0], g = base[1], b = base[2];
         if (x > 0 && !m.glass) {
             r += (XRAY_TINT[0] - r) * x * 0.7; g += (XRAY_TINT[1] - g) * x * 0.7; b += (XRAY_TINT[2] - b) * x * 0.7;
         }

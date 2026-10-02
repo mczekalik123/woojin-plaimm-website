@@ -2505,8 +2505,16 @@ function buildConfigurationPdf(fonts) {
 
     doc.setFontSize(9);
     doc.setTextColor(120, 120, 120);
-    doc.text('Dokument ma charakter wyłącznie poglądowy i nie stanowi oferty handlowej.', left, y);
-    y += lineGap + 2;
+    // Status prawny przedstawicielstwa (art. 22 ustawy z 6.03.2018 r.) - bez sugestii sprzedaży
+    const legalLines = doc.splitTextToSize(
+        'Dokument ma charakter wyłącznie informacyjny i poglądowy i nie stanowi oferty w rozumieniu art. 66 § 1 Kodeksu cywilnego. ' +
+        'WOOJIN PLAIMM Co., Ltd. przedstawicielstwo w Polsce prowadzi wyłącznie działalność w zakresie reklamy i promocji przedsiębiorcy zagranicznego ' +
+        '(art. 22 ustawy z dnia 6 marca 2018 r. o zasadach uczestnictwa przedsiębiorców zagranicznych i innych osób zagranicznych w obrocie gospodarczym ' +
+        'na terytorium Rzeczypospolitej Polskiej, t.j. Dz.U. z 2025 r. poz. 89) – nie prowadzi sprzedaży i nie zawiera umów.',
+        pageWidth - left * 2
+    );
+    doc.text(legalLines, left, y);
+    y += (legalLines.length - 1) * 4 + lineGap + 2;
 
     doc.setDrawColor(10, 190, 181);
     doc.line(left, y, pageWidth - left, y);
@@ -2861,9 +2869,9 @@ function confirmSendEmail() {
     const stage = document.getElementById('cfgViewer360Stage');
     const imageEl = document.getElementById('cfgViewer360Image');
     const slider = document.getElementById('cfgViewer360Slider');
-    const handEl = document.getElementById('cfgViewer360Hand');
     const nameLabel = document.getElementById('step1ViewerName');
     const descLabel = document.getElementById('step1ViewerDesc');
+    const hintEl = document.querySelector('#step1Viewer .viewer360-hint');
     const radios = Array.from(document.querySelectorAll('.machine-card input[name="machine_type"]'));
 
     if (!stage || !imageEl || !slider || !radios.length) return;
@@ -2875,45 +2883,20 @@ function confirmSendEmail() {
     // jeszcze przygotowanego widoku 360° (analogicznie jak tam). Opis
     // (desc) jest tym samym tekstem, który wcześniej znajdował się w
     // kafelku po lewej - teraz wyświetlany pod nazwą modelu w panelu
-    // podglądu 360° po prawej.
+    // podglądu 360° po prawej. levelY i shadow - wypoziomowanie maszyny
+    // i cień na podłodze, te same wartości co w js/machines.js.
     const TYPE_VIEWER_DATA = {
-        'DL-A5': { folder: '360-DL', available: true, desc: 'Premium, energooszczędna wtryskarka dwupłytowa z systemem podwójnego ryglowania (Dual Lock) — do dużych, precyzyjnych wyprasek wymagających wysokiej siły zwarcia.' },
-        'TH-A5': { folder: '360-TH', available: true, desc: 'Klasyczna, energooszczędna wtryskarka hydrauliczna o dużej sztywności konstrukcji i wysokiej powtarzalności procesu wtrysku.' },
-        'TE-A5': { folder: '360-TE', available: true, desc: 'W pełni elektryczna wtryskarka zapewniająca najwyższą precyzję, powtarzalność wagi wypraski oraz najniższe zużycie energii.' },
-        'TL-A5': { folder: '360-TL', available: false, desc: 'Wtryskarka bez kolumn (tie-bar-less) dająca pełną swobodę doboru wielkości formy, wielogniazdowości i automatyzacji.' },
-        'VHA-RS': { folder: '360-VH', available: true, desc: 'Wysokiej klasy, pionowa wtryskarka hydrauliczna z obrotowym stołem (turntable), przeznaczona do formowania z insertami oraz pionowego układu wtrysku.' },
-        'MULTI': { folder: '360-MULTI', available: true, desc: 'Nowoczesna, pozioma wtryskarka dwukolorowa (2K) do formowania dwóch różnych tworzyw lub kolorów w jednym cyklu produkcyjnym (ONE-CYCLE).' },
-        'Super-Foam': { folder: '360-SF', available: true, desc: 'Dwupłytowa wtryskarka z systemem bezpośredniego ryglowania (Dual Lock) i technologią super spieniania, dedykowana produkcji dużych, lekkich elementów, w tym palet.' }
+        'DL-A5': { folder: '360-DL', available: true, levelY: 7.55, desc: 'Premium, energooszczędna wtryskarka dwupłytowa z systemem podwójnego ryglowania (Dual Lock) — do dużych, precyzyjnych wyprasek wymagających wysokiej siły zwarcia.' },
+        'TH-A5': { folder: '360-TH', available: true, levelY: 1.19, desc: 'Klasyczna, energooszczędna wtryskarka hydrauliczna o dużej sztywności konstrukcji i wysokiej powtarzalności procesu wtrysku.' },
+        'TE-A5': { folder: '360-TE', available: true, levelY: -0.51, desc: 'W pełni elektryczna wtryskarka zapewniająca najwyższą precyzję, powtarzalność wagi wypraski oraz najniższe zużycie energii.' },
+        'TL-A5': { folder: '360-TL', available: false, levelY: 3.7, shadow: { y: 86.5, w: 88 }, still: 'img/opt/tl-a5-widok.jpg', desc: 'Wtryskarka bez kolumn (tie-bar-less) dająca pełną swobodę doboru wielkości formy, wielogniazdowości i automatyzacji.' },
+        'VHA-RS': { folder: '360-VH', available: true, levelY: -0.62, shadow: { y: 89.5, w: 40 }, desc: 'Wysokiej klasy, pionowa wtryskarka hydrauliczna z obrotowym stołem (turntable), przeznaczona do formowania z insertami oraz pionowego układu wtrysku.' },
+        'MULTI': { folder: '360-MULTI', available: true, levelY: -0.85, desc: 'Nowoczesna, pozioma wtryskarka dwukolorowa (2K) do formowania dwóch różnych tworzyw lub kolorów w jednym cyklu produkcyjnym (ONE-CYCLE).' },
+        'Super-Foam': { folder: '360-SF', available: true, levelY: 4.34, desc: 'Dwupłytowa wtryskarka z systemem bezpośredniego ryglowania (Dual Lock) i technologią super spieniania, dedykowana produkcji dużych, lekkich elementów, w tym palet.' }
     };
 
     let currentType = 'DL-A5';
     const preloadedFolders = {};
-
-    // Dłoń podpowiadająca możliwość obracania widoku pojawia się na nowo i
-    // znika na stałe 5 sekund po każdym załadowaniu widoku 360° - zarówno
-    // przy pierwszym wejściu na stronę, jak i po każdej zmianie typu
-    // wtryskarki z kafelków (patrz wywołanie w setViewerType() poniżej).
-    // Klasa .is-gone (display:none) ma pierwszeństwo przed ewentualnym
-    // późniejszym usunięciem klasy .is-hidden przez handleDragEnd.
-    let handAutoHideTimer = null;
-
-    function scheduleHandAutoHide() {
-        if (!handEl) return;
-        clearTimeout(handAutoHideTimer);
-        handEl.classList.remove('is-gone');
-        handAutoHideTimer = setTimeout(() => {
-            handEl.classList.add('is-gone');
-        }, 5000);
-    }
-
-    // Automatyczne obracanie widoku 360° - ten sam mechanizm co w
-    // initViewer360() na podstronie "Maszyny": włączone domyślnie, pauzuje
-    // się przy ręcznej interakcji (suwak/przeciąganie) i wznawia po chwili
-    // bezczynności.
-    const AUTO_ROTATE_FRAME_INTERVAL_MS = 90;
-    const AUTO_ROTATE_RESUME_DELAY_MS = 3500;
-    let autoRotateTimer = null;
-    let autoRotateResumeTimer = null;
 
     // Skala, z jakiej obraz "startuje" przy każdej zmianie typu, zanim
     // zmniejszy się do swojego standardowego rozmiaru (scale: 1) - ten sam
@@ -2942,61 +2925,78 @@ function confirmSendEmail() {
         slider.style.setProperty('--fill', (((clamped - 1) / (TOTAL_FRAMES - 1)) * 100).toFixed(2) + '%');
     }
 
-    // Automatyczny obrót działa tylko, gdy widok jest faktycznie widoczny
-    // (Krok 1 aktywny, podgląd na ekranie, karta przeglądarki na wierzchu) -
-    // wcześniej podmieniał obraz co 90 ms także w Krokach 2-4.
-    let viewerVisible = true;
-    function canAutoRotate() {
-        const step1 = document.getElementById('step1');
-        return viewerVisible && !document.hidden && (!step1 || step1.classList.contains('active'));
-    }
-
-    function advanceAutoRotateFrame() {
-        if (!canAutoRotate()) return;
-        const current = parseInt(slider.value, 10) || 1;
-        const next = current >= TOTAL_FRAMES ? 1 : current + 1;
-        setFrame(next);
-    }
-
-    function stopAutoRotate() {
-        if (autoRotateTimer) {
-            clearInterval(autoRotateTimer);
-            autoRotateTimer = null;
-        }
-    }
-
+    // Obrót "na powitanie" - tak samo jak na podstronie "Maszyny" (js/machines.js):
+    // jeden pełny obrót przy pierwszym otwarciu danego typu. Typ, który już się
+    // obrócił (albo którego użytkownik sam obracał), po powrocie do niego stoi.
+    // Lista żyje tylko w pamięci strony - po przeładowaniu każdy typ znowu
+    // obróci się raz. Obrót przerywa każda interakcja (suwak / przeciąganie).
     const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const spunTypes = new Set();
+    let spinTimer = null;
+    let stageVisible = !('IntersectionObserver' in window);
+    let introToken = 0;
 
-    function startAutoRotate() {
-        stopAutoRotate();
-        if (reduceMotion || !TYPE_VIEWER_DATA[currentType].available) return;
-        autoRotateTimer = setInterval(advanceAutoRotateFrame, AUTO_ROTATE_FRAME_INTERVAL_MS);
+    function stopSpin() {
+        if (spinTimer) { clearInterval(spinTimer); spinTimer = null; }
     }
 
+    function userTookOver() {
+        stopSpin();
+        introToken++;
+        spunTypes.add(currentType);
+    }
+
+    function scheduleIntroSpin() {
+        const typeName = currentType;
+        const data = TYPE_VIEWER_DATA[typeName];
+        if (reduceMotion || !data.available || !stageVisible || spunTypes.has(typeName)) return;
+        const token = ++introToken;
+        const imgs = preloadedFolders[data.folder] || [];
+        // Start dopiero po wczytaniu wszystkich klatek, żeby obrót był płynny
+        Promise.all(imgs.map((im) => (im.decode ? im.decode().catch(() => null) : null)))
+            .then(() => setTimeout(() => {
+                if (token !== introToken || !stageVisible || currentType !== typeName) return;
+                spunTypes.add(typeName);
+                stopSpin();
+                let steps = 0;
+                spinTimer = setInterval(() => {
+                    steps++;
+                    const current = parseInt(slider.value, 10) || 1;
+                    setFrame(current >= TOTAL_FRAMES ? 1 : current + 1);
+                    if (steps >= TOTAL_FRAMES) stopSpin();
+                }, 55);
+            }, 300));
+    }
+
+    // Obrót startuje dopiero, gdy widok jest na ekranie (np. po powrocie do kroku 1
+    // albo po przewinięciu do widoku, jeśli typ zmieniono poza ekranem)
     if ('IntersectionObserver' in window) {
         new IntersectionObserver((entries) => {
-            viewerVisible = entries[0].isIntersecting;
-        }, { rootMargin: '60px 0px' }).observe(stage);
-    }
-
-    function scheduleAutoRotateResume() {
-        clearTimeout(autoRotateResumeTimer);
-        autoRotateResumeTimer = setTimeout(startAutoRotate, AUTO_ROTATE_RESUME_DELAY_MS);
-    }
-
-    function pauseAutoRotate() {
-        stopAutoRotate();
-        scheduleAutoRotateResume();
+            stageVisible = entries[0].isIntersecting;
+            if (stageVisible) scheduleIntroSpin();
+            else introToken++;
+        }, { threshold: 0.6 }).observe(stage);
     }
 
     function setViewerType(typeName) {
         if (!TYPE_VIEWER_DATA[typeName]) return;
-        clearTimeout(autoRotateResumeTimer);
+        stopSpin();
+        introToken++;
         currentType = typeName;
         const data = TYPE_VIEWER_DATA[currentType];
 
         if (nameLabel) nameLabel.textContent = currentType;
         if (descLabel) descLabel.textContent = data.desc || '';
+
+        // Wypoziomowanie zdjęcia i cień na podłodze (tylko serie bez własnego cienia)
+        stage.style.setProperty('--level-y', (data.levelY || 0) + '%');
+        stage.classList.toggle('has-floor-shadow', !!data.shadow);
+        if (data.shadow) {
+            stage.style.setProperty('--shadow-y', data.shadow.y + '%');
+            stage.style.setProperty('--shadow-w', data.shadow.w + '%');
+        }
+        // Podpis "Przeciągnij, aby obrócić" tylko tam, gdzie jest widok 360°
+        if (hintEl) hintEl.style.visibility = data.available ? '' : 'hidden';
 
         // Efekt "pomniejszania się do standardowego rozmiaru" przy zmianie
         // typu - identyczny jak w setMachineType() na podstronie "Maszyny":
@@ -3009,18 +3009,24 @@ function confirmSendEmail() {
         imageEl.style.transform = 'scale(1)';
 
         if (data.available) {
-            stage.classList.remove('is-unavailable');
+            stage.classList.remove('is-unavailable', 'has-still');
+            imageEl.alt = 'Widok 360° wtryskarki WOOJIN PLAIMM';
             slider.disabled = false;
             preloadCurrentType();
             setFrame(1);
-            startAutoRotate();
+            scheduleIntroSpin();
         } else {
+            // Brak klatek 360°: zdjęcie poglądowe (jeśli jest) + informacja "wkrótce"
             stage.classList.add('is-unavailable');
+            stage.classList.toggle('has-still', !!data.still);
+            if (data.still) {
+                imageEl.src = data.still;
+                imageEl.alt = `Wtryskarka WOOJIN PLAIMM ${typeName} – zdjęcie poglądowe`;
+            }
             slider.disabled = true;
-            stopAutoRotate();
+            slider.value = 1;
+            slider.style.setProperty('--fill', '0%');
         }
-
-        scheduleHandAutoHide();
     }
 
     radios.forEach((radio) => {
@@ -3030,8 +3036,8 @@ function confirmSendEmail() {
     });
 
     slider.addEventListener('input', () => {
+        userTookOver();
         setFrame(parseInt(slider.value, 10));
-        pauseAutoRotate();
         // Wibracja przy przesuwaniu paska widoku 360° - jedno "kliknięcie"
         // haptyczne na każdą zmianę klatki (patrz triggerHapticFeedback na
         // górze pliku).
@@ -3051,11 +3057,7 @@ function confirmSendEmail() {
         startX = clientX;
         startFrame = parseInt(slider.value, 10);
         stage.classList.add('is-dragging');
-        // Ukrycie dłoni sygnalizującej możliwość obracania widoku - na
-        // komputerach robi to już samo :hover w CSS, ale na dotyku (gdzie
-        // hover nie występuje) trzeba to zrobić ręcznie w JS.
-        if (handEl) handEl.classList.add('is-hidden');
-        pauseAutoRotate();
+        userTookOver();
     }
 
     function handleDragMove(clientX) {
@@ -3073,13 +3075,11 @@ function confirmSendEmail() {
             triggerHapticFeedback(8);
         }
         setFrame(targetFrame);
-        pauseAutoRotate();
     }
 
     function handleDragEnd() {
         isDragging = false;
         stage.classList.remove('is-dragging');
-        if (handEl) handEl.classList.remove('is-hidden');
     }
 
     stage.addEventListener('mousedown', (e) => handleDragStart(e.clientX));
@@ -3091,7 +3091,6 @@ function confirmSendEmail() {
     stage.addEventListener('touchend', handleDragEnd);
 
     // Inicjalizacja - typ aktualnie zaznaczony w formularzu (checked)
-    // (setViewerType() uruchamia też powyższy 5-sekundowy timer dłoni)
     const checkedRadio = radios.find((r) => r.checked);
     setViewerType(checkedRadio ? checkedRadio.value : 'DL-A5');
 })();

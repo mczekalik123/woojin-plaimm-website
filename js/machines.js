@@ -19,6 +19,7 @@
     const metaModel = document.getElementById('machineMetaModel');
     const metaDesc = document.getElementById('machineMetaDesc');
     const magnifier = document.getElementById('viewer360Magnifier');
+    const hintEl = document.querySelector('.viewer360-hint');
 
     if (!stage || !imageEl || !slider) return;
 
@@ -26,14 +27,18 @@
     const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
     // folder z klatkami, nazwa/opis modelu; available: false = brak zdjęć 360°
+    // levelY: przesunięcie zdjęcia w pionie (% wysokości pola), tak by maszyna
+    // w widoku startowym stała na środku pola, a przy obrocie nie wychodziła poza nie.
+    // shadow: cień na podłodze (środek y i szerokość w % pola) - tylko serie,
+    // których zdjęcia nie mają własnego cienia.
     const MACHINE_TYPES = [
-        { name: 'DL-A5',      folder: '360-DL',    available: true,  model: 'DL-A5',             desc: 'Wysokiej klasy dwupłytowa seria z systemem bezpośredniego ryglowania (Dual Lock)' },
-        { name: 'TH-A5',      folder: '360-TH',    available: true,  model: 'TH-A5',             desc: 'Wysokiej klasy nowa seria hybrydowa z układem kolankowym' },
-        { name: 'TE-A5',      folder: '360-TE',    available: true,  model: 'TE-A5',             desc: 'Wysokiej klasy nowa, w pełni elektryczna seria z układem kolankowym' },
-        { name: 'TL-A5',      folder: '360-TL',    available: false, model: 'TL-A5',             desc: 'Wtryskarka bez kolumn (tie-bar-less) – pełna swoboda doboru wielkości formy' },
-        { name: 'VHA-RS',     folder: '360-VH',    available: true,  model: 'VHA-RS',            desc: 'Wysokiej klasy, pionowa seria wtryskarek' },
-        { name: 'MULTI',      folder: '360-MULTI', available: true,  model: 'NC-G5',             desc: 'Nowoczesna, pozioma, dwukolorowa seria hybrydowa' },
-        { name: 'Super-Foam', folder: '360-SF',    available: true,  model: 'DL-A5 (Super-Foam)', desc: 'Wysokiej klasy seria z technologią super spieniania i bezpośrednim ryglowaniem' }
+        { name: 'DL-A5',      folder: '360-DL',    available: true,  levelY: 7.55,  model: 'DL-A5',             desc: 'Wysokiej klasy dwupłytowa seria z systemem bezpośredniego ryglowania (Dual Lock)' },
+        { name: 'TH-A5',      folder: '360-TH',    available: true,  levelY: 1.19,  model: 'TH-A5',             desc: 'Wysokiej klasy nowa seria hybrydowa z układem kolankowym' },
+        { name: 'TE-A5',      folder: '360-TE',    available: true,  levelY: -0.51, model: 'TE-A5',             desc: 'Wysokiej klasy nowa, w pełni elektryczna seria z układem kolankowym' },
+        { name: 'TL-A5',      folder: '360-TL',    available: false, levelY: 3.7,   shadow: { y: 86.5, w: 88 }, still: 'img/opt/tl-a5-widok.jpg', model: 'TL-A5', desc: 'Wtryskarka bez kolumn (tie-bar-less) – pełna swoboda doboru wielkości formy' },
+        { name: 'VHA-RS',     folder: '360-VH',    available: true,  levelY: -0.62, shadow: { y: 89.5, w: 40 }, model: 'VHA-RS', desc: 'Wysokiej klasy, pionowa seria wtryskarek' },
+        { name: 'MULTI',      folder: '360-MULTI', available: true,  levelY: -0.85, model: 'NC-G5',             desc: 'Nowoczesna, pozioma, dwukolorowa seria hybrydowa' },
+        { name: 'Super-Foam', folder: '360-SF',    available: true,  levelY: 4.34,  model: 'DL-A5 (Super-Foam)', desc: 'Wysokiej klasy seria z technologią super spieniania i bezpośrednim ryglowaniem' }
     ];
 
     let currentTypeIndex = 0;
@@ -102,16 +107,76 @@
         if (componentsSection) componentsSection.hidden = !hasComponents && !hasDesc;
     }
 
-    let introSpinDone = false;
+    // Film producenta w panelu opisu serii (np. TE-A5). Po przełączeniu na inną
+    // serię panel jest ukrywany, ale samo ukrycie nie wycisza filmu - odtwarzacz
+    // YouTube dostaje więc polecenie pauzy (enablejsapi=1 w adresie filmu).
+    const YT_ORIGIN = 'https://www.youtube-nocookie.com';
+
+    function pauseHiddenVideos(type) {
+        machineDescPanels.forEach((panel) => {
+            if (panel.dataset.machineType === type.name) return;
+            panel.querySelectorAll('iframe[src^="' + YT_ORIGIN + '"]').forEach((frame) => {
+                try {
+                    frame.contentWindow.postMessage(JSON.stringify({ event: 'command', func: 'pauseVideo', args: [] }), YT_ORIGIN);
+                } catch (e) { /* odtwarzacz jeszcze się nie wczytał */ }
+            });
+        });
+    }
+
+    // Obrót "na powitanie": jeden pełny obrót przy pierwszym otwarciu danego
+    // typu. Typ, który już się obrócił (albo którego użytkownik sam obracał),
+    // po powrocie do niego stoi. Lista żyje tylko w pamięci strony - po
+    // przeładowaniu każdy typ znowu obróci się raz.
+    const spunTypes = new Set();
     let spinTimer = null;
+    let stageVisible = !('IntersectionObserver' in window);
+    let introToken = 0;
 
     function stopSpin() {
         if (spinTimer) { clearInterval(spinTimer); spinTimer = null; }
     }
 
+    // Użytkownik sam obraca widok - przerywamy i nie wracamy do obrotu dla tego typu
+    function userTookOver() {
+        stopSpin();
+        introToken++;
+        spunTypes.add(MACHINE_TYPES[currentTypeIndex].name);
+    }
+
+    function scheduleIntroSpin() {
+        const type = MACHINE_TYPES[currentTypeIndex];
+        if (reduceMotion || !type.available || !stageVisible || spunTypes.has(type.name)) return;
+        const token = ++introToken;
+        const imgs = preloadedFolders[type.folder] || [];
+        // Start dopiero po wczytaniu wszystkich klatek, żeby obrót był płynny
+        Promise.all(imgs.map((im) => (im.decode ? im.decode().catch(() => null) : null)))
+            .then(() => setTimeout(() => {
+                if (token !== introToken || !stageVisible || MACHINE_TYPES[currentTypeIndex] !== type) return;
+                spunTypes.add(type.name);
+                stopSpin();
+                let steps = 0;
+                spinTimer = setInterval(() => {
+                    steps++;
+                    setFrame(currentFrame + 1);
+                    if (steps >= TOTAL_FRAMES) stopSpin();
+                }, 55);
+            }, 300));
+    }
+
+    // Wypoziomowanie zdjęcia i cień na podłodze (tylko serie bez własnego cienia)
+    function applyLevelAndShadow(el, type) {
+        el.style.setProperty('--level-y', (type.levelY || 0) + '%');
+        el.classList.toggle('has-floor-shadow', !!type.shadow);
+        if (type.shadow) {
+            el.style.setProperty('--shadow-y', type.shadow.y + '%');
+            el.style.setProperty('--shadow-w', type.shadow.w + '%');
+        }
+    }
+
     function setMachineType(typeIndex, opts) {
         opts = opts || {};
         stopSpin();
+        introToken++;
         currentTypeIndex = ((typeIndex % MACHINE_TYPES.length) + MACHINE_TYPES.length) % MACHINE_TYPES.length;
         const type = MACHINE_TYPES[currentTypeIndex];
 
@@ -148,15 +213,29 @@
         }
 
         updateComponentsForType(type);
+        pauseHiddenVideos(type);
+        applyLevelAndShadow(stage, type);
+        // Podpis "Przeciągnij, aby obrócić" tylko tam, gdzie jest widok 360°
+        if (hintEl) hintEl.style.visibility = type.available ? '' : 'hidden';
 
         if (type.available) {
-            stage.classList.remove('is-unavailable');
+            stage.classList.remove('is-unavailable', 'has-still');
+            imageEl.alt = 'Widok 360° wtryskarki WOOJIN PLAIMM';
             slider.disabled = false;
             preloadType(currentTypeIndex);
             setFrame(1);
+            scheduleIntroSpin();
         } else {
+            // Brak klatek 360°: zdjęcie poglądowe (jeśli jest) + informacja "wkrótce"
             stage.classList.add('is-unavailable');
+            stage.classList.toggle('has-still', !!type.still);
+            if (type.still) {
+                imageEl.src = type.still;
+                imageEl.alt = `Wtryskarka WOOJIN PLAIMM ${type.model} – zdjęcie poglądowe`;
+            }
             slider.disabled = true;
+            slider.value = 1;
+            slider.style.setProperty('--fill', '0%');
             if (magnifier) magnifier.classList.remove('is-active');
         }
 
@@ -183,7 +262,7 @@
     if (nextBtn) nextBtn.addEventListener('click', () => setMachineType(currentTypeIndex + 1));
 
     slider.addEventListener('input', () => {
-        stopSpin();
+        userTookOver();
         setFrame(parseInt(slider.value, 10));
         triggerHapticFeedback(8);
     });
@@ -197,7 +276,7 @@
     stage.addEventListener('pointerdown', (e) => {
         if (!MACHINE_TYPES[currentTypeIndex].available) return;
         if (e.pointerType === 'mouse' && e.button !== 0) return;
-        stopSpin();
+        userTookOver();
         isDragging = true;
         startX = e.clientX;
         startFrame = currentFrame;
@@ -231,7 +310,7 @@
         if (e.key === 'ArrowLeft') setFrame(currentFrame - 1);
         else if (e.key === 'ArrowRight') setFrame(currentFrame + 1);
         else return;
-        stopSpin();
+        userTookOver();
         e.preventDefault();
     });
 
@@ -245,7 +324,8 @@
         const updateMagnifier = () => {
             raf = null;
             const e = lastEvent;
-            if (!e || !MACHINE_TYPES[currentTypeIndex].available || isDragging) {
+            const t = MACHINE_TYPES[currentTypeIndex];
+            if (!e || !(t.available || t.still) || isDragging) {
                 magnifier.classList.remove('is-active');
                 return;
             }
@@ -253,10 +333,18 @@
             const x = e.clientX - rect.left;
             const y = e.clientY - rect.top;
             const half = (magnifier.offsetWidth || 180) / 2;
+            // Faktyczny prostokąt zdjęcia w polu (object-fit: contain + wypoziomowanie)
+            const nw = imageEl.naturalWidth || rect.width;
+            const nh = imageEl.naturalHeight || rect.height;
+            const fit = Math.min(rect.width / nw, rect.height / nh);
+            const dw = nw * fit;
+            const dh = nh * fit;
+            const ox = (rect.width - dw) / 2;
+            const oy = (rect.height - dh) / 2 + rect.height * (t.levelY || 0) / 100;
             magnifier.style.transform = `translate(${x - half}px, ${y - half}px)`;
             magnifier.style.backgroundImage = `url("${imageEl.currentSrc || imageEl.src}")`;
-            magnifier.style.backgroundSize = `${rect.width * MAGNIFIER_ZOOM}px ${rect.height * MAGNIFIER_ZOOM}px`;
-            magnifier.style.backgroundPosition = `${-(x * MAGNIFIER_ZOOM - half)}px ${-(y * MAGNIFIER_ZOOM - half)}px`;
+            magnifier.style.backgroundSize = `${dw * MAGNIFIER_ZOOM}px ${dh * MAGNIFIER_ZOOM}px`;
+            magnifier.style.backgroundPosition = `${-((x - ox) * MAGNIFIER_ZOOM - half)}px ${-((y - oy) * MAGNIFIER_ZOOM - half)}px`;
             magnifier.classList.add('is-active');
         };
 
@@ -271,28 +359,14 @@
         });
     }
 
-    // Jednorazowy obrót "na powitanie", gdy widok pierwszy raz pojawi się na ekranie
-    function introSpin() {
-        if (introSpinDone || reduceMotion || !MACHINE_TYPES[currentTypeIndex].available) return;
-        introSpinDone = true;
-        let steps = 0;
-        spinTimer = setInterval(() => {
-            steps++;
-            setFrame(currentFrame + 1);
-            if (steps >= TOTAL_FRAMES) stopSpin();
-        }, 55);
-    }
-
+    // Obrót startuje dopiero, gdy widok jest na ekranie (także po przewinięciu
+    // do niego, jeśli typ zmieniono, gdy był poza ekranem)
     if ('IntersectionObserver' in window) {
-        const io = new IntersectionObserver((entries) => {
-            if (entries[0].isIntersecting) {
-                const imgs = preloadedFolders[MACHINE_TYPES[currentTypeIndex].folder] || [];
-                Promise.all(imgs.map((im) => (im.decode ? im.decode().catch(() => null) : null)))
-                    .then(() => setTimeout(introSpin, 300));
-                io.disconnect();
-            }
-        }, { threshold: 0.6 });
-        io.observe(stage);
+        new IntersectionObserver((entries) => {
+            stageVisible = entries[0].isIntersecting;
+            if (stageVisible) scheduleIntroSpin();
+            else introToken++;
+        }, { threshold: 0.6 }).observe(stage);
     }
 
     window.addEventListener('resize', moveIndicator, { passive: true });

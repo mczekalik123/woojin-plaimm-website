@@ -924,20 +924,38 @@ p {
     inset: 0;
     z-index: -3;
     overflow: hidden;
+    background: var(--c-ink);
 }
 
+/* Rozmyte tło wypełniające obszar nad i pod zdjęciem (miniatura ~2 KB) */
+.hero-media::before {
+    content: '';
+    position: absolute;
+    inset: -80px;
+    background: url('img/opt/hero-blur.jpg') center / cover no-repeat;
+    filter: blur(36px) saturate(1.15);
+    opacity: 0.5;
+}
+
+/* Zdjęcie pokazane w całości (proporcje 1920×650), wyśrodkowane w pionie
+   i płynnie wtapiające się w rozmyte tło na górnej i dolnej krawędzi */
 .hero-img {
+    position: absolute;
+    left: 0;
+    top: 50%;
     width: 100%;
-    height: 100%;
+    height: auto;
+    aspect-ratio: 1920 / 650;
     object-fit: cover;
-    object-position: 62% 50%;
-    transform-origin: 60% 40%;
+    translate: 0 -50%;
+    -webkit-mask-image: linear-gradient(180deg, transparent 0%, #000 14%, #000 86%, transparent 100%);
+    mask-image: linear-gradient(180deg, transparent 0%, #000 14%, #000 86%, transparent 100%);
     animation: heroZoom 2.4s var(--ease-expo) both;
     will-change: transform;
 }
 
 @keyframes heroZoom {
-    from { transform: scale(1.14); filter: brightness(0.4); }
+    from { transform: scale(1.08); filter: brightness(0.4); }
     to { transform: scale(1); filter: brightness(1); }
 }
 
@@ -946,8 +964,13 @@ p {
     inset: 0;
     z-index: -2;
     background:
-        linear-gradient(90deg, rgba(10, 14, 19, 0.94) 0%, rgba(10, 14, 19, 0.78) 34%, rgba(10, 14, 19, 0.22) 68%, rgba(10, 14, 19, 0.4) 100%),
-        linear-gradient(180deg, rgba(10, 14, 19, 0.6) 0%, rgba(10, 14, 19, 0) 24%, rgba(10, 14, 19, 0) 55%, rgba(10, 14, 19, 0.96) 100%);
+        linear-gradient(90deg, rgba(10, 14, 19, 0.82) 0%, rgba(10, 14, 19, 0.5) 34%, rgba(10, 14, 19, 0.08) 62%, rgba(10, 14, 19, 0.12) 100%),
+        linear-gradient(180deg, rgba(10, 14, 19, 0.5) 0%, rgba(10, 14, 19, 0) 22%, rgba(10, 14, 19, 0) 62%, rgba(10, 14, 19, 0.9) 100%);
+}
+
+.hero-title,
+.hero-lead {
+    text-shadow: 0 2px 24px rgba(10, 14, 19, 0.55);
 }
 
 /* Delikatna "architektoniczna" siatka linii w tle hero */
@@ -1101,17 +1124,22 @@ p {
 }
 
 @media (max-width: 700px) {
+    /* Na telefonie zdjęcie (w całości) jest pasem pod nagłówkiem, a treść pod nim */
     .hero {
         min-height: 100svh;
+        padding-top: calc(var(--header-h) + 33.85vw + 28px);
     }
 
     .hero-img {
-        object-position: 72% 50%;
+        top: var(--header-h);
+        translate: none;
+        -webkit-mask-image: linear-gradient(180deg, #000 70%, transparent 100%);
+        mask-image: linear-gradient(180deg, #000 70%, transparent 100%);
     }
 
     .hero-overlay {
         background:
-            linear-gradient(180deg, rgba(10, 14, 19, 0.55) 0%, rgba(10, 14, 19, 0.35) 30%, rgba(10, 14, 19, 0.88) 62%, rgba(10, 14, 19, 0.98) 100%);
+            linear-gradient(180deg, rgba(10, 14, 19, 0.35) 0%, rgba(10, 14, 19, 0.1) 20%, rgba(10, 14, 19, 0.6) 45%, rgba(10, 14, 19, 0.92) 100%);
     }
 
     .hero-bottom {
@@ -1413,28 +1441,6 @@ p {
     box-shadow: var(--shadow-md);
 }
 
-.stat-card--dark {
-    background: var(--c-ink);
-    border-color: var(--c-ink);
-    color: #fff;
-}
-
-.stat-card--dark .stat-label {
-    color: var(--c-on-dark-2);
-}
-
-.stat-card--dark::after {
-    content: '';
-    position: absolute;
-    right: -60px;
-    bottom: -80px;
-    width: 220px;
-    height: 220px;
-    border-radius: 50%;
-    background: radial-gradient(circle, rgba(10, 190, 181, 0.45), transparent 65%);
-    pointer-events: none;
-}
-
 .stat-number {
     display: block;
     font-size: clamp(38px, 4.4vw, 60px);
@@ -1443,10 +1449,6 @@ p {
     font-stretch: var(--wide);
     letter-spacing: -0.035em;
     font-variant-numeric: tabular-nums;
-}
-
-.stat-card--dark .stat-number {
-    color: var(--c-teal-300);
 }
 
 .stat-label {
@@ -1464,8 +1466,13 @@ p {
     animation: pulseGlow 1.8s ease-in-out infinite;
 }
 
-.stat-card--dark .pulse-plus {
-    color: var(--c-cyan);
+/* "+" przy liczbach: w kroju Archivo środek znaku "+" leży o 0,075 em
+   niżej niż środek cyfr - podniesienie o tę wartość centruje go idealnie */
+.stat-number .pulse-plus {
+    position: relative;
+    top: -0.075em;
+    margin-left: 0.04em;
+    transform-origin: 50% 55%;
 }
 
 @keyframes pulseGlow {
@@ -1616,27 +1623,16 @@ p {
     outline-offset: -3px;
 }
 
+/* Zdjęcia kart (img/opt/series-*.jpg, 960×600) mają maszynę wyśrodkowaną
+   i cień wpisany pod jej podstawą - pole tylko je wyświetla */
 .series-media {
     position: relative;
     aspect-ratio: 16 / 10;
     display: grid;
     place-items: center;
-    padding: 18px;
     background:
-        radial-gradient(80% 70% at 50% 60%, #ffffff 0%, #eef2f5 70%, #e4eaef 100%);
+        radial-gradient(80% 70% at 50% 55%, #ffffff 0%, #eef2f5 70%, #e4eaef 100%);
     overflow: hidden;
-}
-
-.series-media::after {
-    content: '';
-    position: absolute;
-    left: 12%;
-    right: 12%;
-    bottom: 16%;
-    height: 12%;
-    border-radius: 50%;
-    background: radial-gradient(closest-side, rgba(16, 24, 40, 0.16), transparent);
-    z-index: 0;
 }
 
 .series-media img {
@@ -1650,17 +1646,24 @@ p {
 }
 
 .series-card:hover .series-media img {
-    transform: scale(1.07) translateX(-2%);
+    transform: scale(1.06);
 }
 
-.series-index {
+/* VHA-RS: oryginalna klatka 360° z szerokim, miękkim cieniem "podłogi" w CSS */
+.series-media--floor {
+    padding: 18px;
+}
+
+.series-media--floor::after {
+    content: '';
     position: absolute;
-    top: 16px;
-    left: 18px;
-    z-index: 2;
-    font-family: var(--font-mono);
-    font-size: 12px;
-    color: var(--c-subtle);
+    left: 12%;
+    right: 12%;
+    bottom: 16%;
+    height: 12%;
+    border-radius: 50%;
+    background: radial-gradient(closest-side, rgba(16, 24, 40, 0.16), transparent);
+    z-index: 0;
 }
 
 .series-badge {
@@ -1993,15 +1996,20 @@ p {
     white-space: nowrap;
     pointer-events: none;
     user-select: none;
-    animation: cyberKrFlicker 6.5s ease-in-out infinite;
+    animation: neonFlicker 2.4s linear infinite;
 }
 
-@keyframes cyberKrFlicker {
-    0%, 89%, 100% { opacity: 1; }
-    90% { opacity: 0.6; }
-    91% { opacity: 1; }
-    94% { opacity: 0.8; }
-    95% { opacity: 1; }
+/* Wspólne miganie neonów: 사출성형기 i "wtryskarkę" używają tej samej animacji
+   o tym samym czasie trwania, startują razem, więc migają jednocześnie */
+@keyframes neonFlicker {
+    0%, 62%, 100% { opacity: 1; }
+    64% { opacity: 0.35; }
+    66% { opacity: 1; }
+    70% { opacity: 0.55; }
+    72% { opacity: 1; }
+    86% { opacity: 1; }
+    88% { opacity: 0.45; }
+    90% { opacity: 1; }
 }
 
 .cyber-cta-tag {
@@ -2032,15 +2040,7 @@ p {
         0 0 30px rgba(0, 255, 242, 0.4),
         2px 0 rgba(255, 45, 210, 0.5),
         -2px 0 rgba(10, 190, 181, 0.5);
-    animation: cyberTextFlicker 5s ease-in-out infinite;
-}
-
-@keyframes cyberTextFlicker {
-    0%, 92%, 100% { opacity: 1; }
-    93% { opacity: 0.8; }
-    94% { opacity: 1; }
-    96% { opacity: 0.88; }
-    97% { opacity: 1; }
+    animation: neonFlicker 2.4s linear infinite;
 }
 
 .cyber-cta-text {
@@ -2103,101 +2103,169 @@ p {
     color: var(--c-on-dark-2);
 }
 
-.cyber-feature-grid {
+/* Zespoły TE-A5: zdjęcie maszyny bez tła (oryginalne kolory, bez ramek)
+   + opis; wokół sylwetki maszyny biegnie promień (warstwy z js/home.js) */
+.tech-showcase {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 20px;
+    gap: clamp(72px, 9vw, 136px);
+    margin-top: clamp(24px, 4vw, 56px);
 }
 
-/* Karta z "reflektorem" podążającym za kursorem (--mx/--my z JS) */
-.cyber-feature-card {
-    --mx: 50%;
-    --my: 50%;
+.tech-row {
+    display: grid;
+    grid-template-columns: minmax(0, 1.45fr) minmax(0, 1fr);
+    align-items: center;
+    gap: clamp(36px, 5vw, 88px);
+}
+
+.tech-row--reverse {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.3fr);
+}
+
+.tech-row--reverse .tech-visual {
+    order: 2;
+}
+
+.tech-visual {
     position: relative;
-    isolation: isolate;
-    display: flex;
-    flex-direction: column;
-    border-radius: var(--r-lg);
-    background: linear-gradient(180deg, rgba(24, 33, 44, 0.9), rgba(12, 17, 23, 0.95));
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    overflow: hidden;
-    transition: transform 0.6s var(--ease-out), border-color 0.4s ease, box-shadow 0.6s var(--ease-out);
-    transform-style: preserve-3d;
+    margin: 0;
 }
 
-.cyber-feature-card::before {
-    content: '';
+.tech-img {
+    display: block;
+    width: 100%;
+    height: auto;
+}
+
+/* Warstwa promienia - ten sam kadr co zdjęcie, nałożona na nie */
+.tech-svg {
     position: absolute;
     inset: 0;
-    z-index: 2;
-    background: radial-gradient(360px circle at var(--mx) var(--my), rgba(0, 255, 242, 0.14), transparent 45%);
-    opacity: 0;
-    transition: opacity 0.4s ease;
+    width: 100%;
+    height: 100%;
+    overflow: visible;
     pointer-events: none;
 }
 
-.cyber-feature-card:hover {
-    border-color: rgba(0, 255, 242, 0.35);
-    box-shadow: 0 30px 60px -24px rgba(0, 255, 242, 0.25);
+/* Obrys służy tylko jako wzorzec dla warstw promienia */
+.tech-beam-path {
+    fill: none;
+    stroke: none;
 }
 
-.cyber-feature-card:hover::before {
-    opacity: 1;
+.tech-beam {
+    pointer-events: none;
 }
 
-.cyber-feature-image {
-    position: relative;
-    aspect-ratio: 4 / 3;
-    overflow: hidden;
-    background: #0a0b10;
+.tech-beam path {
+    fill: none;
+    stroke-linecap: round;
+    stroke-linejoin: round;
 }
 
-.cyber-feature-image::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(180deg, transparent 55%, rgba(12, 17, 23, 0.95));
-}
-
-.cyber-feature-image img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    transition: transform 1s var(--ease-out);
-}
-
-.cyber-feature-card:hover .cyber-feature-image img {
-    transform: scale(1.08);
-}
-
-.cyber-feature-num {
-    position: absolute;
-    top: 14px;
-    left: 16px;
-    z-index: 1;
+.tech-kicker {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 18px;
     font-family: var(--font-mono);
-    font-size: 12px;
+    font-size: 12.5px;
+    font-weight: 600;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
     color: var(--c-cyan);
-    text-shadow: 0 0 8px rgba(0, 255, 242, 0.6);
+    text-shadow: 0 0 12px rgba(0, 255, 242, 0.45);
 }
 
-.cyber-feature-card h3 {
-    margin: 4px 24px 10px;
-    font-size: 18px;
-    font-weight: 700;
-    letter-spacing: -0.01em;
+.tech-kicker span {
+    display: inline-grid;
+    place-items: center;
+    min-width: 38px;
+    height: 26px;
+    padding: 0 8px;
+    border-radius: 999px;
+    border: 1px solid rgba(0, 255, 242, 0.45);
+    color: #fff;
+    letter-spacing: 0.08em;
+    box-shadow: inset 0 0 12px rgba(0, 255, 242, 0.18), 0 0 14px rgba(0, 255, 242, 0.18);
 }
 
-.cyber-feature-card p {
-    margin: 0 24px 26px;
-    font-size: 14px;
-    line-height: 1.65;
+.tech-title {
+    margin-bottom: 20px;
+    font-size: clamp(26px, 2.7vw, 40px);
+    line-height: 1.1;
+    font-weight: 800;
+    font-stretch: var(--wide);
+    letter-spacing: -0.03em;
+    color: #fff;
+}
+
+.tech-accent {
+    background: linear-gradient(90deg, #00fff2, #0abeb5 45%, #ff2dd2);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+}
+
+.tech-text {
+    margin-bottom: 26px;
+    font-size: clamp(15px, 1.2vw, 17px);
+    line-height: 1.75;
     color: var(--c-on-dark-2);
 }
 
-@media (max-width: 1100px) {
-    .cyber-feature-grid {
-        grid-template-columns: repeat(2, 1fr);
+.tech-points {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.tech-points li {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 14px;
+    border-radius: 999px;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    background: rgba(255, 255, 255, 0.03);
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--c-on-dark);
+}
+
+.tech-points li::before {
+    content: '';
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--c-cyan);
+    box-shadow: 0 0 8px var(--c-cyan);
+}
+
+.tech-points li:nth-child(even)::before {
+    background: var(--c-magenta);
+    box-shadow: 0 0 8px var(--c-magenta);
+}
+
+@media (max-width: 960px) {
+    .tech-row,
+    .tech-row--reverse {
+        grid-template-columns: minmax(0, 1fr);
+        gap: 28px;
+    }
+
+    .tech-row--reverse .tech-visual {
+        order: 0;
+    }
+
+    .tech-visual,
+    .tech-copy {
+        max-width: 720px;
+        width: 100%;
+        margin-inline: auto;
     }
 }
 
@@ -2216,8 +2284,9 @@ p {
         font-size: 13px;
     }
 
-    .cyber-feature-grid {
-        grid-template-columns: 1fr;
+    .tech-points li {
+        font-size: 12.5px;
+        padding: 7px 12px;
     }
 }
 
@@ -2367,6 +2436,118 @@ p {
     letter-spacing: 0.1em;
     text-transform: uppercase;
     color: var(--c-on-dark-3);
+}
+
+/* Informacja prawna o statusie przedstawicielstwa (stopka każdej strony) */
+.legal-notice {
+    display: grid;
+    grid-template-columns: 44px minmax(0, 1fr);
+    gap: 18px;
+    margin-bottom: 36px;
+    padding: 22px 24px;
+    border-radius: var(--r-lg);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    background:
+        radial-gradient(60% 120% at 0% 0%, rgba(10, 190, 181, 0.12), transparent 60%),
+        rgba(255, 255, 255, 0.03);
+    font-size: 13.5px;
+    line-height: 1.7;
+    color: var(--c-on-dark-2);
+    scroll-margin-top: calc(var(--header-h) + 24px);
+}
+
+.legal-notice-icon {
+    display: grid;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    background: rgba(10, 190, 181, 0.14);
+    color: var(--c-teal-300);
+}
+
+.legal-notice-icon svg {
+    width: 22px;
+    height: 22px;
+}
+
+.legal-notice-title {
+    margin-bottom: 4px;
+    font-size: 14.5px;
+    font-weight: 700;
+    color: #fff;
+}
+
+.legal-notice strong {
+    color: var(--c-on-dark);
+    font-weight: 600;
+}
+
+@media (max-width: 560px) {
+    .legal-notice {
+        grid-template-columns: 1fr;
+        gap: 12px;
+        padding: 18px;
+    }
+}
+
+/* Pasek ze statusem prawnym tuż pod hero strony głównej */
+.legal-ribbon {
+    background: var(--c-bg-tint);
+    border-bottom: 1px solid rgba(10, 190, 181, 0.25);
+}
+
+.legal-ribbon-inner {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding-block: 18px;
+}
+
+.legal-ribbon-icon {
+    flex-shrink: 0;
+    display: grid;
+    place-items: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: #fff;
+    border: 1px solid rgba(10, 190, 181, 0.35);
+    color: var(--c-teal-700);
+}
+
+.legal-ribbon-icon svg {
+    width: 20px;
+    height: 20px;
+}
+
+.legal-ribbon p {
+    flex: 1;
+    font-size: 14px;
+    line-height: 1.6;
+    color: var(--c-teal-900);
+}
+
+.legal-ribbon .link-underline {
+    flex-shrink: 0;
+    font-size: 14px;
+    white-space: nowrap;
+}
+
+@media (max-width: 760px) {
+    .legal-ribbon-inner {
+        flex-wrap: wrap;
+        align-items: flex-start;
+    }
+
+    .legal-ribbon p {
+        flex-basis: calc(100% - 56px);
+        font-size: 13.5px;
+    }
+
+    .legal-ribbon .link-underline {
+        margin-left: 56px;
+    }
 }
 
 .footer-bottom {
@@ -2936,13 +3117,16 @@ input[type="radio"] {
     -webkit-user-select: none;
 }
 
-.viewer360-stage::after {
+/* Cień na podłodze tylko dla serii, których zdjęcia nie mają własnego cienia
+   (TL-A5, VHA-RS) - położenie i szerokość ustawia JS (--shadow-y, --shadow-w) */
+.viewer360-stage.has-floor-shadow::after {
     content: '';
     position: absolute;
-    left: 14%;
-    right: 14%;
-    bottom: 4%;
+    top: var(--shadow-y, 90%);
+    left: calc(50% - var(--shadow-w, 70%) / 2);
+    width: var(--shadow-w, 70%);
     height: 12%;
+    translate: 0 -50%;
     border-radius: 50%;
     background: radial-gradient(closest-side, rgba(16, 24, 40, 0.14), transparent);
     z-index: 0;
@@ -2963,6 +3147,8 @@ input[type="radio"] {
     -webkit-user-drag: none;
     user-select: none;
     mix-blend-mode: multiply;
+    /* Wypoziomowanie: maszyna każdej serii na środku pola (--level-y z JS) */
+    translate: 0 var(--level-y, 0%);
     transform-origin: center;
     transition: transform 0.6s var(--ease-expo), opacity 0.4s ease;
 }
@@ -3018,6 +3204,47 @@ input[type="radio"] {
 
 .viewer360-stage.is-unavailable img {
     visibility: hidden;
+}
+
+/* Seria bez klatek 360°, ale ze zdjęciem poglądowym (TL-A5): zdjęcie widoczne,
+   informacja "wkrótce" jako plakietka u góry */
+.viewer360-stage.is-unavailable.has-still {
+    cursor: default;
+}
+
+.viewer360-stage.is-unavailable.has-still img {
+    visibility: visible;
+}
+
+.viewer360-stage.has-still .viewer360-unavailable {
+    inset: 3% auto auto 50%;
+    translate: -50% 0;
+    flex-direction: row;
+    gap: 8px;
+    padding: 8px 16px;
+    border: 1px solid var(--c-line);
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.92);
+    -webkit-backdrop-filter: blur(6px);
+    backdrop-filter: blur(6px);
+    box-shadow: var(--shadow-sm);
+    font-size: 13px;
+    white-space: nowrap;
+    animation: metaIn 0.6s var(--ease-expo) both;
+}
+
+.viewer360-stage.has-still .viewer360-unavailable svg {
+    width: 18px;
+    height: 18px;
+    color: var(--c-teal-700);
+}
+
+@media (max-width: 560px) {
+    .viewer360-stage.has-still .viewer360-unavailable {
+        top: -6px;
+        padding: 6px 12px;
+        font-size: 11.5px;
+    }
 }
 
 .viewer360-slider-row {
@@ -3103,6 +3330,7 @@ input[type="radio"] {
     opacity: 0.75;
 }
 
+
 @media (max-width: 768px) {
     .viewer360-arrow {
         width: 40px;
@@ -3171,6 +3399,34 @@ input[type="radio"] {
 .catalog-dl-btn .btn-icon {
     width: 20px;
     height: 20px;
+}
+
+/* Panel serii z filmem producenta (TE-A5): opis + katalog | film 16:9 bez ramki */
+.machine-description-panel--video {
+    grid-template-columns: minmax(0, 0.95fr) minmax(0, 1.15fr);
+    gap: clamp(28px, 4vw, 56px);
+}
+
+.machine-description-panel--video .catalog-dl-btn {
+    margin-top: 28px;
+}
+
+.machine-description-video {
+    position: relative;
+    aspect-ratio: 16 / 9;
+    border-radius: var(--r-lg);
+    overflow: hidden;
+    background: rgba(255, 255, 255, 0.04);
+    box-shadow: 0 30px 60px -30px rgba(0, 0, 0, 0.6);
+}
+
+.machine-description-video iframe {
+    position: absolute;
+    inset: 0;
+    display: block;
+    width: 100%;
+    height: 100%;
+    border: 0;
 }
 
 .components-head {

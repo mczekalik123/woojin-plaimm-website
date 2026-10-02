@@ -91,7 +91,8 @@
             const menuOpen = header.classList.contains('is-menu-open');
             header.classList.toggle('is-scrolled', y > 12);
 
-            if (!menuOpen) {
+            // data-sticky na <header> = nagłówek zawsze widoczny (bez chowania)
+            if (!menuOpen && !header.hasAttribute('data-sticky')) {
                 const delta = y - lastY;
                 if (y > 480 && delta > 6) header.classList.add('is-hidden');
                 else if (delta < -6 || y < 480) header.classList.remove('is-hidden');
@@ -183,9 +184,11 @@
         const to = parseFloat(el.dataset.countTo);
         const from = parseFloat(el.dataset.countFrom || '0');
         const suffix = el.dataset.suffix || '';
+        // Liczba w osobnym elemencie (.stat-value), znak "+" stoi obok na stałe
+        const valueEl = el.querySelector('.stat-value') || el;
         const finish = function () {
-            el.textContent = formatNumber(to);
-            if (suffix) {
+            valueEl.textContent = formatNumber(to);
+            if (suffix && valueEl === el) {
                 const s = document.createElement('span');
                 s.className = 'pulse-plus';
                 s.textContent = suffix;
@@ -199,7 +202,7 @@
             const t = Math.min(1, (now - start) / duration);
             const eased = 1 - Math.pow(1 - t, 4);
             if (t < 1) {
-                el.textContent = formatNumber(from + (to - from) * eased);
+                valueEl.textContent = formatNumber(from + (to - from) * eased);
                 requestAnimationFrame(tick);
             } else {
                 finish();

@@ -12,13 +12,13 @@
 
     const RECIPIENTS = {
         biuro: 'ploffice@wjpim.com',
-        handlowiec: 'mczekalik@wjpim.com',
+        doradca: 'mczekalik@wjpim.com',
         serwis: 'woojin.choi@wjpim.com'
     };
 
     const TOPIC_LABELS = {
         biuro: 'Biuro',
-        handlowiec: 'Handlowiec',
+        doradca: 'Doradca ds. produktów',
         serwis: 'Serwis'
     };
 
