@@ -107,21 +107,49 @@
         if (componentsSection) componentsSection.hidden = !hasComponents && !hasDesc;
     }
 
-    // Film producenta w panelu opisu serii (np. TE-A5). Po przełączeniu na inną
-    // serię panel jest ukrywany, ale samo ukrycie nie wycisza filmu - odtwarzacz
-    // YouTube dostaje więc polecenie pauzy (enablejsapi=1 w adresie filmu).
-    const YT_ORIGIN = 'https://www.youtube-nocookie.com';
+    // Film producenta w panelu opisu serii (np. TE-A5). Do kliknięcia widać tylko
+    // zdjęcie maszyny z przyciskiem (strona nie łączy się z YouTube); po kliknięciu
+    // w tym samym miejscu startuje odtwarzacz YouTube. Zmiana serii zatrzymuje film
+    // (odtwarzacz jest usuwany, wraca zdjęcie z przyciskiem).
+    const videoBoxes = Array.from(document.querySelectorAll('.machine-description-video[data-youtube-id]'));
 
-    function pauseHiddenVideos(type) {
-        machineDescPanels.forEach((panel) => {
-            if (panel.dataset.machineType === type.name) return;
-            panel.querySelectorAll('iframe[src^="' + YT_ORIGIN + '"]').forEach((frame) => {
-                try {
-                    frame.contentWindow.postMessage(JSON.stringify({ event: 'command', func: 'pauseVideo', args: [] }), YT_ORIGIN);
-                } catch (e) { /* odtwarzacz jeszcze się nie wczytał */ }
-            });
+    function stopHiddenVideos(type) {
+        videoBoxes.forEach((box) => {
+            const panel = box.closest('[data-machine-type]');
+            if (panel && panel.dataset.machineType === type.name) return;
+            box.querySelectorAll('iframe, .video-facade-msg').forEach((el) => el.remove());
+            box.classList.remove('is-playing');
         });
     }
+
+    videoBoxes.forEach((box) => {
+        const playBtn = box.querySelector('.video-facade-play');
+        if (!playBtn) return;
+        playBtn.addEventListener('click', () => {
+            const id = encodeURIComponent(box.dataset.youtubeId);
+            box.classList.add('is-playing');
+            // Plik otwarty prosto z dysku (file://) nie przekazuje adresu strony,
+            // a bez niego YouTube blokuje osadzony film (błąd 153). Taką wersję
+            // widzi tylko osoba podglądająca pliki lokalnie - nie odwiedzający.
+            if (location.protocol === 'file:') {
+                const msg = document.createElement('div');
+                msg.className = 'video-facade-msg';
+                msg.innerHTML = '<p>YouTube nie odtwarza filmów na stronie otwartej prosto z dysku (błąd 153). ' +
+                    'Na opublikowanej stronie oraz w podglądzie <strong>_podglad/Podglad strony.bat</strong> film odtworzy się tutaj.</p>' +
+                    '<a href="https://www.youtube.com/watch?v=' + id + '" target="_blank" rel="noopener">Obejrzyj na YouTube</a>';
+                box.appendChild(msg);
+                return;
+            }
+            const frame = document.createElement('iframe');
+            frame.src = 'https://www.youtube-nocookie.com/embed/' + id + '?autoplay=1&rel=0&modestbranding=1&playsinline=1';
+            frame.title = box.dataset.videoTitle || 'Film YouTube';
+            frame.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share';
+            frame.allowFullscreen = true;
+            frame.referrerPolicy = 'strict-origin-when-cross-origin';
+            box.appendChild(frame);
+            frame.focus();
+        });
+    });
 
     // Obrót "na powitanie": jeden pełny obrót przy pierwszym otwarciu danego
     // typu. Typ, który już się obrócił (albo którego użytkownik sam obracał),
@@ -213,7 +241,7 @@
         }
 
         updateComponentsForType(type);
-        pauseHiddenVideos(type);
+        stopHiddenVideos(type);
         applyLevelAndShadow(stage, type);
         // Podpis "Przeciągnij, aby obrócić" tylko tam, gdzie jest widok 360°
         if (hintEl) hintEl.style.visibility = type.available ? '' : 'hidden';

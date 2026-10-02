@@ -160,8 +160,9 @@
                 </a>
             </div>
 
-            <!-- TE-A5: opis + film producenta (odtwarzacz YouTube w trybie
-                 rozszerzonej prywatności; film startuje po naciśnięciu "odtwórz") -->
+            <!-- TE-A5: opis + film producenta. Do kliknięcia tylko zdjęcie maszyny
+                 z przyciskiem (bez połączenia z YouTube); po kliknięciu w tym samym
+                 miejscu startuje odtwarzacz YouTube (tryb rozszerzonej prywatności). -->
             <div class="machine-description-panel machine-description-panel--video" data-machine-type="TE-A5">
                 <div class="machine-description-text">
                     <h3>TE-A5</h3>
@@ -171,8 +172,14 @@
                         <svg class="btn-icon btn-icon--down" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v12M6 10l6 6 6-6M5 20h14"/></svg>
                     </a>
                 </div>
-                <div class="machine-description-video">
-                    <iframe src="https://www.youtube-nocookie.com/embed/Axq3TCnW0dw?rel=0&amp;modestbranding=1&amp;playsinline=1&amp;enablejsapi=1" title="TE-A5 Overview – film WOOJIN PLAIMM" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+                <div class="machine-description-video" data-youtube-id="Axq3TCnW0dw" data-video-title="TE-A5 Overview – film WOOJIN PLAIMM">
+                    <img class="video-facade-poster" src="img/360-TE/5.jpg" alt="" width="893" height="489" loading="lazy" decoding="async">
+                    <button type="button" class="video-facade-play" aria-label="Odtwórz film „TE-A5 Overview” (1:47)">
+                        <span class="video-facade-icon" aria-hidden="true">
+                            <svg viewBox="0 0 24 24"><path d="M8.5 5.8v12.4a.8.8 0 0 0 1.2.7l9.8-6.2a.8.8 0 0 0 0-1.4L9.7 5.1a.8.8 0 0 0-1.2.7z" fill="currentColor"/></svg>
+                        </span>
+                        <span class="video-facade-label">Odtwórz film</span>
+                    </button>
                 </div>
             </div>
 
