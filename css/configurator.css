@@ -1008,18 +1008,51 @@
     border-style: solid;
 }
 
+/* Kółko z plusem: "+" rysowany dwiema kreskami dokładnie na środku (znak
+   z czcionki siedzi niżej i drga przy skalowaniu), a puls to rozchodzący się
+   pierścień - samo kółko i plus się nie skalują, więc są ostre i równe */
 .step2-add-model-btn .pulse-plus {
-    display: grid;
-    place-items: center;
+    position: relative;
+    display: block;
+    flex: none;
     width: 26px;
     height: 26px;
     margin: 0;
     border-radius: 50%;
     background: var(--c-teal);
-    color: #032321;
-    font-size: 18px;
-    font-weight: 800;
-    line-height: 1;
+    color: transparent;
+    font-size: 0;
+    animation: addPlusRing 1.8s ease-out infinite;
+}
+
+.step2-add-model-btn .pulse-plus::before,
+.step2-add-model-btn .pulse-plus::after {
+    content: '';
+    position: absolute;
+    left: 7px;
+    top: 12px;
+    width: 12px;
+    height: 2px;
+    border-radius: 1px;
+    background: #032321;
+}
+
+.step2-add-model-btn .pulse-plus::after {
+    left: 12px;
+    top: 7px;
+    width: 2px;
+    height: 12px;
+}
+
+@keyframes addPlusRing {
+    0% { box-shadow: 0 0 0 0 rgba(10, 190, 181, 0.55); }
+    70%, 100% { box-shadow: 0 0 0 9px rgba(10, 190, 181, 0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .step2-add-model-btn .pulse-plus {
+        animation: none;
+    }
 }
 
 /* ---- Krok 2: wybór z listy ---- */
@@ -1316,16 +1349,51 @@
     cursor: help;
 }
 
+.checkbox-item {
+    cursor: pointer;
+}
+
 .checkbox-item input {
     cursor: pointer;
 }
 
-/* Dymek z tłumaczeniem (position: fixed, pozycja z JS) */
+/* Przycisk "PL" - tłumaczenie opcji dodatkowej na ekranach dotykowych
+   (stuknięcie nie zaznacza opcji); na komputerze wystarcza najechanie myszką */
+.opt-translate-btn {
+    display: none;
+    flex: 0 0 auto;
+    align-self: center;
+    min-width: 34px;
+    height: 26px;
+    margin: -2px -4px -2px auto;
+    padding: 0 8px;
+    border-radius: 999px;
+    border: 1.5px solid rgba(10, 190, 181, 0.55);
+    background: #fff;
+    color: var(--c-teal-700);
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 0.06em;
+    cursor: pointer;
+}
+
+@media (hover: none), (pointer: coarse) {
+    .opt-translate-btn {
+        display: inline-grid;
+        place-items: center;
+    }
+}
+
+/* Dymek z tłumaczeniem (position: fixed w <body>, pozycja z JS - tuż nad
+   angielskim tekstem, z dzióbkiem wskazującym jego początek) */
 .step3-option-tooltip {
+    --arrow-x: 18px;
     position: fixed;
+    top: 0;
+    left: 0;
     z-index: 60;
     width: max-content;
-    max-width: 280px;
+    max-width: min(300px, calc(100vw - 16px));
     padding: 9px 13px;
     border-radius: 10px;
     background: var(--c-ink);
@@ -1337,7 +1405,29 @@
     opacity: 0;
     pointer-events: none;
     transform: translateY(4px) scale(0.98);
+    transform-origin: var(--arrow-x) 100%;
     transition: opacity 0.15s ease, transform 0.2s var(--ease-out);
+}
+
+.step3-option-tooltip::after {
+    content: '';
+    position: absolute;
+    top: 100%;
+    left: calc(var(--arrow-x) - 6px);
+    border: 6px solid transparent;
+    border-top-color: var(--c-ink);
+}
+
+.step3-option-tooltip.is-below {
+    transform: translateY(-4px) scale(0.98);
+    transform-origin: var(--arrow-x) 0;
+}
+
+.step3-option-tooltip.is-below::after {
+    top: auto;
+    bottom: 100%;
+    border-top-color: transparent;
+    border-bottom-color: var(--c-ink);
 }
 
 .step3-option-tooltip.is-open {

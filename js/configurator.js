@@ -142,126 +142,126 @@ const optionSets = {
 // BEZ numeru porzadkowego (np. 'Single Flight Screw'), bo ten sam opis moze
 // wystapic pod roznymi numerami w roznych seriach/sekcjach.
 const OPTION_TRANSLATIONS = {
-    '3 Phase electric outlet (2 ea)': 'Gniazdo elektryczne 3-fazowe (2 szt.)',
-    '3 color alarm light': 'Trójkolorowa lampa sygnalizacyjna (alarmowa)',
-    'AVR (Automatic Voltage Regulator) on Electric Panel': 'AVR (automatyczny regulator napięcia) w szafie elektrycznej',
-    'Air blow-off unit (Fixed side 1 + Moving side 1)': 'Zespół przedmuchu powietrznego (1 x strona stała + 1 x strona ruchoma)',
-    'Alarming & History save': 'Zapis alarmów i historii zdarzeń',
-    'Anchor-bolt set (Clamping unit)': 'Zestaw śrub kotwiących (zespół zamykający)',
-    'Auto Purging': 'Automatyczne przedmuchiwanie (czyszczenie ślimaka)',
-    'Automatic Ball-screw grease lubrication (All parts)': 'Automatyczne smarowanie śrub kulowych (wszystkie punkty)',
-    'Automatic Grease Lubrication (Clamping unit)': 'Automatyczne smarowanie smarem stałym (zespół zamykający)',
-    'Automatic Grease Lubrication (Injection unit)': 'Automatyczne smarowanie smarem stałym (agregat wtryskowy)',
-    'Automatic Injection unit swiveling (Below IH 11900)': 'Automatyczny obrót boczny agregatu wtryskowego (dla IH poniżej 11900)',
-    'Automatic Mold thickness adjust mode': 'Tryb automatycznej regulacji grubości formy',
-    'Automatic clamp force measurement mode': 'Tryb automatycznego pomiaru siły zwarcia',
-    'Automatic grease lubrication (Clamping)': 'Automatyczne smarowanie smarem stałym (zwarcie)',
-    'Automatic oil lubrication (Toggle)': 'Automatyczne smarowanie olejowe (mechanizm kolankowy)',
-    'Automatic safety Door open/close': 'Automatyczne otwieranie/zamykanie drzwi bezpieczeństwa',
-    'Automatic safety Door open/close (Above 450ton)': 'Automatyczne otwieranie/zamykanie drzwi bezpieczeństwa (powyżej 450 ton)',
-    'Back Pressure control step (3 step)': 'Skokowa regulacja ciśnienia wstecznego (3 stopnie)',
-    'Back-Pressure Closed-loop system': 'System regulacji ciśnienia wstecznego w pętli zamkniętej',
+    '3 Phase electric outlet (2 ea)': 'Zestaw gniazd elektrycznych trójfazowych (5-pin) – 2 zestawy',
+    '3 color alarm light': 'Trójkolorowa lampa statusu maszyny',
+    'AVR (Automatic Voltage Regulator) on Electric Panel': 'Sterowanie stabilizatorem napięcia (AVR) w szafie elektrycznej',
+    'Air blow-off unit (Fixed side 1 + Moving side 1)': 'Układ zdmuchiwania pneumatycznego – 2 zawory zdmuchiwania (strona stała + strona ruchoma)',
+    'Alarming & History save': 'Wyświetlanie i zapis historii alarmów',
+    'Anchor-bolt set (Clamping unit)': 'Śruby kotwiące (jednostka zamykania)',
+    'Auto Purging': 'Funkcja automatycznego czyszczenia układu plastyfikacji',
+    'Automatic Ball-screw grease lubrication (All parts)': 'Automatyczne doprowadzanie smaru do układu kolanowego i agregatu',
+    'Automatic Grease Lubrication (Clamping unit)': 'Układ automatycznego smarowania mechanizmu zamykania',
+    'Automatic Grease Lubrication (Injection unit)': 'Automatyczne smarowanie (jednostka wtryskowa)',
+    'Automatic Injection unit swiveling (Below IH 11900)': 'Automatyczne wychylanie agregatu (dla IH poniżej 11900)',
+    'Automatic Mold thickness adjust mode': 'Funkcja automatycznej regulacji wysokości formy wtryskowej',
+    'Automatic clamp force measurement mode': 'Czujnik tensometryczny pokazujący siłę zwarcia',
+    'Automatic grease lubrication (Clamping)': 'Układ automatycznego smarowania mechanizmu zamykania',
+    'Automatic oil lubrication (Toggle)': 'Układ automatycznego smarowania mechanizmu zamykania',
+    'Automatic safety Door open/close': 'Automatyczny napęd osłony przedniej',
+    'Automatic safety Door open/close (Above 450ton)': 'Automatyczny napęd osłony przedniej (powyżej 450 ton)',
+    'Back Pressure control step (3 step)': '3 etapy kontroli przeciwciśnienia plastyfikacji',
+    'Back-Pressure Closed-loop system': 'Sterowanie przeciwciśnieniem w pętli zamkniętej',
     'CMS (Central Monitoring System)': 'CMS (centralny system monitorowania)',
-    'Charging Speed & Pressure step (3 step)': 'Skokowa regulacja prędkości i ciśnienia dozowania (3 stopnie)',
-    'Charging on Fly (AC Motor)': 'Dozowanie w ruchu (napęd silnikiem AC)',
-    'Charging on Fly (Pump type)': 'Dozowanie w ruchu (typ pompowy)',
-    'Charging time count & alarm': 'Pomiar czasu dozowania i alarm',
-    'Clamping area Curtain sensor (Above 550ton)': 'Kurtyna świetlna strefy zwarcia (powyżej 550 ton)',
-    'Cold screw protection mode': 'Tryb zabezpieczenia przed pracą zimnego ślimaka',
-    'Cold screw start protection mode': 'Tryb zabezpieczenia przed rozruchem zimnego ślimaka',
+    'Charging Speed & Pressure step (3 step)': '3 etapy kontroli procesu plastyfikacji (prędkość / ciśnienie)',
+    'Charging on Fly (AC Motor)': 'Ruchy równoległe dozowania (silnik AC)',
+    'Charging on Fly (Pump type)': 'Ruchy równoległe dozowania (typ pompowy)',
+    'Charging time count & alarm': 'Alarm przekroczonego czasu plastyfikacji',
+    'Clamping area Curtain sensor (Above 550ton)': 'Kurtyna świetlna osłony po stronie operatora (powyżej 550 ton)',
+    'Cold screw protection mode': 'Zabezpieczenie przed wykonaniem ruchów zimnym ślimakiem',
+    'Cold screw start protection mode': 'Zabezpieczenie przed wykonaniem ruchów zimnym ślimakiem',
     'Cooling water distributor': 'Rozdzielacz wody chłodzącej',
-    'Core & Ejector on Fly': 'Rdzeń i wypychacz w ruchu',
+    'Core & Ejector on Fly': 'Ruchy rdzeni i wyrzutnika równoległe z otwieraniem / zamykaniem formy',
     'Core Pressure release Circuit (Automatic)': 'Układ zwalniania nacisku rdzenia (automatyczny)',
     'Core Pressure release Circuit (Manual)': 'Układ zwalniania nacisku rdzenia (ręczny)',
-    'Core on Fly': 'Rdzeń w ruchu',
+    'Core on Fly': 'Ruchy rdzeni równoległe z otwieraniem / zamykaniem formy',
     'Core-Back Mode': 'Tryb cofania rdzenia (core-back)',
-    'Cushion Display & Alarm': 'Wskazanie poduszki wtrysku (cushion) i alarm',
+    'Cushion Display & Alarm': 'Wyświetlenie pozycji poduszki resztkowej wtrysku wraz z alarmem',
     'Customized Design Screw (SB, Mixing, Coating)': 'Ślimak w wykonaniu specjalnym (SB, mieszający, z powłoką)',
-    'Daylight Extension': 'Zwiększenie prześwitu (daylight)',
-    'Dosing unit Interface (for Masterbatch)': 'Interfejs dozownika (do masterbatchu)',
-    'Ejecting on fly': 'Wypychanie w ruchu',
-    'Ejector Check Valve': 'Zawór zwrotny wypychacza',
+    'Daylight Extension': 'Zwiększenie maksymalnej odległości między płytą stałą a ruchomą',
+    'Dosing unit Interface (for Masterbatch)': 'Sygnał dozowania tworzywa / barwnika',
+    'Ejecting on fly': 'Ruchy równoległe wyrzutnika podczas otwierania formy wtryskowej',
+    'Ejector Check Valve': 'Zawór sprawdzający na wyrzutniku',
     'Ejector Forward/Backward External switch': 'Zewnętrzny przełącznik wysuwu/cofania wypychacza',
     'Ejector Interlock Connector (WJ Standard, EM13)': 'Złącze blokady wypychacza (standard WJ, EM13)',
-    'Ejector Speed & Pressure step (2 step)': 'Skokowa regulacja prędkości i ciśnienia wypychacza (2 stopnie)',
-    'Ejector Speed & Pressure step (3 step)': 'Skokowa regulacja prędkości i ciśnienia wypychacza (3 stopnie)',
-    'External Temperature Display (F/P)': 'Zewnętrzny wyświetlacz temperatury (F/P)',
-    'Fast Injection Circuit (ACC)': 'Układ szybkiego wtrysku (ACC)',
+    'Ejector Speed & Pressure step (2 step)': '2 etapy kontroli ciśnienia i prędkości ruchów wyrzutnika',
+    'Ejector Speed & Pressure step (3 step)': '3 etapy kontroli ciśnienia i prędkości ruchów wyrzutnika',
+    'External Temperature Display (F/P)': 'Dodatkowy wyświetlacz temperatury (F/P)',
+    'Fast Injection Circuit (ACC)': 'Akumulatory wtrysku (ACC)',
     'Gas Injection Interface': 'Interfejs wtrysku gazu',
-    'Heater Disconnection check device': 'Urządzenie kontroli przerwania obwodu grzałki',
-    'Heater Insulation Band': 'Osłona izolacyjna grzałek',
-    'Holding Speed & Pressure step (5 step)': 'Skokowa regulacja prędkości i ciśnienia docisku (5 stopni)',
-    'Hopper Ladder & Stand': 'Drabinka i podest zasypowy',
-    'Hopper Slide (L/M)': 'Przesuwny lej zasypowy (L/M)',
-    'Hopper throat temperature control device': 'Regulacja temperatury gardła leja zasypowego',
-    'Hydraulic Auto-Clamp unit': 'Hydrauliczny zespół automatycznego mocowania formy',
+    'Heater Disconnection check device': 'Wyświetlanie i alarmowanie o niepoprawnej pracy grzałek',
+    'Heater Insulation Band': 'Opaski termoizolacyjne cylindra grzewczego',
+    'Holding Speed & Pressure step (5 step)': '5 etapów kontroli procesu docisku (prędkość / ciśnienie)',
+    'Hopper Ladder & Stand': 'Schody i drabinka do zbiornika zasypowego',
+    'Hopper Slide (L/M)': 'Prowadnice liniowe dla leja zasypowego (L/M)',
+    'Hopper throat temperature control device': 'Układ kontroli temperatury strefy zasypu',
+    'Hydraulic Auto-Clamp unit': 'Automatyczny, hydrauliczny system mocowania formy (QDC)',
     'Hydraulic Core Check Valve': 'Hydrauliczny zawór zwrotny rdzenia',
-    'Hydraulic Core Device (Fixed: 170~400ton / Moving: 1or2 stage)': 'Hydrauliczny mechanizm rdzenia (strona stała: 170–400 t / strona ruchoma: 1 lub 2 stopnie)',
+    'Hydraulic Core Device (Fixed: 170~400ton / Moving: 1or2 stage)': 'Złącze rdzenia hydraulicznego (strona stała: 170–400 t / strona ruchoma: 1 rdzeń / 2 rdzenie)',
     'Hydraulic Core Interlock Connector (EM13, WJ Standard)': 'Złącze blokady rdzenia (EM13, standard WJ)',
-    'Hydraulic Core Puller (2~8 Stages)': 'Hydrauliczny wyciągacz rdzenia (2–8 stopni)',
-    'Hydraulic Core Puller (Fixed, 1~4 Stages)': 'Hydrauliczny wyciągacz rdzenia (strona stała, 1–4 stopnie)',
-    'Hydraulic Core Puller (Moving 2~4 Stages)': 'Hydrauliczny wyciągacz rdzenia (strona ruchoma, 2–4 stopnie)',
-    'Hydraulic Core puller (Moving platen side, 1 stage)': 'Hydrauliczny wyciągacz rdzenia (strona płyty ruchomej, 1 stopień)',
+    'Hydraulic Core Puller (2~8 Stages)': 'Dodatkowe zawory rdzeni hydraulicznych (2–8)',
+    'Hydraulic Core Puller (Fixed, 1~4 Stages)': 'Dodatkowe zawory rdzeni hydraulicznych (strona stała, 1–4)',
+    'Hydraulic Core Puller (Moving 2~4 Stages)': 'Dodatkowe zawory rdzeni hydraulicznych (strona ruchoma, 2–4)',
+    'Hydraulic Core puller (Moving platen side, 1 stage)': 'Złącze rdzenia hydraulicznego (strona płyty ruchomej, 1 rdzeń)',
     'Hydraulic Valve Gate Block (Interior type)': 'Hydrauliczny blok zaworu iglicowego (typ wewnętrzny)',
     'Hydraulic Valve Gate Device (External device)': 'Hydrauliczne urządzenie zaworu iglicowego (zewnętrzne)',
     'Hydraulic oil heating mode': 'Tryb podgrzewania oleju hydraulicznego',
-    'Hydraulic oil level alarm': 'Alarm poziomu oleju hydraulicznego',
-    'Hydraulic oil purification device': 'Urządzenie oczyszczania oleju hydraulicznego',
-    'Hydraulic oil temperature check & alarm': 'Kontrola i alarm temperatury oleju hydraulicznego',
-    'Hydraulic oil temperature control device': 'Urządzenie regulacji temperatury oleju hydraulicznego',
-    'I/O circuit display': 'Wyświetlacz stanu wejść/wyjść (I/O)',
-    'Injection Pressure Graph Display': 'Wykres ciśnienia wtrysku',
-    'Injection Speed & Pressure step (10 step)': 'Skokowa regulacja prędkości i ciśnienia wtrysku (10 stopni)',
+    'Hydraulic oil level alarm': 'Czujnik poziomu oleju z alarmem',
+    'Hydraulic oil purification device': 'Filtracja bocznikowa oleju',
+    'Hydraulic oil temperature check & alarm': 'Alarm niewłaściwej temperatury oleju hydraulicznego',
+    'Hydraulic oil temperature control device': 'Regulator temperatury oleju hydraulicznego',
+    'I/O circuit display': 'Wyświetlanie wejść / wyjść sygnałów cyfrowych',
+    'Injection Pressure Graph Display': 'Wyświetlenie graficzne ciśnienia wtrysku',
+    'Injection Speed & Pressure step (10 step)': '10 etapów kontroli procesu wtrysku (prędkość / ciśnienie)',
     'Injection Speed Graph Display': 'Wykres prędkości wtrysku',
-    'Injection valve gate circuit (AC 1 + DC 1)': 'Obwód zaworu iglicowego wtrysku (1 x AC + 1 x DC)',
-    'Interior type Hot Runner Controller (EM13, WJ Standard)': 'Wbudowany sterownik gorącokanałowy (EM13, standard WJ)',
-    'Leveling pad': 'Podkładka niwelacyjna (poziomująca)',
-    'Log history save': 'Zapis historii zdarzeń (logów)',
+    'Injection valve gate circuit (AC 1 + DC 1)': 'Zawór wtryskowy (1. zawór: 1 × AC + 1 × DC)',
+    'Interior type Hot Runner Controller (EM13, WJ Standard)': 'Wbudowany sterownik gorących kanałów (EM13, standard WJ)',
+    'Leveling pad': 'Stopy poziomujące',
+    'Log history save': 'Historia zmian wprowadzanych parametrów',
     'Long-holding pressure type upgrade': 'Rozszerzenie do długiego czasu docisku',
-    'Lubricating oil Recycling device': 'Urządzenie do recyklingu oleju smarującego',
-    'Mold Insulation Platen': 'Płyta izolacyjna formy',
+    'Lubricating oil Recycling device': 'Układ recyrkulacji oleju z układu centralnego smarowania',
+    'Mold Insulation Platen': 'Płyty termoizolacyjne stołów maszyny',
     'Mold ring on Moving-Platen': 'Pierścień centrujący na płycie ruchomej',
     'Mold thickness adjusting break unit': 'Hamulec regulacji grubości formy',
-    'Mold-Close Speed & Pressure step (5 step)': 'Skokowa regulacja prędkości i ciśnienia zamykania formy (5 stopni)',
-    'Mold-Open Speed & Pressure step (4 step)': 'Skokowa regulacja prędkości i ciśnienia otwierania formy (4 stopnie)',
-    'Mold-Open Speed & Pressure step (5 step)': 'Skokowa regulacja prędkości i ciśnienia otwierania formy (5 stopni)',
+    'Mold-Close Speed & Pressure step (5 step)': '5 etapów kontroli zamykania formy wtryskowej (prędkość / ciśnienie)',
+    'Mold-Open Speed & Pressure step (4 step)': '4 etapy kontroli otwierania formy wtryskowej (prędkość / ciśnienie)',
+    'Mold-Open Speed & Pressure step (5 step)': '5 etapów kontroli otwierania formy wtryskowej (prędkość / ciśnienie)',
     'Nozzle cylinders equipped with Potentiometers': 'Cylindry dyszy wyposażone w potencjometry',
-    'PID Heating Control': 'Regulacja grzania PID',
-    'Pneumatic Core Puller (1-3 Stages)': 'Pneumatyczny wyciągacz rdzenia (1–3 stopnie)',
-    'Pneumatic Core Puller (1~7 Stages)': 'Pneumatyczny wyciągacz rdzenia (1–7 stopni)',
+    'PID Heating Control': 'Układ kontroli temperatury PID',
+    'Pneumatic Core Puller (1-3 Stages)': 'Dodatkowe zawory pneumatyczne (1–3)',
+    'Pneumatic Core Puller (1~7 Stages)': 'Dodatkowe zawory pneumatyczne (1–7)',
     'Pneumatic Valve Gate Block (Interior type)': 'Pneumatyczny blok zaworu iglicowego (typ wewnętrzny)',
-    'Product Chute': 'Zsyp na wyroby',
-    'Product drop check device': 'Czujnik kontroli zrzutu wyrobu',
-    'Product quality sorting device (Below 280ton)': 'Urządzenie do sortowania jakości wyrobów (dla maszyn poniżej 280 ton)',
-    'Production data statistics': 'Statystyki danych produkcyjnych',
-    'Robot Interface (EM12, EM67, EM67.1, SPI)': 'Interfejs robota (EM12, EM67, EM67.1, SPI)',
-    'Robot interface (Standard)': 'Interfejs robota (standardowy)',
-    'Rotating Core Circuit': 'Układ obrotowego rdzenia',
-    'Safety Foot-board (Above 1050ton)': 'Podest bezpieczeństwa (powyżej 1050 ton)',
-    'Safety Foot-board (Above 650ton)': 'Podest bezpieczeństwa (powyżej 650 ton)',
-    'Safety Foot-board (Below 850ton)': 'Podest bezpieczeństwa (poniżej 850 ton)',
-    'Safety device (for electric & hydraulic)': 'Urządzenie zabezpieczające (dla napędu elektrycznego i hydraulicznego)',
-    'Screw & Barrel (Anti Wear & Corrosive)': 'Ślimak i cylinder (odporne na zużycie i korozję)',
-    'Screw & Barrel (Anti Wear)': 'Ślimak i cylinder (odporne na zużycie)',
+    'Product Chute': 'Zsypnia dla odbioru detali',
+    'Product drop check device': 'Fotokomórka licząca produkty',
+    'Product quality sorting device (Below 280ton)': 'Układ separacji jakościowej produktów (poniżej 280 ton)',
+    'Production data statistics': 'Funkcja statystyki procesu (SPC)',
+    'Robot Interface (EM12, EM67, EM67.1, SPI)': 'Złącze robota wg Euromap (EM12, EM67, EM67.1, SPI)',
+    'Robot interface (Standard)': 'Złącze robota wg Euromap',
+    'Rotating Core Circuit': 'Rdzeń wykręcany elektrycznie',
+    'Safety Foot-board (Above 1050ton)': 'Platforma bezpieczeństwa pod płytami (powyżej 1050 ton)',
+    'Safety Foot-board (Above 650ton)': 'Platforma bezpieczeństwa pod płytami (powyżej 650 ton)',
+    'Safety Foot-board (Below 850ton)': 'Platforma bezpieczeństwa pod płytami (poniżej 850 ton)',
+    'Safety device (for electric & hydraulic)': 'Układ bezpieczeństwa hydraulicznego i elektrycznego',
+    'Screw & Barrel (Anti Wear & Corrosive)': 'Ślimak i cylinder o podwyższonej odporności na ścieranie i korozję',
+    'Screw & Barrel (Anti Wear)': 'Ślimak i cylinder o podwyższonej odporności na ścieranie',
     'Screw & Barrel (Nitrided barrel)': 'Ślimak i cylinder (cylinder azotowany)',
-    'Screw RPM Display': 'Wskazanie obrotów ślimaka',
-    'Shot data save (Internal 1,000 / External device)': 'Zapis danych wtrysku (1000 wewnętrznie / urządzenie zewnętrzne)',
-    'Shot data saving by external way': 'Zapis danych wtrysku na urządzeniu zewnętrznym',
-    'Shut-off Nozzle': 'Dysza zamykająca (odcinająca)',
-    'Shut-off Nozzle (Hydraulic)': 'Dysza zamykająca (hydrauliczna)',
-    'Shut-off Nozzle (Pneumatic, Hydraulic, Spring)': 'Dysza zamykająca (pneumatyczna, hydrauliczna, sprężynowa)',
-    'Single Flight Screw': 'Ślimak jednozwojowy',
-    'Single Phase electric outlet (1 ea)': 'Gniazdo elektryczne jednofazowe (1 szt.)',
+    'Screw RPM Display': 'Wyświetlanie obrotów ślimaka w czasie plastyfikacji',
+    'Shot data save (Internal 1,000 / External device)': 'Pojemność archiwizacji danych parametrów form wtryskowych (pamięć wewnętrzna: 1000 / pamięć zewnętrzna)',
+    'Shot data saving by external way': 'Zapis danych na zewnętrznym nośniku pamięci',
+    'Shut-off Nozzle': 'Dysza zamykana',
+    'Shut-off Nozzle (Hydraulic)': 'Dysza zamykana hydraulicznie',
+    'Shut-off Nozzle (Pneumatic, Hydraulic, Spring)': 'Dysza zamykana (sprężynowa / hydrauliczna / pneumatyczna)',
+    'Single Flight Screw': 'Standardowy ślimak',
+    'Single Phase electric outlet (1 ea)': 'Zestaw gniazd elektrycznych 230 V (1 szt.)',
     'Spring mold mode': 'Tryb formy sprężynowej',
     'Spring type Ejector retraction': 'Cofanie wypychacza typu sprężynowego',
-    'Standard Maintenance tools': 'Standardowy zestaw narzędzi serwisowych',
-    'Standard spare part': 'Standardowy zestaw części zamiennych',
+    'Standard Maintenance tools': 'Podstawowy zestaw narzędzi',
+    'Standard spare part': 'Zestaw podstawowych części zamiennych',
     'Steam Injection Interface': 'Interfejs wtrysku pary',
     'Steel tray for resin leakage': 'Stalowa taca na wyciek tworzywa',
-    'Temperature display & Alarm in abnormal Temp.': 'Wskazanie temperatury i alarm przy nieprawidłowej temperaturze',
+    'Temperature display & Alarm in abnormal Temp.': 'Kontrola i alarm nieprawidłowego funkcjonowania czujników temperatury układu plastyfikacji',
     'UPS (Uninterruptible Power Supply) on Electric Panel': 'UPS (zasilacz awaryjny) w szafie elektrycznej',
     'Valve Gate Circuit & Connector (Interior type)': 'Obwód i złącze zaworu iglicowego (typ wewnętrzny)',
-    'Weekly Heating Timer': 'Tygodniowy zegar sterowania grzaniem',
+    'Weekly Heating Timer': 'Tygodniowy zegar włączania grzania układu plastyfikacji',
 };
 
 // -------------------- Modele maszyn (na podstawie specyfikacji katalogowej A5) --------------------
@@ -1239,17 +1239,17 @@ function renderStep2TechColumns(modelName, unitStr) {
     const platenDim = g('clamping', 'platenDimension');
     if (platenDim != null) clampingRows.push(['Wymiar płyty', `${platenDim} mm`]);
     const daylight = g('clamping', 'daylight');
-    if (daylight != null) clampingRows.push(['Prześwit', `${daylight} mm`]);
+    if (daylight != null) clampingRows.push(['Droga otwarcia', `${daylight} mm`]);
     const maxDaylight = g('clamping', 'maxDaylight');
-    if (maxDaylight != null) clampingRows.push(['Maks. prześwit', `${maxDaylight} mm`]);
+    if (maxDaylight != null) clampingRows.push(['Maks. odstęp między płytami', `${maxDaylight} mm`]);
     const minMoldH = g('clamping', 'minMoldHeight');
     if (minMoldH != null) clampingRows.push(['Min. wysokość formy', `${minMoldH} mm`]);
     const maxMoldH = g('clamping', 'maxMoldHeight');
     if (maxMoldH != null) clampingRows.push(['Maks. wysokość formy', `${maxMoldH} mm`]);
     const ejectForce = g('clamping', 'ejectorForce');
-    if (ejectForce != null) clampingRows.push(['Siła wypychacza', formatTonKn(ejectForce)]);
+    if (ejectForce != null) clampingRows.push(['Siła wyrzutnika', formatTonKn(ejectForce)]);
     const ejectStroke = g('clamping', 'ejectorStroke');
-    if (ejectStroke != null) clampingRows.push(['Skok wypychacza', `${ejectStroke} mm`]);
+    if (ejectStroke != null) clampingRows.push(['Skok wyrzutnika', `${ejectStroke} mm`]);
     const dryCycle = g('clamping', 'dryCycleTime');
     if (dryCycle != null) clampingRows.push(['Czas cyklu suchego', `${dryCycle} s`]);
     const maxMoldW = g('clamping', 'maxMoldWeight');
@@ -2026,6 +2026,10 @@ let step3TooltipOpenTrigger = null;
 function showStep3OptionTooltip(triggerEl) {
     const tooltip = document.getElementById('step3OptionTooltip');
     if (!tooltip || !triggerEl) return;
+    // Dymek musi być bezpośrednio w <body>: krok formularza ma po animacji
+    // pojawiania się ustawiony transform, a wtedy position: fixed liczy się
+    // od kroku, nie od okna - dymek lądował w zupełnie innym miejscu strony.
+    if (tooltip.parentElement !== document.body) document.body.appendChild(tooltip);
 
     const textEl = triggerEl.querySelector('.opt-text');
     const key = (textEl ? textEl.textContent : triggerEl.textContent).trim();
@@ -2033,7 +2037,7 @@ function showStep3OptionTooltip(triggerEl) {
     if (!translation) { hideStep3OptionTooltip(); return; }
 
     renderStep3TooltipText(tooltip, translation);
-    positionStep3OptionTooltip(tooltip, triggerEl);
+    positionStep3OptionTooltip(tooltip, textEl || triggerEl);
     tooltip.classList.add('is-open');
     step3TooltipOpenTrigger = triggerEl;
 }
@@ -2086,26 +2090,42 @@ function renderStep3TooltipText(tooltip, text) {
     tooltip.appendChild(line2);
 }
 
-// Pozycjonuje dymek (position: fixed, więc współrzędne liczone względem
-// okna przeglądarki, niezależnie od przewinięcia strony) tuż nad
-// najechaną/kliknięta pozycją, a jeśli nie ma tam miejsca (blisko górnej
-// krawędzi ekranu) - pod nią; dociśnięty do prawej krawędzi okna, gdyby
-// inaczej wystawał poza widoczny obszar.
-function positionStep3OptionTooltip(tooltip, triggerEl) {
-    const rect = triggerEl.getBoundingClientRect();
-    const tooltipRect = tooltip.getBoundingClientRect();
-    const margin = 8;
+// Pozycjonuje dymek (position: fixed - współrzędne względem okna) tuż pod
+// angielskim tekstem pozycji, z "dzióbkiem" wskazującym jego początek; gdy
+// pod tekstem brakuje miejsca (dolna krawędź ekranu) - tuż nad nim. Dymek
+// nie wychodzi poza okno, a dzióbek zawsze celuje w tekst.
+function positionStep3OptionTooltip(tooltip, anchorEl) {
+    const rects = anchorEl.getClientRects();
+    const first = rects.length ? rects[0] : anchorEl.getBoundingClientRect();
+    const box = anchorEl.getBoundingClientRect();
+    const tipRect = tooltip.getBoundingClientRect();
+    const gap = 10, edge = 8;
 
-    let top = rect.top - tooltipRect.height - margin;
-    if (top < margin) top = rect.bottom + margin;
+    let below = true;
+    let top = box.bottom + gap;
+    if (top + tipRect.height > window.innerHeight - edge) { top = first.top - tipRect.height - gap; below = false; }
 
-    let left = rect.left;
-    const maxLeft = window.innerWidth - tooltipRect.width - margin;
-    if (left > maxLeft) left = Math.max(margin, maxLeft);
+    let left = first.left - 4;
+    left = Math.min(left, window.innerWidth - tipRect.width - edge);
+    left = Math.max(edge, left);
 
+    const arrowX = Math.max(12, Math.min(tipRect.width - 12, first.left + 14 - left));
+    tooltip.style.setProperty('--arrow-x', arrowX + 'px');
+    tooltip.classList.toggle('is-below', below);
     tooltip.style.top = top + 'px';
     tooltip.style.left = left + 'px';
 }
+
+// Przy przewijaniu / zmianie rozmiaru okna otwarty dymek "jedzie" za swoją pozycją
+function repositionStep3OptionTooltip() {
+    const tooltip = document.getElementById('step3OptionTooltip');
+    if (!tooltip || !tooltip.classList.contains('is-open') || !step3TooltipOpenTrigger) return;
+    if (!step3TooltipOpenTrigger.isConnected) { hideStep3OptionTooltip(); return; }
+    const textEl = step3TooltipOpenTrigger.querySelector('.opt-text');
+    positionStep3OptionTooltip(tooltip, textEl || step3TooltipOpenTrigger);
+}
+window.addEventListener('scroll', repositionStep3OptionTooltip, { passive: true });
+window.addEventListener('resize', repositionStep3OptionTooltip);
 
 // Zamyka dymek po kliknięciu gdziekolwiek poza pozycją, nad którą był
 // otwarty, i poza samym dymkiem - przydatne głównie na dotyku, gdzie nie ma
@@ -2115,9 +2135,31 @@ document.addEventListener('click', function (e) {
     const tooltip = document.getElementById('step3OptionTooltip');
     if (!tooltip || !tooltip.classList.contains('is-open')) return;
     if (tooltip.contains(e.target)) return;
-    if (step3TooltipOpenTrigger && step3TooltipOpenTrigger.contains(e.target)) return;
+    // Stuknięcie w wiersz opcji dodatkowej (zaznaczenie) zamyka dymek otwarty
+    // przyciskiem "PL"; przy myszce dymek zostaje, dopóki kursor jest nad wierszem.
+    const isOptionRow = step3TooltipOpenTrigger && step3TooltipOpenTrigger.classList.contains('checkbox-item');
+    if (step3TooltipOpenTrigger && step3TooltipOpenTrigger.contains(e.target) && (!isOptionRow || e.pointerType === 'mouse')) return;
     hideStep3OptionTooltip();
 });
+
+// Przycisk "PL" przy opcji dodatkowej (widoczny tylko na ekranach dotykowych,
+// patrz CSS) - pokazuje / chowa tłumaczenie BEZ zaznaczania opcji. Przycisk
+// leży w <label>, ale kliknięcie elementu interaktywnego w etykiecie nie
+// przełącza checkboxa; preventDefault dodatkowo to gwarantuje.
+function createStep3TranslateButton(label) {
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'opt-translate-btn';
+    btn.textContent = 'PL';
+    btn.setAttribute('aria-label', 'Pokaż tłumaczenie na język polski');
+    btn.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        if (step3TooltipOpenTrigger === label) hideStep3OptionTooltip();
+        else showStep3OptionTooltip(label);
+    });
+    return btn;
+}
 
 function populateStep3() {
     const machines = getConfiguredMachines();
@@ -2217,9 +2259,14 @@ function renderStep3OptionsContainer(machines) {
                 });
                 label.appendChild(checkbox);
                 label.insertAdjacentHTML('beforeend', formatNumbered(optText));
-                label.addEventListener('mouseenter', () => showStep3OptionTooltip(label));
-                label.addEventListener('mouseleave', hideStep3OptionTooltip);
-                label.addEventListener('click', (e) => { if (e.target !== checkbox) showStep3OptionTooltip(label); });
+                // Komputer: tłumaczenie po najechaniu myszką. Dotyk: stuknięcie
+                // wiersza tylko zaznacza opcję, a tłumaczenie pokazuje przycisk "PL"
+                // (pointerType pomija myszkę "udawaną" przez stuknięcie palcem).
+                label.addEventListener('pointerenter', (e) => { if (e.pointerType === 'mouse') showStep3OptionTooltip(label); });
+                label.addEventListener('pointerleave', (e) => { if (e.pointerType === 'mouse') hideStep3OptionTooltip(); });
+                if (OPTION_TRANSLATIONS[optText.replace(/^\d+\.\s*/, '').trim()]) {
+                    label.appendChild(createStep3TranslateButton(label));
+                }
                 groupEl.appendChild(label);
             });
         });

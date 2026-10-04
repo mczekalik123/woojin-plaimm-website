@@ -127,7 +127,7 @@ function initTe3DShowcase() {
                 'Precyzyjne pozycjonowanie płyty i mniejsza siła potrzebna do jej przesuwu — dodatkowa oszczędność energii',
                 'Brak tulei na kolumnach: bez wtłaczania smaru, mniejsze tarcie, czyste kolumny',
                 'Płyta typu Center-Press (analiza FEA, EUROMAP 9) — równomierny nacisk, mniej wypływek, dłuższa żywotność formy',
-                'Większy prześwit między kolumnami, np. TE220A5: 625 × 625 mm'
+                'Powiększona przestrzeń międzykolumnowa, np. TE220A5: 625 × 625 mm'
             ],
             media: null,
             anchor: [-1.05, 0.98, 0.5], normal: [0, 0, 1],
@@ -141,7 +141,7 @@ function initTe3DShowcase() {
             points: [
                 'Obudowa wtrysku i śruba kulowa w jednym odlewie — mniejsze tolerancje montażowe',
                 'Śruba kulowa o minimalnym luzie — wysoka powtarzalność pozycjonowania',
-                'Czujnik siły (load cell) — dokładna kontrola ciśnienia wtrysku i ciśnienia wstecznego',
+                'Czujnik siły (load cell) — dokładna kontrola ciśnienia wtrysku i przeciwciśnienia',
                 'Symetryczne, podwójne cylindry docisku dyszy — stabilny docisk i równoległość płyt',
                 'Prędkość wtrysku do 350 mm/s (opcjonalnie do 700 mm/s)'
             ],

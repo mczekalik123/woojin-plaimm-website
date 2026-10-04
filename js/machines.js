@@ -33,8 +33,8 @@
     // których zdjęcia nie mają własnego cienia.
     const MACHINE_TYPES = [
         { name: 'DL-A5',      folder: '360-DL',    available: true,  levelY: 7.55,  model: 'DL-A5',             desc: 'Wysokiej klasy dwupłytowa seria z systemem bezpośredniego ryglowania (Dual Lock)' },
-        { name: 'TH-A5',      folder: '360-TH',    available: true,  levelY: 1.19,  model: 'TH-A5',             desc: 'Wysokiej klasy nowa seria hybrydowa z układem kolankowym' },
-        { name: 'TE-A5',      folder: '360-TE',    available: true,  levelY: -0.51, model: 'TE-A5',             desc: 'Wysokiej klasy nowa, w pełni elektryczna seria z układem kolankowym' },
+        { name: 'TH-A5',      folder: '360-TH',    available: true,  levelY: 1.19,  model: 'TH-A5',             desc: 'Wysokiej klasy nowa seria hybrydowa z układem kolanowym' },
+        { name: 'TE-A5',      folder: '360-TE',    available: true,  levelY: -0.51, model: 'TE-A5',             desc: 'Wysokiej klasy nowa, w pełni elektryczna seria z układem kolanowym' },
         { name: 'TL-A5',      folder: '360-TL',    available: false, levelY: 3.7,   shadow: { y: 86.5, w: 88 }, still: 'img/opt/tl-a5-widok.jpg', model: 'TL-A5', desc: 'Wtryskarka bez kolumn (tie-bar-less) – pełna swoboda doboru wielkości formy' },
         { name: 'VHA-RS',     folder: '360-VH',    available: true,  levelY: -0.62, shadow: { y: 89.5, w: 40 }, model: 'VHA-RS', desc: 'Wysokiej klasy, pionowa seria wtryskarek' },
         { name: 'MULTI',      folder: '360-MULTI', available: true,  levelY: -0.85, model: 'NC-G5',             desc: 'Nowoczesna, pozioma, dwukolorowa seria hybrydowa' },
@@ -211,7 +211,6 @@
         typeItems.forEach((item, i) => {
             const active = i === currentTypeIndex;
             item.classList.toggle('active', active);
-            item.classList.toggle('is-unavailable', !MACHINE_TYPES[i].available);
             item.setAttribute('aria-selected', active ? 'true' : 'false');
             item.tabIndex = active ? 0 : -1;
         });

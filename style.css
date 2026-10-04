@@ -3041,10 +3041,6 @@ input[type="radio"] {
     color: #fff;
 }
 
-.machine-type-item.is-unavailable:not(.active) {
-    color: var(--c-subtle);
-}
-
 .machine-meta {
     text-align: center;
     margin-bottom: 8px;
@@ -3396,6 +3392,10 @@ input[type="radio"] {
     color: var(--c-on-dark-2);
 }
 
+.machine-description-panel p + p {
+    margin-top: 12px;
+}
+
 .catalog-dl-btn .btn-icon {
     width: 20px;
     height: 20px;
@@ -3485,10 +3485,11 @@ input[type="radio"] {
     to { transform: scale(1.35); opacity: 0; }
 }
 
+/* Trójkąt w ikonie ma środek ciężkości w środku pola 24×24, więc stoi
+   na środku koła bez dodatkowego przesuwania */
 .video-facade-icon svg {
     width: 34px;
     height: 34px;
-    margin-left: 4px;
 }
 
 .video-facade-label {
