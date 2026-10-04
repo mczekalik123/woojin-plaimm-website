@@ -556,7 +556,10 @@ p {
     z-index: 1000;
     height: var(--header-h);
     color: #fff;
-    transition: transform 0.5s var(--ease-out), color 0.35s ease, height 0.35s var(--ease-out);
+    /* Chowanie nagłówka przez "top", nie "transform": transform na nagłówku
+       sprawiałby, że menu mobilne (position: fixed w środku nagłówka) na czas
+       animacji mieściłoby się tylko w pasku nagłówka - widoczne jako błysk */
+    transition: top 0.5s var(--ease-out), color 0.35s ease, height 0.35s var(--ease-out);
 }
 
 /* Tło nagłówka na pseudo-elemencie - backdrop-filter bezpośrednio na
@@ -595,7 +598,7 @@ p {
 }
 
 .site-header.is-hidden:not(.is-menu-open) {
-    transform: translateY(-105%);
+    top: calc(var(--header-h) * -1.1);
 }
 
 @media (max-width: 860px) {
@@ -635,8 +638,15 @@ p {
 
 .logo-img--dark { opacity: 0; }
 
-.site-header.is-scrolled:not(.is-on-dark):not(.is-menu-open) .logo-img--dark { opacity: 1; }
-.site-header.is-scrolled:not(.is-on-dark):not(.is-menu-open) .logo-img--light { opacity: 0; }
+/* Logo w nagłówku nie zmienia się przy otwieraniu menu mobilnego - białe logo
+   ma samo menu (.nav-logo), więc pojawia się dokładnie wtedy, gdy rozwijające
+   się tło do niego dotrze (bez białego logo na białym pasku = bez błysku) */
+.site-header.is-scrolled:not(.is-on-dark) .logo-img--dark { opacity: 1; }
+.site-header.is-scrolled:not(.is-on-dark) .logo-img--light { opacity: 0; }
+
+.nav-logo {
+    display: none;
+}
 
 .main-nav {
     margin-left: auto;
@@ -664,10 +674,6 @@ p {
     letter-spacing: 0.01em;
     opacity: 0.86;
     transition: opacity 0.25s ease, background-color 0.25s ease, color 0.25s ease;
-}
-
-.nav-num {
-    display: none;
 }
 
 .nav-link::after {
@@ -784,8 +790,44 @@ p {
         display: block;
     }
 
+    /* Kolor przycisku menu nadąża za tłem menu: przy otwieraniu tło startuje
+       spod przycisku, więc biały kolor od razu; przy zamykaniu tło znika nad
+       przyciskiem na samym końcu, więc kolor wraca dopiero wtedy */
     .site-header.is-menu-open {
         color: #fff;
+        transition: top 0.5s var(--ease-out), color 0.12s ease, height 0.35s var(--ease-out);
+    }
+
+    .site-header.is-menu-closing {
+        transition: top 0.5s var(--ease-out), color 0s linear 0.62s, height 0.35s var(--ease-out);
+    }
+
+    /* Logo nagłówka chowa się pod tło menu; w menu jest jego biała kopia
+       w tym samym miejscu (pozycja z JS), odsłaniana razem z tłem */
+    .site-header.is-menu-open .logo,
+    .site-header.is-menu-closing .logo {
+        z-index: 0;
+    }
+
+    /* Ta sama pozycja i rozmiar co logo w nagłówku (lewa krawędź = margines
+       strony, wyśrodkowane w pionie w pasku nagłówka; logo ma proporcje 500:224) */
+    .nav-logo {
+        position: absolute;
+        left: var(--gutter);
+        top: calc((var(--header-h) - 116px * 0.448) / 2);
+        display: block;
+        width: 116px;
+        transition: width 0.35s var(--ease-out), top 0.35s var(--ease-out);
+    }
+
+    .site-header.is-scrolled .nav-logo {
+        width: 100px;
+        top: calc((var(--header-h) - 100px * 0.448) / 2);
+    }
+
+    .nav-logo img {
+        width: 100%;
+        height: auto;
     }
 
     .main-nav {
@@ -845,16 +887,6 @@ p {
         font-stretch: var(--wide);
         letter-spacing: -0.02em;
         opacity: 1;
-    }
-
-    .nav-num {
-        display: inline;
-        font-family: var(--font-mono);
-        font-size: 12px;
-        font-weight: 500;
-        letter-spacing: 0.08em;
-        color: var(--c-teal-300);
-        transform: translateY(-10px);
     }
 
     .nav-link::after {
@@ -1300,6 +1332,16 @@ p {
 .js [data-reveal="left"] { transform: translateX(-40px); }
 .js [data-reveal="right"] { transform: translateX(40px); }
 .js [data-reveal="scale"] { transform: scale(0.94); }
+
+/* Na wąskich ekranach elementy w jednej kolumnie zajmują całą szerokość -
+   przesunięcie w bok przed pojawieniem się wypychałoby je poza ekran, a telefon
+   poszerzałby wtedy całą stronę (przesunięty nagłówek z przyciskiem menu) */
+@media (max-width: 960px) {
+    .js [data-reveal="left"],
+    .js [data-reveal="right"] {
+        transform: translateY(32px);
+    }
+}
 
 .js [data-reveal="clip"] {
     opacity: 1;

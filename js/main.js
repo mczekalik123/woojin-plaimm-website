@@ -127,8 +127,32 @@
     if (navToggle && mainNav && header) {
         mainNav.querySelectorAll('.nav-list li').forEach(function (li, i) { li.style.setProperty('--i', i); });
 
+        // Białe logo wewnątrz menu, w tym samym miejscu co logo z nagłówka
+        // (pozycja w CSS .nav-logo): odsłania się razem z rozwijającym się tłem menu
+        const headerLogo = header.querySelector('.logo');
+        const lightImg = headerLogo && headerLogo.querySelector('.logo-img--light');
+        if (headerLogo && lightImg) {
+            const navLogo = document.createElement('a');
+            navLogo.className = 'nav-logo';
+            navLogo.href = headerLogo.getAttribute('href') || 'index.html';
+            navLogo.setAttribute('aria-hidden', 'true');
+            navLogo.tabIndex = -1;
+            const img = lightImg.cloneNode(false);
+            img.className = '';
+            img.alt = '';
+            navLogo.appendChild(img);
+            mainNav.insertBefore(navLogo, mainNav.firstChild);
+        }
+
+        let closingTimer = null;
         const setMenu = function (open) {
             mainNav.classList.toggle('is-open', open);
+            // Faza zamykania (0,7 s - czas zwijania tła menu): kolor przycisku
+            // i logo wracają dopiero, gdy tło je odsłoni
+            clearTimeout(closingTimer);
+            const wasOpen = header.classList.contains('is-menu-open');
+            header.classList.toggle('is-menu-closing', !open && wasOpen);
+            if (!open && wasOpen) closingTimer = setTimeout(function () { header.classList.remove('is-menu-closing'); }, 720);
             header.classList.toggle('is-menu-open', open);
             header.classList.remove('is-hidden');
             navToggle.setAttribute('aria-expanded', open ? 'true' : 'false');
