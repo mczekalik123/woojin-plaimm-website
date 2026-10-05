@@ -127,32 +127,15 @@
     if (navToggle && mainNav && header) {
         mainNav.querySelectorAll('.nav-list li').forEach(function (li, i) { li.style.setProperty('--i', i); });
 
-        // Białe logo wewnątrz menu, w tym samym miejscu co logo z nagłówka
-        // (pozycja w CSS .nav-logo): odsłania się razem z rozwijającym się tłem menu
-        const headerLogo = header.querySelector('.logo');
-        const lightImg = headerLogo && headerLogo.querySelector('.logo-img--light');
-        if (headerLogo && lightImg) {
-            const navLogo = document.createElement('a');
-            navLogo.className = 'nav-logo';
-            navLogo.href = headerLogo.getAttribute('href') || 'index.html';
-            navLogo.setAttribute('aria-hidden', 'true');
-            navLogo.tabIndex = -1;
-            const img = lightImg.cloneNode(false);
-            img.className = '';
-            img.alt = '';
-            navLogo.appendChild(img);
-            mainNav.insertBefore(navLogo, mainNav.firstChild);
-        }
-
         let closingTimer = null;
         const setMenu = function (open) {
             mainNav.classList.toggle('is-open', open);
-            // Faza zamykania (0,7 s - czas zwijania tła menu): kolor przycisku
-            // i logo wracają dopiero, gdy tło je odsłoni
+            // Faza zamykania (0,3 s - czas gaśnięcia menu, patrz CSS): kolor
+            // przycisku i logo wracają w tym samym tempie, w jakim gaśnie menu
             clearTimeout(closingTimer);
             const wasOpen = header.classList.contains('is-menu-open');
             header.classList.toggle('is-menu-closing', !open && wasOpen);
-            if (!open && wasOpen) closingTimer = setTimeout(function () { header.classList.remove('is-menu-closing'); }, 720);
+            if (!open && wasOpen) closingTimer = setTimeout(function () { header.classList.remove('is-menu-closing'); }, 350);
             header.classList.toggle('is-menu-open', open);
             header.classList.remove('is-hidden');
             navToggle.setAttribute('aria-expanded', open ? 'true' : 'false');
@@ -168,8 +151,36 @@
             setMenu(!mainNav.classList.contains('is-open'));
         });
 
+        // Zamknięcie bez animacji (klasa is-menu-instant wyłącza przejścia)
+        const closeMenuInstantly = function () {
+            header.classList.add('is-menu-instant');
+            setMenu(false);
+            clearTimeout(closingTimer);
+            header.classList.remove('is-menu-closing');
+            void header.offsetWidth;
+            requestAnimationFrame(function () { header.classList.remove('is-menu-instant'); });
+        };
+
         mainNav.addEventListener('click', function (e) {
-            if (e.target.closest('a')) setMenu(false);
+            const link = e.target.closest('a');
+            if (!link) return;
+            // Przejście na inną podstronę w tej samej karcie: menu zostaje otwarte
+            // (ciemne) aż do pokazania nowej strony. Zwijanie menu w trakcie
+            // wczytywania odsłaniało na chwilę jasną bieżącą stronę, a zaraz potem
+            // pojawiał się ciemny nagłówek nowej - stąd błysk przy wyborze podstrony.
+            const url = new URL(link.href, location.href);
+            const sameTab = !link.target || link.target === '_self';
+            const plainClick = e.button === 0 && !(e.metaKey || e.ctrlKey || e.shiftKey || e.altKey);
+            const samePage = url.pathname === location.pathname && url.search === location.search;
+            const isPage = url.protocol === location.protocol && url.origin === location.origin && !link.hasAttribute('download');
+            if (sameTab && plainClick && !e.defaultPrevented && isPage && !(samePage && url.hash)) return;
+            setMenu(false);
+        });
+
+        // Powrót przyciskiem "wstecz" do strony zapamiętanej w pamięci przeglądarki
+        // (z menu otwartym w chwili wyjścia) - menu od razu zamknięte, bez animacji
+        window.addEventListener('pageshow', function (e) {
+            if (e.persisted && mainNav.classList.contains('is-open')) closeMenuInstantly();
         });
 
         document.addEventListener('keydown', function (e) {

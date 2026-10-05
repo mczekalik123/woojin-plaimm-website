@@ -89,6 +89,13 @@ html {
     text-size-adjust: 100%;
     scroll-behavior: smooth;
     scroll-padding-top: calc(var(--header-h) + 16px);
+    /* Ciemne tło dokumentu (jak góra i stopka każdej podstrony): widoczne
+       zamiast bieli przy przejściach między stronami i przy "odbiciu"
+       przewijania na telefonach */
+    background-color: var(--c-ink);
+    /* Stałe miejsce na pasek przewijania - blokada przewijania przy otwartym
+       menu nie przesuwa wtedy strony w bok */
+    scrollbar-gutter: stable;
 }
 
 body {
@@ -215,20 +222,28 @@ p {
     navigation: auto;
 }
 
+/* Nowa strona pojawia się płynnie NA starej, która do końca przejścia zostaje
+   w pełni widoczna pod spodem (zwykłe mieszanie kolorów zamiast domyślnego
+   "plus-lighter"). Wcześniej stara strona gasła szybciej, niż pojawiała się
+   nowa - przez chwilę obie były półprzezroczyste i prześwitywało białe tło. */
 ::view-transition-old(root) {
-    animation: vtOut 0.28s var(--ease-in-out) both;
+    animation: none;
+    mix-blend-mode: normal;
 }
 
 ::view-transition-new(root) {
-    animation: vtIn 0.45s var(--ease-out) both;
-}
-
-@keyframes vtOut {
-    to { opacity: 0; transform: translateY(-8px); }
+    animation: vtIn 0.4s var(--ease-out) both;
+    mix-blend-mode: normal;
 }
 
 @keyframes vtIn {
     from { opacity: 0; transform: translateY(12px); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    ::view-transition-new(root) {
+        animation: none;
+    }
 }
 
 /* ---------------------------------------------------------------------
@@ -638,15 +653,8 @@ p {
 
 .logo-img--dark { opacity: 0; }
 
-/* Logo w nagłówku nie zmienia się przy otwieraniu menu mobilnego - białe logo
-   ma samo menu (.nav-logo), więc pojawia się dokładnie wtedy, gdy rozwijające
-   się tło do niego dotrze (bez białego logo na białym pasku = bez błysku) */
-.site-header.is-scrolled:not(.is-on-dark) .logo-img--dark { opacity: 1; }
-.site-header.is-scrolled:not(.is-on-dark) .logo-img--light { opacity: 0; }
-
-.nav-logo {
-    display: none;
-}
+.site-header.is-scrolled:not(.is-on-dark):not(.is-menu-open) .logo-img--dark { opacity: 1; }
+.site-header.is-scrolled:not(.is-on-dark):not(.is-menu-open) .logo-img--light { opacity: 0; }
 
 .main-nav {
     margin-left: auto;
@@ -790,71 +798,104 @@ p {
         display: block;
     }
 
-    /* Kolor przycisku menu nadąża za tłem menu: przy otwieraniu tło startuje
-       spod przycisku, więc biały kolor od razu; przy zamykaniu tło znika nad
-       przyciskiem na samym końcu, więc kolor wraca dopiero wtedy */
+    /* Nagłówek przy menu: przycisk i logo robią się białe, gdy ciemne tło menu
+       jest już pod nimi. Tło rozwija się spod przycisku i na początku rośnie
+       najszybciej, więc przycisk zmienia kolor od razu, a logo chwilę później.
+       Przy zamykaniu menu gaśnie w 0,3 s, a kolory wracają w tym samym tempie. */
     .site-header.is-menu-open {
         color: #fff;
         transition: top 0.5s var(--ease-out), color 0.12s ease, height 0.35s var(--ease-out);
     }
 
+    .site-header.is-menu-open .logo-img {
+        transition: opacity 0.15s ease 0.06s;
+    }
+
     .site-header.is-menu-closing {
-        transition: top 0.5s var(--ease-out), color 0s linear 0.62s, height 0.35s var(--ease-out);
+        transition: top 0.5s var(--ease-out), color 0.3s ease, height 0.35s var(--ease-out);
     }
 
-    /* Logo nagłówka chowa się pod tło menu; w menu jest jego biała kopia
-       w tym samym miejscu (pozycja z JS), odsłaniana razem z tłem */
-    .site-header.is-menu-open .logo,
-    .site-header.is-menu-closing .logo {
-        z-index: 0;
+    .site-header.is-menu-closing .logo-img {
+        transition: opacity 0.3s ease;
     }
 
-    /* Ta sama pozycja i rozmiar co logo w nagłówku (lewa krawędź = margines
-       strony, wyśrodkowane w pionie w pasku nagłówka; logo ma proporcje 500:224) */
-    .nav-logo {
-        position: absolute;
-        left: var(--gutter);
-        top: calc((var(--header-h) - 116px * 0.448) / 2);
-        display: block;
-        width: 116px;
-        transition: width 0.35s var(--ease-out), top 0.35s var(--ease-out);
+    /* Natychmiastowe zamknięcie menu bez animacji (np. powrót przyciskiem
+       "wstecz" do strony zapamiętanej z otwartym menu) */
+    .site-header.is-menu-instant,
+    .site-header.is-menu-instant *,
+    .site-header.is-menu-instant *::before,
+    .site-header.is-menu-instant *::after {
+        transition: none !important;
     }
 
-    .site-header.is-scrolled .nav-logo {
-        width: 100px;
-        top: calc((var(--header-h) - 100px * 0.448) / 2);
-    }
-
-    .nav-logo img {
-        width: 100%;
-        height: auto;
-    }
-
+    /* Menu animowane wyłącznie przez opacity i transform - te animacje
+       wykonuje karta graficzna, bez przerysowywania ekranu w każdej klatce
+       (wcześniejsze przycinanie okręgiem przez clip-path mogło na telefonach
+       migotać, zwłaszcza przy zamykaniu) */
     .main-nav {
         position: fixed;
         inset: 0;
         z-index: 1;
+        isolation: isolate;
         margin: 0;
         padding: calc(var(--header-h) + 28px) var(--gutter) 32px;
         display: flex;
         flex-direction: column;
         align-items: stretch;
         gap: 28px;
-        background:
-            radial-gradient(90% 60% at 100% 0%, rgba(10, 190, 181, 0.22), transparent 60%),
-            radial-gradient(70% 50% at 0% 100%, rgba(0, 255, 242, 0.08), transparent 60%),
-            var(--c-ink);
         color: #fff;
         overflow-y: auto;
+        overscroll-behavior: contain;
         visibility: hidden;
-        clip-path: circle(0% at calc(100% - 40px) 32px);
-        transition: clip-path 0.7s var(--ease-in-out), visibility 0s linear 0.7s;
+        opacity: 0;
+        transition: opacity 0.3s ease, visibility 0s linear 0.3s;
+    }
+
+    /* Ciemne tło menu: koło o środku pod przyciskiem, powiększane od zera
+       (transform: scale); po zgaszeniu menu wraca do zera niewidocznie */
+    .main-nav::before {
+        content: '';
+        position: fixed;
+        z-index: -2;
+        top: calc(var(--header-h) / 2 - 150vmax);
+        right: calc(34px - 150vmax);
+        width: 300vmax;
+        height: 300vmax;
+        border-radius: 50%;
+        background: var(--c-ink);
+        transform: scale(0);
+        transition: transform 0s linear 0.3s;
+        pointer-events: none;
+    }
+
+    /* Poświata w kolorach marki - pojawia się, gdy tło wypełnia już ekran */
+    .main-nav::after {
+        content: '';
+        position: fixed;
+        inset: 0;
+        z-index: -1;
+        background:
+            radial-gradient(90% 60% at 100% 0%, rgba(10, 190, 181, 0.22), transparent 60%),
+            radial-gradient(70% 50% at 0% 100%, rgba(0, 255, 242, 0.08), transparent 60%);
+        opacity: 0;
+        transition: opacity 0.3s ease;
+        pointer-events: none;
     }
 
     .main-nav.is-open {
         visibility: visible;
-        clip-path: circle(150% at calc(100% - 40px) 32px);
-        transition: clip-path 0.7s var(--ease-in-out), visibility 0s;
+        opacity: 1;
+        transition: opacity 0s, visibility 0s;
+    }
+
+    .main-nav.is-open::before {
+        transform: scale(1);
+        transition: transform 0.55s cubic-bezier(0.33, 1, 0.68, 1);
+    }
+
+    .main-nav.is-open::after {
+        opacity: 1;
+        transition: opacity 0.4s ease 0.3s;
     }
 
     .nav-list {
