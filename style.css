@@ -2507,20 +2507,54 @@ p {
     }
 }
 
+/* Telefon: zwarta mozaika 2 kolumny (wnętrze auta na całą szerokość) zamiast
+   pięciu wysokich kafli jeden pod drugim - cała sekcja mieści się na ok.
+   jednym ekranie. Na kaflach tylko WOOJIN PLAIMM i nazwa branży; opis (p)
+   zostaje na tablecie i komputerze. */
 @media (max-width: 560px) {
     .applications-grid {
-        grid-template-columns: 1fr;
-        grid-template-rows: none;
-        grid-auto-rows: 260px;
-        grid-template-areas: none;
+        grid-template-columns: 1fr 1fr;
+        grid-template-rows: 46vw 40vw 40vw;
+        grid-template-areas:
+            "interior   interior"
+            "exterior   electronics"
+            "appliances cosmetics";
+        gap: 10px;
     }
 
-    .app-tile--interior,
-    .app-tile--exterior,
-    .app-tile--electronics,
-    .app-tile--appliances,
-    .app-tile--cosmetics {
-        grid-area: auto;
+    .app-card {
+        border-radius: var(--r-md);
+    }
+
+    .app-caption {
+        padding: 12px 13px;
+    }
+
+    .app-brand {
+        margin-bottom: 3px;
+        font-size: 9.5px;
+        letter-spacing: 0.18em;
+        white-space: nowrap;
+    }
+
+    .app-caption h3 {
+        font-size: 15px;
+        line-height: 1.2;
+    }
+
+    .app-caption p {
+        display: none;
+    }
+}
+
+/* Najwęższe telefony (np. 320 px) - napis WOOJIN PLAIMM mieści się w połówce kafla */
+@media (max-width: 360px) {
+    .app-caption {
+        padding: 11px 10px;
+    }
+
+    .app-brand {
+        letter-spacing: 0.12em;
     }
 }
 
