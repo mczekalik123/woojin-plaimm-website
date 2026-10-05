@@ -203,6 +203,24 @@
     margin-top: 12px;
 }
 
+/* Krok 2 (kalkulator): informacja o fazie testów, tuż pod nagłówkiem */
+.cfg-notice--beta {
+    align-items: center;
+    margin: -6px 0 22px;
+    padding: 12px 16px;
+}
+
+.cfg-notice--beta > svg {
+    width: 20px;
+    height: 20px;
+    margin-top: 0;
+}
+
+.cfg-notice--beta p {
+    margin-top: 0;
+    font-size: 14px;
+}
+
 .cfg-notice.is-shaking {
     animation: noticeIn 0.6s var(--ease-spring) both;
 }
@@ -919,6 +937,11 @@
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     margin-top: 16px;
+}
+
+/* Animacja tylko w chwili rozwinięcia (klasę dodaje toggleStep2Details) -
+   nie przy każdym odświeżeniu karty, np. po zmianie liczby maszyn */
+.step2-tech-grid.is-entering {
     animation: stepIn 0.5s var(--ease-expo) both;
 }
 
@@ -1435,6 +1458,159 @@
     transform: none;
 }
 
+.step3-option-tooltip.no-arrow::after {
+    display: none;
+}
+
+/* Dymek pozycji ze zdjęciem (OPTION_MEDIA w js/configurator.js): jasny
+   panel ze zdjęciem, pod nim tłumaczenie nazwy i krótki opis */
+.step3-option-tooltip.has-media {
+    width: min(340px, calc(100vw - 16px));
+    max-width: none;
+    padding: 7px 7px 13px;
+    border-radius: 14px;
+    font-weight: 500;
+}
+
+.opt-tip-media {
+    display: grid;
+    gap: 8px 6px;
+    padding: 10px;
+    border-radius: 9px;
+    background: #fff;
+}
+
+.opt-tip-media.is-pair,
+.opt-tip-media.is-grid {
+    grid-template-columns: 1fr 1fr;
+}
+
+.opt-tip-figure {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    min-width: 0;
+    margin: 0;
+}
+
+/* flex (nie grid) - tylko wtedy max-height: 100% zdjęcia liczy się od tej wysokości */
+.opt-tip-img {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 176px;
+}
+
+.is-pair .opt-tip-img {
+    height: 116px;
+}
+
+.is-grid .opt-tip-img {
+    height: 78px;
+}
+
+/* Szerokie zdjęcia (ślimaki) - cały wiersz zamiast połowy */
+.opt-tip-figure.is-wide {
+    grid-column: 1 / -1;
+}
+
+.is-grid .is-wide .opt-tip-img {
+    height: 56px;
+}
+
+.is-stack .opt-tip-img {
+    height: 100px;
+}
+
+.is-stack .is-wide .opt-tip-img {
+    height: 74px;
+}
+
+.opt-tip-img img {
+    display: block;
+    width: auto;
+    height: auto;
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+}
+
+.opt-tip-figure figcaption {
+    font-size: 10.5px;
+    font-weight: 600;
+    line-height: 1.25;
+    text-align: center;
+    color: var(--c-muted);
+}
+
+/* Przy jednym zdjęciu podpis powtarzałby tytuł dymka */
+.opt-tip-media.is-single figcaption {
+    display: none;
+}
+
+.opt-tip-body {
+    padding: 11px 7px 0;
+}
+
+.opt-tip-title {
+    padding-left: 9px;
+    border-left: 3px solid var(--c-teal);
+    font-size: 13.5px;
+    font-weight: 700;
+    line-height: 1.35;
+    color: #fff;
+}
+
+.opt-tip-desc {
+    margin: 8px 0 0;
+    font-size: 12.5px;
+    line-height: 1.5;
+    color: var(--c-on-dark-2);
+}
+
+/* Ikonka przy pozycjach, dla których dymek pokazuje zdjęcie */
+.opt-media-badge {
+    flex: 0 0 auto;
+    display: inline-grid;
+    place-items: center;
+    width: 22px;
+    height: 22px;
+    margin: -1px 0 -1px 2px;
+    border-radius: 6px;
+    background: var(--c-bg-tint);
+    color: var(--c-teal-700);
+    pointer-events: none;
+    transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.option-col ul li:hover .opt-media-badge,
+.checkbox-item:hover .opt-media-badge {
+    background: var(--c-teal);
+    color: #fff;
+}
+
+.checkbox-item:has(input:checked) .opt-media-badge {
+    background: #fff;
+}
+
+.opt-translate-btn.has-media {
+    grid-auto-flow: column;
+    gap: 5px;
+    padding: 0 9px 0 8px;
+}
+
+@media (hover: none), (pointer: coarse) {
+    /* Na dotyku ikonka zdjęcia jest w przycisku "PL" opcji dodatkowej */
+    .checkbox-item .opt-media-badge {
+        display: none;
+    }
+
+    .option-col ul li:hover .opt-media-badge {
+        background: var(--c-bg-tint);
+        color: var(--c-teal-700);
+    }
+}
+
 @media (max-width: 992px) {
     .options-columns-grid {
         grid-template-columns: repeat(2, 1fr);
@@ -1656,6 +1832,33 @@
     border: 1px solid #f0c419;
     color: #7a5d00;
     font-size: 13.5px;
+}
+
+/* Dopasowanie dawki do wybranego agregatu (pod listą agregatów w kalkulatorze) */
+.calc-shot-info {
+    margin-top: 8px;
+    font-size: 13px;
+    line-height: 1.5;
+    color: var(--c-muted);
+}
+
+.calc-shot-info:empty {
+    display: none;
+}
+
+.calc-shot-ok {
+    font-weight: 700;
+    color: var(--c-teal-700);
+}
+
+.calc-shot-warn {
+    font-weight: 700;
+    color: #7a5d00;
+}
+
+.calc-shot-bad {
+    font-weight: 700;
+    color: var(--c-red-600);
 }
 
 .confirm-box {

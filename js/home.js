@@ -49,14 +49,6 @@
         nativeProgress();
     }
 
-    // Neony 사출성형기 i "wtryskarkę" - wyrównanie startu animacji, żeby
-    // zawsze migały dokładnie w tym samym momencie
-    if (document.getAnimations) {
-        document.getAnimations()
-            .filter(function (a) { return a.animationName === 'neonFlicker'; })
-            .forEach(function (a) { a.startTime = 0; });
-    }
-
     // -----------------------------------------------------------------
     // SEKCJA TECHNOLOGII – świetlny promień wokół sylwetek maszyn TE-A5.
     // Promień to kilka nałożonych odcinków tej samej ścieżki (obrysu

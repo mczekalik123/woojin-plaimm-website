@@ -315,36 +315,6 @@
     }
 
     // -----------------------------------------------------------------
-    // MARQUEE (logotypy klientów) – druga kopia listy dla płynnej pętli
-    // -----------------------------------------------------------------
-    document.querySelectorAll('[data-marquee]').forEach(function (marquee) {
-        const track = marquee.querySelector('.marquee-track');
-        if (!track) return;
-        const clone = track.cloneNode(true);
-        clone.setAttribute('aria-hidden', 'true');
-        clone.querySelectorAll('a').forEach(function (a) { a.setAttribute('tabindex', '-1'); });
-        marquee.appendChild(clone);
-    });
-
-    // Drugi, odwrócony rząd generowany z pierwszego (bez powielania HTML)
-    document.querySelectorAll('[data-marquee-mirror]').forEach(function (target) {
-        const source = document.getElementById(target.dataset.marqueeMirror);
-        if (!source) return;
-        const track = document.createElement('ul');
-        track.className = 'marquee-track';
-        track.setAttribute('role', 'list');
-        const items = Array.from(source.querySelectorAll('.marquee-track:first-child > li'));
-        const half = Math.floor(items.length / 2);
-        items.slice(half).concat(items.slice(0, half)).reverse().forEach(function (li) {
-            track.appendChild(li.cloneNode(true));
-        });
-        track.querySelectorAll('a').forEach(function (a) { a.setAttribute('tabindex', '-1'); });
-        target.appendChild(track);
-        const clone = track.cloneNode(true);
-        target.appendChild(clone);
-    });
-
-    // -----------------------------------------------------------------
     // KOPIOWANIE DO SCHOWKA ([data-copy])
     // -----------------------------------------------------------------
     document.addEventListener('click', function (e) {

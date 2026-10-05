@@ -143,7 +143,7 @@
                             <label class="machine-card">
                                 <input type="radio" name="machine_type" value="VHA-RS">
                                 <span class="card-body">
-                                    <span class="card-title">VHA-RS <span class="card-range">50–200 t</span></span>
+                                    <span class="card-title">VHA-RS <span class="card-range">50–100 t</span></span>
                                     <span class="sub">Wtryskarka pionowa</span>
                                 </span>
                             </label>
@@ -151,7 +151,7 @@
                             <label class="machine-card">
                                 <input type="radio" name="machine_type" value="MULTI">
                                 <span class="card-body">
-                                    <span class="card-title">MULTI <span class="card-range">130–220 t</span></span>
+                                    <span class="card-title">MULTI <span class="card-range">130–400 t</span></span>
                                     <span class="sub">Maszyna dwukolorowa</span>
                                 </span>
                             </label>
@@ -159,7 +159,7 @@
                             <label class="machine-card">
                                 <input type="radio" name="machine_type" value="Super-Foam">
                                 <span class="card-body">
-                                    <span class="card-title">Super-Foam <span class="card-range">1800–3300 t</span></span>
+                                    <span class="card-title">Super-Foam <span class="card-range">500–3300 t</span></span>
                                     <span class="sub">Technologia super spieniania</span>
                                 </span>
                             </label>
@@ -186,7 +186,7 @@
                         </div>
                     </div>
 
-                    <!-- Informacja dla serii bez doboru online (VHA-RS, MULTI, Super-Foam) -->
+                    <!-- Informacja dla serii bez doboru online (CONFIGURATOR_STEP1_ONLY_TYPES w js/configurator.js) -->
                     <div class="cfg-notice" id="step1Notice" role="status" aria-live="polite" hidden></div>
 
                     <div class="btn-group">
@@ -212,6 +212,11 @@
                          (buildStep2TechPath / addStep2TechBlock / renderStep2TechInlineSpec) -->
                     <div id="step2TechPath" class="step2-subview" style="display:none;">
                         <h2>Krok 2: Najważniejsze dane technologiczne</h2>
+
+                        <div class="cfg-notice cfg-notice--beta" role="note">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 8h.01M11 12h1v5h1"/></svg>
+                            <p><strong>Kalkulator jest nadal w fazie testów.</strong> Wyniki mają charakter orientacyjny.</p>
+                        </div>
 
                         <div class="step2-tech-layout">
                             <div class="step2-tech-blocks" id="step2TechBlocks"></div>
@@ -395,7 +400,6 @@
                         <li><strong>Adres</strong>ul. Hutnicza 6, 40-241 Katowice</li>
                         <li><strong>Telefon</strong><a href="tel:+48510440661">+48 510 440 661</a></li>
                         <li><strong>E-mail</strong><a href="mailto:ploffice@wjpim.com">ploffice@wjpim.com</a></li>
-                        <li><a href="kontakt.html#serwis">Serwis →</a></li>
                     </ul>
                 </div>
             </div>

@@ -12,14 +12,12 @@
 
     const RECIPIENTS = {
         biuro: 'ploffice@wjpim.com',
-        doradca: 'mczekalik@wjpim.com',
-        serwis: 'woojin.choi@wjpim.com'
+        doradca: 'mczekalik@wjpim.com'
     };
 
     const TOPIC_LABELS = {
         biuro: 'Biuro',
-        doradca: 'Doradca ds. produktów',
-        serwis: 'Serwis'
+        doradca: 'Przedstawiciel handlowy'
     };
 
     function setStatus(text, type) {
@@ -27,12 +25,6 @@
         statusEl.textContent = text;
         statusEl.classList.toggle('success', type === 'success');
         statusEl.classList.toggle('error', type === 'error');
-    }
-
-    // Link "Serwis" w stopce (kontakt.html#serwis) od razu ustawia temat
-    if (location.hash === '#serwis') {
-        const serwisRadio = form.querySelector('input[name="contact_topic"][value="serwis"]');
-        if (serwisRadio) serwisRadio.checked = true;
     }
 
     // Czyszczenie oznaczenia błędu po poprawieniu pola

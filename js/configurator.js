@@ -132,6 +132,44 @@ const optionSets = {
             clamping: ['01. Rotating Core Circuit', '02. Core & Ejector on Fly', '03. Daylight Extension', '04. Automatic safety Door open/close', '05. Core Pressure release Circuit (Automatic)', '06. Product Chute', '07. Hydraulic Core Check Valve', '08. Hydraulic Core Interlock Connector (EM13, WJ Standard)', '09. Hydraulic Core Puller (Fixed, 1~4 Stages)', '10. Hydraulic Core Puller (Moving 2~4 Stages)', '11. Mold ring on Moving-Platen', '12. Ejector Check Valve', '13. Ejector Interlock Connector (WJ Standard, EM13)', '14. Ejector Forward/Backward External switch', '15. Mold Insulation Platen', '16. Pneumatic Core Puller (1-3 Stages)'],
             general: ['01. Lubricating oil Recycling device', '02. Product drop check device', '03. Product quality sorting device (Below 280ton)', '04. Hydraulic Auto-Clamp unit', '05. Heater Insulation Band', '06. Automatic Grease Lubrication (Clamping unit)', '07. Robot Interface (EM12, EM67, EM67.1, SPI)', '08. CMS (Central Monitoring System)', '09. AVR (Automatic Voltage Regulator) on Electric Panel', '10. UPS (Uninterruptible Power Supply) on Electric Panel', '11. Dosing unit Interface (for Masterbatch)', '12. Gas Injection Interface', '13. Steam Injection Interface', '14. External Temperature Display (F/P)', '15. Interior type Hot Runner Controller (EM13, WJ Standard)']
         }
+    },
+    // Listy wg katalogów: VH Series (str. 20, VHA-RS), MULTI Series (str. 26, NC-G5),
+    // Super-Foam Series (str. 30, DL-A5 S.F.); pisownia ujednolicona z pozostałymi seriami.
+    'VHA-RS': {
+        std: {
+            injection: ['01. Single Flight Screw', '02. Injection valve gate circuit (AC 1 + DC 1)', '03. PID Heating Control', '04. Weekly Heating Timer', '05. Cold screw start protection mode', '06. Temperature display & Alarm in abnormal Temp.', '07. Auto Purging', '08. Injection Speed & Pressure step (10 step)', '09. Holding Speed & Pressure step (5 step)', '10. Charging Speed & Pressure step (3 step)', '11. Back Pressure control step (3 step)', '12. Injection Pressure Graph Display', '13. Injection Speed Graph Display', '14. Screw RPM Display', '15. Cushion Display & Alarm', '16. Charging time count & alarm', '17. Screw & Barrel (Anti Wear)'],
+            clamping: ['01. Clamping area Curtain sensor', '02. Working Foot-board (Above 120ton)', '03. Hydraulic Core puller (Moving platen side, 1 stage)', '04. Air blow-off unit (1 ea, Upper part)', '05. Safety device (for electric & hydraulic)', '06. Mold-Open Speed & Pressure step (4 step)', '07. Mold-Close Speed & Pressure step (5 step)', '08. Ejector Speed & Pressure step (2 step)'],
+            general: ['01. Clamp area safety sensor (Vertical type IMM)', '02. Standard Maintenance tools', '03. Standard spare part', '04. Leveling pad', '05. Cooling water distributor', '06. Automatic grease lubrication (Clamping)', '07. Robot interface (Standard)', '08. 3 Phase electric outlet (2 ea)', '09. Single Phase electric outlet (1 ea)', '10. Hopper throat temperature control device', '11. Hydraulic oil purification device', '12. Hydraulic oil temperature control device', '13. Hydraulic oil level alarm', '14. Hydraulic oil temperature check & alarm', '15. Hydraulic oil heating mode', '16. 3 color alarm light', '17. Shot data saving by external way', '18. Production data statistics', '19. Alarming & History save', '20. Log history save', '21. I/O circuit display']
+        },
+        opt: {
+            injection: ['01. Heater Disconnection check device', '02. Screw & Barrel (Nitrided barrel)', '03. Screw & Barrel (Anti Wear & Corrosive)', '04. Valve Gate Circuit & Connector (Interior type)', '05. Pneumatic Valve Gate Block (Interior type)', '06. Shut-off Nozzle (Pneumatic, Hydraulic, Spring)', '07. Customized Design Screw (SB, Mixing, Coating)'],
+            clamping: ['01. Daylight Extension', '02. Hydraulic Core Check Valve', '03. Hydraulic Core Interlock Connector (EM13, WJ Standard)', '04. Hydraulic Core (Rotary table type)', '05. Ejector Check Valve', '06. Ejector Interlock Connector (WJ Standard, EM13)', '07. Mold Insulation Plate', '08. Pneumatic Core Puller (1-3 Stages)'],
+            general: ['01. Hydraulic Auto-Clamp unit', '02. Heater Insulation Band', '03. Robot Interface (EM12, EM67, SPI)', '04. CMS (Central Monitoring System)', '05. AVR (Automatic Voltage Regulator) on Electric Panel', '06. UPS (Uninterruptible Power Supply) on Electric Panel', '07. Dosing unit Interface (for Masterbatch)', '08. Gas Injection Interface', '09. Steam Injection Interface', '10. External Temperature Display (F/P)', '11. Interior type Hot Runner Controller (EM14, WJ Standard)', '12. Controller Moving device']
+        }
+    },
+    'MULTI': {
+        std: {
+            injection: ['01. Single Flight Screw', '02. Injection valve gate circuit (AC 1 + DC 1)', '03. PID Heating Control', '04. Weekly Heating Timer', '05. Cold screw protection mode', '06. Temperature display & Alarm in abnormal Temp.', '07. Auto Purging', '08. Injection Speed & Pressure step (10 step)', '09. Holding Speed & Pressure step (5 step)', '10. Charging Speed & Pressure step (4 step)', '11. Back Pressure control step (4 step)', '12. Injection Pressure Graph Display', '13. Injection Speed Graph Display', '14. Screw RPM Display', '15. Cushion Display & Alarm', '16. Charging time count & alarm', '17. Screw & Barrel (Anti Wear)'],
+            clamping: ['01. Hydraulic Core puller (Moving platen side, 1 stage)', '02. Air blow-off unit (Fixed side 1 + Moving side 1)', '03. Safety device (for electric & hydraulic)', '04. Automatic Mold thickness adjust mode', '05. Mold-Open Speed & Pressure step (5 step)', '06. Mold-Close Speed & Pressure step (5 step)', '07. Ejector Speed & Pressure step (3 step)'],
+            general: ['01. 3 Phase electric outlet (4 ea)', '02. Standard Maintenance tools', '03. Standard spare part', '04. Leveling pad', '05. Cooling water distributor', '06. Robot interface (Standard)', '07. Hydraulic oil purification device', '08. Hydraulic oil level alarm', '09. Hydraulic oil temperature check & alarm', '10. Hydraulic oil heating mode', '11. 3 color alarm light', '12. Shot data saving by external way', '13. Production data statistics', '14. Alarming & History save', '15. Log history save', '16. I/O circuit display', '17. Shot data save (Internal 1,000 / External device)']
+        },
+        opt: {
+            injection: ['01. Heater Disconnection check device', '02. Screw & Barrel (Nitrided barrel)', '03. Screw & Barrel (Anti Wear & Corrosive)', '04. Valve Gate Circuit & Connector (Interior type)', '05. Pneumatic Valve Gate Block (Interior type)', '06. Shut-off Nozzle (Pneumatic, Hydraulic, Spring)', '07. Customized Design Screw (SB, Mixing, Coating)'],
+            clamping: ['01. Daylight Extension', '02. Product Chute', '03. Hydraulic Core Check Valve', '04. Hydraulic Core Interlock Connector (EM13, WJ Standard)', '05. Spring type Ejector retraction', '06. Ejector Check Valve', '07. Mold Insulation Plate'],
+            general: ['01. Steel tray for resin leakage', '02. Hopper throat temperature control device', '03. Heater Insulation Band', '04. Automatic Grease Lubrication (Clamping unit)', '05. Robot Interface (EM12, EM67, EM67.1, SPI)', '06. CMS (Central Monitoring System)', '07. AVR (Automatic Voltage Regulator) on Electric Panel', '08. UPS (Uninterruptible Power Supply) on Electric Panel', '09. Dosing unit Interface (for Masterbatch)', '10. Gas Injection Interface', '11. Steam Injection Interface', '12. Interior type Hot Runner Controller (EM13, WJ Standard)']
+        }
+    },
+    'Super-Foam': {
+        std: {
+            injection: ['01. Automatic Injection unit swiveling (Below IH 11900)', '02. Single Flight Screw', '03. Injection valve gate circuit (AC 1 + DC 1)', '04. Back-Pressure Closed-loop system', '05. PID Heating Control', '06. Weekly Heating Timer', '07. Cold screw start protection mode', '08. Temperature display & Alarm in abnormal Temp.', '09. Auto Purging', '10. Injection Speed & Pressure step (10 step)', '11. Holding Speed & Pressure step (5 step)', '12. Charging Speed & Pressure step (3 step)', '13. Back Pressure control step (3 step)', '14. Injection Pressure Graph Display', '15. Injection Speed Graph Display', '16. Screw RPM Display', '17. Cushion Display & Alarm', '18. Charging time count & alarm', '19. Screw & Barrel (Anti Wear & Corrosive)', '20. Measuring electricity', '21. Raw material supply device', '22. Shut-off Nozzle (Pneumatic)'],
+            clamping: ['01. Safety Foot-board (Above 900ton)', '02. Automatic safety Door open/close (Above 500ton)', '03. Clamping area Curtain sensor', '04. Hydraulic Core puller (Moving platen side, 1 stage)', '05. Air blow-off unit (Fixed side 1 + Moving side 1)', '06. Safety device (for electric & hydraulic)', '07. Spring mold mode', '08. Automatic Mold thickness adjust mode', '09. Mold-Open Speed & Pressure step (5 step)', '10. Ejector Speed & Pressure step (3 step)'],
+            general: ['01. Standard Maintenance tools', '02. Standard spare part', '03. Leveling pad', '04. Cooling water distributor', '05. Automatic grease lubrication (Clamping)', '06. Robot interface (Standard)', '07. 3 Phase electric outlet (2 ea)', '08. Single Phase electric outlet (1 ea)', '09. Steel tray for resin leakage', '10. Hopper throat temperature control device', '11. Hydraulic oil purification device', '12. Hydraulic oil temperature control device', '13. Hydraulic oil level alarm', '14. Hydraulic oil temperature check & alarm', '15. Hydraulic oil heating mode', '16. 3 color alarm light', '17. Shot data saving by external way', '18. Production data statistics', '19. Alarming & History save', '20. Log history save', '21. I/O circuit display', '22. Shot data save (Internal 1,000 / External device)']
+        },
+        opt: {
+            injection: ['01. Heater Disconnection check device', '02. Hopper Slide (L/M)', '03. Hopper Ladder & Stand', '04. Valve Gate Circuit & Connector (Interior type)', '05. Hydraulic Valve Gate Block (Interior type)', '06. Pneumatic Valve Gate Block (Interior type)', '07. Hydraulic Valve Gate Device (External device)', '08. Nozzle cylinders equipped with Potentiometers', '09. Charging on Fly (AC Motor)'],
+            clamping: ['01. Rotating Core Circuit', '02. Safety Foot-board (Below 700ton)', '03. Core & Ejector on Fly', '04. Daylight Extension', '05. Core-Back Mode', '06. Core Pressure release Circuit (Automatic)', '07. Core Pressure release Circuit (Manual)', '08. Product Chute', '09. Automatic Tie-bar Retraction', '10. Hydraulic Core Check Valve', '11. Hydraulic Core Interlock Connector (EM13, WJ Standard)', '12. Hydraulic Core Puller (2~8 Stages)', '13. Mold ring on Moving-Platen', '14. Spring type Ejector retraction', '15. Ejector Check Valve', '16. Ejector Interlock Connector (WJ Standard, EM13)', '17. Ejector Forward/Backward External switch', '18. Mold Insulation Plate', '19. Pneumatic Core Puller (1~7 Stages)'],
+            general: ['01. Hydraulic Auto-Clamp unit', '02. Anchor-bolt set (Clamping unit)', '03. Heater Insulation Band', '04. Automatic Grease Lubrication (Injection unit)', '05. Robot Interface (EM12, EM67, EM67.1, SPI)', '06. CMS (Central Monitoring System)', '07. AVR (Automatic Voltage Regulator) on Electric Panel', '08. UPS (Uninterruptible Power Supply) on Electric Panel', '09. Dosing unit Interface (for Masterbatch)', '10. Gas Injection Interface', '11. Steam Injection Interface', '12. External Temperature Display (F/P)', '13. Interior type Hot Runner Controller (EM13, WJ Standard)', '14. Booster', '15. Nitrogen generator', '16. Air dryer', '17. C.P.M system (Counter Pressure Molding System)']
+        }
     }
 };
 
@@ -262,7 +300,108 @@ const OPTION_TRANSLATIONS = {
     'UPS (Uninterruptible Power Supply) on Electric Panel': 'UPS (zasilacz awaryjny) w szafie elektrycznej',
     'Valve Gate Circuit & Connector (Interior type)': 'Obwód i złącze zaworu iglicowego (typ wewnętrzny)',
     'Weekly Heating Timer': 'Tygodniowy zegar włączania grzania układu plastyfikacji',
+
+    // Pozycje występujące tylko w listach VHA-RS, NC-G5 (MULTI) i DL-A5 (S.F.)
+    '3 Phase electric outlet (4 ea)': 'Zestaw gniazd elektrycznych trójfazowych (5-pin) – 4 zestawy',
+    'Air blow-off unit (1 ea, Upper part)': 'Układ zdmuchiwania pneumatycznego – 1 zawór zdmuchiwania (część górna)',
+    'Air dryer': 'Osuszacz powietrza',
+    'Automatic Tie-bar Retraction': 'Automatyczne wysuwanie kolumny (łatwiejszy montaż dużych form)',
+    'Automatic safety Door open/close (Above 500ton)': 'Automatyczny napęd osłony przedniej (powyżej 500 ton)',
+    'Back Pressure control step (4 step)': '4 etapy kontroli przeciwciśnienia plastyfikacji',
+    'Booster': 'Sprężarka podnosząca ciśnienie gazu (booster)',
+    'C.P.M system (Counter Pressure Molding System)': 'System CPM – wtrysk z przeciwciśnieniem gazu w gnieździe formy',
+    'Charging Speed & Pressure step (4 step)': '4 etapy kontroli procesu plastyfikacji (prędkość / ciśnienie)',
+    'Clamp area safety sensor (Vertical type IMM)': 'Czujnik bezpieczeństwa strefy zamykania (wtryskarka pionowa)',
+    'Clamping area Curtain sensor': 'Kurtyna świetlna osłony po stronie operatora',
+    'Controller Moving device': 'Przestawny (ruchomy) panel sterownika',
+    'Hydraulic Core (Rotary table type)': 'Rdzeń hydrauliczny w stole obrotowym',
+    'Interior type Hot Runner Controller (EM14, WJ Standard)': 'Wbudowany sterownik gorących kanałów (EM14, standard WJ)',
+    'Measuring electricity': 'Pomiar zużycia energii elektrycznej',
+    'Mold Insulation Plate': 'Płyty termoizolacyjne stołów maszyny',
+    'Nitrogen generator': 'Generator azotu',
+    'Raw material supply device': 'Układ ilościowego podawania surowca do ślimaka',
+    'Robot Interface (EM12, EM67, SPI)': 'Złącze robota wg Euromap (EM12, EM67, SPI)',
+    'Safety Foot-board (Above 900ton)': 'Platforma bezpieczeństwa pod płytami (powyżej 900 ton)',
+    'Safety Foot-board (Below 700ton)': 'Platforma bezpieczeństwa pod płytami (poniżej 700 ton)',
+    'Shut-off Nozzle (Pneumatic)': 'Dysza zamykana pneumatycznie',
+    'Working Foot-board (Above 120ton)': 'Podest roboczy dla operatora (powyżej 120 ton)'
 };
+
+// Zdjęcia i opisy wybranych pozycji wyposażenia - pokazywane w dymku Kroku 3
+// razem z tłumaczeniem (patrz showStep3OptionTooltip). Klucz = tekst pozycji
+// bez numeru, tak jak w OPTION_TRANSLATIONS. "types" - typy maszyn, do których
+// zdjęcie pasuje (brak = każdy typ, w którego liście pozycja występuje).
+// Pliki: img/opt/opcje/ (zoptymalizowane kopie zdjęć z img/opcje/).
+const OPTION_MEDIA_DIR = 'img/opt/opcje/';
+const OPTION_MEDIA = {
+    'Single Flight Screw': {
+        images: [
+            { src: 'slimak-standardowy.jpg', wide: true, caption: 'Ślimak standardowy' },
+            { src: 'zawor-zwrotny-ring.jpg', caption: 'Zawór zwrotny typu ring' }
+        ],
+        desc: 'Uniwersalny ślimak jednozwojowy ze strefą zasilania, sprężania i dozowania – do przetwórstwa większości tworzyw. Na jego końcu pracuje zawór zwrotny z pierścieniem, który nie pozwala stopionemu tworzywu cofać się podczas wtrysku.'
+    },
+    'Customized Design Screw (SB, Mixing, Coating)': {
+        images: [
+            { src: 'slimak-sb.jpg', wide: true, caption: 'Ślimak SB' },
+            { src: 'slimak-mieszajacy.jpg', wide: true, caption: 'Ślimak mieszający' },
+            { src: 'slimak-pvc.jpg', caption: 'Ślimak utwardzany do PVC' },
+            { src: 'zawor-zwrotny-glove.jpg', caption: 'Zawór zwrotny typu glove' }
+        ],
+        desc: 'Ślimak dobierany do konkretnego tworzywa i wyrobu: SB – do wydajniejszego uplastyczniania, mieszający – do równomiernego rozprowadzenia barwnika i dodatków, utwardzany lub z powłoką – do tworzyw wymagających, np. PVC. Do ślimaka dobierany jest odpowiedni zawór zwrotny.'
+    },
+    'Screw & Barrel (Nitrided barrel)': {
+        images: [{ src: 'cylinder-azotowany.jpg', caption: 'Cylinder azotowany' }],
+        desc: 'Cylinder z wewnętrzną powierzchnią utwardzoną przez azotowanie – sprawdzone rozwiązanie do tworzyw bez wypełniaczy ściernych i dodatków powodujących korozję.'
+    },
+    'Screw & Barrel (Anti Wear)': {
+        images: [{ src: 'cylinder-bimetaliczny.jpg', caption: 'Cylinder bimetaliczny' }],
+        desc: 'Ślimak i cylinder o podwyższonej odporności na ścieranie – cylinder bimetaliczny ze stopową wykładziną wewnętrzną znacznie dłużej zachowuje wymiary przy tworzywach z wypełniaczami, np. z włóknem szklanym.'
+    },
+    'Screw & Barrel (Anti Wear & Corrosive)': {
+        images: [{ src: 'cylinder-bimetaliczny.jpg', caption: 'Cylinder bimetaliczny' }],
+        desc: 'Ślimak i cylinder bimetaliczny odporne jednocześnie na ścieranie i korozję – do tworzyw z wypełniaczami oraz materiałów agresywnych chemicznie, np. PVC czy tworzyw z uniepalniaczami.'
+    },
+    'Automatic Ball-screw grease lubrication (All parts)': {
+        types: ['TE-A5'],
+        images: [{ src: 'sruba-kulowa.jpg', caption: 'Śruba kulowa' }],
+        desc: 'Śruby kulowe napędów zamykania, wtrysku i wypychacza są smarowane automatycznie – mniejsze zużycie, stała dokładność pozycjonowania i brak ręcznego smarowania.'
+    },
+    'Automatic clamp force measurement mode': {
+        types: ['TE-A5'],
+        images: [{ src: 'czujnik-sily-zwarcia.jpg', caption: 'Czujnik siły zwarcia' }],
+        desc: 'Czujnik mierzy siłę zwarcia w czasie rzeczywistym. Gdy zmienia się ona, np. wskutek nagrzewania formy, płyt i kolumn, sterownik automatycznie ją koryguje – bez ręcznej regulacji i z mniejszą liczbą braków.'
+    },
+    'CMS (Central Monitoring System)': {
+        images: [{ src: 'cms.jpg', caption: 'Centralny system monitoringu' }],
+        desc: 'Wtryskarki połączone w sieć – na jednym komputerze widać stan wszystkich maszyn w hali, alarmy i dane produkcyjne.'
+    },
+    'Hydraulic oil purification device': {
+        images: [{ src: 'obieg-oleju.jpg', caption: 'Niezależny obieg oleju z filtrem i chłodnicą' }],
+        desc: 'Niezależny obieg z własną pompą stale przepuszcza olej przez filtr i chłodnicę. Olej pozostaje czysty, co wydłuża jego żywotność i chroni podzespoły hydrauliki.'
+    },
+    'Hydraulic oil temperature control device': {
+        images: [{ src: 'obieg-oleju.jpg', caption: 'Niezależny obieg oleju z filtrem i chłodnicą' }],
+        desc: 'Chłodnica w niezależnym obiegu oleju utrzymuje stałą temperaturę oleju hydraulicznego – stabilna, powtarzalna praca maszyny i ochrona przed przegrzaniem.'
+    },
+    'Mold thickness adjusting break unit': {
+        types: ['TH-A5'],
+        images: [{ src: 'regulacja-wysokosci-formy-th-a5.jpg', caption: 'Układ regulacji wysokości formy TH-A5' }],
+        desc: 'Hamulec silnika regulacji wysokości formy utrzymuje ustawioną siłę zwarcia i położenie płyty podczas wielokrotnego otwierania i zamykania formy.'
+    },
+    'Automatic Mold thickness adjust mode': {
+        types: ['TH-A5'],
+        images: [{ src: 'regulacja-wysokosci-formy-th-a5.jpg', caption: 'Układ regulacji wysokości formy TH-A5' }],
+        desc: 'Silnik regulacji z enkoderem automatycznie i precyzyjnie dopasowuje mechanizm zamykania do wysokości formy, dzięki czemu siłę zwarcia można ustawić dokładnie.'
+    }
+};
+
+// Zdjęcie/opis dla pozycji wyposażenia - tylko gdy pasuje do wybranego typu maszyny
+function getOptionMedia(key) {
+    const media = OPTION_MEDIA[key];
+    if (!media || (media.types && !media.types.includes(selectedMachineType))) return null;
+    return media;
+}
 
 // -------------------- Modele maszyn (na podstawie specyfikacji katalogowej A5) --------------------
 // force: siła zwarcia [ton], tieBar: prześwit między kolumnami [mm] (null = brak kolumn, TL-A5),
@@ -329,6 +468,50 @@ const machineData = {
             { name: 'TL220A5', force: 220, tieBar: null, minH: 300, maxH: 800, units: ['IH1000 O(45mm)', 'IH1000 A(50mm)', 'IH1000 B(55mm)'] },
             { name: 'TL300A5', force: 300, tieBar: null, minH: 400, maxH: 900, units: ['IH1800 O(55mm)', 'IH1800 A(60mm)', 'IH1800 B(65mm)'] },
             { name: 'TL400A5', force: 400, tieBar: null, minH: 450, maxH: 1000, units: ['IH2800 O(65mm)', 'IH2800 A(70mm)', 'IH2800 B(80mm)'] }
+        ]
+    },
+    // Katalog "VH Series" - podseria VHA-RS (pionowa ze stołem obrotowym).
+    // Katalog nie podaje prześwitu między kolumnami ani maks. wysokości formy
+    // (podaje średnicę stołu obrotowego) - stąd tieBar/maxH = null.
+    'VHA-RS': {
+        label: 'VHA-RS (wtryskarka pionowa)',
+        hasTieBar: false,
+        models: [
+            { name: 'VHA50RS', force: 50, tieBar: null, minH: 200, maxH: null, units: ['IH140V O(22mm)', 'IH140V A(25mm)', 'IH140V B(28mm)'] },
+            { name: 'VHA75RS', force: 75, tieBar: null, minH: 200, maxH: null, units: ['IH200V O(25mm)', 'IH200V A(28mm)', 'IH200V B(32mm)'] },
+            { name: 'VHA100RS', force: 100, tieBar: null, minH: 250, maxH: null, units: ['IH280V O(28mm)', 'IH280V A(32mm)', 'IH280V B(36mm)'] }
+        ]
+    },
+    // Katalog "MULTI Series" - seria NC-G5 (dwukolorowa, stół obrotowy na
+    // płycie ruchomej). Katalog nie podaje maks. wysokości formy (maxH = null).
+    'MULTI': {
+        label: 'NC-G5 (wtryskarka dwukolorowa)',
+        hasTieBar: true,
+        models: [
+            { name: 'NC130G5', force: 130, tieBar: 700, minH: 170, maxH: null, units: ['IC240 S(25mm)', 'IC240 O(28mm)', 'IC240 A(32mm)'] },
+            { name: 'NC220G5', force: 220, tieBar: 950, minH: 250, maxH: null, units: ['IC510 S(40mm)', 'IC510 O(45mm)', 'IC510 A(50mm)'] },
+            { name: 'NC400G5', force: 400, tieBar: 1120, minH: 300, maxH: null, units: ['IC610 S(40mm)', 'IC610 O(45mm)', 'IC610 A(50mm)'] }
+        ]
+    },
+    // Katalog "Super-Foam Series" - DL-A5 (S.F.), po jednym agregacie (A) na
+    // model. Nazwy z dopiskiem "(S.F.)", bo dane różnią się od zwykłych DL-A5.
+    'Super-Foam': {
+        label: 'DL-A5 Super-Foam (super spienianie)',
+        hasTieBar: true,
+        models: [
+            { name: 'DL500A5 (S.F.)', force: 500, tieBar: 920, minH: 350, maxH: 900, units: ['IH2800 A(70mm)'] },
+            { name: 'DL600A5 (S.F.)', force: 600, tieBar: 1040, minH: 400, maxH: 950, units: ['IH4200 A(80mm)'] },
+            { name: 'DL700A5 (S.F.)', force: 700, tieBar: 1110, minH: 450, maxH: 950, units: ['IH5900 A(90mm)'] },
+            { name: 'DL900A5 (S.F.)', force: 900, tieBar: 1200, minH: 500, maxH: 1100, units: ['IH8800 A(105mm)'] },
+            { name: 'DL1100A5 (S.F.)', force: 1100, tieBar: 1420, minH: 600, maxH: 1200, units: ['IH8800 A(105mm)'] },
+            { name: 'DL1300A5 (S.F.)', force: 1300, tieBar: 1580, minH: 700, maxH: 1400, units: ['IH11900 A(115mm)'] },
+            { name: 'DL1800A5 (S.F.)', force: 1800, tieBar: 1850, minH: 700, maxH: 1600, units: ['IH15300 A(125mm)'] },
+            { name: 'DL2000A5 (S.F.)', force: 2000, tieBar: 2020, minH: 800, maxH: 1700, units: ['IH15300 A(125mm)'] },
+            { name: 'DL2300A5 (S.F.)', force: 2300, tieBar: 2020, minH: 800, maxH: 1700, units: ['IH15300 A(125mm)'] },
+            { name: 'DL2500A5 (S.F.)', force: 2500, tieBar: 2180, minH: 900, maxH: 2000, units: ['IH21500 A(140mm)'] },
+            { name: 'DL2700A5 (S.F.)', force: 2700, tieBar: 2180, minH: 900, maxH: 2000, units: ['IH21500 A(140mm)'] },
+            { name: 'DL3000A5 (S.F.)', force: 3000, tieBar: 2260, minH: 1100, maxH: 2000, units: ['IH33000 A(160mm)'] },
+            { name: 'DL3300A5 (S.F.)', force: 3300, tieBar: 2260, minH: 1100, maxH: 2000, units: ['IH33000 A(160mm)'] }
         ]
     }
 };
@@ -804,6 +987,157 @@ const machineTechSpecs = {
             "IH2800 A(70mm)": { injection: { screwDiameter: 70, injPressureKgcm2: 2048, injPressureMpa: 201, injHoldingPressureKgcm2: null, injHoldingPressureMpa: null, theoInjVolume: 1347, shotWeight: 1241, injRate: 363, injRateOptional: null, screwStroke: 350, injSpeed: 94, injSpeedOptional: null, plasticizingCapacity: 244, screwRotationSpeed: 175 }, general: { motorCapacity: 55, motorCapacityOptional: null, heaterCapacity: 20.6, totalElectricPower: 75.6, totalElectricPowerHigh: null, hydraulicOilTank: 965, coolingWater: 65, machineWeight: 25.5, machineDimension: "8.6 x 2.2 x 2.3" } },
             "IH2800 B(80mm)": { injection: { screwDiameter: 80, injPressureKgcm2: 1568, injPressureMpa: 154, injHoldingPressureKgcm2: null, injHoldingPressureMpa: null, theoInjVolume: 1759, shotWeight: 1621, injRate: 474, injRateOptional: null, screwStroke: 350, injSpeed: 94, injSpeedOptional: null, plasticizingCapacity: 347, screwRotationSpeed: 175 }, general: { motorCapacity: 55, motorCapacityOptional: null, heaterCapacity: 24.1, totalElectricPower: 79.1, totalElectricPowerHigh: null, hydraulicOilTank: 965, coolingWater: 65, machineWeight: 25.5, machineDimension: "8.6 x 2.2 x 2.3" } }
         }
+    },
+
+    // ---- VHA-RS (katalog VH Series, str. 14) ----
+
+"VHA50RS": {
+        clamping: { clampingForce: "50(490)", moldOpeningForce: null, tieBarDistance: null, platenDimension: null, maxMoldSize: null, rotaryTableSize: 880, daylight: 250, maxDaylight: 450, minMoldHeight: 200, maxMoldHeight: null, ejectorForce: "2.7(26)", ejectorStroke: 60, dryCycleTime: null, maxMoldWeight: null },
+        units: {
+            "IH140V O(22mm)": { injection: { screwDiameter: 22, injPressureKgcm2: 3487, injPressureMpa: 342, injHoldingPressureKgcm2: null, injHoldingPressureMpa: null, theoInjVolume: 46, shotWeight: 42, injRate: 49, injRateOptional: null, screwStroke: 120, injSpeed: 130, injSpeedOptional: null, plasticizingCapacity: 13, screwRotationSpeed: 220 }, general: { motorCapacity: 13.9, motorCapacityOptional: null, heaterCapacity: 5.2, totalElectricPower: 19.1, totalElectricPowerHigh: null, hydraulicOilTank: 180, coolingWater: 20, machineWeight: 3.5, machineDimension: "2.9 x 1.6 x 2.9" } },
+            "IH140V A(25mm)": { injection: { screwDiameter: 25, injPressureKgcm2: 2700, injPressureMpa: 265, injHoldingPressureKgcm2: null, injHoldingPressureMpa: null, theoInjVolume: 59, shotWeight: 54, injRate: 64, injRateOptional: null, screwStroke: 120, injSpeed: 130, injSpeedOptional: null, plasticizingCapacity: 16, screwRotationSpeed: 220 }, general: { motorCapacity: 13.9, motorCapacityOptional: null, heaterCapacity: 5.2, totalElectricPower: 19.1, totalElectricPowerHigh: null, hydraulicOilTank: 180, coolingWater: 20, machineWeight: 3.5, machineDimension: "2.9 x 1.6 x 2.9" } },
+            "IH140V B(28mm)": { injection: { screwDiameter: 28, injPressureKgcm2: 2152, injPressureMpa: 211, injHoldingPressureKgcm2: null, injHoldingPressureMpa: null, theoInjVolume: 74, shotWeight: 68, injRate: 80, injRateOptional: null, screwStroke: 120, injSpeed: 130, injSpeedOptional: null, plasticizingCapacity: 23, screwRotationSpeed: 220 }, general: { motorCapacity: 13.9, motorCapacityOptional: null, heaterCapacity: 5.2, totalElectricPower: 19.1, totalElectricPowerHigh: null, hydraulicOilTank: 180, coolingWater: 20, machineWeight: 3.5, machineDimension: "2.9 x 1.6 x 2.9" } }
+        }
+    },
+
+    "VHA75RS": {
+        clamping: { clampingForce: "75(735)", moldOpeningForce: null, tieBarDistance: null, platenDimension: null, maxMoldSize: null, rotaryTableSize: 1000, daylight: 250, maxDaylight: 450, minMoldHeight: 200, maxMoldHeight: null, ejectorForce: "2.7(26)", ejectorStroke: 60, dryCycleTime: null, maxMoldWeight: null },
+        units: {
+            "IH200V O(25mm)": { injection: { screwDiameter: 25, injPressureKgcm2: 2923, injPressureMpa: 287, injHoldingPressureKgcm2: null, injHoldingPressureMpa: null, theoInjVolume: 69, shotWeight: 63, injRate: 59, injRateOptional: null, screwStroke: 140, injSpeed: 120, injSpeedOptional: null, plasticizingCapacity: 16, screwRotationSpeed: 220 }, general: { motorCapacity: 13.9, motorCapacityOptional: null, heaterCapacity: 6.1, totalElectricPower: 20, totalElectricPowerHigh: null, hydraulicOilTank: 180, coolingWater: 20, machineWeight: 4.2, machineDimension: "3.1 x 1.8 x 3.1" } },
+            "IH200V A(28mm)": { injection: { screwDiameter: 28, injPressureKgcm2: 2330, injPressureMpa: 228, injHoldingPressureKgcm2: null, injHoldingPressureMpa: null, theoInjVolume: 86, shotWeight: 78, injRate: 74, injRateOptional: null, screwStroke: 140, injSpeed: 120, injSpeedOptional: null, plasticizingCapacity: 23, screwRotationSpeed: 220 }, general: { motorCapacity: 13.9, motorCapacityOptional: null, heaterCapacity: 6.1, totalElectricPower: 20, totalElectricPowerHigh: null, hydraulicOilTank: 180, coolingWater: 20, machineWeight: 4.2, machineDimension: "3.1 x 1.8 x 3.1" } },
+            "IH200V B(32mm)": { injection: { screwDiameter: 32, injPressureKgcm2: 1784, injPressureMpa: 175, injHoldingPressureKgcm2: null, injHoldingPressureMpa: null, theoInjVolume: 113, shotWeight: 102, injRate: 97, injRateOptional: null, screwStroke: 140, injSpeed: 120, injSpeedOptional: null, plasticizingCapacity: 31, screwRotationSpeed: 220 }, general: { motorCapacity: 13.9, motorCapacityOptional: null, heaterCapacity: 6.1, totalElectricPower: 20, totalElectricPowerHigh: null, hydraulicOilTank: 180, coolingWater: 20, machineWeight: 4.2, machineDimension: "3.1 x 1.8 x 3.1" } }
+        }
+    },
+
+    "VHA100RS": {
+        clamping: { clampingForce: "100(981)", moldOpeningForce: null, tieBarDistance: null, platenDimension: null, maxMoldSize: null, rotaryTableSize: 1100, daylight: 250, maxDaylight: 500, minMoldHeight: 250, maxMoldHeight: null, ejectorForce: "4.3(42)", ejectorStroke: 80, dryCycleTime: null, maxMoldWeight: null },
+        units: {
+            "IH280V O(28mm)": { injection: { screwDiameter: 28, injPressureKgcm2: 2847, injPressureMpa: 279, injHoldingPressureKgcm2: null, injHoldingPressureMpa: null, theoInjVolume: 99, shotWeight: 90, injRate: 97, injRateOptional: null, screwStroke: 160, injSpeed: 158, injSpeedOptional: null, plasticizingCapacity: 23, screwRotationSpeed: 220 }, general: { motorCapacity: 19.5, motorCapacityOptional: null, heaterCapacity: 6.7, totalElectricPower: 26.2, totalElectricPowerHigh: null, hydraulicOilTank: 250, coolingWater: 40, machineWeight: 5.5, machineDimension: "3.5 x 1.9 x 3.5" } },
+            "IH280V A(32mm)": { injection: { screwDiameter: 32, injPressureKgcm2: 2180, injPressureMpa: 214, injHoldingPressureKgcm2: null, injHoldingPressureMpa: null, theoInjVolume: 129, shotWeight: 117, injRate: 127, injRateOptional: null, screwStroke: 160, injSpeed: 158, injSpeedOptional: null, plasticizingCapacity: 31, screwRotationSpeed: 220 }, general: { motorCapacity: 19.5, motorCapacityOptional: null, heaterCapacity: 6.7, totalElectricPower: 26.2, totalElectricPowerHigh: null, hydraulicOilTank: 250, coolingWater: 40, machineWeight: 5.5, machineDimension: "3.5 x 1.9 x 3.5" } },
+            "IH280V B(36mm)": { injection: { screwDiameter: 36, injPressureKgcm2: 1722, injPressureMpa: 169, injHoldingPressureKgcm2: null, injHoldingPressureMpa: null, theoInjVolume: 163, shotWeight: 148, injRate: 161, injRateOptional: null, screwStroke: 160, injSpeed: 158, injSpeedOptional: null, plasticizingCapacity: 51, screwRotationSpeed: 220 }, general: { motorCapacity: 19.5, motorCapacityOptional: null, heaterCapacity: 6.7, totalElectricPower: 26.2, totalElectricPowerHigh: null, hydraulicOilTank: 250, coolingWater: 40, machineWeight: 5.5, machineDimension: "3.5 x 1.9 x 3.5" } }
+        }
+    },
+
+    // ---- MULTI / NC-G5 (katalog MULTI Series, str. 10) ----
+
+    "NC130G5": {
+        clamping: { clampingForce: "130(1274)", moldOpeningForce: null, tieBarDistance: "700 x 300", platenDimension: "920 x 530", maxMoldSize: "(250 x 360) x 2", rotaryTableSize: 735, daylight: 450, maxDaylight: 620, minMoldHeight: 170, maxMoldHeight: null, ejectorForce: 3.3, ejectorStroke: 114, dryCycleTime: null, maxMoldWeight: null },
+        units: {
+            "IC240 S(25mm)": { injection: { screwDiameter: 25, injPressureKgcm2: 3241, injPressureMpa: 317, injHoldingPressureKgcm2: null, injHoldingPressureMpa: null, theoInjVolume: 74, shotWeight: 67, injRate: 49, injRateOptional: null, screwStroke: 150, injSpeed: 99, injSpeedOptional: null, plasticizingCapacity: 17, screwRotationSpeed: 237 }, general: { motorCapacity: "36.4(18.2+18.2)", motorCapacityOptional: null, heaterCapacity: 12.6, totalElectricPower: 49, totalElectricPowerHigh: null, hydraulicOilTank: 360, coolingWater: 40, machineWeight: 6.9, machineDimension: "5.2 x 1.7 x 2.1" } },
+            "IC240 O(28mm)": { injection: { screwDiameter: 28, injPressureKgcm2: 2584, injPressureMpa: 253, injHoldingPressureKgcm2: null, injHoldingPressureMpa: null, theoInjVolume: 92, shotWeight: 84, injRate: 61, injRateOptional: null, screwStroke: 150, injSpeed: 99, injSpeedOptional: null, plasticizingCapacity: 23, screwRotationSpeed: 237 }, general: { motorCapacity: "36.4(18.2+18.2)", motorCapacityOptional: null, heaterCapacity: 12.6, totalElectricPower: 49, totalElectricPowerHigh: null, hydraulicOilTank: 360, coolingWater: 40, machineWeight: 6.9, machineDimension: "5.2 x 1.7 x 2.1" } },
+            "IC240 A(32mm)": { injection: { screwDiameter: 32, injPressureKgcm2: 1978, injPressureMpa: 193, injHoldingPressureKgcm2: null, injHoldingPressureMpa: null, theoInjVolume: 121, shotWeight: 110, injRate: 80, injRateOptional: null, screwStroke: 150, injSpeed: 99, injSpeedOptional: null, plasticizingCapacity: 30, screwRotationSpeed: 237 }, general: { motorCapacity: "36.4(18.2+18.2)", motorCapacityOptional: null, heaterCapacity: 12.6, totalElectricPower: 49, totalElectricPowerHigh: null, hydraulicOilTank: 360, coolingWater: 40, machineWeight: 6.9, machineDimension: "5.2 x 1.7 x 2.1" } }
+        }
+    },
+
+    "NC220G5": {
+        clamping: { clampingForce: "220(2156)", moldOpeningForce: null, tieBarDistance: "950 x 360", platenDimension: "1220 x 630", maxMoldSize: "(400 x 500) x 2", rotaryTableSize: 1030, daylight: 520, maxDaylight: 770, minMoldHeight: 250, maxMoldHeight: null, ejectorForce: 3.3, ejectorStroke: 178, dryCycleTime: null, maxMoldWeight: null },
+        units: {
+            "IC510 S(40mm)": { injection: { screwDiameter: 40, injPressureKgcm2: 2242, injPressureMpa: 219, injHoldingPressureKgcm2: null, injHoldingPressureMpa: null, theoInjVolume: 226, shotWeight: 206, injRate: 112, injRateOptional: null, screwStroke: 180, injSpeed: 89, injSpeedOptional: null, plasticizingCapacity: 67, screwRotationSpeed: 237 }, general: { motorCapacity: "56.6(28.3+28.3)", motorCapacityOptional: null, heaterCapacity: 24.2, totalElectricPower: 80.8, totalElectricPowerHigh: null, hydraulicOilTank: 700, coolingWater: 65, machineWeight: 11.9, machineDimension: "6.2 x 2.0 x 2.4" } },
+            "IC510 O(45mm)": { injection: { screwDiameter: 45, injPressureKgcm2: 1772, injPressureMpa: 173, injHoldingPressureKgcm2: null, injHoldingPressureMpa: null, theoInjVolume: 286, shotWeight: 261, injRate: 142, injRateOptional: null, screwStroke: 180, injSpeed: 89, injSpeedOptional: null, plasticizingCapacity: 90, screwRotationSpeed: 237 }, general: { motorCapacity: "56.6(28.3+28.3)", motorCapacityOptional: null, heaterCapacity: 24.2, totalElectricPower: 80.8, totalElectricPowerHigh: null, hydraulicOilTank: 700, coolingWater: 65, machineWeight: 11.9, machineDimension: "6.2 x 2.0 x 2.4" } },
+            "IC510 A(50mm)": { injection: { screwDiameter: 50, injPressureKgcm2: 1435, injPressureMpa: 140, injHoldingPressureKgcm2: null, injHoldingPressureMpa: null, theoInjVolume: 353, shotWeight: 322, injRate: 176, injRateOptional: null, screwStroke: 180, injSpeed: 89, injSpeedOptional: null, plasticizingCapacity: 122, screwRotationSpeed: 237 }, general: { motorCapacity: "56.6(28.3+28.3)", motorCapacityOptional: null, heaterCapacity: 24.2, totalElectricPower: 80.8, totalElectricPowerHigh: null, hydraulicOilTank: 700, coolingWater: 65, machineWeight: 11.9, machineDimension: "6.2 x 2.0 x 2.4" } }
+        }
+    },
+
+    "NC400G5": {
+        clamping: { clampingForce: "400(3922)", moldOpeningForce: null, tieBarDistance: "1120 x 680", platenDimension: "1385 x 1040", maxMoldSize: "(500 x 700) x 2", rotaryTableSize: 1320, daylight: 800, maxDaylight: 1100, minMoldHeight: 300, maxMoldHeight: null, ejectorForce: 5.6, ejectorStroke: 190, dryCycleTime: null, maxMoldWeight: null },
+        units: {
+            "IC610 S(40mm)": { injection: { screwDiameter: 40, injPressureKgcm2: 2689, injPressureMpa: 264, injHoldingPressureKgcm2: null, injHoldingPressureMpa: null, theoInjVolume: 226, shotWeight: 206, injRate: 195, injRateOptional: null, screwStroke: 180, injSpeed: 155, injSpeedOptional: null, plasticizingCapacity: 74, screwRotationSpeed: 260 }, general: { motorCapacity: "88(44+44)", motorCapacityOptional: null, heaterCapacity: 24.2, totalElectricPower: 112.2, totalElectricPowerHigh: null, hydraulicOilTank: 1175, coolingWater: 65, machineWeight: 21, machineDimension: "7.3 x 2.4 x 2.7" } },
+            "IC610 O(45mm)": { injection: { screwDiameter: 45, injPressureKgcm2: 2125, injPressureMpa: 208, injHoldingPressureKgcm2: null, injHoldingPressureMpa: null, theoInjVolume: 286, shotWeight: 261, injRate: 246, injRateOptional: null, screwStroke: 180, injSpeed: 155, injSpeedOptional: null, plasticizingCapacity: 99, screwRotationSpeed: 260 }, general: { motorCapacity: "88(44+44)", motorCapacityOptional: null, heaterCapacity: 24.2, totalElectricPower: 112.2, totalElectricPowerHigh: null, hydraulicOilTank: 1175, coolingWater: 65, machineWeight: 21, machineDimension: "7.3 x 2.4 x 2.7" } },
+            "IC610 A(50mm)": { injection: { screwDiameter: 50, injPressureKgcm2: 1721, injPressureMpa: 169, injHoldingPressureKgcm2: null, injHoldingPressureMpa: null, theoInjVolume: 353, shotWeight: 322, injRate: 304, injRateOptional: null, screwStroke: 180, injSpeed: 155, injSpeedOptional: null, plasticizingCapacity: 133, screwRotationSpeed: 260 }, general: { motorCapacity: "88(44+44)", motorCapacityOptional: null, heaterCapacity: 24.2, totalElectricPower: 112.2, totalElectricPowerHigh: null, hydraulicOilTank: 1175, coolingWater: 65, machineWeight: 21, machineDimension: "7.3 x 2.4 x 2.7" } }
+        }
+    },
+
+    // ---- Super-Foam / DL-A5 (S.F.) (katalog Super-Foam Series, str. 18-19) ----
+
+    "DL500A5 (S.F.)": {
+        clamping: { clampingForce: "500(4903)", moldOpeningForce: "38(368)", tieBarDistance: "920 x 830", platenDimension: "1280 x 1260", maxMoldSize: null, rotaryTableSize: null, daylight: 1650, maxDaylight: null, minMoldHeight: 350, maxMoldHeight: 900, ejectorForce: "11.1(108.9)", ejectorStroke: 200, dryCycleTime: 3.3, maxMoldWeight: "5.3/5.3/8" },
+        units: {
+            "IH2800 A(70mm)": { injection: { screwDiameter: 70, injPressureKgcm2: 1889, injPressureMpa: 185, injHoldingPressureKgcm2: null, injHoldingPressureMpa: null, theoInjVolume: 1482, shotWeight: 1365, injRate: 472, injRateOptional: null, screwStroke: 385, injSpeed: 123, injSpeedOptional: null, plasticizingCapacity: 252, screwRotationSpeed: 180 }, general: { motorCapacity: 65.2, motorCapacityOptional: null, heaterCapacity: 28.7, totalElectricPower: 93.9, totalElectricPowerHigh: null, hydraulicOilTank: 600, coolingWater: 130, machineWeight: "19(13.5+5.5)", machineDimension: "8.4 x 2.7 x 2.2" } }
+        }
+    },
+
+    "DL600A5 (S.F.)": {
+        clamping: { clampingForce: "600(5884)", moldOpeningForce: "45(441)", tieBarDistance: "1040 x 910", platenDimension: "1430 x 1370", maxMoldSize: null, rotaryTableSize: null, daylight: 1750, maxDaylight: null, minMoldHeight: 400, maxMoldHeight: 950, ejectorForce: "16.6(162.8)", ejectorStroke: 220, dryCycleTime: 3.3, maxMoldWeight: "6.7/6.7/10" },
+        units: {
+            "IH4200 A(80mm)": { injection: { screwDiameter: 80, injPressureKgcm2: 1887, injPressureMpa: 185, injHoldingPressureKgcm2: null, injHoldingPressureMpa: null, theoInjVolume: 2212, shotWeight: 2038, injRate: 602, injRateOptional: null, screwStroke: 440, injSpeed: 120, injSpeedOptional: null, plasticizingCapacity: 328, screwRotationSpeed: 165 }, general: { motorCapacity: 87.6, motorCapacityOptional: null, heaterCapacity: 37.3, totalElectricPower: 124.9, totalElectricPowerHigh: null, hydraulicOilTank: 800, coolingWater: 130, machineWeight: "26(17+9)", machineDimension: "8.6 x 2.9 x 2.2" } }
+        }
+    },
+
+    "DL700A5 (S.F.)": {
+        clamping: { clampingForce: "700(6865)", moldOpeningForce: "53(515)", tieBarDistance: "1110 x 1110", platenDimension: "1520 x 1490", maxMoldSize: null, rotaryTableSize: null, daylight: 1850, maxDaylight: null, minMoldHeight: 450, maxMoldHeight: 950, ejectorForce: "19.8(194.2)", ejectorStroke: 250, dryCycleTime: 3.3, maxMoldWeight: "7.3/7.3/11" },
+        units: {
+            "IH5900 A(90mm)": { injection: { screwDiameter: 90, injPressureKgcm2: 1885, injPressureMpa: 185, injHoldingPressureKgcm2: null, injHoldingPressureMpa: null, theoInjVolume: 3149, shotWeight: 2902, injRate: 763, injRateOptional: null, screwStroke: 495, injSpeed: 120, injSpeedOptional: null, plasticizingCapacity: 408, screwRotationSpeed: 150 }, general: { motorCapacity: 87.6, motorCapacityOptional: null, heaterCapacity: 47, totalElectricPower: 134.6, totalElectricPowerHigh: null, hydraulicOilTank: 800, coolingWater: 130, machineWeight: "32(21.5+10.5)", machineDimension: "9.3 x 3.1 x 2.4" } }
+        }
+    },
+
+    "DL900A5 (S.F.)": {
+        clamping: { clampingForce: "900(8826)", moldOpeningForce: "68(662)", tieBarDistance: "1200 x 1120", platenDimension: "1720 x 1610", maxMoldSize: null, rotaryTableSize: null, daylight: 2100, maxDaylight: null, minMoldHeight: 500, maxMoldHeight: 1100, ejectorForce: "26.9(263.8)", ejectorStroke: 250, dryCycleTime: 4, maxMoldWeight: "8.6/8.6/13" },
+        units: {
+            "IH8800 A(105mm)": { injection: { screwDiameter: 105, injPressureKgcm2: 1756, injPressureMpa: 172, injHoldingPressureKgcm2: null, injHoldingPressureMpa: null, theoInjVolume: 5022, shotWeight: 4628, injRate: 1041, injRateOptional: null, screwStroke: 580, injSpeed: 120, injSpeedOptional: null, plasticizingCapacity: 515, screwRotationSpeed: 125 }, general: { motorCapacity: 110, motorCapacityOptional: null, heaterCapacity: 62.4, totalElectricPower: 172.4, totalElectricPowerHigh: null, hydraulicOilTank: 920, coolingWater: 180, machineWeight: "41(29+12)", machineDimension: "10.5 x 3.4 x 2.5" } }
+        }
+    },
+
+    "DL1100A5 (S.F.)": {
+        clamping: { clampingForce: "1100(10787)", moldOpeningForce: "83(809)", tieBarDistance: "1420 x 1170", platenDimension: "1870 x 1820", maxMoldSize: null, rotaryTableSize: null, daylight: 2400, maxDaylight: null, minMoldHeight: 600, maxMoldHeight: 1200, ejectorForce: "26.9(263.8)", ejectorStroke: 250, dryCycleTime: 4.4, maxMoldWeight: "14/14/21" },
+        units: {
+            "IH8800 A(105mm)": { injection: { screwDiameter: 105, injPressureKgcm2: 1756, injPressureMpa: 172, injHoldingPressureKgcm2: null, injHoldingPressureMpa: null, theoInjVolume: 5022, shotWeight: 4628, injRate: 1041, injRateOptional: null, screwStroke: 580, injSpeed: 120, injSpeedOptional: null, plasticizingCapacity: 515, screwRotationSpeed: 125 }, general: { motorCapacity: 110, motorCapacityOptional: null, heaterCapacity: 62.4, totalElectricPower: 172.4, totalElectricPowerHigh: null, hydraulicOilTank: 920, coolingWater: 180, machineWeight: "50(37.5+12.5)", machineDimension: "10.7 x 3.4 x 2.7" } }
+        }
+    },
+
+    "DL1300A5 (S.F.)": {
+        clamping: { clampingForce: "1300(12749)", moldOpeningForce: "98(956)", tieBarDistance: "1580 x 1280", platenDimension: "2230 x 1990", maxMoldSize: null, rotaryTableSize: null, daylight: 3050, maxDaylight: null, minMoldHeight: 700, maxMoldHeight: 1400, ejectorForce: "34.4(337.3)", ejectorStroke: 300, dryCycleTime: 5, maxMoldWeight: "20/20/30" },
+        units: {
+            "IH11900 A(115mm)": { injection: { screwDiameter: 115, injPressureKgcm2: 1809, injPressureMpa: 177, injHoldingPressureKgcm2: null, injHoldingPressureMpa: null, theoInjVolume: 6544, shotWeight: 6030, injRate: 1249, injRateOptional: null, screwStroke: 630, injSpeed: 120, injSpeedOptional: null, plasticizingCapacity: 607, screwRotationSpeed: 115 }, general: { motorCapacity: 142.6, motorCapacityOptional: null, heaterCapacity: 76.4, totalElectricPower: 219, totalElectricPowerHigh: null, hydraulicOilTank: 1150, coolingWater: 180, machineWeight: "72(55+17)", machineDimension: "12.3 x 4.2 x 3.4" } }
+        }
+    },
+
+    "DL1800A5 (S.F.)": {
+        clamping: { clampingForce: "1800(17652)", moldOpeningForce: "135(1324)", tieBarDistance: "1850 x 1610", platenDimension: "2450 x 2200", maxMoldSize: null, rotaryTableSize: null, daylight: 3400, maxDaylight: null, minMoldHeight: 700, maxMoldHeight: 1600, ejectorForce: "44.5(436.4)", ejectorStroke: 300, dryCycleTime: 5.8, maxMoldWeight: "30/30/45" },
+        units: {
+            "IH15300 A(125mm)": { injection: { screwDiameter: 125, injPressureKgcm2: 1743, injPressureMpa: 171, injHoldingPressureKgcm2: null, injHoldingPressureMpa: null, theoInjVolume: 8406, shotWeight: 7746, injRate: 1349, injRateOptional: null, screwStroke: 685, injSpeed: 110, injSpeedOptional: null, plasticizingCapacity: 692, screwRotationSpeed: 105 }, general: { motorCapacity: 142.6, motorCapacityOptional: null, heaterCapacity: 86.2, totalElectricPower: 228.8, totalElectricPowerHigh: null, hydraulicOilTank: 1450, coolingWater: 180, machineWeight: "115(96+19)", machineDimension: "13.7 x 4.2 x 3.4" } }
+        }
+    },
+
+    "DL2000A5 (S.F.)": {
+        clamping: { clampingForce: "2000(19613)", moldOpeningForce: "150(1471)", tieBarDistance: "2020 x 1610", platenDimension: "2600 x 2250", maxMoldSize: null, rotaryTableSize: null, daylight: 3600, maxDaylight: null, minMoldHeight: 800, maxMoldHeight: 1700, ejectorForce: "44.5(436.4)", ejectorStroke: 300, dryCycleTime: 5.8, maxMoldWeight: "41/41/62" },
+        units: {
+            "IH15300 A(125mm)": { injection: { screwDiameter: 125, injPressureKgcm2: 1743, injPressureMpa: 171, injHoldingPressureKgcm2: null, injHoldingPressureMpa: null, theoInjVolume: 8406, shotWeight: 7746, injRate: 1349, injRateOptional: null, screwStroke: 685, injSpeed: 110, injSpeedOptional: null, plasticizingCapacity: 692, screwRotationSpeed: 105 }, general: { motorCapacity: 142.6, motorCapacityOptional: null, heaterCapacity: 86.2, totalElectricPower: 228.8, totalElectricPowerHigh: null, hydraulicOilTank: 1450, coolingWater: 180, machineWeight: "115(96+19)", machineDimension: "14.1 x 4.5 x 3.4" } }
+        }
+    },
+
+    "DL2300A5 (S.F.)": {
+        clamping: { clampingForce: "2300(22555)", moldOpeningForce: "173(1692)", tieBarDistance: "2020 x 1610", platenDimension: "2600 x 2250", maxMoldSize: null, rotaryTableSize: null, daylight: 3600, maxDaylight: null, minMoldHeight: 800, maxMoldHeight: 1700, ejectorForce: "44.5(436.4)", ejectorStroke: 300, dryCycleTime: 5.8, maxMoldWeight: "41/41/62" },
+        units: {
+            "IH15300 A(125mm)": { injection: { screwDiameter: 125, injPressureKgcm2: 1743, injPressureMpa: 171, injHoldingPressureKgcm2: null, injHoldingPressureMpa: null, theoInjVolume: 8406, shotWeight: 7746, injRate: 1349, injRateOptional: null, screwStroke: 685, injSpeed: 110, injSpeedOptional: null, plasticizingCapacity: 692, screwRotationSpeed: 105 }, general: { motorCapacity: 142.6, motorCapacityOptional: null, heaterCapacity: 86.2, totalElectricPower: 228.8, totalElectricPowerHigh: null, hydraulicOilTank: 1450, coolingWater: 180, machineWeight: "115(96+19)", machineDimension: "14.1 x 4.5 x 3.4" } }
+        }
+    },
+
+    "DL2500A5 (S.F.)": {
+        clamping: { clampingForce: "2500(24517)", moldOpeningForce: "188(1839)", tieBarDistance: "2180 x 1760", platenDimension: "3030 x 2610", maxMoldSize: null, rotaryTableSize: null, daylight: 3900, maxDaylight: null, minMoldHeight: 900, maxMoldHeight: 2000, ejectorForce: "67.8(664.9)", ejectorStroke: 350, dryCycleTime: 8.2, maxMoldWeight: "50/50/75" },
+        units: {
+            "IH21500 A(140mm)": { injection: { screwDiameter: 140, injPressureKgcm2: 1816, injPressureMpa: 178, injHoldingPressureKgcm2: null, injHoldingPressureMpa: null, theoInjVolume: 11853, shotWeight: 10923, injRate: 1537, injRateOptional: null, screwStroke: 770, injSpeed: 100, injSpeedOptional: null, plasticizingCapacity: 850, screwRotationSpeed: 95 }, general: { motorCapacity: 165, motorCapacityOptional: null, heaterCapacity: 110, totalElectricPower: 275, totalElectricPowerHigh: null, hydraulicOilTank: 1650, coolingWater: 240, machineWeight: "143(121+22)", machineDimension: "16 x 4.7 x 3.7" } }
+        }
+    },
+
+    "DL2700A5 (S.F.)": {
+        clamping: { clampingForce: "2700(26478)", moldOpeningForce: "203(1986)", tieBarDistance: "2180 x 1760", platenDimension: "3030 x 2610", maxMoldSize: null, rotaryTableSize: null, daylight: 3900, maxDaylight: null, minMoldHeight: 900, maxMoldHeight: 2000, ejectorForce: "67.8(664.9)", ejectorStroke: 350, dryCycleTime: 8.2, maxMoldWeight: "50/50/75" },
+        units: {
+            "IH21500 A(140mm)": { injection: { screwDiameter: 140, injPressureKgcm2: 1816, injPressureMpa: 178, injHoldingPressureKgcm2: null, injHoldingPressureMpa: null, theoInjVolume: 11853, shotWeight: 10923, injRate: 1537, injRateOptional: null, screwStroke: 770, injSpeed: 100, injSpeedOptional: null, plasticizingCapacity: 850, screwRotationSpeed: 95 }, general: { motorCapacity: 165, motorCapacityOptional: null, heaterCapacity: 110, totalElectricPower: 275, totalElectricPowerHigh: null, hydraulicOilTank: 1650, coolingWater: 240, machineWeight: "143(121+22)", machineDimension: "16 x 4.7 x 3.7" } }
+        }
+    },
+
+    "DL3000A5 (S.F.)": {
+        clamping: { clampingForce: "3000(29420)", moldOpeningForce: "225(2206)", tieBarDistance: "2260 x 1810", platenDimension: "3140 x 2660", maxMoldSize: null, rotaryTableSize: null, daylight: 4000, maxDaylight: null, minMoldHeight: 1100, maxMoldHeight: 2000, ejectorForce: "67.8(664.9)", ejectorStroke: 350, dryCycleTime: 8.2, maxMoldWeight: "56/56/85" },
+        units: {
+            "IH33000 A(160mm)": { injection: { screwDiameter: 160, injPressureKgcm2: 1800, injPressureMpa: 177, injHoldingPressureKgcm2: null, injHoldingPressureMpa: null, theoInjVolume: 16085, shotWeight: 14822, injRate: 1719, injRateOptional: null, screwStroke: 800, injSpeed: 85, injSpeedOptional: null, plasticizingCapacity: 1000, screwRotationSpeed: 78 }, general: { motorCapacity: 220, motorCapacityOptional: null, heaterCapacity: 209, totalElectricPower: 429, totalElectricPowerHigh: null, hydraulicOilTank: 2650, coolingWater: 240, machineWeight: "180(149+31)", machineDimension: "17.8 x 5 x 4" } }
+        }
+    },
+
+    "DL3300A5 (S.F.)": {
+        clamping: { clampingForce: "3300(32362)", moldOpeningForce: "248(2427)", tieBarDistance: "2260 x 1810", platenDimension: "3140 x 2660", maxMoldSize: null, rotaryTableSize: null, daylight: 4000, maxDaylight: null, minMoldHeight: 1100, maxMoldHeight: 2000, ejectorForce: "67.8(664.9)", ejectorStroke: 350, dryCycleTime: 8.2, maxMoldWeight: "56/56/85" },
+        units: {
+            "IH33000 A(160mm)": { injection: { screwDiameter: 160, injPressureKgcm2: 1800, injPressureMpa: 177, injHoldingPressureKgcm2: null, injHoldingPressureMpa: null, theoInjVolume: 16085, shotWeight: 14822, injRate: 1719, injRateOptional: null, screwStroke: 800, injSpeed: 85, injSpeedOptional: null, plasticizingCapacity: 1000, screwRotationSpeed: 78 }, general: { motorCapacity: 220, motorCapacityOptional: null, heaterCapacity: 209, totalElectricPower: 429, totalElectricPowerHigh: null, hydraulicOilTank: 2650, coolingWater: 240, machineWeight: "180(149+31)", machineDimension: "17.8 x 5 x 4" } }
+        }
     }
 };
 
@@ -823,12 +1157,11 @@ let selectedMachineType = 'DL-A5';
 // niezależnie od wybranej ścieżki.
 let step2SubView = 'tech';
 
-// Typy maszyn dodane do Kroku 1 (widok 360° + krótki opis), dla których
-// dalsze kroki konfiguratora (dobór wtryskarki na podstawie danych
-// technologicznych) nie zostały jeszcze opracowane. Dla tych typów
-// przycisk "Dalej" w Kroku 1 celowo nic nie robi - pozostałe typy
-// (DL-A5, TH-A5, TE-A5, TL-A5) działają dokładnie tak jak wcześniej.
-const CONFIGURATOR_STEP1_ONLY_TYPES = ['VHA-RS', 'MULTI', 'Super-Foam'];
+// Typy maszyn widoczne w Kroku 1 (widok 360° + krótki opis), dla których
+// dalsze kroki konfiguratora nie zostały jeszcze opracowane - zamiast przejścia
+// do Kroku 2 pokazuje się informacja z kontaktem (showStep1OnlyNotice).
+// Obecnie wszystkie typy mają pełne dane, więc lista jest pusta.
+const CONFIGURATOR_STEP1_ONLY_TYPES = [];
 
 // Lista materiałów jest wypełniana per "okno kalkulatora" dopiero przy jego
 // utworzeniu (patrz populateMaterialSelect/addStep2TechBlock) - przy starcie
@@ -999,10 +1332,12 @@ function openStep2UnitsFlyout(barEl) {
         const screwMatch = unit.match(/\((\d+)\s*mm\)/i);
         const screwDiameter = screwMatch ? screwMatch[1] : '–';
         const isSelected = step2Selections.some(s => s && s.modelName === modelName && s.unitStr === unit);
+        // null (parametr nieopisany w katalogu) -> pusty string, a nie "null"
         const tieBarAttr = model.tieBar !== null ? model.tieBar : '';
+        const maxHAttr = model.maxH !== null ? model.maxH : '';
         unitsHtml += `
             <button type="button" class="step2-list-unit-item${isSelected ? ' is-selected' : ''}"
-                onclick="onStep2ListSelect('${modelName}', '${unit}', '${model.force}', '${tieBarAttr}', '${model.minH}', '${model.maxH}')">
+                onclick="onStep2ListSelect('${modelName}', '${unit}', '${model.force}', '${tieBarAttr}', '${model.minH}', '${maxHAttr}')">
                 <span class="step2-list-unit-name">${agregat}</span>
                 <span class="step2-list-unit-screw">Ø${screwDiameter} mm</span>
             </button>`;
@@ -1101,7 +1436,7 @@ function changeStep2Qty(slotIndex, delta) {
     if (!slot) return;
     const current = parseInt(slot.qty, 10) || 1;
     slot.qty = Math.max(1, current + delta);
-    renderStep2Specs();
+    syncStep2QtyInput(slotIndex);
 }
 
 // Ręczna edycja liczby maszyn w polu tekstowym - również z dolnym limitem 1.
@@ -1111,7 +1446,21 @@ function setStep2Qty(slotIndex, value) {
     let n = parseInt(value, 10);
     if (isNaN(n) || n < 1) n = 1;
     slot.qty = n;
-    renderStep2Specs();
+    syncStep2QtyInput(slotIndex);
+}
+
+// Liczba sztuk w Kroku 2 widoczna jest tylko w polu licznika, więc po zmianie
+// aktualizujemy wyłącznie to pole - bez odtwarzania całej karty. Wcześniejsze
+// renderStep2Specs() przy każdym +/- budowało kartę od nowa, a rozwinięta
+// pełna specyfikacja za każdym razem ponownie odtwarzała animację pojawiania
+// się (miganie); przyciski +/- traciły też fokus.
+function syncStep2QtyInput(slotIndex) {
+    const card = step2SubView === 'tech'
+        ? document.getElementById('techInlineSpec_t' + step2TechBlockIds[slotIndex])
+        : document.querySelector(`#step2ListSpecs .step2-spec-card[data-slot="${slotIndex}"]`);
+    const input = card && card.querySelector('.step2-qty-input');
+    if (input) input.value = step2Selections[slotIndex].qty;
+    else renderStep2Specs();
 }
 
 // Przycisk "+ Dodaj kolejny model" - dodaje kolejny, pusty slot na dole listy
@@ -1137,11 +1486,19 @@ function removeStep2Model(slotIndex) {
 // Ogólne) pod podstawowymi danymi danego slotu. Domyślnie zwinięta - widoczne
 // jest tylko te kilka podstawowych pól, tak jak przed dodaniem pełnych danych
 // katalogowych; pulsujący trójkąt na dole karty rozwija resztę na życzenie.
+// Slot, którego specyfikacja właśnie została rozwinięta - tylko wtedy kolumny
+// dostają animację pojawiania się (.is-entering). Przy każdym innym
+// odświeżeniu kart (np. wybór kolejnego modelu, usunięcie karty) już
+// rozwinięta specyfikacja pojawia się od razu, bez ponownego mignięcia.
+let step2DetailsEnterSlot = null;
+
 function toggleStep2Details(slotIndex) {
     const slot = step2Selections[slotIndex];
     if (!slot) return;
     slot.detailsExpanded = !slot.detailsExpanded;
+    step2DetailsEnterSlot = slot.detailsExpanded ? slot : null;
     renderStep2Specs();
+    step2DetailsEnterSlot = null;
 }
 
 // -------------------- Krok 2 (lista): pełne dane technologiczne --------------------
@@ -1154,7 +1511,10 @@ function toggleStep2Details(slotIndex) {
 function formatTonKn(value) {
     if (value === null || value === undefined) return null;
     const m = String(value).match(/^([\d.]+)\(([\d.]+)\)$/);
-    if (!m) return value;
+    if (!m) {
+        // sama wartość w tonach (np. siła wyrzutnika NC-G5 w katalogu MULTI)
+        return /^[\d.]+$/.test(String(value)) ? `${value} T` : value;
+    }
     return `${m[1]} T (${m[2]} kN)`;
 }
 
@@ -1201,7 +1561,7 @@ function getTechField(modelName, unitStr, section, field) {
 // Jeśli danych brak (nie powinno się zdarzyć - patrz walidacja przy
 // budowie machineTechSpecs), zwraca null, a wywołujący spada na starą,
 // płaską listę jako zabezpieczenie.
-function renderStep2TechColumns(modelName, unitStr) {
+function renderStep2TechColumns(modelName, unitStr, animate) {
     if (!machineTechSpecs[modelName] || !machineTechSpecs[modelName].units[unitStr]) return null;
     const g = (section, field) => getTechField(modelName, unitStr, section, field);
 
@@ -1238,6 +1598,10 @@ function renderStep2TechColumns(modelName, unitStr) {
     if (tieBarD != null) clampingRows.push(['Prześwit między kolumnami', `${tieBarD} mm`]);
     const platenDim = g('clamping', 'platenDimension');
     if (platenDim != null) clampingRows.push(['Wymiar płyty', `${platenDim} mm`]);
+    const maxMoldSize = g('clamping', 'maxMoldSize');
+    if (maxMoldSize != null) clampingRows.push(['Maks. wymiar formy', `${maxMoldSize} mm`]);
+    const rotaryTable = g('clamping', 'rotaryTableSize');
+    if (rotaryTable != null) clampingRows.push(['Średnica stołu obrotowego', `Ø ${rotaryTable} mm`]);
     const daylight = g('clamping', 'daylight');
     if (daylight != null) clampingRows.push(['Droga otwarcia', `${daylight} mm`]);
     const maxDaylight = g('clamping', 'maxDaylight');
@@ -1282,7 +1646,7 @@ function renderStep2TechColumns(modelName, unitStr) {
                     </div>`;
 
     return `
-                <div class="step2-tech-grid">
+                <div class="step2-tech-grid${animate ? ' is-entering' : ''}">
                     ${col('Wtrysk', injectionRows)}
                     ${col('Zwarcie', clampingRows)}
                     ${col('Ogólne', generalRows)}
@@ -1364,14 +1728,14 @@ function renderStep2Specs() {
                     <li><span>Średnica ślimaka</span><strong>${screwDiameter}</strong></li>
                     ${slot.tieBar ? `<li><span>Prześwit między kolumnami</span><strong>${slot.tieBar} mm</strong></li>` : ''}
                     <li><span>Min. wysokość formy</span><strong>${slot.minH} mm</strong></li>
-                    <li><span>Maks. wysokość formy</span><strong>${slot.maxH} mm</strong></li>
+                    ${slot.maxH ? `<li><span>Maks. wysokość formy</span><strong>${slot.maxH} mm</strong></li>` : ''}
                 </ul>
                 ${machineTechSpecs[slot.modelName] && machineTechSpecs[slot.modelName].units[slot.unitStr] ? `
                 <button type="button" class="step2-details-toggle${slot.detailsExpanded ? ' is-expanded' : ''}" onclick="toggleStep2Details(${i})" aria-expanded="${slot.detailsExpanded ? 'true' : 'false'}">
                     <span>${slot.detailsExpanded ? 'Ukryj pełną specyfikację techniczną' : 'Pokaż pełną specyfikację techniczną'}</span>
                     <svg class="step2-details-toggle-arrow" viewBox="0 0 12 8" width="12" height="8" aria-hidden="true"><polygon points="0,0 12,0 6,8" fill="currentColor"></polygon></svg>
                 </button>
-                ${slot.detailsExpanded ? (renderStep2TechColumns(slot.modelName, slot.unitStr) || '') : ''}` : ''}
+                ${slot.detailsExpanded ? (renderStep2TechColumns(slot.modelName, slot.unitStr, slot === step2DetailsEnterSlot) || '') : ''}` : ''}
             </div>`;
     });
 
@@ -1433,14 +1797,14 @@ function renderStep2TechInlineSpec(techId) {
             <li><span>Średnica ślimaka</span><strong>${screwDiameter}</strong></li>
             ${slot.tieBar ? `<li><span>Prześwit między kolumnami</span><strong>${slot.tieBar} mm</strong></li>` : ''}
             <li><span>Min. wysokość formy</span><strong>${slot.minH} mm</strong></li>
-            <li><span>Maks. wysokość formy</span><strong>${slot.maxH} mm</strong></li>
+            ${slot.maxH ? `<li><span>Maks. wysokość formy</span><strong>${slot.maxH} mm</strong></li>` : ''}
         </ul>
         ${machineTechSpecs[slot.modelName] && machineTechSpecs[slot.modelName].units[slot.unitStr] ? `
         <button type="button" class="step2-details-toggle${slot.detailsExpanded ? ' is-expanded' : ''}" onclick="toggleStep2Details(${pos})" aria-expanded="${slot.detailsExpanded ? 'true' : 'false'}">
             <span>${slot.detailsExpanded ? 'Ukryj pełną specyfikację techniczną' : 'Pokaż pełną specyfikację techniczną'}</span>
             <svg class="step2-details-toggle-arrow" viewBox="0 0 12 8" width="12" height="8" aria-hidden="true"><polygon points="0,0 12,0 6,8" fill="currentColor"></polygon></svg>
         </button>
-        ${slot.detailsExpanded ? (renderStep2TechColumns(slot.modelName, slot.unitStr) || '') : ''}` : ''}
+        ${slot.detailsExpanded ? (renderStep2TechColumns(slot.modelName, slot.unitStr, slot === step2DetailsEnterSlot) || '') : ''}` : ''}
     `;
 }
 
@@ -1646,6 +2010,15 @@ function renderStep2TechBlockHtml(id) {
             <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 7 20 7"></polyline><path d="M6 7l1 13a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2l1-13"></path><path d="M9 7V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v3"></path></svg>
         </button>` : '';
 
+    // Pole prześwitu między kolumnami tylko dla typów, w których katalog go
+    // podaje (bez TL-A5 - konstrukcja bezkolumnowa - i VHA-RS - stół obrotowy).
+    const typeData = machineData[selectedMachineType];
+    const tieBarField = !typeData || typeData.hasTieBar ? `
+                <div class="form-group">
+                    <label for="tie_bar_clearance_t${id}">Wymagany prześwit między kolumnami [mm] <span class="required-star">*</span></label>
+                    <input type="number" id="tie_bar_clearance_t${id}" min="0" placeholder="np. 620">
+                </div>` : '';
+
     return `
         <div class="step2-tech-block-header">
             <h3>Dane technologiczne</h3>
@@ -1663,11 +2036,7 @@ function renderStep2TechBlockHtml(id) {
                 <div class="form-group">
                     <label for="mold_width_t${id}">Szerokość formy [mm]</label>
                     <input type="number" id="mold_width_t${id}" min="0" placeholder="np. 350">
-                </div>
-                <div class="form-group">
-                    <label for="tie_bar_clearance_t${id}">Dostępny prześwit między kolumnami [mm] <span class="required-star">*</span></label>
-                    <input type="number" id="tie_bar_clearance_t${id}" min="0" placeholder="np. 620">
-                </div>
+                </div>${tieBarField}
                 <div class="form-group">
                     <label for="mold_height_t${id}">Wysokość (grubość) formy [mm] <span class="opt-label">(opcjonalnie)</span></label>
                     <input type="number" id="mold_height_t${id}" min="0" placeholder="np. 500">
@@ -1743,6 +2112,7 @@ function renderStep2TechBlockHtml(id) {
                 <div class="form-group">
                     <label for="selected_agregat_t${id}">Wybierz rozmiar agregatu wtryskowego</label>
                     <select id="selected_agregat_t${id}" class="large-select" onchange="onTechAgregatChange(${id}, this.value)"></select>
+                    <p class="calc-shot-info" id="shotInfo_t${id}"></p>
                 </div>
                 <div class="calc-details" id="calcDetails_t${id}"></div>
             </div>
@@ -1804,21 +2174,72 @@ function getSelectedDensity(id) {
 // należące do tego jednego modelu (a nie wszystkich pasujących modeli, jak
 // poprzednio).
 
+// Dopasowanie dawki do agregatu. Droga dozowania potrzebna do zgromadzenia
+// dawki V [cm³] przed ślimakiem o średnicy D [mm]: s = V·1000 / (π·D²/4) [mm].
+// Katalogi WOOJIN PLAIMM zalecają drogę dozowania 1–3 średnic ślimaka
+// ("metering distance ... 1 to 3 times of screw diameter"), a dawka nie może
+// przekraczać teoretycznej objętości wtrysku agregatu.
+function getShotFit(modelName, unitStr, shotVolume) {
+    const spec = machineTechSpecs[modelName] && machineTechSpecs[modelName].units[unitStr];
+    if (!spec) return null;
+    const d = spec.injection.screwDiameter;
+    const maxVol = spec.injection.theoInjVolume;
+    const stroke = shotVolume * 1000 / (Math.PI * d * d / 4);
+    const ratio = stroke / d;
+    const fits = shotVolume <= maxVol;
+    return { d, maxVol, stroke, ratio, fits, recommended: fits && ratio >= 1 && ratio <= 3 };
+}
+
+// Opis dopasowania dawki do aktualnie wybranego agregatu (pod listą agregatów)
+function renderShotInfo(techId) {
+    const el = document.getElementById('shotInfo_t' + techId);
+    const pos = step2TechBlockIds.indexOf(techId);
+    const slot = pos !== -1 ? step2Selections[pos] : null;
+    if (!el) return;
+    if (!slot || !slot.techResults) { el.innerHTML = ''; return; }
+    const fit = getShotFit(slot.modelName, slot.unitStr, slot.techResults.totalVwtr);
+    if (!fit) { el.innerHTML = ''; return; }
+    const ratio = fit.ratio.toFixed(1);
+    let status;
+    if (!fit.fits) status = `<span class="calc-shot-bad">dawka większa niż teoretyczna objętość wtrysku agregatu</span>`;
+    else if (fit.ratio < 1) status = `<span class="calc-shot-warn">poniżej zalecanego zakresu 1–3 × D (agregat przewymiarowany)</span>`;
+    else if (fit.ratio > 3) status = `<span class="calc-shot-warn">powyżej zalecanego zakresu 1–3 × D</span>`;
+    else status = `<span class="calc-shot-ok">w zalecanym zakresie 1–3 × D</span>`;
+    el.innerHTML = `Teoretyczna objętość wtrysku: <strong>${fit.maxVol} cm³</strong> · droga dozowania dla dawki ${slot.techResults.totalVwtr.toFixed(1)} cm³: <strong>${Math.round(fit.stroke)} mm = ${ratio} × D</strong> — ${status}`;
+}
+
 function calculateAndShowModels(id) {
     clearCalcError('calcError_t' + id);
 
-    const cavities = parseInt(document.getElementById('cavities_t' + id).value) || 0;
+    const cavitiesRaw = parseFloat(document.getElementById('cavities_t' + id).value);
+    const cavities = Number.isInteger(cavitiesRaw) ? cavitiesRaw : 0;
     const partWeight = parseFloat(document.getElementById('part_weight_t' + id).value) || 0; // g
     const partSurface = parseFloat(document.getElementById('part_surface_t' + id).value) || 0; // cm2
-    const tieClearance = parseFloat(document.getElementById('tie_bar_clearance_t' + id).value) || 0; // mm
+    // Typy bez prześwitu między kolumnami w katalogu (TL-A5, VHA-RS) nie mają tego pola
+    const typeData = machineData[selectedMachineType];
+    const tieInput = document.getElementById('tie_bar_clearance_t' + id);
+    const tieClearance = tieInput ? (parseFloat(tieInput.value) || 0) : 0; // mm
     const moldHeight = parseFloat(document.getElementById('mold_height_t' + id).value) || 0; // mm (opcjonalne)
-    const kFactor = parseFloat(document.getElementById('k_factor_t' + id).value) || 6; // x100 kg/cm2
+    const kFactor = parseFloat(document.getElementById('k_factor_t' + id).value); // x100 kg/cm2
     const density = getSelectedDensity(id); // g/cm3
 
-    if (cavities <= 0 || partWeight <= 0 || partSurface <= 0 || tieClearance <= 0) {
-        showCalcError('Uzupełnij wymagane pola oznaczone gwiazdką (*): liczba gniazd, masa i powierzchnia wypraski oraz dostępny prześwit między kolumnami.', 'calcError_t' + id);
+    const failCalc = (msg) => {
+        showCalcError(msg, 'calcError_t' + id);
         const resultsEl = document.getElementById('resultsSection_t' + id);
         if (resultsEl) resultsEl.style.display = 'none';
+    };
+    if (!(cavitiesRaw > 0) || partWeight <= 0 || partSurface <= 0 || (tieInput && tieClearance <= 0)) {
+        failCalc(tieInput
+            ? 'Uzupełnij wymagane pola oznaczone gwiazdką (*): liczba gniazd, masa i powierzchnia wypraski oraz wymagany prześwit między kolumnami.'
+            : 'Uzupełnij wymagane pola oznaczone gwiazdką (*): liczba gniazd oraz masa i powierzchnia wypraski.');
+        return;
+    }
+    if (cavities < 1) {
+        failCalc('Liczba gniazd formy musi być liczbą całkowitą (1, 2, 3…).');
+        return;
+    }
+    if (isNaN(kFactor) || kFactor < 1 || kFactor > 12) {
+        failCalc('Współczynnik ciśnienia w gnieździe formy k musi mieścić się w zakresie 1–12 (typowo 3–8).');
         return;
     }
 
@@ -1837,28 +2258,67 @@ function calculateAndShowModels(id) {
     const docK = 6;
     const psDocN = (totalWeight * 9.81 * docK) / 1000;
 
-    const typeData = machineData[selectedMachineType];
+    // ---- Dobór modelu ----
+    // 1) siła zwarcia, prześwit między kolumnami i wysokość formy (jeśli podana),
+    // 2) jeśli żaden model nie spełnia wysokości formy - pomijamy ten warunek,
+    // 3) jeśli żaden model serii nie ma wymaganej siły zwarcia / prześwitu -
+    //    pokazujemy największy model serii z wyraźnym ostrzeżeniem.
+    const forceTieOk = m => m.force >= requiredForceTon && (!typeData.hasTieBar || m.tieBar === null || m.tieBar >= tieClearance);
+    // maxH = null: katalog nie podaje maks. wysokości formy - sprawdzamy tylko minimum
+    const heightOk = m => moldHeight <= 0 || (moldHeight >= m.minH && (m.maxH === null || moldHeight <= m.maxH));
 
-    let suitableModels = typeData.models.filter(m => {
-        const forceOk = m.force >= requiredForceTon;
-        const tieOk = !typeData.hasTieBar || m.tieBar === null || m.tieBar >= tieClearance;
-        const heightOk = moldHeight <= 0 || (moldHeight >= m.minH && moldHeight <= m.maxH);
-        return forceOk && tieOk && heightOk;
-    });
-
-    let usedFallback = false;
-    if (suitableModels.length === 0) {
-        usedFallback = true;
-        // Fallback: pomijamy warunek wysokości formy, jeśli nic nie pasuje
-        suitableModels = typeData.models.filter(m => {
-            const forceOk = m.force >= requiredForceTon;
-            const tieOk = !typeData.hasTieBar || m.tieBar === null || m.tieBar >= tieClearance;
-            return forceOk && tieOk;
-        });
+    let candidates = typeData.models.filter(m => forceTieOk(m) && heightOk(m));
+    let heightIgnored = false;
+    if (!candidates.length) {
+        candidates = typeData.models.filter(forceTieOk);
+        heightIgnored = candidates.length > 0;
+    }
+    let exceedsSeries = false;
+    if (!candidates.length) {
+        exceedsSeries = true;
+        candidates = [typeData.models[typeData.models.length - 1]];
     }
 
-    const modelsToDisplay = suitableModels.length > 0 ? suitableModels : typeData.models;
-    const suggestedModel = modelsToDisplay[0];
+    // ---- Dobór agregatu wtryskowego ----
+    // Najmniejszy model (spośród powyższych) z agregatem, w którym droga
+    // dozowania mieści się w zalecanym zakresie 1–3 × D; jeśli takiego nie ma -
+    // najmniejszy agregat, w którym dawka w ogóle się mieści.
+    const findUnit = (test) => {
+        for (const m of candidates) {
+            const unit = m.units.find(u => { const f = getShotFit(m.name, u, totalVwtr); return f && test(f); });
+            if (unit) return { model: m, unit };
+        }
+        return null;
+    };
+    let shotStatus = 'ok';
+    let pick = findUnit(f => f.recommended);
+    if (!pick) {
+        pick = findUnit(f => f.fits);
+        shotStatus = pick ? 'outsideRange' : 'tooBig';
+    }
+    if (!pick) {
+        const m = candidates[candidates.length - 1];
+        pick = { model: m, unit: m.units[m.units.length - 1] };
+    }
+    const suggestedModel = pick.model;
+    const upsizedForShot = suggestedModel !== candidates[0];
+
+    const maxForce = Math.max(...typeData.models.map(m => m.force));
+    const maxTie = typeData.hasTieBar ? Math.max(...typeData.models.map(m => m.tieBar || 0)) : null;
+    const warnings = [];
+    if (exceedsSeries) {
+        const reasons = [];
+        if (requiredForceTon > maxForce) reasons.push(`wymagana siła zwarcia ${requiredForceTon.toFixed(1)} t (maks. w serii ${maxForce} t)`);
+        if (maxTie !== null && tieClearance > maxTie) reasons.push(`wymagany prześwit ${tieClearance} mm (maks. w serii ${maxTie} mm)`);
+        warnings.push(`Uwaga: żaden model serii ${selectedMachineType} nie spełnia wymagań${reasons.length ? ': ' + reasons.join(', ') : ''}. Pokazano największy model serii — skontaktuj się z doradcą lub wybierz inny typ wtryskarki.`);
+    } else if (heightIgnored && moldHeight > 0) {
+        warnings.push(`Uwaga: żaden model nie spełnia jednocześnie podanej wysokości formy — pokazano model dobrany bez uwzględnienia wysokości formy. Zweryfikuj wysokość formy z działem technicznym.`);
+    }
+    if (shotStatus === 'tooBig') {
+        warnings.push(`Uwaga: dawka wtrysku ${totalVwtr.toFixed(1)} cm³ jest większa niż teoretyczna objętość wtrysku agregatów dobranych modeli. Skontaktuj się z doradcą w sprawie doboru agregatu.`);
+    } else if (shotStatus === 'outsideRange') {
+        warnings.push(`Uwaga: dla tej dawki żaden agregat nie zapewnia drogi dozowania w zalecanym zakresie 1–3 × D — dobrano najmniejszy agregat, w którym dawka się mieści.`);
+    }
 
     const calcDiv = document.getElementById('calcDetails_t' + id);
     calcDiv.innerHTML = `
@@ -1868,10 +2328,11 @@ function calculateAndShowModels(id) {
             <li>Całkowita masa wtrysku: <strong>${totalWeight.toFixed(2)} g</strong></li>
             <li>Wymagana minimalna siła zwarcia (metoda powierzchniowa, p = ${specificPressure} kg/cm²): <strong>${requiredForceTon.toFixed(1)} ton</strong></li>
             <li>Orientacyjna siła zwarcia wg uproszczonego wzoru masowego P<sub>s</sub> = m·g·k/1000: <strong>${psDocN.toFixed(2)} N</strong></li>
-            <li>Wymagany prześwit między kolumnami: min. <strong>${tieClearance} mm</strong></li>
+            ${tieInput ? `<li>Wymagany prześwit między kolumnami: min. <strong>${tieClearance} mm</strong></li>` : ''}
             ${moldHeight > 0 ? `<li>Wysokość formy: <strong>${moldHeight} mm</strong></li>` : ''}
+            ${upsizedForShot && !exceedsSeries ? `<li>Model większy niż wynika z siły zwarcia (${candidates[0].name}) — ze względu na objętość wtrysku.</li>` : ''}
         </ul>
-        ${usedFallback ? '<p class="calc-warning">Uwaga: żaden model nie spełnia jednocześnie podanej wysokości formy — pokazano model dobrany wyłącznie wg siły zwarcia i prześwitu. Zweryfikuj wysokość formy z działem technicznym.</p>' : ''}
+        ${warnings.map(w => `<p class="calc-warning">${w}</p>`).join('')}
     `;
 
     document.getElementById('suggestedModelName_t' + id).textContent = suggestedModel.name;
@@ -1881,7 +2342,9 @@ function calculateAndShowModels(id) {
         const agregat = formatStep2AgregatLabel(unit);
         const screwMatch = unit.match(/\((\d+)\s*mm\)/i);
         const screwDiameter = screwMatch ? screwMatch[1] : '–';
-        return `<option value="${unit}">${agregat} (Ø${screwDiameter} mm)</option>`;
+        const fit = getShotFit(suggestedModel.name, unit, totalVwtr);
+        const volInfo = fit ? `, ${fit.maxVol} cm³${fit.fits ? '' : ' – za mała objętość'}` : '';
+        return `<option value="${unit}"${unit === pick.unit ? ' selected' : ''}>${agregat} (Ø${screwDiameter} mm${volInfo})</option>`;
     }).join('');
 
     const materialLabel = document.getElementById('material_select_t' + id).selectedOptions[0].textContent;
@@ -1900,6 +2363,7 @@ function calculateAndShowModels(id) {
     document.getElementById('resultsSection_t' + id).style.display = 'grid';
 
     applyTechSelection(id, suggestedModel, agregatSelect.value, techResults);
+    renderShotInfo(id);
 }
 
 // Zapisuje wybór (model + agregat) danego okna kalkulatora do step2Selections
@@ -1942,6 +2406,7 @@ function onTechAgregatChange(techId, unitStr) {
     if (pos === -1 || !step2Selections[pos]) return;
     step2Selections[pos].unitStr = unitStr;
     renderStep2Specs();
+    renderShotInfo(techId);
 }
 
 // -------------------- Wspólne: wyróżniony pasek z wybraną wtryskarką i średnicą ślimaka --------------------
@@ -2036,7 +2501,14 @@ function showStep3OptionTooltip(triggerEl) {
     const translation = OPTION_TRANSLATIONS[key];
     if (!translation) { hideStep3OptionTooltip(); return; }
 
-    renderStep3TooltipText(tooltip, translation);
+    // Pozycje ze zdjęciem (OPTION_MEDIA, dopasowane do typu maszyny) dostają
+    // większy dymek: zdjęcie + tłumaczenie + krótki opis. Klasę trzeba ustawić
+    // PRZED renderowaniem - zmienia szerokość dymka, a renderStep3TooltipText
+    // mierzy zawijanie tekstu przy aktualnej szerokości.
+    const media = getOptionMedia(key);
+    tooltip.classList.toggle('has-media', !!media);
+    if (media) renderStep3TooltipMedia(tooltip, translation, media);
+    else renderStep3TooltipText(tooltip, translation);
     positionStep3OptionTooltip(tooltip, textEl || triggerEl);
     tooltip.classList.add('is-open');
     step3TooltipOpenTrigger = triggerEl;
@@ -2090,26 +2562,85 @@ function renderStep3TooltipText(tooltip, text) {
     tooltip.appendChild(line2);
 }
 
+// Treść dymka dla pozycji ze zdjęciem: jasny panel ze zdjęciem (1 - duże,
+// 2 - obok siebie lub jedno pod drugim, gdy jedno jest bardzo szerokie,
+// więcej - siatka, w której szerokie zdjęcia ślimaków zajmują cały wiersz)
+// z podpisami, pod nim tłumaczenie nazwy i opis. Zdjęcia mają w CSS stałą
+// wysokość, więc rozmiar dymka nie zmienia się, gdy doczytają się już po
+// pokazaniu dymka.
+function renderStep3TooltipMedia(tooltip, translation, media) {
+    const images = media.images;
+    const hasWide = images.some(img => img.wide);
+    const layout = images.length > 2 ? ' is-grid' : images.length === 2 ? (hasWide ? ' is-stack' : ' is-pair') : ' is-single';
+    tooltip.innerHTML = `
+        <div class="opt-tip-media${layout}">
+            ${images.map(img => `
+                <figure class="opt-tip-figure${img.wide ? ' is-wide' : ''}">
+                    <div class="opt-tip-img"><img src="${OPTION_MEDIA_DIR}${img.src}" alt="${img.caption}" decoding="async"></div>
+                    <figcaption>${img.caption}</figcaption>
+                </figure>`).join('')}
+        </div>
+        <div class="opt-tip-body">
+            <div class="opt-tip-title">${translation}</div>
+            <p class="opt-tip-desc">${media.desc}</p>
+        </div>`;
+}
+
+// Ikonka "zdjęcie" przy pozycjach, dla których dymek pokazuje zdjęcie i opis
+function step3MediaBadgeHtml(optText) {
+    if (!getOptionMedia(optText.replace(/^\d+\.\s*/, '').trim())) return '';
+    return '<span class="opt-media-badge" title="Zdjęcie i opis" aria-hidden="true">' +
+        '<svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">' +
+        '<rect x="3" y="4.5" width="18" height="15" rx="2.5"/><circle cx="9" cy="10" r="1.8"/><path d="M20.5 16.5l-5-5-8.5 8"/></svg></span>';
+}
+
+// Wczytuje z wyprzedzeniem zdjęcia pozycji wybranego typu maszyny, żeby
+// pojawiały się w dymku od razu przy pierwszym najechaniu.
+const step3PreloadedMedia = new Set();
+function preloadStep3OptionMedia() {
+    const data = optionSets[selectedMachineType];
+    if (!data) return;
+    [data.std, data.opt].forEach(set => Object.values(set).forEach(list => list.forEach(optText => {
+        const media = getOptionMedia(optText.replace(/^\d+\.\s*/, '').trim());
+        if (!media) return;
+        media.images.forEach(img => {
+            const src = OPTION_MEDIA_DIR + img.src;
+            if (step3PreloadedMedia.has(src)) return;
+            step3PreloadedMedia.add(src);
+            new Image().src = src;
+        });
+    })));
+}
+
 // Pozycjonuje dymek (position: fixed - współrzędne względem okna) tuż pod
 // angielskim tekstem pozycji, z "dzióbkiem" wskazującym jego początek; gdy
-// pod tekstem brakuje miejsca (dolna krawędź ekranu) - tuż nad nim. Dymek
-// nie wychodzi poza okno, a dzióbek zawsze celuje w tekst.
+// pod tekstem brakuje miejsca (dolna krawędź ekranu) - tuż nad nim. Gdy
+// wysoki dymek ze zdjęciem nie mieści się ani pod, ani nad tekstem (niskie
+// okno), trafia na stronę z większą ilością miejsca, przesunięty tak, by nie
+// wychodził poza okno - wtedy bez dzióbka. Rozmiar z offsetWidth/Height, bo
+// getBoundingClientRect uwzględniałby skalowanie z animacji pojawiania się.
 function positionStep3OptionTooltip(tooltip, anchorEl) {
     const rects = anchorEl.getClientRects();
     const first = rects.length ? rects[0] : anchorEl.getBoundingClientRect();
     const box = anchorEl.getBoundingClientRect();
-    const tipRect = tooltip.getBoundingClientRect();
+    const tipW = tooltip.offsetWidth, tipH = tooltip.offsetHeight;
     const gap = 10, edge = 8;
 
-    let below = true;
-    let top = box.bottom + gap;
-    if (top + tipRect.height > window.innerHeight - edge) { top = first.top - tipRect.height - gap; below = false; }
+    const spaceBelow = window.innerHeight - edge - (box.bottom + gap);
+    const spaceAbove = first.top - gap - edge;
+    const below = tipH <= spaceBelow || (tipH > spaceAbove && spaceBelow >= spaceAbove);
+    let top = below ? box.bottom + gap : first.top - tipH - gap;
+    // Gdy pozycja zjechała z ekranu (przewijanie), dymek odjeżdża razem z nią
+    const anchorVisible = box.bottom > 0 && box.top < window.innerHeight;
+    const clampedTop = anchorVisible ? Math.max(edge, Math.min(top, window.innerHeight - tipH - edge)) : top;
+    tooltip.classList.toggle('no-arrow', clampedTop !== top);
+    top = clampedTop;
 
     let left = first.left - 4;
-    left = Math.min(left, window.innerWidth - tipRect.width - edge);
+    left = Math.min(left, window.innerWidth - tipW - edge);
     left = Math.max(edge, left);
 
-    const arrowX = Math.max(12, Math.min(tipRect.width - 12, first.left + 14 - left));
+    const arrowX = Math.max(12, Math.min(tipW - 12, first.left + 14 - left));
     tooltip.style.setProperty('--arrow-x', arrowX + 'px');
     tooltip.classList.toggle('is-below', below);
     tooltip.style.top = top + 'px';
@@ -2152,6 +2683,14 @@ function createStep3TranslateButton(label) {
     btn.className = 'opt-translate-btn';
     btn.textContent = 'PL';
     btn.setAttribute('aria-label', 'Pokaż tłumaczenie na język polski');
+    // Pozycja ze zdjęciem: ikonka zdjęcia trafia do przycisku (na dotyku
+    // osobna ikonka w wierszu jest ukryta - patrz CSS .opt-media-badge)
+    const badge = label.querySelector('.opt-media-badge');
+    if (badge) {
+        btn.classList.add('has-media');
+        btn.insertAdjacentHTML('afterbegin', badge.innerHTML);
+        btn.setAttribute('aria-label', 'Pokaż zdjęcie i tłumaczenie na język polski');
+    }
     btn.addEventListener('click', (e) => {
         e.preventDefault();
         e.stopPropagation();
@@ -2176,11 +2715,13 @@ function populateStep3() {
     }
 
     const data = optionSets[selectedMachineType];
-    document.getElementById('std_injection_unit').innerHTML = data.std.injection.map(i => `<li${step3TooltipAttrs()}>${formatNumbered(i)}</li>`).join('');
-    document.getElementById('std_clamping_unit').innerHTML = data.std.clamping.map(i => `<li${step3TooltipAttrs()}>${formatNumbered(i)}</li>`).join('');
-    document.getElementById('std_general').innerHTML = data.std.general.map(i => `<li${step3TooltipAttrs()}>${formatNumbered(i)}</li>`).join('');
+    const stdItemHtml = i => `<li${step3TooltipAttrs()}>${formatNumbered(i)}${step3MediaBadgeHtml(i)}</li>`;
+    document.getElementById('std_injection_unit').innerHTML = data.std.injection.map(stdItemHtml).join('');
+    document.getElementById('std_clamping_unit').innerHTML = data.std.clamping.map(stdItemHtml).join('');
+    document.getElementById('std_general').innerHTML = data.std.general.map(stdItemHtml).join('');
 
     renderStep3OptionsContainer(machines);
+    preloadStep3OptionMedia();
 }
 
 // Buduje sekcję "Opcje dodatkowe (do wyboru):" - jeden blok na każdą wybraną
@@ -2258,7 +2799,7 @@ function renderStep3OptionsContainer(machines) {
                     if (!checkbox.checked && pos !== -1) m.selectedOptions.splice(pos, 1);
                 });
                 label.appendChild(checkbox);
-                label.insertAdjacentHTML('beforeend', formatNumbered(optText));
+                label.insertAdjacentHTML('beforeend', formatNumbered(optText) + step3MediaBadgeHtml(optText));
                 // Komputer: tłumaczenie po najechaniu myszką. Dotyk: stuknięcie
                 // wiersza tylko zaznacza opcję, a tłumaczenie pokazuje przycisk "PL"
                 // (pointerType pomija myszkę "udawaną" przez stuknięcie palcem).
@@ -2369,7 +2910,7 @@ function populateStep4Summary() {
     // informacja zastępcza), mimo że były prawidłowo policzone i zapisane.
     const techRowsHtml = (r) => `
             <tr><td>Wymiary formy (dł. x szer.)</td><td>${r.moldLength} x ${r.moldWidth} mm</td></tr>
-            <tr><td>Prześwit między kolumnami</td><td>${r.tieClearance} mm</td></tr>
+            ${r.tieClearance > 0 ? `<tr><td>Prześwit między kolumnami</td><td>${r.tieClearance} mm</td></tr>` : ''}
             ${r.moldHeight > 0 ? `<tr><td>Wysokość formy</td><td>${r.moldHeight} mm</td></tr>` : ''}
             <tr><td>Liczba gniazd</td><td>${r.cavities}</td></tr>
             <tr><td>Materiał</td><td>${r.materialLabel}</td></tr>
@@ -2595,9 +3136,9 @@ function buildConfigurationPdf(fonts) {
         ];
         const r = m.techResults;
         if (r) {
+            rows.push(['Liczba gniazd', String(r.cavities)]);
+            if (r.tieClearance > 0) rows.push(['Prześwit między kolumnami', `${r.tieClearance} mm`]);
             rows.push(
-                ['Liczba gniazd', String(r.cavities)],
-                ['Prześwit między kolumnami', `${r.tieClearance} mm`],
                 ['Masa jednej wypraski', `${r.partWeight} g`],
                 ['Całkowita masa wtrysku', `${r.totalWeight.toFixed(2)} g`],
                 ['Całkowita objętość wtrysku', `${r.totalVwtr.toFixed(2)} cm³`],
@@ -2781,9 +3322,9 @@ function buildTechDetailsEmailHtml(machines) {
 
     const buildTechGrid = (r) => {
         const rows = [
-            ['Wymiary formy (dł. x szer.)', `${r.moldLength} x ${r.moldWidth} mm`],
-            ['Prześwit między kolumnami', `${r.tieClearance} mm`]
+            ['Wymiary formy (dł. x szer.)', `${r.moldLength} x ${r.moldWidth} mm`]
         ];
+        if (r.tieClearance > 0) rows.push(['Prześwit między kolumnami', `${r.tieClearance} mm`]);
         if (r.moldHeight > 0) rows.push(['Wysokość formy', `${r.moldHeight} mm`]);
         rows.push(
             ['Liczba gniazd', `${r.cavities}`],
@@ -2939,7 +3480,7 @@ function confirmSendEmail() {
         'TL-A5': { folder: '360-TL', available: false, levelY: 3.7, shadow: { y: 86.5, w: 88 }, still: 'img/opt/tl-a5-widok.jpg', desc: 'Wtryskarka bez kolumn (tie-bar-less) dająca pełną swobodę doboru wielkości formy, wielogniazdowości i automatyzacji.' },
         'VHA-RS': { folder: '360-VH', available: true, levelY: -0.62, shadow: { y: 89.5, w: 40 }, desc: 'Wysokiej klasy, pionowa wtryskarka hydrauliczna z obrotowym stołem (turntable), przeznaczona do formowania z insertami oraz pionowego układu wtrysku.' },
         'MULTI': { folder: '360-MULTI', available: true, levelY: -0.85, desc: 'Nowoczesna, pozioma wtryskarka dwukolorowa (2K) do formowania dwóch różnych tworzyw lub kolorów w jednym cyklu produkcyjnym (ONE-CYCLE).' },
-        'Super-Foam': { folder: '360-SF', available: true, levelY: 4.34, desc: 'Dwupłytowa wtryskarka z systemem bezpośredniego ryglowania (Dual Lock) i technologią super spieniania, dedykowana produkcji dużych, lekkich elementów, w tym palet.' }
+        'Super-Foam': { folder: '360-SF', available: true, levelY: 4.34, desc: 'Dwupłytowa wtryskarka z systemem Dual Lock i technologią super spieniania, dedykowana produkcji dużych, lekkich elementów, w tym palet.' }
     };
 
     let currentType = 'DL-A5';

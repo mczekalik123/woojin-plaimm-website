@@ -21,10 +21,11 @@
 //    na prowadnicach L/M z napędem wypychacza, ślimak z zaworem zwrotnym,
 //    4 cylindry docisku dyszy, śruby kulowe wtrysku, czujnik siły,
 //    skrzynkę serwonapędów agregatu i napędy w szafie,
-//  - symulację cyklu wtrysku (zamykanie i ryglowanie formy -> dosunięcie
-//    dyszy -> wtrysk -> docisk -> dozowanie + chłodzenie -> odsunięcie
-//    dyszy -> otwieranie -> wypychanie); obracają się śruby i koła pasowe,
-//    gniazdo formy wypełnia się stopionym tworzywem, które stygnie,
+//  - ciągłą animację cyklu wtrysku, działającą w tle bez przycisku i opisu
+//    (zamykanie i ryglowanie formy -> dosunięcie dyszy -> wtrysk -> docisk
+//    -> dozowanie + chłodzenie -> odsunięcie dyszy -> otwieranie ->
+//    wypychanie); obracają się śruby i koła pasowe, gniazdo formy wypełnia
+//    się stopionym tworzywem, które stygnie - wnętrze widać w trybie X-RAY,
 //  - automatyczny, powolny obrót w widoku ogólnym.
 // Pętla renderowania działa tylko wtedy, gdy sekcja jest widoczna na
 // ekranie (IntersectionObserver), żeby nie obciążać komputera/telefonu.
@@ -45,8 +46,6 @@ function initTe3DShowcase() {
     const readout = document.getElementById('te3dReadout');
     const hint = document.getElementById('te3dHint');
     const fallback = document.getElementById('te3dFallback');
-    const cycleHud = document.getElementById('te3dCycleHud');
-    const cycleList = document.getElementById('te3dCycleList');
     if (!stage || !canvas || !panel || !tabsEl) return;
 
     const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -167,25 +166,16 @@ function initTe3DShowcase() {
         }
     ];
 
-    // Etapy symulacji cyklu (czasy w sekundach, pętla).
-    const CYCLE_PHASES = [
-        { name: 'Zamykanie formy', t0: 0.0, t1: 1.0 },
-        { name: 'Ryglowanie – siła zwarcia', t0: 1.0, t1: 1.35 },
-        { name: 'Dosunięcie dyszy', t0: 1.35, t1: 1.75 },
-        { name: 'Wtrysk', t0: 1.75, t1: 2.45 },
-        { name: 'Docisk', t0: 2.45, t1: 3.15 },
-        { name: 'Dozowanie + chłodzenie', t0: 3.15, t1: 5.0, parallel: true },
-        { name: 'Odsunięcie dyszy', t0: 5.0, t1: 5.35 },
-        { name: 'Otwieranie formy', t0: 5.35, t1: 6.35 },
-        { name: 'Wypychanie wypraski', t0: 6.35, t1: 7.25 }
-    ];
+    // Długość jednego cyklu wtrysku w sekundach (animacja w pętli; czasy
+    // poszczególnych etapów - patrz updateCycle).
     const CYCLE_LENGTH = 7.7;
-    const CYCLE_VIEW = { target: [-0.6, 1.25, 0], r: 7.8, theta: -0.12, phi: 1.3 };
 
     let activeFeature = 0;
     let userXray = false;
     let autoRotate = !reduceMotion;
-    let cycleRunning = false;
+    // Cykl wtrysku animuje się cały czas (bez przycisku i opisu etapów);
+    // przy włączonym ograniczeniu ruchu maszyna stoi z otwartą formą.
+    const cycleRunning = !reduceMotion;
 
     // -----------------------------------------------------------------
     // PANEL OPISU + ZAKŁADKI (działają również bez WebGL)
@@ -1373,11 +1363,6 @@ function initTe3DShowcase() {
     function easeOut(t) { t = Math.min(1, Math.max(0, t)); return 1 - Math.pow(1 - t, 3); }
     function seg(t, a, b) { return ease((t - a) / (b - a)); }
 
-    function cyclePhaseIndex(t) {
-        for (let i = 0; i < CYCLE_PHASES.length; i++) if (t >= CYCLE_PHASES[i].t0 && t < CYCLE_PHASES[i].t1) return i;
-        return -1;
-    }
-
     // Kolory wypraski: stopiony materiał (róż) -> zastygnięta wypraska (cyjan)
     const PART_HOT = [1.0, 0.18, 0.82], PART_COLD = [0.0, 1.0, 0.95];
 
@@ -1476,14 +1461,6 @@ function initTe3DShowcase() {
         rig.heaters.forEach(h => { h.emOverride = [0.5 * anim.heat * pulse, 0.04 * anim.heat, 0.42 * anim.heat * pulse]; });
         rig.lamps.g.emOverride = cycleRunning ? [0.1, 0.55, 0.22] : [0, 0, 0];
         rig.lamps.y.emOverride = !cycleRunning ? [0.35, 0.26, 0.02] : [0, 0, 0];
-
-        if (cycleRunning && cycleList) {
-            const idx = cyclePhaseIndex(cycleT);
-            Array.prototype.forEach.call(cycleList.children, (li, i) => {
-                li.classList.toggle('is-active', i === idx);
-                li.classList.toggle('is-done', idx === -1 ? true : i < idx);
-            });
-        }
     }
 
     // ---------- Aktualizacja sceny ----------
@@ -1493,7 +1470,7 @@ function initTe3DShowcase() {
     function update(dt) {
         time += dt;
         const idle = time - lastInteraction > 4 && !dragging;
-        if (autoRotate && idle && activeFeature === 0 && !cycleRunning) {
+        if (autoRotate && idle && activeFeature === 0) {
             goal.theta += dt * 0.16;
         }
 
@@ -1503,7 +1480,7 @@ function initTe3DShowcase() {
         cam.r += (goal.r - cam.r) * kc;
         for (let i = 0; i < 3; i++) cam.t[i] += (goal.t[i] - cam.t[i]) * kc;
 
-        const wantX = (cycleRunning || userXray) ? 1 : 0;
+        const wantX = userXray ? 1 : 0;
         xrayMix += (wantX - xrayMix) * (1 - Math.exp(-dt * 5));
         if (Math.abs(wantX - xrayMix) < 0.002) xrayMix = wantX;
 
@@ -1825,29 +1802,6 @@ function initTe3DShowcase() {
         if (b) b.setAttribute('aria-pressed', on ? 'true' : 'false');
     }
 
-    function setCycle(on) {
-        cycleRunning = on;
-        setPressed('cycle', on);
-        const label = toolbar && toolbar.querySelector('.te3d-cycle-label');
-        if (label) label.textContent = on ? 'Zatrzymaj cykl' : 'Symulacja cyklu';
-        const short = toolbar && toolbar.querySelector('.te3d-btn-short');
-        if (short) short.textContent = on ? 'Stop' : 'Cykl';
-        if (cycleHud) cycleHud.hidden = !on;
-        stage.classList.toggle('te3d-cycle-running', on);
-        if (on) {
-            cycleT = 0;
-            if (activeFeature === 0) applyView(CYCLE_VIEW);
-        } else {
-            setPressed('xray', userXray);
-        }
-        if (on) setPressed('xray', true);
-        requestRender();
-    }
-
-    if (cycleList) {
-        cycleList.innerHTML = CYCLE_PHASES.map(p => `<li>${p.name}${p.parallel ? '<em>RÓWNOLEGLE</em>' : ''}</li>`).join('');
-    }
-
     if (toolbar) {
         toolbar.addEventListener('click', (e) => {
             const b = e.target.closest('[data-action]');
@@ -1855,13 +1809,10 @@ function initTe3DShowcase() {
             const a = b.dataset.action;
             markInteraction();
             if (a === 'reset') {
-                if (cycleRunning) setCycle(false);
                 selectFeature(0);
             } else if (a === 'xray') {
                 userXray = !userXray;
-                setPressed('xray', userXray || cycleRunning);
-            } else if (a === 'cycle') {
-                setCycle(!cycleRunning);
+                setPressed('xray', userXray);
             } else if (a === 'zoom-in') {
                 zoom(1 / 1.2);
             } else if (a === 'zoom-out') {
@@ -1880,7 +1831,7 @@ function initTe3DShowcase() {
         const f = TE3D_FEATURES[idx];
         applyView(f.view);
         userXray = f.xray;
-        setPressed('xray', userXray || cycleRunning);
+        setPressed('xray', userXray);
         lastInteraction = time;
         if (hint) hint.classList.add('is-gone');
         requestRender();
