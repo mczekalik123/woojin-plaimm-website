@@ -1,0 +1,895 @@
+/* =====================================================================
+   INTERAKTYWNY MODEL 3D TE-A5 (strona główna, js/te3d.js)
+   Jasna sekcja z neonowymi akcentami (turkus/cyjan + magenta), płynnie
+   przechodząca z ciemnej sekcji technologii powyżej.
+===================================================================== */
+
+/* Jasna sekcja "wjeżdża" zaokrąglonym arkuszem na ciemną sekcję powyżej */
+.te3d-section {
+    position: relative;
+    z-index: 1;
+    overflow: hidden;
+    isolation: isolate;
+    margin-top: calc(-1 * clamp(32px, 4vw, 56px));
+    padding: clamp(80px, 9vw, 130px) 0 clamp(80px, 9vw, 120px);
+    border-radius: clamp(32px, 4vw, 56px) clamp(32px, 4vw, 56px) 0 0;
+    background: #fff;
+    color: var(--c-text);
+}
+
+.te3d-grid-bg {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    background-image:
+        linear-gradient(rgba(10, 190, 181, 0.1) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(10, 190, 181, 0.1) 1px, transparent 1px);
+    background-size: 48px 48px;
+    -webkit-mask-image: linear-gradient(to bottom, #000 0%, #000 55%, transparent 95%);
+    mask-image: linear-gradient(to bottom, #000 0%, #000 55%, transparent 95%);
+}
+
+.te3d-section .container {
+    position: relative;
+    z-index: 1;
+}
+
+/* ---- Nagłówek ---- */
+.te3d-header {
+    max-width: 860px;
+    margin-bottom: 44px;
+}
+
+.te3d-tag {
+    display: inline-block;
+    margin-bottom: 16px;
+    font-family: var(--font-mono);
+    font-size: 12.5px;
+    font-weight: 600;
+    letter-spacing: 0.18em;
+    color: var(--c-teal-700);
+    text-transform: uppercase;
+}
+
+.te3d-title {
+    margin-bottom: 18px;
+    font-size: clamp(34px, 4.6vw, 62px);
+    line-height: 1.04;
+    font-weight: 800;
+    font-stretch: var(--wide);
+    letter-spacing: -0.035em;
+    color: var(--c-ink);
+}
+
+/* "TE-A5" z efektem glitch */
+.te3d-glitch {
+    position: relative;
+    display: inline-block;
+    color: var(--c-teal);
+    text-shadow: 2px 0 rgba(255, 45, 210, 0.35), -2px 0 rgba(0, 255, 242, 0.55);
+}
+
+.te3d-glitch::before,
+.te3d-glitch::after {
+    content: attr(data-text);
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    overflow: hidden;
+    pointer-events: none;
+    opacity: 0;
+}
+
+.te3d-glitch::before {
+    color: var(--c-magenta);
+    animation: te3dGlitchA 4.6s steps(1) infinite;
+}
+
+.te3d-glitch::after {
+    color: #00d9cf;
+    animation: te3dGlitchB 4.6s steps(1) infinite;
+}
+
+@keyframes te3dGlitchA {
+    0%, 91%, 100% { opacity: 0; transform: none; clip-path: inset(0 0 0 0); }
+    92% { opacity: 0.9; transform: translate(-3px, -1px); clip-path: inset(10% 0 55% 0); }
+    94% { opacity: 0.9; transform: translate(3px, 1px); clip-path: inset(60% 0 8% 0); }
+    96% { opacity: 0; }
+}
+
+@keyframes te3dGlitchB {
+    0%, 92%, 100% { opacity: 0; transform: none; clip-path: inset(0 0 0 0); }
+    93% { opacity: 0.85; transform: translate(3px, 0); clip-path: inset(40% 0 30% 0); }
+    95% { opacity: 0.85; transform: translate(-2px, 1px); clip-path: inset(5% 0 70% 0); }
+    97% { opacity: 0; }
+}
+
+.te3d-lead {
+    font-size: clamp(16px, 1.35vw, 18px);
+    line-height: 1.75;
+    color: var(--c-muted);
+}
+
+/* ---- Układ: widok 3D + panel opisu ---- */
+.te3d-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 390px;
+    gap: 24px;
+    align-items: stretch;
+}
+
+.te3d-stage {
+    position: relative;
+    min-height: 620px;
+    background: radial-gradient(ellipse 75% 70% at 50% 42%, #ffffff 0%, #f1f7f8 60%, #e7f0f2 100%);
+    border: 1px solid rgba(10, 190, 181, 0.35);
+    border-radius: var(--r-lg);
+    overflow: hidden;
+    user-select: none;
+    -webkit-user-select: none;
+    box-shadow: var(--shadow-md);
+}
+
+.te3d-canvas {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    cursor: grab;
+    touch-action: pan-y;
+    outline: none;
+}
+
+.te3d-canvas.is-dragging {
+    cursor: grabbing;
+}
+
+.te3d-canvas:focus-visible {
+    box-shadow: inset 0 0 0 2px #00d9cf;
+}
+
+.te3d-scanline {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: -90px;
+    height: 90px;
+    z-index: 2;
+    pointer-events: none;
+    background: linear-gradient(to bottom, rgba(0, 255, 242, 0) 0%, rgba(0, 255, 242, 0.04) 88%, rgba(0, 217, 207, 0.16) 100%);
+    animation: te3dScan 7s linear infinite;
+    will-change: transform;
+}
+
+@keyframes te3dScan {
+    to { transform: translateY(900px); }
+}
+
+.te3d-corner {
+    position: absolute;
+    z-index: 3;
+    width: 22px;
+    height: 22px;
+    border: 0 solid #00d9cf;
+    pointer-events: none;
+}
+
+.te3d-corner--tl { top: 14px; left: 14px; border-top-width: 2px; border-left-width: 2px; border-top-left-radius: 8px; }
+.te3d-corner--tr { top: 14px; right: 14px; border-top-width: 2px; border-right-width: 2px; border-top-right-radius: 8px; }
+.te3d-corner--bl { bottom: 14px; left: 14px; border-bottom-width: 2px; border-left-width: 2px; border-bottom-left-radius: 8px; }
+.te3d-corner--br { bottom: 14px; right: 14px; border-bottom-width: 2px; border-right-width: 2px; border-bottom-right-radius: 8px; }
+
+.te3d-hud-top {
+    position: absolute;
+    top: 20px;
+    left: 46px;
+    right: 46px;
+    z-index: 3;
+    display: flex;
+    justify-content: space-between;
+    gap: 16px;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    color: var(--c-teal-700);
+    pointer-events: none;
+}
+
+.te3d-hud-id {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.te3d-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--c-magenta);
+    box-shadow: 0 0 8px rgba(255, 45, 210, 0.8);
+    animation: te3dBlink 1.4s ease-in-out infinite;
+}
+
+@keyframes te3dBlink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.25; }
+}
+
+.te3d-hud-readout {
+    color: #5d6f86;
+    white-space: nowrap;
+}
+
+/* ---- Znaczniki (hotspoty) ---- */
+.te3d-hotspots {
+    position: absolute;
+    inset: 0;
+    z-index: 4;
+    pointer-events: none;
+}
+
+.te3d-hotspot {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 32px;
+    height: 32px;
+    margin: -16px 0 0 -16px;
+    padding: 0;
+    border-radius: 50%;
+    border: 2px solid var(--c-teal);
+    background: rgba(255, 255, 255, 0.94);
+    color: var(--c-ink);
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 700;
+    cursor: pointer;
+    pointer-events: auto;
+    transition: opacity 0.25s ease, background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+    will-change: transform;
+}
+
+.te3d-hotspot::before {
+    content: '';
+    position: absolute;
+    inset: -8px;
+    border-radius: 50%;
+    border: 1.5px solid rgba(0, 217, 207, 0.8);
+    animation: te3dPing 2s ease-out infinite;
+    pointer-events: none;
+}
+
+@keyframes te3dPing {
+    0% { transform: scale(0.6); opacity: 1; }
+    100% { transform: scale(1.35); opacity: 0; }
+}
+
+.te3d-hotspot-label {
+    position: absolute;
+    top: 50%;
+    left: calc(100% + 10px);
+    padding: 6px 10px;
+    border-radius: 6px;
+    background: var(--c-ink);
+    border-left: 2px solid var(--c-cyan);
+    color: #e9fffd;
+    font-family: var(--font-sans);
+    font-size: 12px;
+    font-weight: 700;
+    white-space: nowrap;
+    opacity: 0;
+    transform: translate(-6px, -50%);
+    pointer-events: none;
+    transition: opacity 0.2s ease, transform 0.25s var(--ease-out);
+}
+
+.te3d-hotspot.is-left .te3d-hotspot-label {
+    left: auto;
+    right: calc(100% + 10px);
+    border-left: 0;
+    border-right: 2px solid var(--c-cyan);
+    transform: translate(6px, -50%);
+}
+
+.te3d-hotspot:hover .te3d-hotspot-label,
+.te3d-hotspot:focus-visible .te3d-hotspot-label,
+.te3d-hotspot.is-active .te3d-hotspot-label {
+    opacity: 1;
+    transform: translate(0, -50%);
+}
+
+.te3d-hotspot:hover,
+.te3d-hotspot.is-active {
+    background: var(--c-teal);
+    border-color: var(--c-cyan);
+    color: #fff;
+    box-shadow: 0 0 14px rgba(0, 255, 242, 0.55);
+}
+
+.te3d-hotspot.is-active::before {
+    border-color: rgba(255, 45, 210, 0.8);
+}
+
+.te3d-hotspot.is-hidden {
+    opacity: 0;
+    pointer-events: none;
+}
+
+/* ---- Podpowiedź "przeciągnij" ---- */
+.te3d-hint {
+    position: absolute;
+    left: 50%;
+    bottom: 80px;
+    z-index: 4;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 16px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.9);
+    border: 1px solid rgba(10, 190, 181, 0.4);
+    color: var(--c-teal-700);
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    white-space: nowrap;
+    pointer-events: none;
+    translate: -50% 0;
+    transition: opacity 0.5s ease;
+    animation: te3dHintFloat 2.2s ease-in-out infinite;
+}
+
+.te3d-hint.is-gone {
+    opacity: 0;
+}
+
+@keyframes te3dHintFloat {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-5px); }
+}
+
+/* ---- Obraz zastępczy (brak WebGL) ---- */
+.te3d-fallback {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    padding: 40px 24px 80px;
+}
+
+.te3d-fallback[hidden] {
+    display: none;
+}
+
+.te3d-fallback img {
+    max-width: 100%;
+    max-height: 80%;
+    object-fit: contain;
+    mix-blend-mode: multiply;
+}
+
+.te3d-fallback p {
+    font-size: 13px;
+    color: #5d6f86;
+    text-align: center;
+}
+
+/* ---- Pasek przycisków ---- */
+.te3d-toolbar {
+    position: absolute;
+    left: 50%;
+    bottom: 18px;
+    z-index: 5;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    max-width: calc(100% - 24px);
+    padding: 6px;
+    border-radius: 999px;
+    background: rgba(10, 14, 19, 0.9);
+    border: 1px solid rgba(0, 255, 242, 0.22);
+    box-shadow: 0 14px 30px -12px rgba(10, 14, 19, 0.6);
+    translate: -50% 0;
+    -webkit-backdrop-filter: blur(8px);
+    backdrop-filter: blur(8px);
+}
+
+.te3d-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    height: 36px;
+    padding: 0 15px;
+    border-radius: 999px;
+    border: 1px solid rgba(0, 255, 242, 0.3);
+    color: #dffcfa;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    white-space: nowrap;
+    transition: background-color 0.2s ease, color 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease, transform 0.3s var(--ease-spring);
+}
+
+.te3d-btn:hover {
+    border-color: var(--c-cyan);
+    color: var(--c-cyan);
+}
+
+.te3d-btn:active {
+    transform: scale(0.94);
+}
+
+.te3d-btn[aria-pressed="true"] {
+    background: var(--c-cyan);
+    border-color: var(--c-cyan);
+    color: var(--c-ink);
+    box-shadow: 0 0 14px rgba(0, 255, 242, 0.45);
+}
+
+.te3d-btn--icon {
+    width: 36px;
+    padding: 0;
+    font-size: 17px;
+}
+
+.te3d-toolbar-sep {
+    width: 1px;
+    height: 22px;
+    margin: 0 2px;
+    background: rgba(0, 255, 242, 0.25);
+}
+
+/* ---- Panel opisu wybranej cechy ---- */
+.te3d-panel {
+    position: relative;
+}
+
+.te3d-panel-inner {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    padding: 28px 28px 24px;
+    border-radius: var(--r-lg);
+    background:
+        linear-gradient(#fff, #fff) padding-box,
+        linear-gradient(160deg, #00d9cf 0%, rgba(0, 217, 207, 0.25) 45%, rgba(255, 45, 210, 0.55) 100%) border-box;
+    border: 1.5px solid transparent;
+    box-shadow: var(--shadow-md);
+}
+
+.te3d-panel.is-switching .te3d-panel-inner > * {
+    animation: te3dPanelIn 0.5s var(--ease-out) both;
+}
+
+.te3d-panel.is-switching .te3d-panel-inner > *:nth-child(2) { animation-delay: 0.04s; }
+.te3d-panel.is-switching .te3d-panel-inner > *:nth-child(3) { animation-delay: 0.08s; }
+.te3d-panel.is-switching .te3d-panel-inner > *:nth-child(4) { animation-delay: 0.12s; }
+.te3d-panel.is-switching .te3d-panel-inner > *:nth-child(5) { animation-delay: 0.16s; }
+
+@keyframes te3dPanelIn {
+    from { opacity: 0; transform: translateY(10px); filter: blur(2px); }
+    to { opacity: 1; transform: none; filter: none; }
+}
+
+.te3d-panel-head {
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+    margin-bottom: 12px;
+    font-family: var(--font-mono);
+    font-weight: 700;
+}
+
+.te3d-panel-index {
+    font-size: 26px;
+    line-height: 1;
+    color: var(--c-teal);
+    text-shadow: 2px 0 rgba(255, 45, 210, 0.3);
+}
+
+.te3d-panel-index em {
+    font-style: normal;
+    font-size: 13px;
+    color: #9aa7b8;
+}
+
+.te3d-panel-kicker {
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    color: var(--c-magenta);
+}
+
+.te3d-panel-title {
+    margin-bottom: 10px;
+    font-size: 21px;
+    line-height: 1.25;
+    font-weight: 800;
+    letter-spacing: -0.015em;
+    color: var(--c-ink);
+}
+
+.te3d-panel-lead {
+    margin-bottom: 14px;
+    font-size: 14.5px;
+    line-height: 1.65;
+    color: var(--c-muted);
+}
+
+.te3d-panel-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin: 0 0 16px;
+    list-style: none;
+}
+
+.te3d-panel-list li {
+    position: relative;
+    padding-left: 18px;
+    font-size: 13.5px;
+    line-height: 1.55;
+    color: var(--c-text-2);
+}
+
+.te3d-panel-list li::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 7px;
+    width: 7px;
+    height: 7px;
+    background: var(--c-teal);
+    box-shadow: 0 0 6px rgba(0, 255, 242, 0.6);
+    transform: rotate(45deg);
+}
+
+.te3d-media {
+    position: relative;
+    margin: 0 0 16px;
+    border-radius: 12px;
+    border: 1px solid rgba(10, 190, 181, 0.3);
+    background: #fff;
+    overflow: hidden;
+}
+
+.te3d-media img {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    object-fit: cover;
+}
+
+.te3d-media--contain img {
+    object-fit: contain;
+    padding: 8px;
+    mix-blend-mode: multiply;
+}
+
+.te3d-media figcaption {
+    padding: 7px 12px;
+    border-top: 1px solid rgba(10, 190, 181, 0.2);
+    font-family: var(--font-mono);
+    font-size: 10.5px;
+    letter-spacing: 0.08em;
+    color: #5d6f86;
+    text-transform: uppercase;
+}
+
+/* Porównanie kosztów energii */
+.te3d-energy {
+    margin: 0 0 16px;
+    padding: 16px 16px 12px;
+    border-radius: 12px;
+    background: var(--c-ink);
+    color: #cfe9ec;
+}
+
+.te3d-energy-badge {
+    display: inline-block;
+    margin-bottom: 12px;
+    padding: 3px 8px;
+    border: 1px solid var(--c-cyan);
+    border-radius: 6px;
+    font-family: var(--font-mono);
+    font-size: 10.5px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    color: var(--c-cyan);
+}
+
+.te3d-energy-row {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 4px 10px;
+    margin-bottom: 10px;
+    font-size: 12px;
+}
+
+.te3d-energy-row b {
+    font-family: var(--font-mono);
+    color: #fff;
+}
+
+.te3d-energy-bar {
+    grid-column: 1 / -1;
+    height: 8px;
+    border-radius: 4px;
+    background: rgba(255, 255, 255, 0.08);
+    overflow: hidden;
+}
+
+.te3d-energy-bar i {
+    display: block;
+    height: 100%;
+    width: var(--w);
+    background: #6b7a8f;
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 1.2s var(--ease-out);
+}
+
+.te3d-energy-row.is-te .te3d-energy-bar i {
+    background: linear-gradient(90deg, var(--c-cyan), var(--c-teal));
+    box-shadow: 0 0 10px rgba(0, 255, 242, 0.6);
+}
+
+.te3d-energy.is-on .te3d-energy-bar i {
+    transform: scaleX(1);
+}
+
+.te3d-energy p {
+    margin-top: 4px;
+    font-size: 10.5px;
+    color: #7f8fa6;
+}
+
+.te3d-panel-nav {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    margin-top: auto;
+    padding-top: 6px;
+}
+
+.te3d-panel-arrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    height: 38px;
+    padding: 0 16px;
+    border-radius: 999px;
+    background: #fff;
+    border: 1px solid rgba(10, 190, 181, 0.5);
+    color: var(--c-teal-700);
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+}
+
+.te3d-panel-arrow:hover {
+    background: var(--c-teal);
+    border-color: var(--c-teal);
+    color: #fff;
+}
+
+.te3d-panel-arrow--next {
+    margin-left: auto;
+}
+
+/* ---- Zakładki cech ---- */
+.te3d-tabs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 20px;
+}
+
+.te3d-tab {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    height: 42px;
+    padding: 0 18px;
+    border-radius: 999px;
+    background: #fff;
+    border: 1px solid var(--c-line-2);
+    color: var(--c-text-2);
+    font-size: 13.5px;
+    font-weight: 700;
+    transition: background-color 0.25s ease, border-color 0.25s ease, color 0.25s ease, transform 0.35s var(--ease-spring);
+}
+
+.te3d-tab-num {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--c-teal-700);
+}
+
+.te3d-tab:hover {
+    border-color: var(--c-teal);
+    transform: translateY(-2px);
+}
+
+.te3d-tab[aria-selected="true"] {
+    background: var(--c-ink);
+    border-color: var(--c-ink);
+    color: #fff;
+    box-shadow: inset 0 -2px 0 var(--c-cyan);
+}
+
+.te3d-tab[aria-selected="true"] .te3d-tab-num {
+    color: var(--c-cyan);
+}
+
+/* ---- Statystyki ---- */
+.te3d-stats {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 12px;
+    margin-top: 44px;
+}
+
+.te3d-stat {
+    position: relative;
+    padding: 20px 18px 18px;
+    border-radius: var(--r-md);
+    background: #fff;
+    border: 1px solid var(--c-line);
+    border-top: 3px solid var(--c-teal);
+    transition: transform 0.4s var(--ease-out), box-shadow 0.4s var(--ease-out), border-color 0.25s ease;
+}
+
+.te3d-stat:hover {
+    transform: translateY(-4px);
+    border-top-color: var(--c-magenta);
+    box-shadow: 0 14px 30px -12px rgba(10, 190, 181, 0.3);
+}
+
+.te3d-stat-value {
+    display: block;
+    margin-bottom: 6px;
+    font-size: 26px;
+    line-height: 1.1;
+    font-weight: 800;
+    font-stretch: var(--wide);
+    letter-spacing: -0.02em;
+    color: var(--c-ink);
+}
+
+.te3d-stat:hover .te3d-stat-value {
+    color: var(--c-teal);
+}
+
+.te3d-stat-label {
+    display: block;
+    font-size: 12.5px;
+    line-height: 1.45;
+    color: #5d6f86;
+}
+
+/* ---- Stopka sekcji ---- */
+.te3d-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+    margin-top: 32px;
+}
+
+.te3d-note {
+    max-width: 640px;
+    font-size: 12px;
+    line-height: 1.6;
+    color: #7c8a9c;
+}
+
+.te3d-cta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    flex-shrink: 0;
+}
+
+@media (max-width: 1180px) {
+    .te3d-layout {
+        grid-template-columns: 1fr;
+    }
+
+    .te3d-stage {
+        min-height: 0;
+        aspect-ratio: 16 / 10;
+    }
+
+    .te3d-stats {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+@media (max-width: 768px) {
+    .te3d-stage {
+        aspect-ratio: 1 / 1;
+    }
+
+    .te3d-hud-readout {
+        display: none;
+    }
+
+    .te3d-hud-top {
+        left: 38px;
+    }
+
+    .te3d-toolbar {
+        bottom: 12px;
+        gap: 4px;
+        padding: 5px;
+    }
+
+    .te3d-btn-text,
+    .te3d-toolbar-sep {
+        display: none;
+    }
+
+    .te3d-btn {
+        height: 32px;
+        padding: 0 10px;
+        font-size: 10px;
+    }
+
+    .te3d-btn--icon,
+    .te3d-btn[data-action="reset"] {
+        width: 32px;
+        padding: 0;
+    }
+
+    .te3d-hint {
+        bottom: 62px;
+    }
+
+    .te3d-tabs {
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        margin-inline: calc(-1 * var(--gutter));
+        padding: 0 var(--gutter) 6px;
+        scrollbar-width: none;
+    }
+
+    .te3d-tab {
+        flex-shrink: 0;
+    }
+
+    .te3d-stats {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .te3d-footer {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .te3d-cta .btn {
+        flex: 1 1 auto;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .te3d-scanline,
+    .te3d-glitch::before,
+    .te3d-glitch::after,
+    .te3d-hotspot::before,
+    .te3d-hint {
+        animation: none;
+    }
+}

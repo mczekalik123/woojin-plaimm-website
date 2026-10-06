@@ -1010,7 +1010,7 @@ p {
     opacity: 0.5;
 }
 
-/* Zdjęcie pokazane w całości (proporcje 1920×650), wyśrodkowane w pionie
+/* Zdjęcie pokazane w całości (proporcje 1918×628), wyśrodkowane w pionie
    i płynnie wtapiające się w rozmyte tło na górnej i dolnej krawędzi */
 .hero-img {
     position: absolute;
@@ -1018,7 +1018,7 @@ p {
     top: 50%;
     width: 100%;
     height: auto;
-    aspect-ratio: 1920 / 650;
+    aspect-ratio: 1918 / 628;
     object-fit: cover;
     translate: 0 -50%;
     -webkit-mask-image: linear-gradient(180deg, transparent 0%, #000 14%, #000 86%, transparent 100%);
@@ -1197,10 +1197,11 @@ p {
 }
 
 @media (max-width: 700px) {
-    /* Na telefonie zdjęcie (w całości) jest pasem pod nagłówkiem, a treść pod nim */
+    /* Na telefonie zdjęcie (w całości) jest pasem pod nagłówkiem, a treść pod nim
+       (32.74vw = wysokość zdjęcia 1918×628 przy pełnej szerokości ekranu) */
     .hero {
         min-height: 100svh;
-        padding-top: calc(var(--header-h) + 33.85vw + 28px);
+        padding-top: calc(var(--header-h) + 32.74vw + 28px);
     }
 
     .hero-img {
@@ -3034,9 +3035,24 @@ p {
     padding: 0 14px;
 }
 
+/* Telefon: przyciski jeden pod drugim. flex: 0 0 auto jest konieczne - przy
+   "1 1 0" z wiersza wyżej, w kolumnie zerowa podstawa dotyczy WYSOKOŚCI, a
+   .btn ma overflow: hidden, więc przyciski zapadały się do ~1 px i nie dało
+   się ich kliknąć. Wyższe (44 px) przyciski wygodniej trafić palcem. */
 @media (max-width: 480px) {
+    .cookie-consent-banner {
+        padding: 20px 18px 18px;
+    }
+
     .cookie-consent-actions {
         flex-direction: column;
+        gap: 8px;
+        margin-top: 16px;
+    }
+
+    .cookie-consent-actions .btn {
+        --btn-h: 44px;
+        flex: 0 0 auto;
     }
 }
 
@@ -3235,6 +3251,17 @@ input[type="radio"] {
 
 .human-check-btn[aria-pressed="true"] .human-check-label {
     color: var(--c-teal-900);
+}
+
+/* Pole Google reCAPTCHA (zamiast przycisku powyżej, gdy jest klucz w
+   js/main.js) - zarezerwowana wysokość, żeby formularz nie "skakał", gdy
+   pole doczyta się z serwera Google (304x78 lub kompaktowe 164x144) */
+.recaptcha-box {
+    min-height: 78px;
+}
+
+.recaptcha-box.is-compact {
+    min-height: 144px;
 }
 
 /* Honeypot - poza ekranem (nie display:none, aby był widoczny dla botów) */
@@ -4443,82 +4470,6 @@ input[type="radio"] {
 .contact-form-subtitle {
     margin: 8px 0 28px;
     color: var(--c-muted);
-}
-
-.contact-form fieldset {
-    border: 0;
-    margin-bottom: 22px;
-}
-
-.contact-form legend {
-    margin-bottom: 10px;
-    font-size: 14px;
-    font-weight: 600;
-    color: var(--c-text-2);
-}
-
-.contact-topic-choice {
-    position: relative;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-}
-
-.topic-option {
-    position: relative;
-    cursor: pointer;
-}
-
-.topic-option input {
-    position: absolute;
-    opacity: 0;
-    inset: 0;
-    cursor: pointer;
-}
-
-.topic-option span {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    height: 44px;
-    padding: 0 18px;
-    border-radius: 999px;
-    border: 1.5px solid var(--c-line-2);
-    font-size: 14px;
-    font-weight: 600;
-    color: var(--c-text-2);
-    transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease, transform 0.4s var(--ease-spring);
-}
-
-.topic-option span::before {
-    content: '';
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    border: 1.5px solid currentColor;
-    transition: background-color 0.25s ease, transform 0.35s var(--ease-spring);
-}
-
-.topic-option:hover span {
-    border-color: #b6c2cc;
-}
-
-.topic-option input:checked + span {
-    background: var(--c-ink);
-    border-color: var(--c-ink);
-    color: #fff;
-    transform: translateY(-1px);
-}
-
-.topic-option input:checked + span::before {
-    background: var(--c-teal-300);
-    border-color: var(--c-teal-300);
-    transform: scale(1.2);
-}
-
-.topic-option input:focus-visible + span {
-    outline: 2px solid var(--c-teal);
-    outline-offset: 3px;
 }
 
 .contact-form .action-calc-bar {

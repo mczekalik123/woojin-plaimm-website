@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="robots" content="noindex, nofollow"> <!-- WERSJA TESTOWA: nie indeksować -->
     <title>Konfigurator wtryskarki online | WOOJIN PLAIMM Polska</title>
     <meta name="description" content="Dobierz wtryskarkę WOOJIN PLAIMM online: podaj dane formy i wypraski lub wybierz model z listy, skonfiguruj wyposażenie, pobierz PDF i wyślij zapytanie.">
     <meta name="theme-color" content="#0a0e13">
@@ -19,15 +20,16 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,300..900&display=swap">
-    <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="css/configurator.css">
+    <link rel="stylesheet" href="style.css?v=2026-10-06t3">
+    <link rel="stylesheet" href="css/configurator.css?v=2026-10-06t3">
 
     <script>document.documentElement.classList.add('js');setTimeout(function(){if(!window.WJ||!window.WJ.ready)document.documentElement.classList.add('no-anim');},3000);</script>
     <!-- Wysyłka e-mail bez klienta pocztowego (EmailJS). Biblioteka PDF (jsPDF)
          wczytywana jest dopiero po kliknięciu "Pobierz PDF" - patrz js/configurator.js -->
     <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js" defer></script>
-    <script src="js/main.js" defer></script>
-    <script src="js/configurator.js" defer></script>
+    <script src="js/main.js?v=2026-10-06t3" defer></script>
+    <script src="js/configurator.js?v=2026-10-06t3" defer></script>
+    <script src="js/configurator-compare.js?v=2026-10-06t3" defer></script>
 </head>
 
 <body>
@@ -100,9 +102,18 @@
                     <div class="progress-bar" id="progressBar"></div>
                 </div>
 
+                <!-- Informacja o przywróconej konfiguracji zapisanej w przeglądarce
+                     (js/configurator.js - showResumeNotice) -->
+                <div class="cfg-notice cfg-resume" id="cfgResume" role="status" aria-live="polite" hidden></div>
+
+                <!-- Panel "Twoja konfiguracja" - maszyny wszystkich typów, porównanie,
+                     dodanie typu, usunięcie konfiguracji (js/configurator.js - renderConfigPanel) -->
+                <section class="cfg-cart" id="cfgCart" aria-label="Twoja konfiguracja" hidden></section>
+
                 <!-- ============ KROK 1: WYBÓR MASZYNY ============ -->
                 <div class="step-content active" id="step1">
                     <h2>Krok 1: Wybór rodzaju wtryskarki</h2>
+                    <p class="cfg-hint">W jednej konfiguracji możesz zestawić wtryskarki różnych typów — wybierz typ i sposób doboru, a kolejny typ dodasz przyciskiem „+ Dodaj inny typ”.</p>
                     <div class="step1-layout" id="step1Layout">
 
                         <fieldset class="machine-cards-list">
@@ -212,6 +223,7 @@
                          (buildStep2TechPath / addStep2TechBlock / renderStep2TechInlineSpec) -->
                     <div id="step2TechPath" class="step2-subview" style="display:none;">
                         <h2>Krok 2: Najważniejsze dane technologiczne</h2>
+                        <p class="step2-type-label"></p>
 
                         <div class="cfg-notice cfg-notice--beta" role="note">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 8h.01M11 12h1v5h1"/></svg>
@@ -233,6 +245,7 @@
                     <!-- Ścieżka B: wybór z listy -->
                     <div id="step2ListPath" class="step2-subview" style="display:none;">
                         <h2>Krok 2: Proszę wybrać z listy</h2>
+                        <p class="step2-type-label"></p>
 
                         <div class="step2-list-layout">
                             <div class="step2-list-items" id="step2ListItems"></div>
@@ -255,28 +268,11 @@
                 <div class="step-content" id="step3">
                     <h2>Krok 3: Wyposażenie standardowe i opcje dodatkowe</h2>
 
-                    <h3>Wyposażenie standardowe: <span class="step3-std-machines-list" id="step3StdMachinesList"></span></h3>
-                    <p class="cfg-hint">Najedź kursorem (lub dotknij) pozycji, aby zobaczyć jej polskie tłumaczenie.</p>
-                    <div class="options-columns-grid">
-                        <div class="option-col">
-                            <h4>Wtrysk</h4>
-                            <ul id="std_injection_unit"></ul>
-                        </div>
-                        <div class="option-col">
-                            <h4>Zwarcie</h4>
-                            <ul id="std_clamping_unit"></ul>
-                        </div>
-                        <div class="option-col">
-                            <h4>Ogólne</h4>
-                            <ul id="std_general"></ul>
-                        </div>
-                    </div>
+                    <p class="cfg-hint">Wyposażenie i opcje są podane osobno dla każdego typu wtryskarki w konfiguracji. Najedź kursorem (lub dotknij) pozycji, aby zobaczyć jej polskie tłumaczenie.</p>
 
-                    <hr class="divider">
-
-                    <h3>Opcje dodatkowe (do wyboru):</h3>
-                    <!-- Jeden blok na każdą wybraną wtryskarkę (renderStep3OptionsContainer) -->
-                    <div id="step3OptionsContainer"></div>
+                    <!-- Jedna sekcja na każdy typ maszyny w konfiguracji: wyposażenie
+                         standardowe tego typu + opcje dodatkowe jego maszyn (populateStep3) -->
+                    <div id="step3TypesContainer"></div>
 
                     <!-- Wspólny dymek z polskim tłumaczeniem pozycji (showStep3OptionTooltip) -->
                     <div class="step3-option-tooltip" id="step3OptionTooltip" role="tooltip"></div>
@@ -332,11 +328,17 @@
                         <input type="text" id="config_hp" name="website" tabindex="-1" autocomplete="off">
                     </div>
 
-                    <div class="form-group">
+                    <div class="form-group" id="humanCheckWrapConfig">
                         <button type="button" class="human-check-btn" id="humanCheckBtnConfig" aria-pressed="false">
                             <span class="human-check-box" aria-hidden="true"></span>
                             <span class="human-check-label">Potwierdzam, że nie jestem robotem</span>
                         </button>
+                    </div>
+
+                    <!-- Google reCAPTCHA v2 - pokazywane ZAMIAST przycisku powyżej,
+                         gdy w js/main.js uzupełniono RECAPTCHA_SITE_KEY -->
+                    <div class="form-group recaptcha-group" id="configRecaptchaWrap" hidden>
+                        <div class="recaptcha-box" id="configRecaptcha"></div>
                     </div>
 
                     <div class="action-calc-bar cfg-actions">

@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="robots" content="noindex, nofollow"> <!-- WERSJA TESTOWA: nie indeksować -->
     <title>Kontakt – biuro, przedstawiciel handlowy | WOOJIN PLAIMM Polska</title>
     <meta name="description" content="Skontaktuj się z WOOJIN PLAIMM Co., Ltd. przedstawicielstwo w Polsce: biuro i przedstawiciel handlowy. ul. Hutnicza 6, 40-241 Katowice, tel. +48 510 440 661.">
     <meta name="theme-color" content="#0a0e13">
@@ -17,12 +18,15 @@
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,300..900&display=swap">
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="style.css?v=2026-10-06t3">
 
     <script>document.documentElement.classList.add('js');setTimeout(function(){if(!window.WJ||!window.WJ.ready)document.documentElement.classList.add('no-anim');},3000);</script>
-    <script src="js/main.js" defer></script>
-    <script src="js/contact.js" defer></script>
+    <!-- Wysyłka wiadomości z formularza bezpośrednio ze strony (EmailJS) - patrz js/contact.js -->
+    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js" defer></script>
+    <script src="js/main.js?v=2026-10-06t3" defer></script>
+    <script src="js/contact.js?v=2026-10-06t3" defer></script>
 </head>
 
 <body>
@@ -120,23 +124,9 @@
 
                     <div class="contact-form-wrapper" data-reveal="right">
                         <h2 class="contact-form-title">Napisz do nas</h2>
-                        <p class="contact-form-subtitle">Wybierz temat rozmowy i wyślij wiadomość — odpowiemy najszybciej, jak to możliwe.</p>
+                        <p class="contact-form-subtitle">Wyślij nam wiadomość — odpowiemy najszybciej, jak to możliwe.</p>
 
                         <form class="contact-form" id="contactForm" novalidate>
-                            <fieldset>
-                                <legend>Do kogo piszesz? <span class="required-star">*</span></legend>
-                                <div class="contact-topic-choice">
-                                    <label class="topic-option">
-                                        <input type="radio" name="contact_topic" value="biuro" checked>
-                                        <span>Biuro</span>
-                                    </label>
-                                    <label class="topic-option">
-                                        <input type="radio" name="contact_topic" value="doradca">
-                                        <span>Przedstawiciel handlowy</span>
-                                    </label>
-                                </div>
-                            </fieldset>
-
                             <div class="form-grid-2col">
                                 <div class="form-group">
                                     <label for="contact_name">Imię i nazwisko <span class="required-star">*</span></label>
@@ -164,11 +154,17 @@
                                 <input type="text" id="contact_hp" name="website" tabindex="-1" autocomplete="off">
                             </div>
 
-                            <div class="form-group">
+                            <div class="form-group" id="humanCheckWrapContact">
                                 <button type="button" class="human-check-btn" id="humanCheckBtnContact" aria-pressed="false">
                                     <span class="human-check-box" aria-hidden="true"></span>
                                     <span class="human-check-label">Potwierdzam, że nie jestem robotem</span>
                                 </button>
+                            </div>
+
+                            <!-- Google reCAPTCHA v2 - pokazywane ZAMIAST przycisku powyżej,
+                                 gdy w js/main.js uzupełniono RECAPTCHA_SITE_KEY -->
+                            <div class="form-group recaptcha-group" id="contactRecaptchaWrap" hidden>
+                                <div class="recaptcha-box" id="contactRecaptcha"></div>
                             </div>
 
                             <div class="action-calc-bar">
@@ -177,7 +173,7 @@
                                     <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12l16-8-6 16-2.5-6.5z"/></svg>
                                 </button>
                             </div>
-                            <p class="form-note">Wiadomość zostanie przygotowana w Twoim programie pocztowym. Szczegóły w <a href="privacy.html">Polityce prywatności</a>.</p>
+                            <p class="form-note">Wiadomość zostanie wysłana bezpośrednio ze strony. Szczegóły w <a href="privacy.html">Polityce prywatności</a>.</p>
                             <p class="form-note">WOOJIN PLAIMM Co., Ltd. przedstawicielstwo w Polsce prowadzi wyłącznie działalność w zakresie reklamy i promocji (art. 22 ustawy z dnia 6 marca 2018 r.) — nie prowadzi sprzedaży i nie zawiera umów. <a href="#informacja-prawna">Informacja prawna</a></p>
 
                             <div id="contactFormStatus" class="send-status" role="status" aria-live="polite"></div>
